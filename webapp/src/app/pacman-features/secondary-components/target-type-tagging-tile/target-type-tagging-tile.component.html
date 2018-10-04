@@ -1,0 +1,33 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="target-type-details-wrapper">
+    <img *ngIf="imagePathFound" class="aws-app-image" src="{{imagePath}}" (error)="setImagePathNotFound()">
+    <div class="aws-app-extra flex flex-align-center flex-center" *ngIf="!imagePathFound" [innerHTML]='getInitial(awsResourceDetails.name)' [ngStyle]="{'background-color': getRandomColor()}"></div>
+    <div class="aws-app-name">{{awsResourceDetails.name}}</div>
+    <div class="status-bar">
+        <div class="bar" [ngStyle]="{'width': tagged}"><div class="tagged"></div></div>
+        <div class="bar untagged" [ngStyle]="{'width': untagged}"></div>
+    </div>
+    <div class="tagging-info-wrapper">
+        <div class="left-wrapper" [ngClass]="{'pointer': awsResourceDetails.tagged > 0}" (click)="awsResourceDetails.tagged > 0 && instructParentToNavigate(awsResourceDetails.name,'tagged')">
+            <span class="count" [ngClass]="{'link-text pointer underline-link-num': awsResourceDetails.tagged > 0}">{{awsResourceDetails.tagged}}</span>
+            <span class="type">Tagged</span>
+        </div>
+        <div class="right-wrapper" [ngClass]="{'pointer': awsResourceDetails.untagged > 0}" (click)="awsResourceDetails.untagged > 0 &&  instructParentToNavigate(awsResourceDetails.name,'untagged')">
+            <span class="count" [ngClass]="{'link-text underline-link-num': awsResourceDetails.untagged > 0}">{{awsResourceDetails.untagged}}</span>
+            <span class="type">Untagged</span>
+        </div>
+    </div>
+</div>

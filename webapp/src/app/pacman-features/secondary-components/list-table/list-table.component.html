@@ -1,0 +1,36 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <section class="list-table-wrapper">
+    <ul class="flex flex-col list-table-inner-wrapper relative" *ngIf="tableBodyData">
+        <li class="flex list-table-each-list list-table-header-cont">
+            <ul class="flex list-table-value list-table-header">
+                <li class="list-table-header-values list-table-value-each capitalize center" *ngFor="let tableHead of tableHeaderData;" title = {{tableHead}}>
+                    {{tableHead}}
+                </li>
+            </ul>
+        </li>
+        <li class="flex list-table-each-list" *ngFor="let tableValue of (tableBodyData | searchFilter: searchText) | orderBySum: (orderByConfig ? orderByConfig : {}) | orderBy: (orderByProperty ? orderByProperty : {}) ;let i = index " title = {{tableValue.application}}>
+            <div class="list-table-elem-name">
+                {{tableValue.AppName}}
+            </div>
+            <ul class="flex list-table-value">
+                <li class="list-table-count-each count-color nowrap-ellipsis center pointer" *ngFor="let tableRow of tableValue.AppDetails; let j = index " title = {{tableRow.count}} (click)="tableRow.count > 0 && instructParentToNavigate(tableValue.AppName,tableHeaderData[j+1])" [ngClass]="{'link-text pointer underline-link-num': tableRow.count > 0 && !tableRow.noLink}">
+                    {{tableRow.count}}
+                </li>
+            </ul>
+        </li>
+        <div class="list-table-divider"></div>
+    </ul>
+</section>

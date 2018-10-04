@@ -1,0 +1,699 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.issue-details-wrapper {
+    padding: 0.5em 1.5em 1em 1.5em;
+    overflow: auto; overflow: overlay;
+    position: relative;
+}
+
+.arrow-img {
+    transform: rotate(180deg);
+    margin-right: 1em;
+    transition: 0.4s ease;
+    cursor: pointer;
+}
+
+.arrow-img:hover {
+    transform: rotate(180deg) translateX(20%);
+}
+
+.active{
+    background-color: #ed0295;
+    color: #fff;
+}
+
+.heading-text {
+    font-size: 2em;
+    color: #555;
+}
+
+.hideButton {
+    display: none;
+}
+
+.details-container {
+    border-radius: 0.3em;
+    background-color: #ffffff;
+    min-height: 32em;
+    box-shadow: 0 1px 0.25em 0 rgba(0, 0, 0, 0.15);
+    border: solid 1px #d6e2f1;
+    padding: 1.5em 1em 1.5em 1em;
+    margin-right: 1em;
+    overflow: auto;
+}
+
+.header-wrapper {
+    margin-bottom: 2em;
+}
+
+.search {
+    border: 1px solid #bbb;
+    width: 90%;
+    border-radius: 0.3em;
+    padding: 0.4em 0 0.4em 0.8em;
+    margin: 0.5em auto 0.5em;
+}
+
+.left-details-container {
+    max-width: 70%;
+    margin: 0 1em;
+    flex: 8;
+}
+
+app-issue-blocks {
+    flex-grow: 1;
+    justify-content: center;
+    display: flex;
+}
+
+.blocks-section {
+    width: 100%;
+    margin: 0 auto;
+    flex-flow: wrap;
+    padding: 1em 0;
+}
+
+.search-section {
+    position: relative;
+    width: 100%;
+    opacity: 0.8;
+}
+
+.search-icon {
+    width: 1.5em;
+    height: 1.4em;
+    font-size: 0.9em;
+    bottom: 0.8em;
+}
+
+.input-text {
+    padding-left: 1em;
+    font-size: 1em;
+    width: 100%;
+    color: #aaa;
+    transition: 0.2s ease;
+    border: 0;
+}
+
+::-webkit-input-placeholder {
+    color: #bcbcbc;
+}
+
+.rule-description {
+    padding: 2em 0 0 2em;
+    line-height: 1;
+    width: 100%;
+    margin: auto;
+}
+
+.value {
+    font-weight: 600;
+}
+.issue-desc{
+    white-space: pre-line;
+    line-height: 1.2;
+}
+
+.articles-container {
+    overflow: auto; overflow: overlay;
+    height: calc(100vh - 16em);
+}
+
+.article-wrapper {
+    overflow: auto; overflow: overlay;
+    border-radius: 0.3em;
+    margin-bottom: 1.5em;
+}
+
+.rule-parameters {
+    padding: 0 0 2em 2em;
+    width: 100%;
+    line-height: 1;
+    margin: auto;
+}
+
+.error_msg_email {
+    text-align: center;
+    color: red;
+    font-size: 1.3em;
+}
+
+.success_msg_email {
+    text-align: center;
+    font-size: 1.3em;
+    color: #5cb85c;
+}
+
+.error_msg_exception {
+    text-align: center;
+    color: red;
+    font-size: 1em;
+}
+
+.success_msg_exception {
+    text-align: center;
+    font-size: 1em;
+    color: #5cb85c;
+    line-height: 1.4;
+}
+
+.title {
+    margin-bottom: 0.7em;
+    font-family: ex2-light;
+    text-transform: capitalize;
+}
+
+.entity-details {
+    padding: 0 0 2em 2em;
+    width: 100%;
+    line-height: 1;
+    margin: auto;
+}
+
+.btn-wrapper {
+    text-align: center;
+    font-size: 0.8em;
+}
+
+.extra-details {
+    height: 0;
+    overflow: auto;
+    transition: 0.7s ease;
+}
+
+.after-click {
+    height: initial;
+}
+
+.entity-tags {
+    width: 96%;
+    margin: 1.5em auto 0;
+}
+
+.right-details-container {
+    flex: 3;
+    margin: 0 0.6em 0 2em;
+    perspective: 800px;
+    position: relative;
+}
+
+.actions-wrapper {
+    position: absolute;
+    padding: 2em;
+    background-color: rgba(239, 243, 246, 0.5);
+    border-radius: 0.3em;
+    border: 0.5px solid #c3cbd7;
+    transition: 0.5s ease;
+    backface-visibility: hidden;
+    transform-style: preserve-3d;
+    width: 100%;
+    /*transform: rotateY(180deg);*/
+}
+
+.after-click-button {
+    transform: rotateY(180deg);
+}
+
+.recommend {
+    text-align: left;
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 1.5em;
+}
+
+.header-text {
+    font-size: 1.1em;
+    color: #555;
+}
+
+.back {
+    transform: rotateY(-180deg);
+}
+
+.after-click-button-opposite {
+    transform: rotateY(0deg);
+}
+
+.btn-wrapper-actions {
+    margin-bottom: 3em;
+}
+
+.btn-wrapper-additional-actions {
+    margin-bottom: 1em;
+}
+
+.abcd {
+    /*display: none;*/
+    transform: rotateY(179.9deg);
+}
+
+.showClass {
+    display: block;
+}
+
+:host ::ng-deep .btn-wrapper-actions app-button button {
+    border-radius: 0.3em;
+    background-color: #f7f9fa;
+    color: #3f4a59;
+    border: 1px solid #3f4a59;
+    text-transform: capitalize;
+    padding: 1em;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+    width: 100%;
+}
+
+:host ::ng-deep .btn-wrapper-actions app-button button:hover {
+    background-color: #dee1e2;
+}
+
+:host ::ng-deep .btn-wrapper-additional-actions app-button button {
+    border-radius: 0.3em;
+    background-color: #3f4a59;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+    padding: 1.5em 2.7em;
+    width: 100%;
+}
+
+:host ::ng-deep .btn-wrapper-additional-actions app-button button:hover {
+    background-color: #566d9b;
+}
+
+:host ::ng-deep .btn-wrapper-additional-actions app-button-icon button {
+    border-radius: 0.3em;
+    background-color: #3f4a59;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+    padding: 1.5em 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+:host ::ng-deep .btn-wrapper-additional-actions.jira app-button-icon button {
+    padding: 1.5em;
+}
+
+:host ::ng-deep .btn-wrapper-additional-actions app-button-icon button.app-button img {
+    width: 14px;
+    margin-right: 0.8em;
+}
+
+:host ::ng-deep .viewMore app-button-icon button.app-button img {
+    transform: rotate(-90deg);
+    width: 0.9em;
+    margin-left: 1em;
+}
+
+:host ::ng-deep .collapse app-button-icon button.app-button img {
+    transform: rotate(90deg);
+    width: 0.9em;
+    margin-left: 1em;
+}
+
+:host ::ng-deep .btn-wrapper-additional-actions app-button-icon button:hover {
+    background-color: #566d9b;
+}
+
+.exception-container {
+    position: relative;
+}
+
+.delete-img {
+    /*position: absolute;
+    left: 16em;
+    bottom: -0.5em;*/
+    transform: rotate(90deg);
+    transition: 0.4s ease;
+    cursor: pointer;
+}
+
+.delete-img:hover {
+    transform: rotate(0deg);
+    transition: 0.4s ease;
+}
+
+.recommend-flip {
+    margin-bottom: 3em;
+}
+
+.text-wrapper {
+    margin: 2em 0;
+    font-size: 1.1em;
+}
+
+.text-wrapper-header {
+    color: #566d9b;
+    margin-bottom: 0.6em;
+}
+
+.showNone {
+    display: none;
+}
+
+.textarea-container {
+    width: 100%!important;
+    margin-bottom: 2em;
+    height: 16vh;
+    border-radius: 0.3em;
+    border: 1px solid #aaa;
+    padding: 0.2em 0.5em;
+    line-height: 1.5;
+    letter-spacing: 0.2px;
+}
+
+.error-reason {
+    color: red;
+    margin-bottom: 0.5em;
+}
+
+.textarea-button {
+    text-align: center;
+    margin: 2em 0 1em;
+}
+
+.button-textarea {
+    background-color: #ed0295;
+    border: none;
+    width: 50%;
+    height: 2.3em;
+    font-family: ex2-light;
+    font-size: 0.9em;
+    color: #fff;
+    border-radius: 1.3em;
+    transition: 0.3s ease;
+}
+
+.button-textarea:hover {
+    background-color: #fff;
+    color: #ed0295;
+    border: 1px solid #aaa;
+    box-shadow: 0 2px 0.25em 0 rgba(16, 16, 16, 0.5);
+}
+
+.circle-loader {
+    margin: 0 0 30px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-left-color: #ed0295;
+    animation-name: loader-spin;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.circle-loader,
+.circle-loader:after {
+    border-radius: 50%;
+    width: 8em;
+    height: 8em;
+}
+
+.load-complete-success {
+    -webkit-animation: none;
+    animation: none;
+    border-color: #5cb85c;
+    transition: border 500ms ease-out;
+}
+
+.load-complete-failure {
+    -webkit-animation: none;
+    animation: none;
+    border-color: red;
+    transition: border 500ms ease-out;
+}
+
+.checkmark {
+    display: none;
+}
+
+.checkmark-show {
+    display: block;
+}
+
+.crossmark {
+    display: none;
+}
+
+.crossmark-show {
+    display: block;
+}
+
+.checkmark.draw:after {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: checkmark;
+    transform: scaleX(-1) rotate(135deg);
+}
+
+.checkmark:after {
+    opacity: 1;
+    height: 5em;
+    width: 2.3em;
+    transform-origin: left top;
+    border-right: 1px solid #5cb85c;
+    border-top: 1px solid #5cb85c;
+    content: '';
+    left: 1.5em;
+    top: 4em;
+    position: absolute;
+}
+
+.crossmark.draw:after {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: crossmark;
+    transform: scaleX(1) rotate(135deg);
+}
+
+.crossmark:after {
+    opacity: 1;
+    height: 4.5em;
+    width: 0em;
+    -webkit-transform-origin: left top;
+    transform-origin: left top;
+    border-right: 1px solid red;
+    border-top: 1px solid red;
+    content: '';
+    left: 5.5em;
+    top: 5.5em;
+    position: absolute;
+}
+
+.crossmark.draw:before {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: crossmark;
+    transform: scaleX(-1) rotate(135deg);
+}
+
+.crossmark:before {
+    opacity: 1;
+    height: 4.5em;
+    width: 0;
+    transform-origin: left top;
+    border-right: 1px solid red;
+    border-top: 1px solid red;
+    content: '';
+    left: 2.3em;
+    top: 5.5em;
+    position: absolute;
+}
+
+
+.circle-container {
+    text-align: center;
+}
+
+@keyframes loader-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes checkmark {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 1;
+    }
+    20% {
+        height: 0;
+        width: 2.3em;
+        opacity: 1;
+    }
+    40% {
+        height: 5em;
+        width: 2.3em;
+        opacity: 1;
+    }
+    100% {
+        height: 5em;
+        width: 2.3em;
+        opacity: 1;
+    }
+}
+
+@keyframes crossmark {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 1;
+    }
+    20% {
+        height: 3.5em;
+        width: 0;
+        opacity: 1;
+    }
+    40% {
+        height: 4.5em;
+        width: 0;
+        opacity: 1;
+    }
+    100% {
+        height: 4.5em;
+        width: 0;
+        opacity: 1;
+    }
+}
+
+input.inputarea-container {
+    /*width: 23%;*/
+    height: 2em;
+    padding: 0 0.5em;
+    display: inline-block;
+    border: none;
+    width: 100%;
+}
+
+ul.input-wrapper {
+    border: 1px solid #aaa;
+    border-radius: 0.3em;
+    background-color: #fff;
+    padding: 0.3em;
+}
+
+li.list-inputs {
+    /*display: inline-block;*/
+    border: 1px solid #d9d9d9;
+    border-radius: 2em;
+    margin-top: 0.1em;
+    margin-left: 0.1em;
+    cursor: pointer;
+    position: relative;
+    padding: 0.3em 1.5em;
+}
+
+li.list-inputs:hover {
+    border: 1px solid #ed0295;
+}
+
+.suggestion-wrapper {
+    position: relative;
+}
+
+.suggestions {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    width: 100%;
+    border-radius: 0.2em;
+    cursor: pointer;
+    max-height: 9em;
+    overflow: auto; overflow: overlay;
+}
+
+.lists-suggestion {
+    padding: 0.5em 1em;
+    transition: 0.3s ease;
+}
+
+.lists-suggestion:hover {
+    background-color: #ed0295;
+    color: #fff;
+    cursor: pointer;
+}
+
+.crossmark-icon {
+    height: 1em;
+    position: absolute;
+    right: 0.3em;
+    transform: translate(-50%,-50%);
+    top: 50%;
+}
+
+.replace-padding {
+    padding: 0;
+    min-height: 0;
+}
+
+a.button {
+    -webkit-appearance: listbox;
+    -moz-appearance: listbox;
+    appearance: listbox;
+    border-radius: 0.3em;
+    background-color: #f7f9fa;
+    text-align: center;
+    color: #3f4a59;
+    border: 1px solid #3f4a59;
+    text-transform: capitalize;
+    padding: 1em;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+    width: 100%;
+    transition: 0.3s;
+}
+
+a.button:hover{
+    background-color: #dee1e2;
+}
+
+.recommend-data{
+    margin-bottom: 1.5em;
+}
+
+.numberOfButtons{
+    margin-bottom: 1em;
+}
+
+.issue-details-wrapper /deep/ .data-table-wrap .table-cells:nth-last-child(1) {
+    width: 220px;
+}
+
+.hideClassComplete{
+    display: none;
+}
+
+.ticketImg{
+    width: 30%;
+    margin-bottom: 1em;
+}
+
+.issue-details-wrapper /deep/ .data-table-wrap .table-cells:nth-child(1) {
+    width: 160px;
+}
+
+/* Css added By Trinanjan on 22/05/2018 for new issue details design */
+.blocks-section-bottom{
+    min-height: 30em;
+    background-color: rgba(239, 243, 246, 0.5);
+    border-radius: 4px;
+    box-shadow: 0px 0px 2px 2px #d3d3d3;
+    padding: 1.5em;
+    margin: 0;
+}

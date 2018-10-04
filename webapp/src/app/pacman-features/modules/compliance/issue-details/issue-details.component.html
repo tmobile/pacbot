@@ -1,0 +1,243 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+<section class="issue-details-wrapper" id="searchtext" (click)='bodyClicked();'>
+    <header class="header-wrapper flex flex-align-center">
+        <div class="arrow-img" (click)="navigateBack()">
+            <img *ngIf="backButtonRequired" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+        </div>
+        <div class="heading-text">{{breadcrumbPresent}}</div>
+    </header>
+    <div class="articles-container relative">
+        <div class="article-wrapper flex flex-col">
+            <article class="details-container flex flex-col" *ngIf="issueBlocks">
+                <div class='flex flex-col'>
+                    <div class="middle-wrapper flex">
+                        <div class="left-details-container flex flex-col">
+                            <div class="blocks-section flex flex-between" *ngIf="showTopSection">
+                                <app-issue-blocks *ngFor="let data of issueTopblocks" [header]="data.header" [footer]="data.footer" [img]="data.img"></app-issue-blocks>
+                            </div>
+                            <div class="blocks-section blocks-section-bottom">
+                                <app-policy-violation-desc [pageLevel]="pageLevel" [violationData]="issueBlocks"></app-policy-violation-desc>
+                            </div>
+                        </div>
+                        <div class="right-details-container flex flex-col" *ngIf="issueBlocks">
+                            <div class="actions-wrapper flex flex-col" [class.after-click-button]='showOpposite || showOppositeEmail || showOppositeRecommend || showOppositeJira || showOppositeRevoke'>
+                                <div class="recommend-data" *ngIf='showRecommendantions'>
+                                    <header class="recommend">
+                                        Recommended Actions
+                                    </header>
+                                    <div class="numberOfButtons" *ngFor='let data of numberOfButtons; let i = index '>
+                                        <div class="btn-wrapper-actions">
+                                            <app-button (onClickInner)="showButtons(i); showOtherDivRecommend()">{{data.actionDesc}}</app-button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <header class="recommend">
+                                    Additional Actions
+                                </header>
+                                <div class="btn-wrapper-additional-actions" *ngIf='adminAccess'>
+                                    <app-button *ngIf="!exceptionAdded" (onClickInner)="showOtherDiv()">+ Add Exception</app-button>
+                                    <app-button *ngIf="exceptionAdded" (onClickInner)="showOtherDivRevoke();revokeException()"> Revoke Exception</app-button>
+                                </div>
+                                <div class="btn-wrapper-additional-actions" *ngIf="GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL && GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_EMAIL_FROM_ID">
+                                    <app-button-icon [iconSrc]="emailIcon.icon" (onClickInner)="showOtherDivEmail()">Email Issue
+                                    </app-button-icon>
+                                </div>
+                                <div class="btn-wrapper-additional-actions jira" *ngIf='GLOBAL_CONFIG.optional.pacmanIssue.CREATE_JIRA_TICKET_FOR_PACMAN_ISSUE && showJiraButton'>
+                                    <app-button-icon *ngIf='showJiraData' [iconSrc]="jiraIcon.icon" (onClickInner)="createJira();showOtherDivJira()">Create Jira Ticket</app-button-icon>
+                                    <app-button-icon *ngIf='!showJiraData' [iconSrc]="jiraIcon.icon" (onClickInner)="showJiraTicket();showOtherDivJira()">View Jira Ticket</app-button-icon>
+                                </div>
+                            </div>
+                            <div class="actions-wrapper back" [class.after-click-button-opposite]='showOppositeRecommend'>
+                                <header class="recommend-flip flex-between flex flex-align-center">
+                                    <div class="header-text">
+                                        Recommendation Status
+                                    </div>
+                                    <div class="delete-img" [class.showNone]='showRecommend' (click)="showOtherDivRecommend()">
+                                        <img style="height: 1.8em;" src="../assets/png/delete.png">
+                                    </div>
+                                </header>
+                                <section class="text-wrapper">
+                                    <div class="circle-container" *ngIf="showOppositeRecommend">
+                                        <div class="circle-loader" [class.load-complete-success]='showLoadcompleteRecommend && !checkRecommend' [class.load-complete-failure]='showLoadcompleteRecommend && checkRecommend'>
+                                            <div *ngIf='!checkRecommend' class="checkmark draw" [class.checkmark-show]='showLoadcompleteRecommend'></div>
+                                            <div *ngIf='checkRecommend' class="crossmark draw" [class.crossmark-show]='showLoadcompleteRecommend'></div>
+                                        </div>
+                                    </div>
+                                    <div class="error_msg_exception" *ngIf='showLoadcompleteRecommend && checkRecommend'>
+                                    </div>
+                                    <div class="success_msg_exception" *ngIf='showLoadcompleteRecommend && !checkRecommend'>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="actions-wrapper back" [class.after-click-button-opposite]='showOppositeRevoke'>
+                                <header class="recommend-flip flex-between flex flex-align-center">
+                                    <div class="header-text">
+                                        Status :
+                                    </div>
+                                    <div class="delete-img" [class.showNone]='showRevoke' (click)="showOtherDivRevoke()">
+                                        <img style="height: 1.8em;" src="../assets/png/delete.png">
+                                    </div>
+                                </header>
+                                <section class="text-wrapper">
+                                    <div class="circle-container" *ngIf="showOppositeRevoke">
+                                        <div class="circle-loader" [class.load-complete-success]='showLoadcompleteRevoke && !checkRevoke' [class.load-complete-failure]='showLoadcompleteRevoke && checkRevoke'>
+                                            <div *ngIf='!checkRevoke' class="checkmark draw" [class.checkmark-show]='showLoadcompleteRevoke'></div>
+                                            <div *ngIf='checkRevoke' class="crossmark draw" [class.crossmark-show]='showLoadcompleteRevoke'></div>
+                                        </div>
+                                    </div>
+                                    <div class="error_msg_exception" *ngIf='showLoadcompleteRevoke && checkRevoke'>Failed in Revoking Issue Exception !
+                                    </div>
+                                    <div class="success_msg_exception" *ngIf='showLoadcompleteRevoke && !checkRevoke'>
+                                        Successfully Revoked Issue Exception!
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="actions-wrapper back" [class.after-click-button-opposite]='showOppositeJira'>
+                                <header class="recommend-flip flex-between flex flex-align-center">
+                                    <div class="header-text">
+                                        Status :
+                                    </div>
+                                    <div class="delete-img" [class.showNone]='showJira' (click)="showOtherDivJira()">
+                                        <img style="height: 1.8em;" src="../assets/png/delete.png">
+                                    </div>
+                                </header>
+                                <section class="text-wrapper">
+                                    <div class="circle-container" *ngIf="showOppositeJira">
+                                        <div class="circle-loader" [class.load-complete-success]='showLoadcompleteJira && !checkJira' [class.load-complete-failure]='showLoadcompleteJira && checkJira' [class.hideClassComplete]='showLoadcompleteJira && !checkJira && viewJira'>
+                                            <div *ngIf='!checkJira && !viewJira' class="checkmark draw" [class.checkmark-show]='showLoadcompleteJira'></div>
+                                            <div *ngIf='checkJira' class="crossmark draw" [class.crossmark-show]='showLoadcompleteJira'></div>
+                                        </div>
+                                    </div>
+                                    <div class="error_msg_exception" *ngIf='showLoadcompleteJira && checkJira'>JIRA ticket not created !
+                                    </div>
+                                    <div class="success_msg_exception" *ngIf='showLoadcompleteJira && !checkJira && !viewJira'>
+                                        Jira ticket created with issueKey {{issueKey}}!
+                                    </div>
+                                    <div class="success_msg_exception" *ngIf='showLoadcompleteJira && !checkJira && viewJira'>
+                                        <img class="ticketImg" src="../assets/images/JIRAissue.png">
+                                        <div>Jira ticket was already created with this issueKey {{issueKey}}!</div>
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="actions-wrapper back" [class.after-click-button-opposite]='showOpposite'>
+                                <header class="recommend-flip flex-between flex flex-align-center">
+                                    <div class="header-text">
+                                        Add Exception
+                                    </div>
+                                    <div class="delete-img" [class.showNone]='showNone' (click)="showOtherDiv()">
+                                        <img style="height: 1.8em;" src="../assets/png/delete.png">
+                                    </div>
+                                </header>
+                                <section class="text-wrapper">
+                                    <form novalidate *ngIf="!showTransaction" (ngSubmit)="onSubmit(user);clearContents(this)" [formGroup]="user">
+                                        <label>
+                                            <div class="text-wrapper-header">Reason</div>
+                                            <textarea id="textarea-id" class="textarea-container" formControlName="name"></textarea>
+                                        </label>
+                                        <div class="error-reason" *ngIf="user.get('name').hasError('required') && user.get('name').touched">
+                                            Reason is required
+                                        </div>
+                                        <div class="text-wrapper-header">End Date</div>
+                                        <app-date-dropdown [dataForm]="'user'" (dataSent)='getDateData($event)'></app-date-dropdown>
+                                        <div class="textarea-button">
+                                            <button class="button-textarea" type="submit" [disabled]="user.invalid">ADD
+                                            </button>
+                                        </div>
+                                    </form>
+                                    <div class="circle-container" *ngIf="showTransaction">
+                                        <div class="circle-loader" [class.load-complete-success]='showLoadcomplete && check' [class.load-complete-failure]='showLoadcomplete && !check'>
+                                            <div *ngIf='check' class="checkmark draw" [class.checkmark-show]='showLoadcomplete'></div>
+                                            <div *ngIf='!check' class="crossmark draw" [class.crossmark-show]='showLoadcomplete'></div>
+                                        </div>
+                                    </div>
+                                    <div class="error_msg_exception" *ngIf='showLoadcomplete && !check'>Exception not added
+                                    </div>
+                                    <div class="success_msg_exception" *ngIf='showLoadcomplete && check'>Exception added successfully
+                                    </div>
+                                </section>
+                            </div>
+                            <div class="actions-wrapper back" [class.after-click-button-opposite]='showOppositeEmail'>
+                                <header class="recommend-flip flex-between flex flex-align-center">
+                                    <div class="header-text">
+                                        + Send Email
+                                    </div>
+                                    <div class="delete-img" [class.showNone]='showNone' (click)="showOtherDivEmail()">
+                                        <img style="height: 1.8em;" src="../assets/png/delete.png">
+                                    </div>
+                                </header>
+                                <section class="text-wrapper" *ngIf="!showTransactionEmail">
+                                    <form novalidate [formGroup]="userEmail" (keydown.enter)="$event.preventDefault()">
+                                        <label>
+                                            <div class="text-wrapper-header">To</div>
+                                            <ul class="input-wrapper">
+                                                <li class="list-inputs flex flex-align-center" *ngFor="let data of emailArray;let i = index">
+                                                    {{data}}<img class="crossmark-icon" (click)='removeData(i)' src="../assets/png/delete.png">
+                                                </li>
+                                                <input type="text" placeholder="Enter User's Email" [(ngModel)]='queryValue' (keyup)=filter() class="inputarea-container" formControlName="ename" (keydown)="keyDown($event)">
+                                            </ul>
+                                        </label>
+                                        <div class="suggestion-wrapper">
+                                            <div class="suggestions" *ngIf="filteredList.length > 0">
+                                                <ul class="suggestion-list">
+                                                    <li class="lists-suggestion" *ngFor="let item of filteredList; let i = index " [class.active]="i == arrowkeyLocation" (click)="select(item)" (keydown)="keyEvent($event, item)">
+                                                        <a>{{item}}</a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="error-reason" *ngIf="!invalid">
+                                            Email is required
+                                        </div>
+                                        <div class="textarea-button">
+                                            <button class="button-textarea" type="button" (click)='onSubmitemail()'>SEND
+                                            </button>
+                                        </div>
+                                    </form>
+                                </section>
+                                <div class="circle-container" *ngIf="showTransactionEmail">
+                                    <div class="circle-loader" [class.load-complete-success]='showLoadcompleteEmail && checkEmail' [class.load-complete-failure]='showLoadcompleteEmail && !checkEmail'>
+                                        <div *ngIf='checkEmail' class="checkmark draw" [class.checkmark-show]='showLoadcompleteEmail'></div>
+                                        <div *ngIf='!checkEmail' class="crossmark draw" [class.crossmark-show]='showLoadcompleteEmail'></div>
+                                    </div>
+                                </div>
+                                <div class="error_msg_email" *ngIf='showLoadcompleteEmail && !checkEmail'>Email not sent
+                                </div>
+                                <div class="success_msg_email" *ngIf='showLoadcompleteEmail && checkEmail'>Email sent successfully
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="entity-tags flex flex-col" *ngIf="tagsData">
+                    <app-filter-info class='flex flex-col' [avoidTags]='true' [tags]="tagsData" [header]="'Target Entity Mandatory Tags'"></app-filter-info>
+                </div>
+            </article>
+        </div>
+        <div class="article-wrapper">
+            <article class="details-container replace-padding" *ngIf="issueAudit && issueBlocks">
+                <div>
+                    <app-data-table [errorValue]='errorValue' [allColumns]='allColumns' [outerArr]='outerArr' [heightValue]="'27.4em'" [totalRows]='totalRows' [firstPaginator]='firstPaginator' [lastPaginator]='lastPaginator' [currentPointer]='currentPointer' (previousPageCalled)='prevPg()' (nextPageCalled)='nextPg()' [searchableHeader]='true' (searchRowTxt)='searchCalled($event)' (searchTriggerred)='callNewSearch()' [dataHead]="'Issue Audit Log'">
+                    </app-data-table>
+                </div>
+            </article>
+        </div>
+        <div class="loader" *ngIf="showLoader"></div>
+        <div class="error_msg">
+            <app-error-message *ngIf='seekdata == true' [selectedValue]="errorMessage"></app-error-message>
+        </div>
+    </div>
+</section>

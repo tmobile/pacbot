@@ -1,0 +1,141 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class='flex flex-col' *ngIf='remediateResponse >= 0 || performersResponse >= 0'>
+    <div class='flex flex-align-center flex-between'>
+        <div class='center widget-header-txt apply-left-border' *ngIf='remediateResponse >= 0'>Actions To Remediate</div>
+        <div class='center widget-header-txt apply-left-border' *ngIf='performersResponse >= 0'>Highest & Lowest Performers</div>
+    </div>
+    <div class='flex flex-align-center flex-between top-space-small'>
+        <div class='widget-header-desc center apply-left-border' *ngIf='remediateResponse >= 0'>Prioritized list of actions to remediate vulnerabilities. Taking the highest priority actions first will yield the largest reduction of issues.</div>
+        <div class='apply-left-border flex flex-col' *ngIf='performersResponse >= 0'>
+            <div class='widget-header-desc center'>Asset owners with the least and most issues to remediate.</div>
+            <div class='view-all-link top-space inline-flex flex-align-center flex-center hide-in-print' [class.no-event]='performersResponse < 1' (click)="popupTitle='Highest & Lowest Performers'; detailsPopup=true;">
+                <div class='pointer'>View All Performers</div>
+                <div class='right-arrow-small pointer'></div>
+            </div>
+        </div>
+    </div>
+    <div class='flex flex-align-stretch flex-between top-space'>
+        <div class='assets-details relative bottom-table flex flex-col apply-left-border allow-shrink flex-center' *ngIf='remediateResponse >= 0'>
+            <div [class.no-event]='(!data.subActions || data.subActions.length==0) && !data.description' (click)="popupTitle='Actions to Remediate'; eachRemediation = data; detailsPopup=true;" *ngFor="let data of remediationTableData" class='pointer each-table-row flex flex-between flex-align-center'>
+                <div class='row-txt capitalize'>{{data.action}}</div>
+                <div class='flex flex-align-center'>
+                    <div class='tracker-wrap relative flex flex-align-center flex-center'>
+                        <div class='tracker-txt'> {{data.contribution | number}}% of issues will be fixed</div>
+                        <div [ngStyle]="{'width': data.contribution + '%'}" class='absolute tracker-range'></div>
+                    </div>
+                    <div [class.zero-opacity]='(!data.subActions || data.subActions.length==0) && !data.description' class='right-arrow-small hide-in-print'></div>
+                </div>
+            </div>
+            <div *ngIf='remediateResponse == 0' class='loader absolute'></div>
+        </div>
+        <div class='assets-details bottom-table flex flex-col apply-left-border allow-shrink relative' *ngIf='performersResponse >= 0'>
+            <div *ngIf='performersResponse == 0' class='loader absolute'></div>
+            <div class='flex flex-grow'>
+                <div class='sub-table-wrap' *ngIf='performersResponse > 0 && performersTableData.highest.length'>
+                    <div class='sub-table-header capitalize'>highest</div>
+                    <div class='sub-table'>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>{{performersType}}</th>
+                                    <th>Occurrences</th>
+                                </tr>
+                                <tr *ngFor="let data of performersTableData.highest">
+                                    <td>{{data.name}}</td>
+                                    <td class='higher-text'>{{data.count | number}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                <div class='sub-table-wrap' *ngIf='performersResponse > 0 && performersTableData.lowest.length'>
+                    <div class='sub-table-header capitalize'>lowest</div>
+                    <div class='sub-table'>
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <th>{{performersType}}</th>
+                                    <th>Occurrences</th>
+                                </tr>
+                                <tr *ngFor="let data of performersTableData.lowest | orderBy : {'property': 'count', 'direction': '-1'}">
+                                    <td>{{data.name}}</td>
+                                    <td class='red-text'>{{data.count | number}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class='absolute border-container flex flex-align-stretch' *ngIf='remediateResponse >= 0 || performersResponse >= 0'>
+    <div class='assets-wrap' *ngIf='remediateResponse >= 0'>
+    </div>
+    <div class='assets-wrap' *ngIf='performersResponse >= 0'></div>
+</div>
+<div class='fixed pop-over flex flex-col' *ngIf='detailsPopup'>
+    <div class='popup-header flex flex-align-center flex-between'>
+        <div class='header-title'>{{popupTitle}}</div>
+        <div class='cross-img' (click)='detailsPopup = false;'>
+            <img height="27px;" width="27px;" src='../assets/png/delete.png'>
+        </div>
+    </div>
+    <div class="flex flex-col flex-grow popup-content" *ngIf="popupTitle == 'Actions to Remediate'">
+        <div class='content-title'>
+            {{eachRemediation.action}}
+        </div>
+        <div class='tracker-wrap main-tracker relative flex flex-align-center no-shrink'>
+            <div class='tracker-txt'> {{eachRemediation.contribution}}% of issues will be fixed</div>
+            <div [ngStyle]="{'width': eachRemediation.contribution + '%'}" class='absolute tracker-range'></div>
+        </div>
+        <div class='flex flex-col flex-grow scroll'>
+            <div class='content-subtxt'>
+                {{eachRemediation.description}}
+            </div>
+            <ng-container *ngIf='eachRemediation.subActions && eachRemediation.subActions.length'>
+                <div class='flex flex-align-center flex-between row-wrap' *ngFor="let details of eachRemediation.subActions | orderBy : {'property': 'contribution', 'direction': '-1'} ">
+                    <div class='content-subtxt'>
+                        {{details.description}}
+                    </div>
+                    <div *ngIf='details.contribution' class='tracker-wrap sub-tracker relative flex flex-align-center no-shrink'>
+                        <div class='tracker-txt'> {{details.contribution}}% of issues will be fixed</div>
+                        <div [ngStyle]="{'width': details.contribution + '%'}" class='absolute tracker-range'></div>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+    </div>
+    <div class="flex flex-col flex-grow scroll popup-content" *ngIf="popupTitle == 'Highest & Lowest Performers'">
+        <div class='main-table'>
+            <table>
+                <thead>
+                    <tr>
+                        <th class='pointer' (click)="property = 'name'; sortTable(0)">{{performersType}}<span [class.up-arr-shown]='sortArr[0].showUp == 1' [class.down-arr-shown]='sortArr[0].showUp == -1' class="list-sortable-arrow v-mid relative"></span></th>
+                        <th class='pointer' (click)="property = 'count'; sortTable(1);">Occurrences<span [class.up-arr-shown]='sortArr[1].showUp == 1' [class.down-arr-shown]='sortArr[1].showUp == -1' class="list-sortable-arrow v-mid relative"></span></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let data of performersTableData.total | orderBy : {'property': property, 'direction': direction}">
+                        <td>{{data.name}}</td>
+                        <td>{{data.count | number}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div class="fixed fixed-bg-overlay" (click)='detailsPopup = false;' *ngIf='detailsPopup'></div>

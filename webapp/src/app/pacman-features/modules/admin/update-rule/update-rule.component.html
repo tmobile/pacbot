@@ -1,0 +1,428 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+    <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+    <div class="floating-widgets-header flex flex-between">
+        <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text">{{pageTitle}}</h1>
+        </div>
+    </div>
+    <div class="floating-widgets-container ">
+        <section>
+            <ul>
+                <li class="widget-wrapper relative">
+                    <div class="data-table-wrap relative">
+                        <div class="sub-head">
+                            <div class="flex flex-between flex-align-center">
+                                <div class="sub-head-title capitalize flex flex-align-center after-load">
+                                    <div class="header-text">Rule Details</div>
+                                </div>
+                            </div>
+                        </div>
+                        <form (ngSubmit)="updateRule(ruleForm)" #ruleForm="ngForm" [hidden]="hideContent">
+                            <div class="data-content">
+                                <div class="formcontainerwrapper">
+                                    <div class="formctnleft">
+                                        <div class="createrule" action="#">
+                                            <div class="input-box">
+                                                <label>Rule ID</label>
+                                                <ul class="read-only-text input-wrapper">
+                                                    {{ruleDetails.ruleId}}
+                                                </ul>
+                                            </div>
+                                            <div class="input-form">
+                                                <label>Policy ID</label>
+                                                <ul class="read-only-text input-wrapper">
+                                                    {{ruleDetails.policyId}}
+                                                </ul>
+                                            </div>
+                                            <div class="input-box">
+                                                <label>Rule Name</label>
+                                                <ul class="read-only-text input-wrapper">
+                                                    {{ruleDetails.ruleName}}
+                                                </ul>
+                                            </div>
+                                            <div class="input-form">
+                                                <label>Data Source</label>
+                                                <ul class="read-only-text input-wrapper">
+                                                    {{ruleDetails.dataSource}}
+                                                </ul>
+                                            </div>
+                                            <div class="input-form">
+                                                <label>Target Type</label>
+                                                <ul class="read-only-text input-wrapper">
+                                                    {{ruleDetails.targetType}}
+                                                </ul>
+                                            </div>
+                                            <div class="freq-col-row input-form">
+                                                <label>Rule Frequency*</label>
+                                                <ng-select name="ruleFrequency" [(ngModel)]="ruleFrequency" (selected)='onSelectFrequency($event.text)' [allowClear]="true" [items]="allFrequencies" placeholder="Select Frequency" required>
+                                                </ng-select>
+                                            </div>
+                                            <div class="freq-col-row input-form" *ngIf="selectedFrequency==='Minutes'">
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    Every
+                                                </div>
+                                                <div class="freq-col-sm-1 freq-pright">
+                                                    <ul class="input-wrapper">
+                                                        <input type="text" autocomplete="off" name="ruleFrequencyModeValue" [(ngModel)]="ruleFrequencyModeValue" class="inputarea-container" [maxlength]="2" appOnlyNumber required>
+                                                    </ul>
+                                                </div>
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    minute(s)
+                                                </div>
+                                            </div>
+                                            <div class="freq-col-row input-form" *ngIf="selectedFrequency==='Hourly'">
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    Every
+                                                </div>
+                                                <div class="freq-col-sm-1 freq-pright">
+                                                    <ul class="input-wrapper">
+                                                        <input type="text" autocomplete="off" name="ruleFrequencyModeValue" [(ngModel)]="ruleFrequencyModeValue" class="inputarea-container" [maxlength]="2" appOnlyNumber required>
+                                                    </ul>
+                                                </div>
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    hours(s)
+                                                </div>
+                                            </div>
+                                            <div class="freq-col-row input-form" *ngIf="selectedFrequency==='Daily'">
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    Every
+                                                </div>
+                                                <div class="freq-col-sm-1 freq-pright">
+                                                    <ul class="input-wrapper">
+                                                        <input type="text" autocomplete="off" name="ruleFrequencyModeValue" [(ngModel)]="ruleFrequencyModeValue" class="inputarea-container" appOnlyNumber required>
+                                                    </ul>
+                                                </div>
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    days(s)
+                                                </div>
+                                            </div>
+                                            <div class="freq-radio rule-type input-box" *ngIf="selectedFrequency==='Weekly'">
+                                                <input type="radio" id="mon" value="MON" name="weekName" class="ib" checked="checked" [(ngModel)]="weekName" required>
+                                                <label for="mon" class="mon db">MON</label>
+                                                <input type="radio" id="tue" value="TUE" name="weekName" class="ib" [(ngModel)]="weekName" required>
+                                                <label for="tue" class="tue db">TUE</label>
+                                                <input type="radio" id="wed" value="WED" name="weekName" class="ib" [(ngModel)]="weekName" required>
+                                                <label for="wed" class="wed db">WED</label>
+                                                <input type="radio" id="thu" value="THU" name="weekName" class="ib" [(ngModel)]="weekName" required>
+                                                <label for="thu" class="thu db">THU</label>
+                                                <input type="radio" id="fri" value="FRI" name="weekName" class="ib" [(ngModel)]="weekName" required>
+                                                <label for="fri" class="fri db">FRI</label>
+                                                <input type="radio" id="sat" value="SAT" name="weekName" class="ib" [(ngModel)]="weekName" required>
+                                                <label for="sat" class="sat db">SAT</label>
+                                                <input type="radio" id="sun" value="SUN" name="weekName" class="ib" [(ngModel)]="weekName" required>
+                                                <label for="sun" class="sun db">SUN</label>
+                                            </div>
+                                            <div class="freq-col-row input-form" *ngIf="selectedFrequency==='Monthly'">
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    Day
+                                                </div>
+                                                <div class="freq-col-sm-1 freq-pright">
+                                                    <ul class="input-wrapper">
+                                                        <input type="text" autocomplete="off" name="ruleFrequencyDays" [(ngModel)]="ruleFrequencyDays" class="inputarea-container" appOnlyNumber required>
+                                                    </ul>
+                                                </div>
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    of every
+                                                </div>
+                                                <div class="freq-col-sm-1 freq-pright">
+                                                    <ul class="input-wrapper">
+                                                        <input type="text" autocomplete="off" name="ruleFrequencyMonths" [(ngModel)]="ruleFrequencyMonths" class="inputarea-container" appOnlyNumber required>
+                                                    </ul>
+                                                </div>
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    month(s)
+                                                </div>
+                                            </div>
+                                            <div class="freq-col-row input-form" *ngIf="selectedFrequency==='Yearly'">
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    Every
+                                                </div>
+                                                <div class="freq-col-sm-6 freq-pright">
+                                                    <div class="input-form"> {{ruleFrequencyMonth|json}}
+                                                        <ng-select name="ruleFrequencyMonth" [(ngModel)]="ruleFrequencyMonth" (selected)='onSelectFrequencyMonth($event)' [allowClear]="true" [items]="allMonths" placeholder="Select Month" required>
+                                                        </ng-select>
+                                                    </div>
+                                                </div>
+                                                <div class="freq-col-sm-5 input-form"> {{ruleFrequencyDay|json}}
+                                                    <ng-select name="ruleFrequencyDay" [(ngModel)]="ruleFrequencyDay" (selected)='onSelectFrequencyMonthDay($event)' [allowClear]="true" [items]="allMonthDays" placeholder="Select Day" required>
+                                                    </ng-select>
+                                                </div>
+                                            </div>
+                                            <div class="input-form">
+                                                <label>Would you want to scan your rule against an asset group?</label>
+                                                <ng-select name="assetGroup" [(ngModel)]="assetGroup" [allowClear]="true" [items]="assetGroupNames" placeholder="Select Asset Group">
+                                                </ng-select>
+                                            </div>
+                                            <div class="input-form">
+                                                <label>Would you want to set a PacMan Alexa skill keyword?*
+                                                    <span *ngIf="isAlexaKeywordValid==0" class="not-available">(Not Available)</span>
+                                                    <span *ngIf="isAlexaKeywordValid==1" class="available">(Available)</span>
+                                                </label>
+                                                <ul class="input-wrapper">
+                                                    <input type="text" autocomplete="off" name="alexaKeywords" [(ngModel)]="alexaKeywords" class="inputarea-container" (input)="isAlexaKeywordAvailable($event.target.value)" placeholder="Enter Alexa skill keyword" required>
+                                                </ul>
+                                                <p class="inputnote ib">Enter a unique keyword.You can say to Alexa: Alexa, ask PacMan to Scan "Select an Asset Group" for ""</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="formctnright">
+                                        <div class="createrule" action="#">
+                                            <div class="rule-type input-box">
+                                                <label class="rule-type-label">Rule Type</label>
+                                                <div>
+                                                    <input type="radio" id="federated-rule" value="Classic" name="ruleType" class="ib" checked="checked" [(ngModel)]="ruleType">
+                                                    <label for="federated-rule" class="db">Federated Rule</label>
+                                                    <input type="radio" id="manage-rule" value="ManageRule" name="ruleType" class="ib" [(ngModel)]="ruleType">
+                                                    <label for="manage-rule" class="manage-rule">Manage Rule</label>
+                                                    <input type="radio" id="serverless" value="Serverless" name="ruleType" class="ib" [(ngModel)]="ruleType">
+                                                    <label for="serverless" class="db serverless">Serverless <a class="link" href="https://console.aws.amazon.com" target="_blank">(Create Serverless URL)</a></label>
+                                                </div>
+                                            </div>
+                                            <div class="rule-executable">
+                                                <div class="input-form" *ngIf="ruleType=='Classic'">
+                                                    <label class="label">Rule Executable</label>
+                                                    <input type="file" id="selectJarFile" class="hide" (change)="onJarFileChange($event)" name="ruleJarFile" [(ngModel)]="ruleJarFile" *ngIf="ruleJarFileName==''" required>
+                                                    <a class="tmbutton bm20 upload" (click)="openJarFileBrowser($event)" *ngIf="ruleJarFileName==''"><i class="fa fa-upload"></i> Upload JAR file</a>
+                                                    <div class="selected-file">{{ruleJarFileName}} <a (click)="removeJarFileName();" *ngIf="ruleJarFileName!=''"><i class="fa fa-remove"></i></a></div>
+                                                </div>
+                                            </div>
+                                            <div class="input-box" *ngIf="ruleType=='Serverless'">
+                                                <label>Rule Rest URL*</label>
+                                                <ul class="input-wrapper">
+                                                    <input type="text" autocomplete="off" name="ruleRestUrl" class="inputarea-container" placeholder="Enter the Rule Rest URL" [(ngModel)]="ruleRestUrl" required>
+                                                </ul>
+                                            </div>
+                                            <div class="input-form">
+                                                <label>Rule Display Name*</label>
+                                                <ul class="input-wrapper">
+                                                    <input type="text" autocomplete="off" name="ruleDisplayName" [(ngModel)]="ruleDisplayName" class="inputarea-container" placeholder="Enter Rule Display Name" required>
+                                                </ul>
+                                            </div>
+                                            <div class="input-box">
+                                                <input type="checkbox" id="test5" name="isAutofixEnabled" [checked]="true" [(ngModel)]="isAutofixEnabled">
+                                                <label for="test5" class="bm30">Enable Autofix</label>
+                                            </div>
+                                            <label>Rule Parameters 
+                                                <span *ngIf="allRuleParamKeys.indexOf(parametersInput.ruleKey.trim())!=-1" class="not-available">(Key already added)</span>
+                                            </label>
+                                            <div class="input-box">
+                                                <ul class="parameters input-wrapper">
+                                                    <input type="text" autocomplete="off" class="inputarea-container" placeholder="Enter Key" name="ruleParamKey" [(ngModel)]="parametersInput.ruleKey">
+                                                </ul>
+                                                <ul class="parameters input-wrapper">
+                                                    <input type="text" autocomplete="off" class="inputarea-container" placeholder="Enter Value" name="ruleParamValue" [(ngModel)]="parametersInput.ruleValue">
+                                                </ul>
+                                                <ul class="parameters bm30">
+                                                    <input type="checkbox" #isRuleParamEncrypted id="encryptruleparam">
+                                                    <label for="encryptruleparam" class="parameters bm30 ml10">Encrypt</label>
+                                                </ul>
+                                                <ul class="parameters">
+                                                    <button class="tmbutton bm20 ib" [disabled]="!(parametersInput.ruleKey&&parametersInput.ruleValue&&allRuleParamKeys.indexOf(parametersInput.ruleKey.trim())==-1)" (click)="addRuleParameters(parametersInput, isRuleParamEncrypted)">+ Add</button>
+                                                </ul>
+                                            </div>
+                                            <div class="separator">
+                                                <div class="no-params-box valueaddctn" id="style-1" *ngIf="allRuleParams.length==0">
+                                                    <div class="no-parameters">
+                                                        No Rule Parameters Added
+                                                    </div>
+                                                </div>
+                                                <div class="params-attributes" *ngIf="allRuleParams.length!==0">
+                                                    <div class='data-table-head-outer'>
+                                                        <div class="data-table-head flex flex-around flex-align-center">
+                                                            <div class="row-cells1 head-cells table-cells">
+                                                                Key
+                                                            </div>
+                                                            <div class="row-cells2 head-cells table-cells">
+                                                                Value
+                                                            </div>
+                                                            <div class="row-cells3 head-cells table-cells">
+                                                                Action
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="valueaddctn" id="style-1">
+                                                        <div class="data-table-content">
+                                                            <div class='data-table-inner-wrap relative'>
+                                                                <div currentTable class="data-table-inner-content data-table-current">
+                                                                    <div class="data-table-rows flex flex-around flex-align-center" *ngFor="let ruleParams of allRuleParams; let ruleParamsIndex = index;">
+                                                                        <div class="row-cells1 row-cells table-cells flex flex-align-center">
+                                                                            <div class="column-wrapper">
+                                                                                <div class='nowrap-ellipsis'>
+                                                                                    {{ruleParams.key}}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row-cells2 row-cells table-cells flex flex-align-center">
+                                                                            <div class="column-wrapper">
+                                                                                <div class='nowrap-ellipsis'>
+                                                                                    <span *ngIf="!ruleParams.encrypt; else elseBlock">{{ruleParams.value}}</span>
+                                                                                    <ng-template #elseBlock>
+                                                                                        XXXX <span class="highlight-pink">(Encrypted)</span>
+                                                                                    </ng-template>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div class="row-cells3 row-cells table-cells flex flex-align-center">
+
+                                                                            <div class="column-wrapper">
+                                                                                <div class='nowrap-ellipsis'>
+                                                                                    <a (click)="removeRuleParameters(ruleParamsIndex)"><i class="highlight-pink fa fa-remove"></i></a>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <label>Environment Parameters 
+                                                <span *ngIf="allEnvParamKeys.indexOf(parametersInput.envKey.trim())!=-1" class="not-available">(Key already added)</span>
+                                            </label>
+                                            <div class="input-box">
+                                                <ul class="parameters input-wrapper">
+                                                    <input type="text" autocomplete="off" class="inputarea-container" placeholder="Enter Key" name="envParamKey" [(ngModel)]="parametersInput.envKey">
+                                                </ul>
+                                                <ul class="parameters input-wrapper">
+                                                    <input type="text" autocomplete="off" class="inputarea-container" placeholder="Enter Value" name="envParamValue" [(ngModel)]="parametersInput.envValue">
+                                                </ul>
+                                                <ul class="parameters bm30">
+                                                    <input type="checkbox" #isEnvParamEncrypted id="encryptenvparam">
+                                                    <label for="encryptenvparam" class="parameters bm30 ml10">Encrypt</label>
+                                                </ul>
+                                                <ul class="parameters">
+                                                    <button class="tmbutton bm20 ib" [disabled]="!(parametersInput.envKey&&parametersInput.envValue&&allEnvParamKeys.indexOf(parametersInput.envKey.trim())==-1)" (click)="addEnvironmentParameters(parametersInput, isEnvParamEncrypted)"><i class="fa fa-plus"></i> Add</button>
+                                                </ul>
+                                            </div>
+                                            <div class="no-params-box valueaddctn" id="style-1" *ngIf="allEnvironments.length==0">
+                                                <div class="no-parameters">
+                                                    No Environment Parameters Added
+                                                </div>
+                                            </div>
+                                            <div class="params-attributes" *ngIf="allEnvironments.length!==0">
+                                                <div class='data-table-head-outer'>
+                                                    <div class="data-table-head flex flex-around flex-align-center">
+                                                        <div class="row-cells1 head-cells table-cells">
+                                                            Key
+                                                        </div>
+                                                        <div class="row-cells2 head-cells table-cells">
+                                                            Value
+                                                        </div>
+                                                        <div class="row-cells3 head-cells table-cells">
+                                                            Action
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="valueaddctn" id="style-1">
+                                                    <div class="data-table-content">
+                                                        <div class='data-table-inner-wrap relative'>
+                                                            <div currentTable class="data-table-inner-content data-table-current">
+                                                                <div class="data-table-rows flex flex-around flex-align-center" *ngFor="let envParams of allEnvironments; let ruleEnvParamIndex = index;">
+                                                                    <div class="row-cells1 row-cells table-cells flex flex-align-center">
+                                                                        <div class="column-wrapper">
+                                                                            <div class='nowrap-ellipsis'>
+                                                                                {{envParams.key}}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row-cells2 row-cells table-cells flex flex-align-center">
+                                                                        <div class="column-wrapper">
+                                                                            <div class='nowrap-ellipsis'>
+                                                                                <span *ngIf="!envParams.encrypt; else elseBlock">{{envParams.value}}</span>
+                                                                                <ng-template #elseBlock>
+                                                                                    XXXX <span class="highlight-pink">(Encrypted)</span>
+                                                                                </ng-template>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row-cells3 row-cells table-cells flex flex-align-center">
+
+                                                                        <div class="column-wrapper">
+                                                                            <div class='nowrap-ellipsis'>
+                                                                                <a (click)="removeEnvironmentParameters(ruleEnvParamIndex)"><i class="highlight-pink fa fa-remove"></i></a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="data-table-paginator-wrap flex flex-center flex-align-center">
+                                <a class="save-container flex flex-row-reverse">
+                                    <button class="submit-btn uppercase" type="submit" [disabled]="(ruleForm.form.invalid || isAlexaKeywordValid == 0 || isAlexaKeywordValid == -1)"><i class="fa fa-check"></i> UPDATE</button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse">
+                                    <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CANCEL</button>
+                                </a>
+                            </div>
+                        </form>
+                        <div class="pacman-alert" *ngIf="isRuleUpdationFailed">
+                            <div class="sa-icon sa-error animateErrorIcon" style="display: block;">
+                                <span class="sa-x-mark animateXMark">
+                                    <span class="sa-line sa-left"></span>
+                                <span class="sa-line sa-right"></span>
+                                </span>
+                            </div>
+                            <div class="pacman-alert-message">
+                                Rule Updation Failed !!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="closeErrorMessage()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isRuleUpdationSuccess">
+                            <div class="sa-icon sa-success animate">
+                                <span class="sa-line sa-tip animateSuccessTip"></span>
+                                <span class="sa-line sa-long animateSuccessLong"></span>
+                                <div class="sa-placeholder"></div>
+                                <div class="sa-fix"></div>
+                            </div>
+                            <div class="pacman-alert-title">
+                                Rule Updated
+                            </div>
+                            <div class="pacman-alert-message">
+                                <span class="highlight-pink">{{ruleDetails.ruleId}}</span> has been successfully updated !!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-progress" *ngIf="ruleLoader">
+                            <pacman-loading></pacman-loading>
+                            <div class="title">
+                                Please Wait...
+                            </div>
+                            <div class="pacman-alert-message">
+                                <span class="highlight-pink">{{ruleDetails.ruleId}}</span> is been updating...
+                            </div>
+                        </div>
+                        <div *ngIf="ruleContentLoader" class="loader absolute"></div>
+                        <div *ngIf="ruleContentLoader" class="loader absolute"></div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="41px" height="49px" viewBox="0 0 41 49" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>elasticsearch</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="elasticsearch" transform="translate(0.410156, 0.000000)" fill-rule="nonzero">
+            <polygon id="Shape" fill="#263555" points="0.0177108434 38.9933735 2.58578313 40.3098795 3.62481928 40.0678313 3.81963855 21.7666265 2.58578313 21.7075904 0.0177108434 21.9614458"></polygon>
+            <polygon id="Shape" fill="#3C5079" points="7.20240964 39.2236145 2.58578313 40.3098795 2.58578313 21.7075904 7.20240964 21.9260241"></polygon>
+            <polygon id="Shape" fill="#263555" points="5.00036145 41.4846988 9.40445783 43.7162651 12.2559036 42.8071084 12.2559036 14.0151807 9.40445783 13.4720482 5.00036145 14.7944578"></polygon>
+            <polygon id="Shape" fill="#3C5079" points="16.9433735 41.3075904 9.40445783 43.7162651 9.40445783 13.4720482 16.9433735 14.9184337"></polygon>
+            <polygon id="Shape" fill="#263555" points="33.6033735 14.3753012 33.6033735 35.2740964 38.6568675 36.0651807 38.6568675 13.4720482"></polygon>
+            <polygon id="Shape" fill="#1D2126" points="21.9024096 13.1650602 22.9296386 6.80096386 37.5646988 12.173253 37.5646988 15.5501205 33.6801205 16.0991566"></polygon>
+            <polygon id="Shape" fill="#516A9C" points="20.5386747 36.8149398 24.7833735 41.8684337 37.5646988 37.5292771 37.5646988 34.0815663 33.6446988 33.5325301"></polygon>
+            <polygon id="Shape" fill="#263555" points="12.9289157 45.4460241 20.0722892 48.9881928 24.2992771 46.8746988 25.6925301 3.38277108 20.0722892 0.578554217 12.9289157 4.15024096"></polygon>
+            <path d="M20.0722892,0.590361446 L20.0722892,49 L40.1445783,38.9638554 L40.1445783,10.626506 L20.0722892,0.590361446 Z M37.5646988,34.0815663 L26.0880723,37.5292771 L26.0880723,12.1437349 L37.5706024,15.5619277 L37.5646988,34.0815663 Z" id="Shape" fill="#3C5079"></path>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,42 @@
+logging:
+  config: classpath:spring-logback.xml
+  esLoggingLevel: WARN
+  consoleLoggingLevel: INFO
+  esHost: ${LOGGING_ES_HOST_NAME}
+  esPort: ${LOGGING_ES_PORT}
+
+elastic-search:
+  host: ${ES_HOST_NAME}
+  port: ${ES_PORT}
+  clusterName : ${ES_CLUSTER_NAME}
+  port-admin : ${ES_PORT_ADMIN}
+  host-heimdall: ${ES_HEIMDALL_HOST_NAME}
+  port-heimdall: ${ES_HEIMDALL_PORT}
+  clusterName-heimdall : ${ES_HEIMDALL_CLUSTER_NAME}
+  port-admin-heimdall : ${ES_HEIMDALL_PORT_ADMIN}
+  update-host: ${ES_UPDATE_HOST}
+  update-port: ${ES_UPDATE_PORT}
+  update-clusterName : ${ES_UPDATE_CLUSTER_NAME}
+
+formats:
+  date : yyyy-MM-dd'T'HH:mm:ss.SSSZ
+
+ldap:
+  naming:
+    context-factory: com.sun.jndi.ldap.LdapCtxFactory
+    authentication: simple
+  ad:
+    provider-url: ${LDAP_AD_PROVIDER_URL}
+    domain: ${LDAP_AD_DOMAIN}
+    search-base: ${LDAP_AD_SEARCH_BASE}
+  nt:
+    provider-url: ${LDAP_NT_PROVIDER_URL}
+    domain: ${LDAP_NT_DOMAIN}
+    search-base: ${LDAP_NT_SEARCH_BASE}
+
+redshift:
+  url: ${REDSHIFT_URL}
+  userName: ${REDSHIFT_USER_NAME}
+  password: ${REDSHIFT_PASSWORD}  
+    
+    

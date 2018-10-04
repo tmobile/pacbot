@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: asset-service
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL:http://localhost:8888/config/}
+      enabled: true
+      fail-fast: true
+      password: "pacman"
+      username: user
+      label: ${ENVIRONMENT:prd}
+
+  profiles:
+    active: ${ENVIRONMENT:prd}
+    
+pacman:
+  service-password: ${PACMAN_SERVICE_PASSWORD}

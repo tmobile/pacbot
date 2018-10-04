@@ -1,0 +1,57 @@
+.floating-widgets-section {
+    height: 100%;
+    width: 100%;
+}
+
+.floating-widgets-container {
+    overflow: hidden;
+}
+
+.floating-widgets-container:hover {
+    overflow: auto; overflow: overlay;
+}
+
+.floating-widgets-filter-wrapper {
+    padding: 0em 1.5em 1.5em;
+}
+
+.widget-wrapper {
+    min-height: 17em;
+}
+
+/deep/ .ag-grid-wrapper .ag-theme-material.full-width.table-wrap, /deep/ .ag-grid-wrapper app-ag-grid-table {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.wrap-grid {
+    box-shadow: 0 0 5px 1px rgba(0,0,0,0.2);
+}
+
+.ag-grid-wrapper {
+    height: 100vh;
+}
+
+.bottom-wrap {
+    padding-top: 1.5em;
+}
+
+.each-button {
+    margin-left: 1em;
+}
+
+/* css for edge browser */
+@supports (-ms-ime-align: auto) { 
+    .floating-widgets-container {
+        overflow: auto;
+    }
+} 
+
+.error-message {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    height: 20%;
+}

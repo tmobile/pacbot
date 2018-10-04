@@ -1,0 +1,26 @@
+spring:
+  application:
+    name: auth-service
+    title: Pacman Service
+    description: Pacman Admin API provides auth capabilities
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL:http://localhost:8888/api/config/}
+      enabled: true
+      fail-fast: true
+      name: api,auth-service
+      password: ${CONFIG_PASSWORD}
+      username: user
+      label: latest
+  jpa: 
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      
+  profiles:
+    active: ${ENVIRONMENT:prd}
+
+logging:
+   level:
+     com.tmobile: DEBUG
+     com.unboundid.ldap.sdk: DEBUG

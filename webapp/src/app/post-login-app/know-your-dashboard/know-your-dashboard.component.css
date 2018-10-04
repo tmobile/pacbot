@@ -1,0 +1,133 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.first-time-container {
+    z-index: 14;
+    background: #fff;
+    margin: auto;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 5px;
+    box-shadow: 0 2px 4px 0 #00000080;
+    padding: 2em 2.25em 3em;
+    font-size: 1em;
+}
+
+.first-time-head {
+    color: #555555;
+    font-size: 2em;
+    /*padding-bottom: 1.25em;*/
+}
+
+.first-time-head-wrap {
+    padding-bottom: 2.5em;
+}
+
+.each-image-container img {
+    width: 69.58vw;
+    height: 32.4vw;
+    object-fit: contain;
+    max-width: 100em;
+    max-height: calc(100vh - 24em);
+}
+
+.image-parent {
+    overflow: hidden;
+    width: 69.58vw;
+    height: 32.4vw;
+    text-align: center;
+    margin: 0 1.66em;
+    max-height: calc(100vh - 24em);
+    max-width: 100em;
+}
+
+.image-container {
+    transition: 0.3s ease;
+}
+
+.paginator-indicator {
+    width: 0.66em;
+    height: 0.66em;
+    border: solid 1px #b2b2b2;
+    margin: 0.83em;
+    border-radius: 0.5em;
+    cursor: pointer;
+    transition: 0.3s ease;
+    background-color: #ffffff;
+}
+
+.paginator-indicator:hover {
+    border: solid 1px #888;
+}
+
+.paginator-indicator.active {
+    width: 1em;
+    height: 1em;
+    background-color: #e20074;
+    border: solid 1px #e20074;
+}
+
+.next-page {
+    width: 12.5em;
+    border-radius: 8em;
+    line-height: 3em;
+    background-color: #e20074;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
+    text-align: center;
+    color: #ffffff;
+    cursor: pointer;
+    right: 3.66em;
+    opacity: 0.86;
+}
+
+.next-page:hover {
+	opacity: 1;
+	letter-spacing: 0.3px;
+}
+
+.base-bar {
+	margin-top: 2.25em;
+}
+
+.skip-tutorial {
+	bottom: 0;
+    -webkit-transform: translateY(2em);
+    transform: translate(-50%, 3em);
+    left: 50%;
+    text-align: center;
+    color: #fff;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-family: ex2-light;
+    cursor: pointer;
+    opacity: 0.86;
+}
+
+.skip-tutorial:hover {
+	opacity: 1;
+}
+
+img.delete-icon {
+    width: 2em;
+    height: 2em;
+    cursor: pointer;
+    transition: 0.4s ease;
+}
+
+img.delete-icon:hover {
+    transform: rotate(-90deg);
+    transition: 0.4s ease;
+}

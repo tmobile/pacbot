@@ -1,0 +1,58 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.floating-widgets-header {
+    height: 6em;
+    padding: 1.9em 1.8em;
+}
+
+.data-table-wrap {
+	min-height: 21em;
+    border-radius: 3px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+    border: solid 1px #d6e2f1;
+}
+
+.compliance-dashboard-wrapper /deep/ .data-table-wrap .table-cells:nth-child(1) {
+    width: 98px;
+} 
+
+.compliance-dashboard-wrapper /deep/ .data-table-wrap .table-cells:nth-child(2) {
+    width: 430px;
+}
+
+.compliance-dashboard-wrapper /deep/ .data-table-wrap .table-cells:nth-child(3) {
+    width: 140px;
+}
+
+.compliance-dashboard-wrapper /deep/ .data-table-wrap .table-cells {
+    width: 120px;
+}
+
+.compliance-dashboard-wrapper /deep/ .data-table-wrap {
+    min-height: calc( 70vh - 5em );
+}
+
+.compliance-dashboard-wrapper /deep/ .data-table-inner-wrap {
+    max-height: calc(100vh - 32em)
+}
+
+.compliance-dashboard-wrapper /deep/ .data-table-content {
+    min-height: calc( 70vh - 11em );
+}
+
+.compliance-dashboard-wrapper /deep/ .data-table-wrap.loading {
+    min-height: calc( 70vh - 5em );
+}

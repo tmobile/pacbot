@@ -1,0 +1,96 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.each-value {
+    font-family: ex2-medium;
+    font-size: 3em;
+    text-align: left;
+    color: #00b946;
+}
+
+.chart-cont {
+    position: relative;
+    min-height: 15em;
+    font-size: 1em;
+    width: 100%;
+}
+
+.legend-color {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    margin-right: 1em;
+    background-color: #e60127;
+    vertical-align: middle;
+}
+
+.legend-text {
+    font-size: 1.1em;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.graph-legend-cont {
+    margin: 1em;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.legend-each {
+    padding: .5em;
+    flex-grow: 1;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis; 
+}
+
+.graph-outer-container {
+    text-align: center;
+}
+
+.showFlex {
+    display: flex;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}
+
+.showFlex .graph-legend-cont {
+    justify-content: flex-start;
+    flex-direction: column;
+    align-self: center;
+}
+
+.showFlex .legend-each {
+    margin-top: 1em;
+}
+.legend-text-right{
+    font-family: ex2-bold;
+}
+
+.total-count-section{
+    font-size: 1.5em
+}
+.pie-chart-desc{
+    text-align: center;
+}
+.pie-chart-legend-desc{
+    padding: 1em 0 0 0;
+    word-spacing: 2px;
+    text-align: center;
+}
+.pie-chart-legend-desc span{
+    font-family: ex2-bold;
+}

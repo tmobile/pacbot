@@ -1,0 +1,107 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <section class="filter-main-inner-wrapper">
+    <div class="filter-pesudo-opener flex pointer" [class.filter-hide]="hideFilter == false" (click)="toggleFilter()">
+        <span>FILTER</span>
+        <i class="fa fa-angle-right mr-panel-icon" aria-hidden="true"></i>
+    </div>
+    <div class="filter-wrapper flex flex-col" [class.filter-show]="hideFilter == false">
+        <div class="filter-header pointer" (click)="toggleFilter()">
+            <h1 class="uppercase">Filter</h1>
+            <i class="fa fa-angle-left mr-panel-icon" aria-hidden="true"></i>
+        </div>
+        <section class="filter-main-content flex flex-start relative" *ngIf="filterData && filterData.groupBy && filterData.groupBy.values && !showLoader && !showError">
+            <!-- ************ Primary Filter options ngRepeat starts here ********************-->
+            <ng-container *ngIf="filterData.groupBy.values.length > 0">
+                <div class="each-filter-column primary-column">
+                    <div class="each-filter-header secondary-header uppercase ">
+                        {{filterData.groupBy.name}}
+                    </div>
+                    <ul class="each-filter-desc">
+                        <!-- Onclick of the first level(eg : GroupBy) filter options,
+                    *all the data particular to that node(starting from that position) 
+                    *is passed to storeFirstLevel to store in a global Obj 
+              -->
+                        <li class="each-filter-options pointer" [class.active]="mainFilterTypes.applied === true" (click)="storeFirstLevel(mainFilterTypes,i,$event)" *ngFor='let mainFilterTypes of filterData.groupBy.values; let i = index ' title="{{mainFilterTypes.name}}">
+                            <p>{{mainFilterTypes.name}}</p>
+                            <p class="filter-count">{{mainFilterTypes.count}}</p>
+                        </li>
+                    </ul>
+                </div>
+            </ng-container>
+            <!-- *************** Primary Filter options ngRepeat ends here ********************-->
+            <!-- *************** Secondary Filter options ngRepeat ends here ******************-->
+            <ng-container *ngIf="(secondaryLevelData | json) != ({} | json)">
+                <div class="each-filter-column secondary-column">
+                    <div class="each-filter-header secondary-header uppercase">
+                        {{secondaryLevelData.groupBy.name}}
+                    </div>
+                    <ul class="each-filter-desc">
+                        <!-- *Onclick of the second level(eg :assets) filter options,
+                      all the data particular to that node(starting from that position) 
+                      is passed to storeSecondLevel to store in a global Obj 
+              -->
+                        <li class="each-filter-options flex flex-between" *ngFor='let seconDaryFilterCategory of secondaryLevelData.groupBy.values; let j = index'>
+                            <app-radio-button [isChecked]="seconDaryFilterCategory.applied" class="radio-btn-column-width" [labelFontFamily]="'ex2-bold'" (radioBtnClickEvent)="storeSecondLevel(seconDaryFilterCategory,j)" title="{{seconDaryFilterCategory.name}}">{{seconDaryFilterCategory.name}}</app-radio-button>
+                            <p class="refine-criteria-count" title="{{seconDaryFilterCategory.count}}">{{seconDaryFilterCategory.count}}</p>
+                        </li>
+                    </ul>
+                </div>
+            </ng-container>
+            <!-- ************ Secondary Filter options ngRepeat ends here ********************-->
+            <!-- ************ Tertiary Filter options ngRepeat starts here *******************-->
+            <ng-container *ngIf="(tertiaryLevelData | json) != ({} | json)">
+                <div class="each-filter-column tertiary-column">
+                    <div class="each-filter-header tertiary-header uppercase">
+                        {{tertiaryLevelData.groupBy.name}}
+                    </div>
+                    <ul class="each-filter-desc">
+                        <!-- *Third level paints the refinedby column
+                  *Third level filter options are combination of small groups
+                  *No filter is aplicable for this level as these are groups of options
+              -->
+                        <li class="each-filter-options filter-multiselect-options relative" *ngFor='let tertiaryFilterCategory of tertiaryLevelData.groupBy.values; let k = index '>
+                            <input id="selectBox{{k}}" class="absolute accordion-input" type="radio" name="tabs">
+                            <span class="filter-dropDdown-arrow"></span>
+                            <span class="applied-filter-count absolute" *ngIf="checkBoxSelectedCount[k] > 0">+ {{checkBoxSelectedCount[k]}}</span>
+                            <label class="filter-multiselect-type pointer" for="selectBox{{k}}" title="{{tertiaryFilterCategory.name}}">{{tertiaryFilterCategory.name}}</label>
+                            <ul class="sub-filter-criteria">
+                                <!-- ************ TertiarySubValues Filter options ngRepeat starts here *******************-->
+                                <!--  *Onclick of the 4th level(eg :inside refine By -> stack -> running) filter options,
+                          all the data particular to that node(starting from that position)
+                          is passed to storeThirdLevel to store in a global Obj along with index of parent and child and checkBox check event
+                        *As this is the farthest part of the tree, This obj doesn't have any nested Obj 
+                  -->
+                                <li class="sub-filter-each flex flex-between" *ngFor='let tertiarySubValues of tertiaryFilterCategory.values; let l = index '>
+                                    <app-check-box-btn [isChecked]="tertiarySubValues.applied" class="check-btn-refinedBy" (checkBoxClickEvent)="storeThirdLevel(tertiarySubValues,k,l,$event)" title="{{tertiarySubValues.name}}">{{tertiarySubValues.name}}</app-check-box-btn>
+                                    <p class="refine-criteria-count" title="{{tertiarySubValues.count}}">{{tertiarySubValues.count}}</p>
+                                </li>
+                                <!-- ************ TertiarySubValues Filter options ngRepeat starts here *******************-->
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </ng-container>
+            <!-- ************ Tertiary Filter options ngRepeat ends here ********************-->
+        </section>
+        <!-- checks whether filterdata is empty and shows loader -->
+        <section class="relative filter-loader" *ngIf="showError || showLoader">
+            <div class="error_message" *ngIf="showError && !showLoader">
+                <app-error-message [selectedValue]="errorMessage"></app-error-message>
+            </div>
+            <div *ngIf="showLoader" class="loader"></div>
+        </section>
+    </div>
+</section>

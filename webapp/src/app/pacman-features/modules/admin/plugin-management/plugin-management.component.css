@@ -1,0 +1,7 @@
+.full-height {
+    height: 100%;
+}
+
+/deep/ .ac-man-wrap .data-table-inner-wrap:hover {
+    overflow-y: hidden!important;
+}

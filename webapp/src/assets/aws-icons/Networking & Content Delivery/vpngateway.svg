@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="49px" viewBox="0 0 48 49" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>vpngateway</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="vpngateway" transform="translate(0.296875, 0.261719)" fill-rule="nonzero">
+            <circle id="Oval" fill="#263555" cx="23.734375" cy="25.4570312" r="23.2979687"></circle>
+            <circle id="Oval" fill="#3C5079" cx="23.734375" cy="23.5429688" r="23.2979687"></circle>
+            <path d="M29.981875,23.4357812 L29.981875,18.7348437 C29.5996239,15.6001305 26.9382458,13.2435704 23.7803125,13.2435704 C20.6223792,13.2435704 17.9610011,15.6001305 17.57875,18.7348437 L17.57875,23.4357812 L14.3707813,23.4357812 L14.3707813,33.8559375 L33.0979687,33.8559375 L33.0979687,23.4357812 L29.981875,23.4357812 Z M26.919375,23.4357812 L20.5646875,23.4357812 L20.5646875,18.7348437 C20.573881,17.918998 20.9243359,17.1442904 21.5310048,16.5987248 C22.1376737,16.0531593 22.9451014,15.7866055 23.7573438,15.86375 C25.4266001,15.7895723 26.8472158,17.0671044 26.95,18.7348437 L26.919375,23.4357812 Z" id="Shape" fill="#FFFFFF"></path>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,51 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <section class="parent-wrapper donut-container-{{chartContId}}" [class.showFlex]='flexTrue == true'>
+    <div #doughContainer class="graph-outer-container relative" *ngIf = "!zeroData">
+        <!-- absolute center text to donut is given only for vulnerability report -->
+        <div class='center-text' *ngIf="graphData.legendText">{{this.graphData.centerText}}</div>
+        <svg id="donut-chart"></svg>
+    </div>
+
+    <!--Legend text for default donut charts-->
+    <div class="graph-legend-cont flex" *ngIf="graphData.legend" [ngStyle]="{'color': graphData.legendTextcolor}">
+        <div class="legend-each" *ngFor="let eachGraphPath of graphData.legend;let i = index" [ngStyle]="{'color': graphData.legendTextcolor}" >
+            <div class="legend-color" [ngStyle]="{'background-color': graphData.color[i]}"></div>
+            <span class="legend-text">{{eachGraphPath}} - </span><span class="legend-text" [ngStyle]="{'cursor': graphData.data[i] > 0 && graphData.styling.cursor }" [ngClass]="{'link-text underline-link-num': graphData.data[i] > 0 && graphData.link}" (click)="graphData.data[i] > 0 && instructParentToNavigate(eachGraphPath)" [class.click-link]='graphData.data[i]'>{{graphData.data[i]}}</span>
+        </div>
+    </div>
+    <!--Legend text for the donut charts where percentage is shown next to count-->
+    <div class="graph-legend-cont flex" *ngIf="graphData.legendWithText" [ngStyle]="{'color': graphData.legendTextcolor}">
+        <div class="legend-each" [ngClass]="{'link-text': graphData.data[i] > 0 && graphData.link}" [ngStyle]="{'cursor': graphData.data[i] > 0 && graphData.styling.cursor }"
+            *ngFor="let eachGraphPath of graphData.legendWithText;let i = index" [ngStyle]="{'color': graphData.legendTextcolor}" (click)="graphData.data[i] > 0 && instructParentToNavigate(eachGraphPath)">
+            <div class="legend-color" [ngStyle]="{'background-color': graphData.color[i]}"></div>
+            <span title="{{eachGraphPath}} - {{graphData.data[i]}} ({{(graphData.data[i]/graphData.totalCount) | percent:'1.0-0'}})" class="legend-text capitalize">{{eachGraphPath}} -
+                <span class="legend-text-right" (click)='linkClicked(eachGraphPath)' [class.click-link]='graphData.data[i]' *ngIf = "graphData.totalCount > 0">{{graphData.data[i]}} ({{(graphData.data[i]/graphData.totalCount) | percent:'1.0-0'}})</span>
+                <span class="legend-text-right" *ngIf = "graphData.totalCount == 0">{{graphData.data[i]}} ({{"0%"}})</span>
+            </span>
+        </div>
+    </div>
+    <!--Legend text for donut charts where only percentage shown and not the count which is used for vul report-->
+    <div class="graph-legend-cont flex flex-col" *ngIf="graphData.legendText" [ngStyle]="{'color': graphData.legendTextcolor}">
+        <div class="legend-each" [ngClass]="{'link-text': graphData.data[i] > 0 && graphData.link}" [ngStyle]="{'cursor': graphData.data[i] > 0 && graphData.styling.cursor }"
+            *ngFor="let eachGraphPath of graphData.legendText;let i = index" [ngStyle]="{'color': graphData.legendTextcolor}" (click)="graphData.data[i] > 0 && instructParentToNavigate(eachGraphPath)">
+
+            <div class="legend-color" [ngStyle]="{'background-color': graphData.color[i]}"></div>
+            <span title="{{eachGraphPath}} - {{graphData.data[i]}}" class="legend-text capitalize">{{eachGraphPath}} - 
+                <span class="legend-text-right" (click)='linkClicked(eachGraphPath)' [class.click-link]='graphData.data[i]'>{{graphData.data[i]}}%</span>
+            </span>
+        </div>
+    </div>
+</section>

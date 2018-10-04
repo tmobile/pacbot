@@ -1,0 +1,69 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.pacman-loading {
+    position: relative;
+    font-size: 8px;
+    margin-bottom: 20px;
+}
+
+.loading-bar {
+    display: inline-block;
+    width: 7px;
+    height: 20px;
+    animation: loading 1.2s ease-in-out infinite;
+    margin-left: 1px;
+}
+
+.loading-bar:nth-child(1) {
+    background-color: #F28DC0;
+    animation-delay: 0;
+}
+
+.loading-bar:nth-child(2) {
+    background-color: #e959A2;
+    animation-delay: 0.09s;
+}
+
+.loading-bar:nth-child(3) {
+    background-color: #e52E8B;
+    animation-delay: .18s;
+}
+
+.loading-bar:nth-child(4) {
+    background-color: #c60065;
+    animation-delay: .27s;
+}
+
+.loading-bar:nth-child(5) {
+    background-color: #B0005A;
+    animation-delay: .36s;
+}
+
+.loading-bar:nth-child(6) {
+    background-color: #9A004E;
+    animation-delay: .45s;
+}
+
+@keyframes loading {
+    0% {
+        transform: scale(1);
+    }
+    20% {
+        transform: scale(1, 1.6);
+    }
+    40% {
+        transform: scale(1);
+    }
+}

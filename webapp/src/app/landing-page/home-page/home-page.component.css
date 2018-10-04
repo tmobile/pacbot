@@ -1,0 +1,546 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.mr-wrapper {
+    font-size: 1em;  
+    /* The height needs to be set to a fixed value for the effect to work.
+    * 100vh is the full height of the viewport. */
+    height: 100vh;
+    /* The scaling of the images would add a horizontal scrollbar, so disable x overflow. */
+    overflow-x: hidden;
+    /* Enable scrolling on the page. */
+    overflow-y: auto;
+    /* Set the perspective to 2px. This is essentailly the simulated distance from the viewport to transformed objects.*/
+    perspective: 2px;
+}
+
+.mr-each-sec {
+    position: relative;
+    z-index: 11;
+}
+
+.mr-each-sec:first-child {
+    background: url('../../../assets/images/bg/landing-page-header-bg.png');
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: 0 0;
+}
+
+.mr-secondary-headr {
+    display: flex;
+    padding: 1em 2em;
+    align-items: center;
+}
+
+.mr-logo-icon {
+    margin: 0 1.9em;
+    cursor: pointer;
+}
+
+.mr-logo-icon img {
+    width: 40px;
+}
+
+.mr-text-wrapper {
+    text-align: center;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(32, 32, 32, 0.5);
+    transition: all 1s ease;
+}
+
+.mr-title-text {
+    font-size: 6.5em;
+    font-weight: bold;
+    margin-top: .1em;
+}
+
+.mr-subtitle-text {
+    font-size: 1.5em;
+    font-weight: 500;
+    font-style: italic;
+    margin: 1em 0;
+}
+
+.mr-title-desc {
+    width: 60%;
+    margin: 0 auto;
+    line-height: 1.5em;
+    font-size: 1.6em;
+    transition: all 1s ease;
+}
+
+.mr-connect-line {
+    width: .2em;
+    background-color: #fff;
+    margin: 0 auto;
+    margin-bottom: 1em;
+    min-height: 3em;
+    max-height: 6em !important;
+    transition: all 1s ease;
+}
+
+.mr-header-icon-bg {
+    width: 100%;
+}
+
+.mr-work-detail {
+    overflow: hidden;
+    background-color: #213444;
+    width: 100%;
+    padding: 70px 0;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    z-index: 10;
+}
+
+
+.mr-login-btn {
+    /* margin: 2em 4em 0 0; */
+    color: #fff;
+    font-size: 1.15em;
+    display: block;
+    margin-left: auto;
+    margin-right: 2em;
+}
+
+.mr-feature-heading {
+    font-size: 2.8em;
+    font-weight: 500;
+    text-align: center;
+    color: #3c5079;
+    text-shadow: 0 2px 4px rgba(147, 147, 147, 0.35);
+    padding: 2.5em 0 1.5em 0;
+}
+
+.mr-feature-wrpper {
+    width: 100%;
+    position: relative;
+    z-index: 11;
+    background: #fff;
+}
+
+.mr-all-feature {
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.mr-each-feature {
+    width: 30%;
+    padding-bottom: 3em;
+    min-height: 30em;
+}
+
+.mr-get-started {
+    background: url('../../../assets/images/get-started-section.png');
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.mr-get-started-title {
+    font-size: 2.8em;
+    font-weight: 500;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    text-align: center;
+    padding: 2.5em 0 1.3em;
+}
+
+.mr-get-started-subtitle {
+    font-size: 1.5em;
+    font-style: italic;
+    text-align: center;
+    color: #ffffff;
+    padding: .2em 0;
+    font-family: ex2-light;
+}
+
+.mr-get-started-btn {
+    margin: 0;
+    padding: 2.5em 0 5em;
+}
+
+.mr-get-started .mr-login-btn {
+    float: none;
+    text-align: center;
+}
+
+.mr-footer-bottom {
+    background-image: url('../../../assets/images/FooterBG.png');
+    width: 100%;
+    background-repeat: no-repeat;
+    background-size: cover;
+    text-align: center;
+}
+
+.mr-footer-header {
+    font-size: 2.8em;
+    font-weight: 500;
+    text-align: justify;
+    color: #ffffff;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    padding: 2em 0;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.mr-footer-links-container {
+    display: inline-block;
+}
+
+.mr-footer-link-margin {
+    width: .1em;
+    height: 100%;
+    background-color: #fff;
+    display: inline-block;
+}
+
+.mr-link-content {
+    display: inline-block;
+    vertical-align: top;
+    width: 70%;
+    padding-left: 1em;
+}
+
+.mr-footer-link-title {
+    font-size: 1.9em;
+    font-weight: bold;
+    text-align: left;
+    color: #ffffff;
+    padding-bottom: 1em;
+    line-height: 1.3;
+}
+
+.mr-footer-each-link {
+    font-size: 1.5em;
+    line-height: 1.5;
+    text-align: left;
+    color: #ffffff;
+    font-family: ex2-thin;
+}
+
+.mr-footer-links-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    padding: 0 8em;
+}
+
+.mr-footer-links-container {
+    width: 33.33%;
+    text-align: center;
+    margin-bottom: 5em;
+}
+
+.mr-header-icon-grp {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -90%);
+    margin-top: .3em;
+    transition: all 1s ease;
+}
+
+
+.box-shadow {
+    box-shadow: 0 0 10px #F5006D,
+}
+
+.mr-display {
+    display: none;
+}
+
+.mr-pacman-task {
+    position: absolute;
+    font-size: 30px;
+    font-weight: 300;
+    letter-spacing: 1.2px;
+    color: #ffffff;
+    text-transform: uppercase;
+    transition: font-size .5s ease-in-out;
+}
+
+.mr-pacman-task-left {
+    left: -130%;
+    top: 20%;
+    transform: translate(-50%);
+}
+
+.mr-pacman-task-bottom {
+    bottom: -80%;
+    left: 40%;
+    -webkit-transform: translate(-40%);
+    transform: translate(-40%);
+}
+
+.mr-pacman-task-right {
+    right: -130%;
+    top: 20%;
+    transform: translate(70%);
+}
+
+.mr-bold-text {
+    font-size: 29px;
+    font-family: ex2-bold;
+}
+
+
+
+.mr-header-component {
+    position: fixed;
+    left: 0;
+    top: 0;
+    right: 0;
+    z-index: 10;
+    transform: translateY(-100%);
+    -webkit-transition: all .5s ease-in-out;
+    -moz-transition: all .5s ease-in-out;
+    -o-transition: all .5s ease-in-out;
+    -ms-transition: all .5s ease-in-out;
+    transition: all .5s ease-in-out;
+}
+
+.mr-header-component.show {
+    transform: translateY(0%);
+    display: block !important;
+    -webkit-box-shadow: 0px 30px 49px 1px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 0px 30px 49px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 30px 49px 1px rgba(0, 0, 0, 0.2);
+}
+
+.mr-each-item-left img {
+    width: 60px;
+}
+
+.mr-footer-btn-wrpper {
+    display: flex;
+
+    justify-content: center;
+    padding: 3.5em 0 4em;
+    font-size: 1.2em;
+}
+
+.mr-footer-btn-wrpper .mr-primary-btn {
+    margin: 0 2.5em;
+}
+
+.mr-footer-bottom .mr-get-started-subtitle {
+    font-style: normal;
+}
+
+
+.mr-footer-info-container {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-pack: center;
+    -ms-flex-pack: center;
+    justify-content: center;
+    padding: 2em 4em;
+    align-items: center;
+}
+
+.mr-footer-logo {
+    margin-left: auto;
+    cursor: auto;
+}
+
+.mr-footer-info-links span {
+    font-family: ex2-medium;
+    font-size: 1em;
+    text-align: left;
+    color: #ffffff;
+    margin: 2em 1em;
+    display: inline-block;
+}
+
+.mr-footer-copyright {
+    font-size: 1em;
+    text-align: left;
+    color: #cbcbcb;
+    font-family: ex2-thin;
+    margin: 0 1em;
+}
+
+/* --------- white btn class */
+
+:host ::ng-deep app-button.white button,
+:host ::ng-deep app-button-icon.white button {
+    background-color: #ffffff;
+    color: #2c2e3d;
+}
+
+:host ::ng-deep app-button.white button:hover,
+:host ::ng-deep app-button-icon.white button:hover {
+    background-color: #2c2e3d;
+    color: #ffffff;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .32);
+}
+
+:host ::ng-deep app-button.white button:active,
+:host ::ng-deep app-button-icon.white button:active {
+    background-color: #2c2e3d;
+    color: #ffffff;
+    box-shadow: 0 2px 10px 1px rgba(0, 0, 0, .32);
+}
+
+
+.overlay-state-con {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 13;
+}
+
+.overlay-state {
+    height: 100%;
+    background-color: rgba(255, 255, 255, 1);
+    cursor: default;
+}
+
+.mr-list-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+    padding: 0 8em;
+}
+
+.mr-list-items-container {
+    width: 20%;
+    text-align: center;
+    display: inline-block
+}
+.mr-list-title {
+    font-size: 2.2em;
+    font-weight: bold;
+    text-align: left;
+    color: #ffffff;
+    padding: 1em 0;
+}
+.mr-list-value {
+    font-size: 1.5em;
+    line-height: 1.5;
+    text-align: center;
+    color: #ffffff;
+    font-family: ex2-thin;
+}
+
+.mr-list-content{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.wait-message {
+    font-family: ex2-light;
+    font-size: 1.5em;
+}
+
+
+/* Desktops and laptops ----------- */
+
+.parallax__layer {
+    font-size: .9em;
+}
+
+@media only screen and (min-width: 1440px) {
+    .mr-each-sec {
+        font-size: 1em;
+    }
+    .parallax__layer {
+        font-size: 1.2em;
+    }
+}
+
+@media only screen and (min-width: 1600px) {
+    .mr-each-sec {
+        font-size: 1em;
+    }
+    .parallax__layer {
+        font-size: 1.4em;
+    }
+}
+
+
+
+/* Large screens ----------- */
+
+@media only screen and (min-width: 1824px) {
+    .mr-each-sec {
+        font-size: 1em;
+    }
+    .parallax__layer {
+        font-size: 1.8em;
+    }
+}
+
+/* css for edge browser */
+@supports (-ms-ime-align: auto) { 
+    .mr-list-wrapper {
+        justify-content: space-around;
+    }
+    .parallax-grp {
+        overflow: hidden;
+    }
+    .mr-each-sec:first-child {
+        z-index: -1;
+    }
+
+}
+
+.parallax-new::after {
+    /* Display and position the pseudo-element */
+    content: " ";
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    
+    /* Move the pseudo-element back away from the camera,
+     * then scale it back up to fill the viewport.
+     * Because the pseudo-element is further away, it appears to move more slowly, like in real life. */
+    transform: translateZ(-1px) scale(1.7);
+    /* Force the background image to fill the whole element. */
+    background-size: 100%;
+    /* Keep the image from overlapping sibling elements. */ 
+    z-index: -1;
+  }
+
+  .home-page-header {
+    /* Needed for children to be absolutely positioned relative to the parent. */
+    position: relative;
+    /* The height of the container. Must be set, but it doesn't really matter what the value is. */
+    height: 82vh;
+    
+    /* For text formatting. */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-shadow: 0 0 5px #000;
+  }
+
+  .home-page-header::after {
+    background: url('../../../assets/images/bg/landing-page-header-bg.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+  }

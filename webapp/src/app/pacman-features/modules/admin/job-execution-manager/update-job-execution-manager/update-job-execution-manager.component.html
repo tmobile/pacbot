@@ -1,0 +1,294 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+    <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+    <div class="floating-widgets-header flex flex-between">
+        <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text">{{pageTitle}}</h1>
+        </div>
+    </div>
+    <div class="floating-widgets-container ">
+        <section>
+            <ul>
+                <li class="widget-wrapper relative">
+                    <div class="data-table-wrap relative">
+                        <div class="sub-head">
+                            <div class="flex flex-between flex-align-center">
+                                <div class="sub-head-title capitalize flex flex-align-center after-load">
+                                    <div class="header-text">Job Execution Manager Details</div>
+                                </div>
+                            </div>
+                        </div>
+                        <form (ngSubmit)="createNewJob(jobForm)" #jobForm="ngForm" [hidden]="hideContent">
+                            <div class="data-content">
+                                <div class="formcontainerwrapper">
+                                    <div class="formctnleft">
+                                        <div class="createrule" action="#">
+                                            <div class="input-box">
+                                                <label>Job Name *</label>
+                                                <ul class="input-wrapper">
+                                                    <input type="text" autocomplete="off" name="jobName" ngModel class="inputarea-container" placeholder="Enter Job Name" required>
+                                                </ul>
+                                            </div>
+                                            <div class="input-box">
+                                                <label>Job Description *</label>
+                                                <ul>
+                                                    <textarea name="jobDesc" ngModel class="textarea-container" placeholder="Enter Job Description" required></textarea>
+                                                </ul>
+                                            </div>
+                                            <div class="freq-col-row input-form">
+                                                <label>Job Frequency *</label>
+                                                <ng-select name="jobFrequency" ngModel (selected)='onSelectFrequency($event)' [allowClear]="true" [items]="allFrequencies" placeholder="Select Frequency" required>
+                                                </ng-select>
+                                            </div>
+                                            <div class="freq-col-row input-form" *ngIf="selectedFrequency==='Minutes'">
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    Every
+                                                </div>
+                                                <div class="freq-col-sm-1 freq-pright">
+                                                    <ul class="input-wrapper">
+                                                        <input type="text" autocomplete="off" name="jobFrequencyModeValue" ngModel class="inputarea-container" [maxlength]="2" appOnlyNumber required>
+                                                    </ul>
+                                                </div>
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    minute(s)
+                                                </div>
+                                            </div>
+                                            <div class="freq-col-row input-form" *ngIf="selectedFrequency==='Hourly'">
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    Every
+                                                </div>
+                                                <div class="freq-col-sm-1 freq-pright">
+                                                    <ul class="input-wrapper">
+                                                        <input type="text" autocomplete="off" name="jobFrequencyModeValue" ngModel class="inputarea-container" [maxlength]="2" appOnlyNumber required>
+                                                    </ul>
+                                                </div>
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    hours(s)
+                                                </div>
+                                            </div>
+                                            <div class="freq-col-row input-form" *ngIf="selectedFrequency==='Daily'">
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    Every
+                                                </div>
+                                                <div class="freq-col-sm-1 freq-pright">
+                                                    <ul class="input-wrapper">
+                                                        <input type="text" autocomplete="off" name="jobFrequencyModeValue" ngModel class="inputarea-container" appOnlyNumber required>
+                                                    </ul>
+                                                </div>
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    days(s)
+                                                </div>
+                                            </div>
+                                            <div class="freq-radio rule-type input-box" *ngIf="selectedFrequency==='Weekly'">
+                                                <input type="radio" id="mon" value="MON" name="weekName" class="ib" checked="checked" ngModel required>
+                                                <label for="mon" class="mon db">MON</label>
+                                                <input type="radio" id="tue" value="TUE" name="weekName" class="ib" ngModel required>
+                                                <label for="tue" class="tue db">TUE</label>
+                                                <input type="radio" id="wed" value="WED" name="weekName" class="ib" ngModel required>
+                                                <label for="wed" class="wed db">WED</label>
+                                                <input type="radio" id="thu" value="THU" name="weekName" class="ib" ngModel required>
+                                                <label for="thu" class="thu db">THU</label>
+                                                <input type="radio" id="fri" value="FRI" name="weekName" class="ib" ngModel required>
+                                                <label for="fri" class="fri db">FRI</label>
+                                                <input type="radio" id="sat" value="SAT" name="weekName" class="ib" ngModel required>
+                                                <label for="sat" class="sat db">SAT</label>
+                                                <input type="radio" id="sun" value="SUN" name="weekName" class="ib" ngModel required>
+                                                <label for="sun" class="sun db">SUN</label>
+                                            </div>
+                                            <div class="freq-col-row input-form" *ngIf="selectedFrequency==='Monthly'">
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    Day
+                                                </div>
+                                                <div class="freq-col-sm-1 freq-pright">
+                                                    <ul class="input-wrapper">
+                                                        <input type="text" autocomplete="off" name="jobFrequencyDays" ngModel class="inputarea-container" appOnlyNumber required>
+                                                    </ul>
+                                                </div>
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    of every
+                                                </div>
+                                                <div class="freq-col-sm-1 freq-pright">
+                                                    <ul class="input-wrapper">
+                                                        <input type="text" autocomplete="off" name="jobFrequencyMonths" ngModel class="inputarea-container" appOnlyNumber required>
+                                                    </ul>
+                                                </div>
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    month(s)
+                                                </div>
+                                            </div>
+                                            <div class="freq-col-row input-form" *ngIf="selectedFrequency==='Yearly'">
+                                                <div class="freq-col-sm freq-pright freq-col-middle">
+                                                    Every
+                                                </div>
+                                                <div class="freq-col-sm-6 freq-pright">
+                                                    <div class="input-form">
+                                                        <ng-select name="jobFrequencyMonth" ngModel (selected)='onSelectFrequencyMonth($event)' [allowClear]="true" [items]="allMonths" placeholder="Select Month" required>
+                                                        </ng-select>
+                                                    </div>
+                                                </div>
+                                                <div class="freq-col-sm-5 input-form">
+                                                    <ng-select name="jobFrequencyDay" ngModel [allowClear]="true" [items]="allMonthDays" placeholder="Select Day" #jobFrequencyMonthDay required>
+                                                    </ng-select>
+                                                </div>
+                                            </div>
+                                            <div class="rule-type input-box">
+                                                <label class="rule-type-label">Job Type</label>
+                                                <div>
+                                                    <input type="radio" id="federated-rule" value="jar" name="jobType" class="ib" checked="checked" [(ngModel)]="jobType">
+                                                    <label for="federated-rule" class="db">Executable Jar</label>
+                                                    <input *ngIf="false" type="radio" id="serverless" value="Serverless" name="jobType" class="ib" [(ngModel)]="jobType">
+                                                    <label *ngIf="false" for="serverless" class="db serverless">Serverless <a class="link" href="https://console.aws.amazon.com" target="_blank">(Create Serverless URL)</a></label>
+                                                </div>
+                                            </div>
+                                            <div class="rule-executable">
+                                                <div class="input-form" *ngIf="jobType=='jar'">
+                                                    <label class="label">Job Executable</label>
+                                                    <input type="file" id="selectJarFile" class="hide" (change)="onJarFileChange($event)" name="jobJarFile" [(ngModel)]="jobJarFile" required>
+                                                    <a class="tmbutton bm20 upload" (click)="openJarFileBrowser($event)" *ngIf="jobJarFileName==''"><i class="fa fa-upload"></i> Upload JAR file</a>
+                                                    <div class="selected-file">{{jobJarFileName}} <a (click)="removeJarFileName();" *ngIf="jobJarFileName!=''"><i class="fa fa-remove"></i></a></div>
+                                                </div>
+                                            </div>
+                                            <div class="input-box" *ngIf="jobType=='Serverless'">
+                                                <label>Job Rest URL*</label>
+                                                <ul class="input-wrapper">
+                                                    <input type="text" autocomplete="off" name="jobRestUrl" class="inputarea-container" placeholder="Enter the Job Rest URL" ngModel required>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="formctnright">
+                                        <div class="createrule">
+                                            <label>Job Parameters</label>
+                                            <div class="input-box">
+                                                <ul class="parameters input-wrapper">
+                                                    <input type="text" autocomplete="off" class="inputarea-container" placeholder="Enter Param Name" name="jobParamKey" [(ngModel)]="parametersInput.jobKey">
+                                                </ul>
+                                                <ul class="parameters input-wrapper">
+                                                    <input type="text" autocomplete="off" class="inputarea-container" placeholder="Enter Param Value" name="jobParamValue" [(ngModel)]="parametersInput.jobValue">
+                                                </ul>
+                                                <ul class="parameters bm30">
+                                                    <input type="checkbox" #isJobParamEncrypted id="encryptjobparam">
+                                                    <label for="encryptjobparam" class="parameters bm30 ml10">Encrypt</label>
+                                                </ul>
+                                                <ul class="parameters">
+                                                    <button class="tmbutton bm20 ib" [disabled]="!(parametersInput.jobKey&&parametersInput.jobValue)" (click)="addJobParameters(parametersInput, isJobParamEncrypted)">+ Add</button>
+                                                </ul>
+                                            </div>
+                                            <div class="separator">
+                                                <div class="valueaddctn" id="style-1" *ngIf="allJobParams.length==0">
+                                                    <div class="no-parameters">
+                                                        No Job Parameters Added
+                                                    </div>
+                                                </div>
+                                                <div class="valueaddctn" id="style-1" *ngIf="allJobParams.length!==0">
+                                                    <div class="valuerow" *ngFor="let jobParams of allJobParams">
+                                                        <a><i class="fa fa-remove"></i></a>
+                                                        <span class="addedvalue key">{{jobParams.key}}</span>
+                                                        <span class="addedvalue">{{jobParams.value}}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <label>Environment Variables</label>
+                                            <div class="input-box">
+                                                <ul class="parameters input-wrapper">
+                                                    <input type="text" autocomplete="off" class="inputarea-container" placeholder="Enter Variable Name" name="envParamKey" [(ngModel)]="parametersInput.envKey">
+                                                </ul>
+                                                <ul class="parameters input-wrapper">
+                                                    <input type="text" autocomplete="off" class="inputarea-container" placeholder="Enter Variable Value" name="envParamValue" [(ngModel)]="parametersInput.envValue">
+                                                </ul>
+                                                <ul class="parameters bm30">
+                                                    <input type="checkbox" #isEnvParamEncrypted id="encryptenvparam">
+                                                    <label for="encryptenvparam" class="parameters bm30 ml10">Encrypt</label>
+                                                </ul>
+                                                <ul class="parameters">
+                                                    <button class="tmbutton bm20 ib" [disabled]="!(parametersInput.envKey&&parametersInput.envValue)" (click)="addEnvironmentParameters(parametersInput, isEnvParamEncrypted)">+ Add</button>
+                                                </ul>
+                                            </div>
+                                            <div class="valueaddctn" id="style-1" *ngIf="allEnvironments.length==0">
+                                                <div class="no-parameters">
+                                                    No Environment Parameters Added
+                                                </div>
+                                            </div>
+                                            <div class="valueaddctn" id="style-1" *ngIf="allEnvironments.length!==0">
+                                                <div class="valuerow" *ngFor="let envParams of allEnvironments">
+                                                    <a><i class="fa fa-remove"></i></a>
+                                                    <span class="addedvalue key">{{envParams.name}} : </span>
+                                                    <span class="addedvalue">{{envParams.value}}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="data-table-paginator-wrap flex flex-center flex-align-center">
+                                <a class="save-container flex flex-row-reverse">
+                                    <button class="submit-btn uppercase" type="submit" [disabled]="(jobForm.form.invalid)"><i class="fa fa-plus"></i> CREATE</button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse">
+                                    <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CANCEL</button>
+                                </a>
+                            </div>
+                        </form>
+                        <div class="pacman-alert" *ngIf="isJobFailed">
+                            <div class="sa-icon sa-error animateErrorIcon" style="display: block;">
+                                <span class="sa-x-mark animateXMark">
+                                    <span class="sa-line sa-left"></span>
+                                <span class="sa-line sa-right"></span>
+                                </span>
+                            </div>
+                            <div class="pacman-alert-message">
+                                Job Configuring Failed !!!
+                            </div>
+                            <div class="pacman-alert-title">
+                                Failed in configuring the job <span class="highlight-pink">{{jobName}}</span> !!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="closeErrorMessage()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isJobSuccess">
+                            <div class="sa-icon sa-success animate">
+                                <span class="sa-line sa-tip animateSuccessTip"></span>
+                                <span class="sa-line sa-long animateSuccessLong"></span>
+                                <div class="sa-placeholder"></div>
+                                <div class="sa-fix"></div>
+                            </div>
+                            <div class="pacman-alert-message">
+                                Successfully Configured !!!
+                            </div>
+                            <div class="pacman-alert-title">
+                                Job <span class="highlight-pink">{{jobName}}</span> has been successfully configured !!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-progress" *ngIf="jobLoader">
+                            <pacman-loading></pacman-loading>
+                            <div class="title">
+                                Please Wait...
+                            </div>
+                            <div class="content">
+                                <span class="highlight">{{jobJarFileName}}</span> is been uploading...
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>

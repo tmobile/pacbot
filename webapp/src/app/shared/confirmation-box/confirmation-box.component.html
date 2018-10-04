@@ -1,0 +1,17 @@
+<app-overlay (click)='closeBox();'></app-overlay>
+<div class="fixed confirmation-box flex flex-col flex-center flex-align-center">
+  <img class="delete-icon absolute" (click)='closeBox();' src='../assets/png/delete.png'>
+  <div class='flex flex-col flex-center flex-align-center'>
+    <div class="conf-text bold">Confirmation</div>
+    <div class="conf-text">{{text}}</div>
+    <div class="loader" *ngIf = "errorValue == 0"></div>
+    <div class="flex flex-col flex-center buttons-wrap" *ngIf = "errorValue == 1">
+      <app-button class="app-button" (click)='confirmBox();'>CONTINUE</app-button>
+      <app-button [type]="'secondary'" class="app-button" (click)='closeBox();'>CANCEL</app-button>
+    </div>
+    <div class="flex flex-col flex-center buttons-wrap" *ngIf = "errorValue == -1">
+      <app-button  class="app-button" (click)='closeBox();'>CLOSE</app-button>
+
+    </div>
+  </div>
+</div>

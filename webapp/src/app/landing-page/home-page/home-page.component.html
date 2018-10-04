@@ -1,0 +1,106 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+<app-landing-page-header class="mr-header-component" [class.show]="showHeader == true" [item1]="content.homePage.productLogo" [item2]="'HIGHLIGHTS'" [item3]="'FEATURES'" [item4]="'CONTACT US'" [item5]="'GO TO DASHBOARD'" (loginEvent)=openLoginMenu()></app-landing-page-header>
+<div class="mr-wrapper" (scroll)="onScroll($event)">
+    <div class="parallax-new home-page-header">
+        <div class="">
+            <div class="mr-text-wrapper" [ngStyle]="{'line-height': connectlineheight}">
+                <h1 class="mr-title-text">
+                    {{content.homePage.heading}}
+                </h1>
+                <p class="mr-subtitle-text">
+                    {{content.homePage.subHeading}}
+                </p>
+                <div class="mr-connect-line" #connect [ngStyle]="{'height': connectline+ 'em'}">
+                </div>
+                <div class="mr-title-desc">
+                    {{content.homePage.productBrief}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="mr-each-sec mr-work-detail">
+        <div class="mr-list-wrapper">
+                <div class="mr-list-items-container" *ngFor="let component of content.homePage.applicationCore">
+                    <div class=mr-list-content>
+                        <img width="50px" src="{{component.icon}}">
+                        <div class="mr-list-title">{{component.title}}</div>
+                        <div class="mr-list-value">{{component.description}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    <div class="mr-each-sec mr-feature-wrpper" id="mr-highlight-section">
+        <h2 class="mr-feature-heading">
+        HIGHLIGHTS          
+    </h2>
+        <div class="mr-all-feature">
+            <app-feature class="mr-each-feature" [iconImage]="content.homePage.featureDetails.monitoring.image" [featureTitle]="content.homePage.featureDetails.monitoring.Title" [featureSubTitle]="content.homePage.featureDetails.monitoring.Subtitle"></app-feature>
+            <app-feature class="mr-each-feature" [iconImage]="content.homePage.featureDetails.reporting.image" [featureTitle]="content.homePage.featureDetails.reporting.Title" [featureSubTitle]="content.homePage.featureDetails.reporting.Subtitle"></app-feature>
+            <app-feature class="mr-each-feature" [iconImage]="content.homePage.featureDetails.securityWide.image" [featureTitle]="content.homePage.featureDetails.securityWide.Title" [featureSubTitle]="content.homePage.featureDetails.securityWide.Subtitle"></app-feature>
+            <app-feature class="mr-each-feature" [iconImage]="content.homePage.featureDetails.securityDeep.image" [featureTitle]="content.homePage.featureDetails.securityDeep.Title" [featureSubTitle]="content.homePage.featureDetails.securityDeep.Subtitle"></app-feature>
+            <app-feature class="mr-each-feature" [iconImage]="content.homePage.featureDetails.automation.image" [featureTitle]="content.homePage.featureDetails.automation.Title" [featureSubTitle]="content.homePage.featureDetails.automation.Subtitle"></app-feature>
+        </div>
+    </div>
+    <div class="mr-each-sec mr-get-started">
+        <h2 class="mr-get-started-title">GET STARTED</h2>
+        <h3 class="mr-get-started-subtitle">Ready to easily monitor your compliance and assets?</h3>
+        <app-button class="mr-login-btn mr-get-started-btn" (onClickInner)="openLoginMenu($event)">Go to Dashboard
+        </app-button>
+    </div>
+    <div class="mr-each-sec mr-footer-bottom" id="mr-feature-section">
+        <h2 class="mr-footer-header">{{content.homePage.keyComponents.title}}</h2>
+        <div class="mr-footer-links-wrapper">
+            <div class="mr-footer-links-container" *ngFor="let component of content.homePage.keyComponents.components">
+                <div class="mr-footer-link-margin"></div>
+                <div class=mr-link-content>
+                    <div class="mr-footer-link-title">{{component.title}}</div>
+                    <div class="mr-footer-each-link">{{component.description}}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="content.homePage.contactUs.title">
+            <div>
+                <h2 class="mr-get-started-title" id="mr-footer-section">CONTACT US</h2>
+                <h3 class="mr-get-started-subtitle">{{content.homePage.contactUs.title}}</h3>
+            </div>
+            <div class="mr-footer-btn-wrpper">
+                <a href="{{content.homePage.contactUs.email}}" *ngIf="content.homePage.contactUs.email">
+                    <app-button class="white mr-primary-btn">E-MAIL US</app-button>
+                </a>
+                <app-button-icon *ngIf="content.homePage.contactUs.slack" [iconSrc]="'/assets/icons/slack-icon.png'" class="white mr-primary-btn" (onClickInner)="goToSlackLink(content.homePage.contactUs.slack)">slack
+                </app-button-icon>
+            </div>
+            <div class="mr-footer-info-container">
+                <div class="mr-footer-info-links">
+                    <div class="mr-footer-copyright">{{content.homePage.footer.copyrightPart1}}{{currentYear}}{{content.homePage.footer.copyrightPart2}}</div>
+                </div>
+                <a *ngIf="content.homePage.companyLogo" class="mr-footer-logo">
+                        <img src="{{content.homePage.companyLogo}}">
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+<section>
+    <router-outlet #o="outlet"></router-outlet>
+</section>
+<div *ngIf="!roleAndDefaultAssetGroupLoaded" class="overlay-state-con">
+    <div class="overlay-state relative">
+        <span class="wait-message">Please wait, while we fetch your access roles...</span>
+    </div>
+</div>

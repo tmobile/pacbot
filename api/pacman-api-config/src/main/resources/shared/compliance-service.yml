@@ -1,0 +1,19 @@
+server:
+  contextPath: /api/compliance
+  
+rule-engine:
+  invoke:
+    url: submitRuleExecutionJob
+        
+projections:
+  assetgroups: cloud-vm,onprem-vm,all-vm
+  targetTypes: onpremserver,ec2
+
+features:
+  certificate:
+    enabled: ${CERTIFICATE_FEATURE_ENABLED}
+  patching:
+    enabled: ${PATCHING_FEATURE_ENABLED}
+  vulnerability:
+    enabled: ${VULNERABILITY_FEATURE_ENABLED}
+        

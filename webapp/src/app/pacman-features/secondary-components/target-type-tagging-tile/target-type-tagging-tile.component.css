@@ -1,0 +1,131 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.target-type-details-wrapper {
+    height: 14em;
+    width: 14em;
+    background-color:#fff;
+    position: relative;
+}
+
+.aws-app-image {
+    position: relative;
+    width: 22%;
+    height: 30%;
+    padding-top: 5%;
+    margin: auto;
+    display: block;
+}
+
+.aws-app-name {
+    height: 16%;
+    font-size: 1.5em;
+    text-align: center;
+    padding: 6% 8% 1% 8%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-transform: uppercase;
+    text-overflow: ellipsis;
+}
+
+.status-bar {
+    height: 18%;
+    padding: 10.5% 9% 1% 9%;
+}
+
+.status-bar .bar {
+    height: 100%;
+    display: inline-block;
+    min-width: 7%;
+    max-width: 93%;
+    float:left;
+    width: 0%;
+    transition: all 0.3s ease;
+}
+
+.status-bar .tagged {
+    margin-right: 0.35em;
+    height: 100%;
+    background-color: #1C5066;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+.status-bar .untagged {
+    background-color: #F2425F;
+    border-top-right-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.tagging-info-wrapper {
+    height: 30%;
+    display: flex;
+    flex-direction: row;
+    padding: 6% 9% 0% 10%;
+}
+
+.tagging-info-wrapper .left-wrapper,
+.tagging-info-wrapper .right-wrapper {
+    width: 50%;
+    height: 100%;
+}
+
+.tagging-info-wrapper .left-wrapper {
+    border-right: 1px solid #ccc;
+    text-align: left;
+}
+
+.tagging-info-wrapper .right-wrapper {
+    text-align: right;
+}
+
+.tagging-info-wrapper .count {
+    width: 100%;
+    overflow: hidden;
+    font-size: 1.8em;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.tagging-info-wrapper .left-wrapper .count {
+    color: #1C5066;
+}
+
+.tagging-info-wrapper .right-wrapper .count {
+    color: #F2425F;
+}
+
+.tagging-info-wrapper .type {
+    display: block;
+    width: 100%;
+    padding-top: 0.5em;
+    padding-bottom: 1px;
+    font-size: 1.1em;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.aws-app-extra {
+    height: 2.353em;
+    margin: auto;
+    background-color: red;
+    width: 2.43em;
+    color: #fff;
+    font-size: 1.7em;
+    border-radius: 2em;
+    text-transform: uppercase;
+    font-family: ex2-light;
+    letter-spacing: 0.5px;
+    box-shadow: 0 0 4px 0px rgba(0,0,0,0.15);
+}

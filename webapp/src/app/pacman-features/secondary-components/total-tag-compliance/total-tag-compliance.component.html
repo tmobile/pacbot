@@ -1,0 +1,30 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="total-tag-compliance-wrapper">
+    <div class="sub-heading">
+      <app-title-burger-head [subHeadTitle]="'Total Tag Compliance'"></app-title-burger-head>
+    </div>
+    <div class='flex cg-container-parent flex-align-center flex-center'>
+      <app-multi-band-donut [colorData]="['#26ba9d', '#645ec5', '#3c5079', '#289cf7', '#f2425f']" [colorTransData]="['rgba(38,186,157,0.2)', 'rgba(100,94,197,0.2)', 'rgba(60,80,121,0.2)', 'rgba(40,156,247,0.2)' , 'rgba(242,66,95,0.2)']" [donutData]="complianceData" [overallPercentage]="overallPercentage" [loaded]="loaded" *ngIf="!seekdata && contValue"></app-multi-band-donut>      
+    </div>
+    <div class="tag-compliance-details">
+        <app-list-table *ngIf="contValue && loaded && !seekdata" [tableData]="complianceTableData"
+        [tableHeaderData]="complianceTableHeaderData" (navigatePage)="navigatePage($event)"></app-list-table>
+    </div>    
+    <div class="error_msg">
+        <app-error-message *ngIf='seekdata == true' [selectedValue]="errorMessage"></app-error-message>
+    </div>
+    <div class="loader" *ngIf='!contValue'></div>
+</div>

@@ -1,0 +1,1575 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/* You can add global styles to this file, and also import other style files */
+
+
+/* External imported themes */
+
+@import "./reset.css";
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
+@import "~font-awesome/css/font-awesome.css";
+
+
+/* Font family */
+
+@font-face {
+    font-family: ex2-bold;
+    src: url(/assets/fonts/ex2/Exo2_eot/Exo2-Bold.eot);
+    src: url(/assets/fonts/ex2/Exo2_Woff/Exo2-Bold.woff) format('woff'),
+    url(/assets/fonts/ex2/Exo2_woff2/Exo2-Bold.woff2) format('woff2'),
+    url(/assets/fonts/ex2/Ex2_ttf/Exo2-Bold.ttf) format('ttf');
+}
+
+@font-face {
+    font-family: ex2-regular;
+    src: url(/assets/fonts/ex2/Exo2_eot/Exo2-Regular.eot);
+    src: url(/assets/fonts/ex2/Exo2_Woff/Exo2-Regular.woff) format('woff'),
+    url(/assets/fonts/ex2/Exo2_woff2/Exo2-Regular.woff2) format('woff2'),
+    url(/assets/fonts/ex2/Ex2_ttf/Exo2-Regular.ttf) format('ttf');
+}
+
+@font-face {
+    font-family: ex2-medium;
+    src: url(/assets/fonts/ex2/Exo2_eot/Exo2-Medium.eot);
+    src: url(/assets/fonts/ex2/Exo2_Woff/Exo2-Medium.woff) format('woff'),
+    url(/assets/fonts/ex2/Exo2_woff2/Exo2-Medium.woff2) format('woff2'),
+    url(/assets/fonts/ex2/Ex2_ttf/Exo2-Medium.ttf) format('ttf');
+}
+
+@font-face {
+    font-family: ex2-light;
+    src: url(/assets/fonts/ex2/Exo2_eot/Exo2-Light.eot);
+    src: url(/assets/fonts/ex2/Exo2_Woff/Exo2-Light.woff) format('woff'),
+    url(/assets/fonts/ex2/Exo2_woff2/Exo2-Light.woff2) format('woff2'),
+    url(/assets/fonts/ex2/Ex2_ttf/Exo2-Light.ttf) format('ttf');
+}
+
+@font-face {
+    font-family: ex2-thin;
+    src: url(/assets/fonts/ex2/Exo2_eot/Exo2-Thin.eot);
+    src: url(/assets/fonts/ex2/Exo2_Woff/Exo2-Thin.woff) format('woff'),
+    url(/assets/fonts/ex2/Exo2_woff2/Exo2-Thin.woff2) format('woff2'),
+    url(/assets/fonts/ex2/Ex2_ttf/Exo2-Thin.ttf) format('ttf');
+}
+
+@font-face {
+    font-family: ex2-extraLight;
+    src: url(/assets/fonts/ex2/Exo2_eot/Exo2-ExtraLight.eot);
+    src: url(/assets/fonts/ex2/Exo2_Woff/Exo2-ExtraLight.woff) format('woff'),
+    url(/assets/fonts/ex2/Exo2_woff2/Exo2-ExtraLight.woff2) format('woff2'),
+    url(/assets/fonts/ex2/Ex2_ttf/Exo2-ExtraLight.ttf) format('ttf');
+}
+
+
+
+
+
+
+
+/* Utility classes */
+
+.relative {
+    position: relative;
+}
+
+.ilb {
+    display: inline-block;
+}
+
+.absolute {
+    position: absolute;
+}
+
+.fixed {
+    position: fixed;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
+.abs-left {
+    left: 0;
+}
+
+.abs-right {
+    right: 0;
+}
+
+.clearfix:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+}
+
+.center {
+    text-align: center;
+}
+
+.hide {
+    display: none!important;
+}
+
+* {
+    box-sizing: border-box;
+    font-family: ex2-regular;
+    letter-spacing: 0.1px;
+}
+
+h1 {
+    font-size: 2em;
+    font-family: ex2-regular;
+    font-weight: 500;
+}
+
+h2 {
+    font-size: 1.8em;
+}
+
+h3 {
+    font-size: 1.6em;
+}
+
+h4 {
+    font-size: 1.4em;
+    font-family: ex2-regular;
+    font-weight: 500;
+}
+
+h5 {
+    font-size: 1.2em;
+}
+
+h6 {
+    font-size: 1em;
+    font-family: ex2-medium;
+    letter-spacing: 0.1px;
+}
+
+
+
+/********* Temporarily placed D3 styles ********/
+
+
+/* 
+   TODO: 
+   Below styles to be moved inside multiline-brush-zoom component 
+*/
+
+.axis {
+    font: 10px sans-serif;
+}
+
+.focus .axis.axis--x .tick text {
+    text-transform: uppercase;
+    font-size: 12px;
+}
+
+text.axis-title {
+    font-size: 12px;
+}
+
+.focus .axis.axis--y .tick text {
+    font-size: 12px;
+}
+
+.overlay {
+    fill: none;
+    pointer-events: all;
+}
+
+.focus circle {
+    fill: #fff;
+    stroke: #26ba9d;
+    stroke-width: 1px;
+}
+
+.x-axis path,
+.x-axis line,
+.y-axis path,
+.y-axis line {
+    fill: none;
+    stroke: steelblue;
+    shape-rendering: crispEdges;
+}
+
+.axis.zoom-axis path {
+    stroke: #ccc;
+    stroke-width: 2px;
+}
+
+.axis.zoom-axis .tick line {
+    stroke-width: 2px;
+    stroke-linecap: square;
+    stroke: #ccc;
+}
+
+.context .axis.zoom-axis .tick {
+    y: -1em;
+}
+
+.area {
+    fill: #1fa6ce;
+    clip-path: url(#clip);
+    opacity: 0.1
+}
+
+.areaPatch {
+    fill: #fcd8ef;
+    clip-path: url(#clip);
+    opacity: 0.5
+}
+
+.areaPatchLower {
+    fill: #afd9f9;
+    clip-path: url(#clip);
+    opacity: 0.5
+}
+
+.zoom {
+    cursor: move;
+    fill: none;
+    pointer-events: all;
+}
+
+.grid line {
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+}
+
+.grid.horizontal.multiline line {
+    stroke-opacity: 0.5;
+}
+
+.brush .selection {
+    fill: #999;
+    opacity: 1;
+    fill-opacity: 1;
+}
+
+.context .brush .handle {
+    stroke-width: 8;
+    stroke-linecap: square;
+    stroke: #999;
+    fill: #999;
+    rx: 5;
+    ry: 5;
+    r: 200;
+}
+
+.context .axis .tick text {
+    text-transform: uppercase;
+    font-size: 10px;
+    fill: #999;
+    dy: 1.2em;
+}
+
+.focus .brush .selection {
+    opacity: 0.1;
+}
+
+.focus .brush .handle {
+    opacity: 1;
+    stroke-width: 2px;
+    width: 3px;
+    stroke: #999;
+    fill: none;
+    y: -6;
+    transform: translate(3, 0);
+}
+
+.focus .axis.axis--x path {
+    stroke: #999;
+    stroke-width: 2px;
+}
+
+.chart-wrapper .focus .axis.axis--x path {
+    stroke: #c3cbd7;
+    stroke-width: 1px;
+}
+
+.common-wrapper .focus .axis.axis--x path {
+    stroke: #c3cbd7;
+    stroke-width: 1px;
+}
+
+.axis.axis--y .tick:nth-child(2) {
+    display: none;
+}
+
+.focus .axis .tick text {
+    fill: #2c2e3d;
+    font-size: 11px;
+}
+
+.focus .axis.axis--x .tick line {
+    fill: none;
+    display: none;
+}
+
+.focus .area-start,
+.focus .area-end,
+.context .brush-value1,
+.context .brush-value2 {
+    stroke: #333;
+    fill: #333;
+    font-size: 10px;
+    stroke-width: 0.5;
+    font-weight: normal;
+}
+
+.grid path {
+    stroke-width: 0;
+}
+
+.focus .axis--x.area-zoom {
+    display: none;
+}
+
+#patchingGraph path.line.line3 {
+    stroke-width: 2px;
+    stroke-dasharray: 4;
+}
+
+#onpremGraph .line {
+    fill: none;
+    stroke: #00B972;
+    stroke-width: 2px;
+}
+
+#onpremGraph .line.thin-line {
+    stroke-width: 1px;
+}
+
+#onpremGraph .line.line-dashed {
+    stroke-dasharray: 4, 4;
+}
+
+#onpremGraph .bottomAxis g.tick text {
+    display: none;
+}
+
+#onpremGraph .bottomAxis g.tick line {
+    stroke: #efefef;
+    stroke-dasharray: 2, 3;
+    stroke-width: 1.5px;
+}
+
+#onpremGraph .areaLine.above {
+    fill: rgba(11, 185, 114, 0.1);
+}
+
+#onpremGraph .areaLine.below {
+    fill: rgba(237, 2, 151, 0.13);
+}
+
+#onpremGraph .domain {
+    display: none;
+}
+
+#onpremGraph .axisRed .tick line {
+    display: none;
+}
+
+#onpremGraph .axisSteelBlue .tick line {
+    display: none;
+}
+
+
+.vulnReportGraph .line {
+    fill: none;
+    stroke: #60727f;
+    stroke-width: 2px;
+}
+
+.vulnReportGraph .area {
+    fill: #60727f;
+}
+
+.vulnReportGraph .tick line {
+    stroke: #e6e6e6;
+    stroke-width: 1px;
+}
+
+.vulnReportGraph .domain {
+    stroke: #bbb;
+}
+
+.vulnReportGraph text {
+    fill: #777;
+    font-family: ex2-medium;
+}
+
+
+
+
+/*****************************************/
+
+.pointer {
+    cursor: pointer;
+}
+
+.nowrap-ellipsis {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.no-shrink {
+    flex-shrink: 0;
+}
+
+.flex-grow {
+    flex-grow: 1;
+}
+
+.flex {
+    display: table-cell;
+    display: flex;
+}
+
+.inline-flex {
+    display: inline-flex;
+}
+
+.flex-col {
+    flex-direction: column;
+}
+
+.flex-col-reverse {
+    flex-direction: column-reverse;
+}
+
+.flex-row {
+    flex-direction: row;
+}
+
+.flex-row-reverse {
+    flex-direction: row-reverse;
+}
+
+.flex-around {
+    justify-content: space-around;
+}
+
+.flex-evenly {
+    justify-content: space-evenly;
+}
+
+.flex-between {
+    justify-content: space-between;
+}
+
+.flex-start {
+    justify-content: flex-start;
+}
+
+.flex-end {
+    justify-content: flex-end;
+}
+
+.flex-center {
+    justify-content: center;
+}
+
+.flex-align-center {
+    align-items: center;
+}
+
+.flex-align-start {
+    align-items: flex-start;
+}
+
+.flex-align-stretch {
+    align-items: stretch;
+}
+
+.flex-align-end {
+    align-items: flex-end;
+}
+
+.flex-align-baseline {
+    align-items: baseline;
+}
+
+.flex-wrap {
+    flex-wrap: wrap;
+}
+
+.flex-flow-wrap {
+    flex-flow: wrap;
+}
+
+.no-event {
+    pointer-events: none;
+}
+
+.capitalize {
+    text-transform: capitalize;
+}
+
+.uppercase {
+    text-transform: uppercase;
+}
+
+.italics {
+    font-style: italic;
+}
+
+.v-mid {
+    vertical-align: middle;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.bold-text {
+    font-family: ex2-bold;
+}
+
+.medium-text {
+    font-family: ex2-medium;
+}
+
+.light-text {
+    font-family: ex2-light;
+}
+
+.thin-text {
+    font-family: ex2-thin;
+}
+
+.extra-light-text {
+    font-family: ex2-extralight;
+}
+
+.full-page-center {
+    display: flex;
+    justify-content: center;
+    height: 100%;
+    width: 100%;
+    align-items: center;
+    flex-direction: column;
+}
+
+
+
+
+/* ::selection {
+    background: transparent;
+} */
+
+
+/* Styles for select box*/
+
+.mat-focused .mat-form-field-placeholder,
+.mat-form-field-placeholder {
+    color: #777777;
+    text-transform: uppercase;
+}
+
+.mat-form-field.mat-focused.mat-primary .mat-select-arrow {
+    color: #e20074;
+}
+
+.mat-form-field-ripple {
+    background-color: #e20074;
+}
+
+
+
+
+
+/*Styles for loader*/
+
+.loader,
+.loader:before,
+.loader:after {
+    border-radius: 50%;
+    width: 1em;
+    height: 1em;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+    -webkit-animation: load 1.8s infinite ease-in-out;
+    animation: load 1.8s infinite ease-in-out;
+}
+
+.loader {
+    color: #ed0295;
+    top: 50%;
+    font-size: 10px;
+    margin: auto;
+    text-indent: -9999em;
+    -webkit-animation-delay: -0.16s;
+    animation-delay: -0.16s;
+    position: absolute;
+    left: 0px;
+    margin: auto;
+    right: 0px;
+    z-index: 11;
+    transform: translateY(-300%);
+}
+
+.loader:before,
+.loader:after {
+    content: '';
+    position: absolute;
+    top: 0;
+}
+
+.loader:before {
+    left: -1.5em;
+    -webkit-animation-delay: -0.32s;
+    animation-delay: -0.32s;
+}
+
+.loader:after {
+    left: 1.5em;
+}
+
+.error-msg {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: #e20074;
+    text-transform: uppercase;
+    font-size: 1.3em;
+}
+
+
+
+
+
+
+
+
+
+/* critical value font */
+
+.critical-value {
+    color: #f2425f;
+}
+
+@-webkit-keyframes load {
+    0%,
+    80%,
+    100% {
+        box-shadow: 0 2.5em 0 -1.3em;
+    }
+
+    40% {
+        box-shadow: 0 2.5em 0 0;
+    }
+}
+
+@keyframes load {
+    0%,
+    80%,
+    100% {
+        box-shadow: 0 2.5em 0 -1.3em;
+    }
+
+    40% {
+        box-shadow: 0 2.5em 0 0;
+    }
+}
+
+.rule-parameters hr,
+.entity-details hr {
+    width: 20%;
+    border: 0;
+    background-color: #ddd;
+    height: 0.2em;
+}
+
+.primary-highlight {
+    color: #e60127;
+}
+
+.secondary-highlight {
+    color: #00b946;
+}
+
+.highlight {
+    background-color: yellow;
+}
+
+input:-webkit-autofill {
+    background-color: transparent!important;
+}
+
+
+
+
+
+
+
+
+/* style for compliance dashboard */
+
+.compliance-dashboard-wrapper {
+    width: 100%;
+    height: 100%;
+    font-size: 1em;
+}
+
+.floating-widgets-filter-wrapper {
+    padding: 0em 1.5em 1.5em;
+}
+
+
+
+
+
+
+
+
+
+/* Left side section */
+
+.floating-widgets-section-full {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.floating-widgets-section {
+    width: 73%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.floating-widgets-header {
+    min-height: 4em;
+    padding: 0em 1.8em;
+}
+
+.floating-widgets-header h1 {
+    text-transform: capitalize;
+}
+
+.widget.widget-container {
+    padding-bottom: 2em;
+}
+
+.filters-options-wrapper {
+    display: inline-block;
+    padding-top: 1em;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: 0.2s ease;
+    width: 0;
+    transition-delay: 0.4s;
+    transform-origin: left;
+    transform: translate(-5px, -5px) scale(0);
+}
+
+.filters-options-wrapper.active {
+    width: 100%;
+    transform: translate(0px, 0px) scale(1);
+}
+
+.filter-icon-wrapper {
+    position: relative;
+}
+
+.mr-icon {
+    color: #aaaaaa;
+    font-size: 1.4em;
+    transition: 0.4s ease;
+    transition-delay: 0.2s;
+}
+
+.mr-icon.active {
+    color: #e20074;
+}
+
+.mr-icon.active:hover {
+    color: #e20074;
+}
+
+.mr-icon:hover {
+    color: #868686;
+}
+
+.mat-form-field-infix {
+    border-top: none!important;
+}
+
+.floating-widgets-container {
+    overflow: auto;
+    overflow: overlay;
+}
+
+.widget-wrapper {
+    width: 100%;
+    padding: 0 1.25em 2em 1.25em;
+    box-sizing: border-box;
+    opacity: 1;
+}
+
+.widget {
+    width: 100%;
+}
+
+.widget-admin {
+    width: 100%;
+    display: flex;
+    position: relative;
+    height: calc(100vh - 19em);
+    flex-direction: column;
+    align-items: center;
+    background: #fff;
+    box-shadow: 0 1px 7px -1px #0000001e, 0 2px 4px 0 #00000023;
+    margin-top: 2px;
+}
+
+.mr-selectBox {
+    width: 150px;
+    margin-right: 1em;
+}
+
+/* Select box styles */
+
+.mr-selectBox {
+    width: 11em;
+    margin-right: 1em;
+}
+
+/* Select box styles end here */
+
+
+/* offline.js styles here */
+
+html body .offline-ui {
+    box-shadow: 0 0 6px 2px rgba(0, 0, 0, 0.2);
+    transition: 0.3s ease;
+    border-radius: 3px;
+    top: 1px;
+    opacity: 0.93;
+    color: white;
+    background: #37342b;
+    font-family: ex2-light;
+    letter-spacing: 0.24px;
+}
+
+html body .offline-ui.offline-ui-up .offline-ui-retry {
+    display: none;
+}
+
+html body .offline-ui .offline-ui-retry {
+    outline: none;
+    border: none;
+    color: white;
+    font-family: ex2-light;
+    background: #ed0295;
+    display: flex;
+    align-items: center;
+    border-radius: 4px;
+    text-shadow: none;
+    height: 2.2em;
+    box-shadow: none;
+    padding: 0.88em 1em;
+}
+
+html body .offline-ui.offline-ui-down.offline-ui-connecting .offline-ui-content:after,
+html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-content:after {
+    background: rgb(237, 2, 149);
+}
+
+html body .offline-ui.offline-ui-down .offline-ui-content:after {
+    background: rgb(237, 2, 149);
+}
+
+html body .offline-ui.offline-ui-down.offline-ui-connecting .offline-ui-content:after,
+html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-content:after {
+    background: rgb(237, 2, 149);
+}
+
+
+html body .offline-ui.offline-ui-down.offline-ui-connecting:after,
+html body .offline-ui.offline-ui-down.offline-ui-waiting:after {
+    border-top-color: rgba(255, 255, 255, 0.5);
+    border-left-color: rgba(255, 255, 255, 0.5);
+}
+
+html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
+    display: flex;
+}
+
+
+
+
+
+
+
+
+/* Right side section */
+
+.fixed-widgets-section {
+    width: 27%;
+    height: 100%;
+    background-color: #eff3f6;
+    box-shadow: -1px 0px 5px -1px rgba(0, 0, 0, 0.15);
+    position: relative;
+    z-index: 3;
+}
+
+.compliance-issues-container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    overflow: overlay;
+}
+
+.sub-header,
+.sub-head {
+    padding: 0.8em;
+    background-color: inherit;
+    border: solid 1px #d6e2f1;
+    color: #555;
+    font-size: 1em;
+}
+
+.widget-container {
+    border-radius: 3px;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+    border: solid 1px #d6e2f1;
+}
+
+.drop-options {
+    height: 2em;
+    width: 11.25em;
+    border-radius: 3px;
+    background-color: #ffffff;
+    border: solid 1px #c3cbd7;
+    position: relative;
+    transition: 0.3s ease;
+    /*padding: 0 1em 0 0.6em;*/
+    cursor: pointer;
+    line-height: 1.8em;
+}
+
+.z-index {
+    z-index: 13;
+}
+
+.drop-options:hover {
+    box-shadow: 2px 1px 6px -1px rgba(0, 0, 0, 0.13);
+}
+
+.drop-search-box:hover {
+    box-shadow: 2px 1px 6px -1px rgba(0, 0, 0, 0.13);
+}
+
+.drop-search-box {
+    height: 2em;
+    transition: 0.3s ease;
+    width: 21em;
+    border-radius: 3px;
+    background-color: #ffffff;
+    border: solid 1px #c3cbd7;
+    position: relative;
+    /*padding: 0 1em 0 2.5em;*/
+    cursor: pointer;
+    line-height: 1.8em;
+}
+
+.title-text {
+    display: inline-block;
+}
+
+.arrow-img {
+    transform: rotate(180deg);
+    margin-right: 1em;
+    transition: 0.4s ease;
+    cursor: pointer;
+}
+
+.arrow-img:hover {
+    transform: rotate(180deg) translateX(20%);
+}
+
+#patchingGraph .axis.axis--y path.domain {
+    stroke-width: 1px;
+    stroke: #ccc;
+}
+
+#patchingGraph .grid line {
+    stroke-dasharray: 2, 2;
+}
+
+.marker path {
+    fill: #f2425f;
+    stroke: #f2425f;
+    stroke-width: 2;
+}
+
+.markerToday path {
+    fill: #000;
+    stroke: #000;
+    stroke-width: 2;
+    stroke-dasharray: 3, 2;
+}
+
+.marker-bg {
+    fill: #f2425f;
+    stroke: #f2425f;
+    stroke-width: 2;
+}
+
+.marker-bg-text1 {
+    stroke: #fff;
+    font-size: 10px;
+    font-family: ex2-extralight;
+}
+
+.marker-bg-text2 {
+    stroke: #fff;
+    font-size: 8px;
+    font-family: ex2-extralight;
+    font-style: italic;
+}
+
+.marker-today {
+    stroke: #ed0295;
+    font-size: 10px;
+    font-family: ex2-extralight;
+}
+
+.marker-bg-circle {
+    stroke-dasharray: 3, 2;
+    fill: #fff;
+    stroke: green;
+    stroke-width: 2;
+}
+
+.marker-circle {
+    fill: #fff;
+    stroke: #5f68af;
+    stroke-width: 1.5;
+}
+
+
+
+/* doughnut chart center text classes */
+
+.units-label {
+    font-size: 1.7em;
+}
+
+.units-label-text {
+    font-size: 0.8em;
+    font-family: ex2-extralight;
+    stroke: #757575;
+    letter-spacing: .5px;
+}
+
+.units-label-center-text {
+    font-size: 1em;
+    font-family: 'ex2-light';
+    letter-spacing: 0.1px;
+    stroke: #302e2e;
+    fill: none;
+}
+
+/* --------------- colour for different severity------------- */
+
+.critical-bg {
+    background-color: #d40325;
+}
+
+.high-bg {
+    background-color: #f75c03;
+}
+
+.medium-bg {
+    background-color: #ffb00D;
+}
+
+.low-bg {
+    background-color: #ffe003;
+}
+
+.critical-color {
+    color: #d40325;
+}
+
+.high-color {
+    color: #f75c03;
+}
+
+.medium-color {
+    color: #ffb00D;
+}
+
+.low-color {
+    color: #ffe003;
+}
+
+.complaint {
+    color: rgb(0, 185, 70);
+}
+
+.rectText0 {
+    stroke: rgb(255, 255, 255);
+    font-size: 10px;
+    stroke-width: 0px;
+    fill: #fff;
+}
+
+.rectText1 {
+    stroke: rgb(255, 255, 255);
+    font-size: 10px;
+    stroke-width: 0px;
+    fill: #fff;
+}
+
+.widget-form-header{
+    padding: 1em 0.8em;
+    display: flex;
+    position: absolute;
+    right: 0;
+    top: 0;
+    justify-content:flex-start;
+    align-items: center;
+    background: #fff;
+    color: #555;
+    width: 100%;
+    font-size: 1em;
+    font-weight: bolder;
+    z-index: 3;
+    letter-spacing: 0.1 px; 
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.widget-form-footer{
+    padding: 1em 0.8em;
+    display: flex;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    justify-content:flex-end;
+    align-items: center;
+    background: #fff;
+    color: #555;
+    width: 100%;
+    font-size: 1em;
+    font-weight: bolder;
+    z-index: 3;
+    letter-spacing: 0.1 px; 
+    border-top: 1px solid #e0e0e0;
+}
+
+
+
+
+
+
+
+
+
+/* ----- The below style is added to customise scroll bars in windows google chrome ---- */
+
+.scroll-on-hover {
+    overflow: hidden;
+}
+
+.scroll-on-hover:hover {
+    overflow: auto;
+    overflow: overlay;
+}
+
+.scroll-on-hover-x {
+    overflow: hidden;
+}
+
+.scroll-on-hover-x:hover {
+    overflow-x: auto;
+    overflow-x: overlay;
+}
+
+
+.scroll-on-hover-y {
+    overflow: hidden;
+}
+
+.scroll-on-hover-y:hover {
+    overflow-y: auto;
+    overflow-y: overlay;
+}
+
+::-webkit-scrollbar {
+    max-width: 7px;
+    background-color: transparent;
+    /*border-radius: 0.25em;*/
+    max-height: 7px;
+    transition: 0.28s ease;
+}
+
+::-webkit-scrollbar-button {
+    /* 2 */
+    background-color: transparent;
+    display: none;
+}
+
+::-webkit-scrollbar-track {
+    /* 3 */
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-track-piece {
+    /* 4 */
+    background-color: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    /* 5 */
+    width: 7px;
+    background-color: #888;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-corner {
+    /* 6 */
+    display: none;
+    background-color: transparent;
+}
+
+::-webkit-resizer {
+    display: none;
+    background-color: transparent;
+}
+
+
+
+
+
+
+/* ----------------------------- Hover styling for links----------------------- */
+
+.link-text {
+    transition: all .3s ease !important;
+}
+
+.link-text-secondary {
+    transition: all .3s ease !important;
+}
+
+.link-text:hover {
+    color: #e20074 !important;
+    transform: scaleX(1.05) !important;
+}
+
+.link-text-secondary:hover {
+    color: #e20074 !important;
+    letter-spacing: 1.5px !important;
+}
+
+.anchor-link {
+    color: #e20074 !important;
+}
+
+.anchor-link:hover {
+    text-decoration: underline;
+}
+
+.pacman-anim {
+    position: fixed;
+    bottom: 4.5%;
+    left: 9.82449%;
+    z-index: 2;
+    transform: scale(0.9) translate(-50%, 0);
+    animation: download-jump 0.8s infinite ease;
+}
+
+@keyframes download-jump {
+    
+    0%, 100% {
+        transform: scale(0.9) translate(-50%, -7px);
+        opacity: 0.4;
+    }
+
+    10% {
+        opacity: 0.5;
+    }
+
+    90% {
+        transform: scale(0.9) translate(-50%, 0px);
+        opacity: 1
+    }
+
+
+}
+
+/*----------Css overwrite for ag grid datatable-----------*/
+
+.ag-body-viewport {
+    overflow: auto!important;
+    overflow: overlay!important;
+    overflow-x: auto!important;
+    overflow-x: overlay!important;
+    overflow-y: auto!important;
+    overflow-y: overlay!important;
+}
+
+.ag-theme-material .ag-header-row {
+    border-block-end: 2px solid #e0e0e0!important;
+}
+
+.ag-theme-material .ag-column-select-panel .ag-column-select-column-group span,
+.ag-theme-material .ag-column-select-panel .ag-column-select-column span {
+    text-transform: capitalize;
+}
+
+.ag-download {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 0.8em;
+    height: 1.33em;
+    cursor: pointer;
+}
+
+.ag-theme-material .ag-tool-panel .ag-column-select-panel {
+    border-bottom: none!important;
+}
+
+.ag-theme-material .ag-header-cell-label .ag-header-cell-text {
+    text-transform: capitalize;
+}
+
+.ag-bl-normal-east {
+    box-shadow: 0 0 6px -1px rgba(0, 0, 0, 0.2);
+}
+
+.ag-pinned-left-cols-container {
+    z-index: 4!important;
+}
+
+.ag-header-cell-filtered {
+    background-color: #ededed;
+}
+
+.ag-theme-material .ag-cell {
+    line-height: 36px!important;
+    user-select: all!important;
+}
+
+body .ag-tool-panel {
+    width: initial!important;
+    min-width: 240px;
+    overflow: hidden!important;
+    padding-right: 0.5em;
+}
+
+body .ag-tool-panel:hover {
+    overflow: auto!important;
+    overflow: overlay!important;
+}
+
+input:disabled,
+textarea:disabled {
+    cursor: not-allowed;
+}
+
+.x-percent {
+    position: relative;
+    width: 10%;
+    background-image: linear-gradient(to bottom, #f1f1f1, #dfdfdf);
+    border: solid 1px #d5d5d5;
+    text-align: center;
+    padding: 0.4em;
+}
+
+.x-label {
+    background: white;
+    text-align: center;
+    padding: 0.5em;
+    width: 10%;
+}
+
+.legend-color {
+    flex-shrink: 0;
+}
+
+.no-min-height {
+    min-height: 0em!important;
+}
+
+.underline-link-num {
+    border-bottom: 1px solid rgba(60, 80, 121, .5);
+}
+
+.underline-link-num:hover {
+    border-bottom: 1px solid #e20074 !important;
+}
+
+.highlight-link a {
+    color: #e20074 !important;
+}
+
+.highlight-link a:hover {
+    border-bottom: 1px solid #e20074 !important;
+}
+
+/**********************START CSS OF VULNERABILITY DETAILS PAGE************************************/
+
+li .details-left-value {
+    min-width: 14vw;
+}
+
+.details-list-value div {
+    padding: 0.3em 0.5em 0.3em 0;
+}
+
+.details-text {
+    font-size: 1.3em;
+    color: #333;
+    font-family: ex2-light;
+    letter-spacing: .2px;
+    line-height: 1.3;
+    padding-bottom: 2em;
+}
+
+.details-text div {
+    white-space: pre-line;
+}
+
+#software-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+#software-table.software-table table,
+#software-table.software-table th,
+#software-table.software-table td {
+    padding: 10px 5px;
+    text-align: center;
+    text-transform: capitalize;
+    font-size: 1.2em;
+}
+
+#software-table.software-table tr:nth-child(odd) {
+    background-color: #f9f9f9;
+}
+
+#software-table.software-table tr:first-child {
+    background-color: transparent;
+}
+
+#software-table.software-table th {
+    padding-top: 12px;
+    padding-bottom: 12px;
+    text-shadow: 0.33px 0;
+    border-bottom: 2px solid #dce3e9;
+    width: 50%;
+}
+
+/*****************END CSS OF VULNERABILITY DETAILS PAGE ********************************************/
+
+.show-links text.bar.bar-links, .show-links .graph-legend-cont span.legend-text span.legend-text-right.click-link {
+    transition: 0.2s ease;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.show-links text.bar-links.bar:hover, .show-links .graph-legend-cont span.legend-text span.legend-text-right.click-link:hover {
+    color: #ed0295;
+    text-decoration: underline;
+    fill: #ed0295;
+    text-shadow: 0.4px 0;
+    /* letter-spacing: 1px; */
+}
+
+.contextual-menu-container {
+    flex-shrink: 0;
+}
+
+.main-panel {
+    max-width: 94.3%;
+}
+
+.contextual-content-container {
+    flex-grow: 1;
+}
+
+.ngx-datepicker-container .ngx-datepicker-calendar-container {
+    z-index: 1;
+    max-width: 340px;
+    top: 30px!important;
+    left: 50%!important;
+    transform: translateX(-50%);
+}
+
+.day-unit.is-today.is-disabled {
+    color: #fff!important;
+}
+
+.day-unit.is-today.is-disabled:hover {
+    color: #a4a9b1!important;
+}
+
+input.common-cb + label {
+    border: 2px solid #919191;
+    width: 18px;
+    height: 18px;
+    border-radius: 3px;
+    background: #fff;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+input.common-cb + label img {
+    display: none;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    height: 12px;
+    width: 12px;
+}
+
+input.common-cb:checked + label img {
+    display: block;
+}
+
+input.common-cb:checked + label {
+    border: 2px solid #ed0074;
+    background: #ed0074;
+}
+
+
+@media print {
+    .hide-in-print {
+        visibility: hidden;
+    }
+}

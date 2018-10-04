@@ -1,0 +1,428 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+    <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+    <div class="floating-widgets-header flex flex-between">
+        <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text">{{pageTitle}}</h1>
+        </div>
+        <div class="md-stepper-horizontal orange" [ngClass]="{'md-stepper-horizontal-update':!isCreate}">
+            <div class="md-step active">
+                <div class="md-step-circle"><span class="fa fa-users"></span></div>
+                <div class="md-step-title">Group Details</div>
+                <div class="md-step-bar-left"></div>
+                <div class="md-step-bar-right" [ngClass]="{'md-step-active': (stepIndex>0)}"></div>
+            </div>
+            <div class="md-step" [ngClass]="{'active': (stepIndex>0)}" *ngIf="isCreate">
+                <div class="md-step-circle"><span class="fa fa-cloud"></span></div>
+                <div class="md-step-title">Domain Details</div>
+                <div class="md-step-bar-left" [ngClass]="{'md-step-active': (stepIndex>0)}"></div>
+                <div class="md-step-bar-right" [ngClass]="{'md-step-active': (stepIndex>1)}"></div>
+            </div>
+            <div class="md-step" [ngClass]="{'active': (stepIndex>1)}" *ngIf="isCreate">
+                <div class="md-step-circle"><span class="fa fa-circle"></span></div>
+                <div class="md-step-title">Target Details</div>
+                <div class="md-step-bar-left" [ngClass]="{'md-step-active': (stepIndex>1)}"></div>
+                <div class="md-step-bar-right" [ngClass]="{'md-step-active': (stepIndex>2)}"></div>
+            </div>
+            <div class="md-step" [ngClass]="{'active': (stepIndex>2)}">
+                <div class="md-step-circle"><span class="fa fa-tasks"></span></div>
+                <div class="md-step-title">Attribute Details</div>
+                <div class="md-step-bar-left" [ngClass]="{'md-step-active': (stepIndex>2)}"></div>
+                <div class=" md-step-bar-right "></div>
+            </div>
+        </div>
+    </div>
+    <div class="floating-widgets-container ">
+        <section>
+            <ul>
+                <li class="widget-wrapper relative ">
+                    <div class="data-table-wrap relative ">
+                        <div class="sub-head ">
+                            <div class="flex flex-between flex-align-center ">
+                                <div class="sub-head-title capitalize flex flex-align-center after-load ">
+                                    <div class="header-text ">{{stepTitle}}</div>
+                                </div>
+                                <ul class="target-type-input parameters" *ngIf="!isCreate && stepIndex==3 && showWidget">
+                                    <ng-select #targetType name="targetType" [(ngModel)]="targetTypeValue" [allowClear]="true" [items]="remainingTargetTypes" placeholder="Select Target Type" required>
+                                    </ng-select>
+                                    <button class="target-type-btn tmbutton btm30 ib" [disabled]="targetTypeValue=='' || targetTypeValue.length==0" (click)="addTagetType(targetTypeValue)">+ Add</button>
+                                </ul>
+                                <input type="text" class="searchBox" placeholder="Filter Attributes..." [(ngModel)]="searchTerm" (ngModelChange)="searchAttribute()" *ngIf="stepIndex==3 && showWidget">
+                            </div>
+                        </div>
+                        <div [hidden]="hideContent">
+                            <div class="data-content group-details">
+                                <div class="pacman-progress" [hidden]="!assetLoader">
+                                    <pacman-loading></pacman-loading>
+                                    <div class="title">
+                                        Please Wait...
+                                    </div>
+                                    <div class="pacman-alert-message">
+                                        <span class="highlight-pink">{{assetLoaderTitle}}</span> is been loading...
+                                    </div>
+                                </div>
+                                <div class="pacman-progress pacman-alert" [hidden]="!assetLoaderFailure">
+                                    <div class="sa-icon sa-error animateErrorIcon" style="display: block;">
+                                        <span class="sa-x-mark animateXMark">
+                                            <span class="sa-line sa-left"></span>
+                                        <span class="sa-line sa-right"></span>
+                                        </span>
+                                    </div>
+                                    <div class="title">
+                                        Loading Failed!!!
+                                    </div>
+
+                                    <div class="pacman-alert-message">
+                                        Failed in loading <span class="highlight-pink small">{{assetLoaderTitle}}</span> ...
+                                    </div>
+                                    <button class="sa-x-btn" type="button" (click)="closeAssetErrorMessage()"><div><i class="fa fa-remove"></i>  CLOSE</div></button>
+                                </div>
+                                <div class="formcontainerwrapper" [hidden]="pageContent[0].hide">
+                                    <div class="asset-formctn">
+                                        <div class="formctnleft">
+                                            <div class="input-box" *ngIf="!isCreate">
+                                                <label>Group Name</label>
+                                                <ul class="text-value">
+                                                    {{groupName}}
+                                                </ul>
+                                            </div>
+                                            <div class="input-box" *ngIf="isCreate">
+                                                <label>Group Name *
+                                                    <span *ngIf="isGroupNameValid==0" class="not-available">(Not Available)</span>
+                                                    <span *ngIf="isGroupNameValid==1" class="available">(Available)</span>
+                                                </label>
+                                                <ul class="input-wrapper">
+                                                    <input type="text" name="groupName" class="inputarea-container" placeholder="Enter the Group Name" [(ngModel)]="assetForm.groupName" (input)="isGroupNameAvailable($event.target.value)" autocomplete="off">
+                                                </ul>
+                                            </div>
+                                            <div class="input-box">
+                                                <label>Display Name *</label>
+                                                <ul class="input-wrapper">
+                                                    <input type="text" name="displayName" class="inputarea-container" placeholder="Enter the Display Name" [(ngModel)]="assetForm.displayName" autocomplete="off">
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="formctnright">
+                                            <div class="input-box">
+                                                <label>Type *</label>
+                                                <ul class="input-wrapper">
+                                                    <input type="text" name="type" class="inputarea-container" placeholder="Enter Type" [(ngModel)]="assetForm.type" autocomplete="off">
+                                                </ul>
+                                            </div>
+                                            <div class="input-box">
+                                                <label>Created By *</label>
+                                                <ul class="input-wrapper">
+                                                    <input type="text" name="createdBy" class="inputarea-container" placeholder="Enter Created By" [(ngModel)]="assetForm.createdBy" autocomplete="off">
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="formctn">
+                                            <div class="bm10 input-box">
+                                                <label>Description</label>
+                                                <ul>
+                                                    <textarea name="description" class="textarea-container " placeholder="Enter Group Description" [(ngModel)]="assetForm.description"></textarea>
+                                                </ul>
+                                            </div>
+                                            <div class="input-box">
+                                                <input type="checkbox" id="test5" name="isDisplayAssetGroupsEnabled" [checked]="assetForm.visible" [(ngModel)]="assetForm.visible">
+                                                <label for="test5" name="isDisplayAssetGroupsEnabled" class="bm30">Display Asset Groups</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="formcontainerwrapper" *ngIf="!pageContent[1].hide ">
+                                    <div class="attribute-contents asset-formctn">
+                                        <div class="outer-div">
+                                            <div class="list-select inner-div attrlist">
+                                                <h1>Available Domains</h1>
+                                                <button class="move-btn move-btn-first" type="button" (click)="moveAllItemsToRight()" [disabled]="availableItems.length==0"><i class="fa fa-chevron-right"></i><i class="fa fa-chevron-right"></i></button>
+                                                <button class="move-btn" type="button" (click)="moveItemToRight()" [disabled]="availChoosedItemsCount==0"><i class="fa fa-chevron-right"></i></button>
+                                                <input type="text" class="filter-box" placeholder="Filter Values" [(ngModel)]="searchAvailableDomainTerms" (ngModelChange)="searchAvailableDomains()">
+                                                <ul>
+                                                    <li *ngFor="let availableItem of availableItems; let idx = index" (click)="onClickAvailableItem(idx, availableItem, availableItem.domainName)" [ngClass]="{selected: this.availChoosedItems[idx]}">{{availableItem.domainName}}</li>
+                                                    <div class="not-found" *ngIf="searchAvailableDomainTerms!='' && availableItems.length==0">
+                                                        <div class="not-found-image"></div>
+                                                        <div class="not-found-title">
+                                                            No values matching for :
+                                                        </div>
+                                                        <div class="highlight-pink not-found-title">
+                                                            <b>{{searchAvailableDomainTerms}}</b>
+                                                        </div>
+                                                    </div>
+                                                </ul>
+                                            </div>
+                                            <div class="exchange list-select inner-div">
+                                                <ul>
+                                                    <i class="fa fa-exchange"></i>
+                                                </ul>
+                                            </div>
+
+                                            <div class="list-select inner-div attrlist">
+                                                <h1>Selected Domains</h1>
+                                                <button class="move-btn move-btn-first" type="button" (click)="moveAllItemsToLeft()" [disabled]="selectedItems.length==0"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></button>
+                                                <button class="move-btn" type="button" (click)="moveItemToLeft()" [disabled]="selectChoosedItemsCount==0"><i class="fa fa-chevron-left"></i></button>
+                                                <input class="filter-box" placeholder="Filter Values" [(ngModel)]="searchSelectedDomainTerms" (ngModelChange)="searchSelectedDomains()">
+                                                <ul>
+                                                    <li *ngFor="let selectedItem of selectedItems; let idx = index" (click)="onClickSelectedItem(idx, selectedItem, selectedItem.domainName)" [ngClass]="{selected: this.selectChoosedItems[idx]}">{{selectedItem.domainName}}</li>
+                                                    <div class="not-found" *ngIf="searchSelectedDomainTerms!=='' && selectedItems.length==0 && selectedItemsCopy.length!=0">
+                                                        <div class="not-found-image"></div>
+                                                        <div class="not-found-title">
+                                                            No values matching for :
+                                                        </div>
+                                                        <div class="highlight-pink not-found-title">
+                                                            <b>{{searchSelectedDomainTerms}}</b>
+                                                        </div>
+                                                    </div>
+                                                    <div class="not-selected not-found" *ngIf="selectedItems.length==0 && selectedItemsCopy.length==0">
+                                                        <div class="not-selected-image"></div>
+                                                        <div class="not-found-title">
+                                                            No domains selected!!!
+                                                        </div>
+                                                    </div>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="formcontainerwrapper" *ngIf="!pageContent[2].hide ">
+                                    <div class="attribute-contents asset-formctn">
+                                        <div class="outer-div">
+                                            <div class="list-select inner-div attrlist">
+                                                <h1>Available Targets</h1>
+                                                <button class="move-btn move-btn-first" type="button" (click)="moveTdAllItemsToRight()" [disabled]="availableTdItems.length==0"><i class="fa fa-chevron-right"></i><i class="fa fa-chevron-right"></i></button>
+                                                <button class="move-btn" type="button" (click)="moveTdItemToRight()" [disabled]="availTdChoosedItemsCount==0"><i class="fa fa-chevron-right"></i></button>
+                                                <input type="text" class="filter-box" placeholder="Filter Values" [(ngModel)]="searchAvailableTargetTerms" (ngModelChange)="searchAvailableTargets()">
+                                                <ul>
+                                                    <li *ngFor="let availableTdItem of availableTdItems; let idx = index" (click)="onClickAvailableTdItem(idx, availableTdItem, availableTdItem.targetName)" [ngClass]="{selected: this.availTdChoosedItems[idx]}">{{availableTdItem.targetName}}</li>
+                                                    <div class="not-found" *ngIf="searchAvailableTargetTerms!='' && availableTdItems.length==0">
+                                                        <div class="not-found-image"></div>
+                                                        <div class="not-found-title">
+                                                            No values matching for :
+                                                        </div>
+                                                        <div class="highlight-pink not-found-title">
+                                                            <b>{{searchAvailableTargetTerms}}</b>
+                                                        </div>
+                                                    </div>
+                                                </ul>
+                                            </div>
+                                            <div class="exchange list-select inner-div">
+                                                <ul>
+                                                    <i class="fa fa-exchange"></i>
+                                                </ul>
+                                            </div>
+
+                                            <div class="list-select inner-div attrlist">
+                                                <h1>Selected Targets</h1>
+                                                <button class="move-btn move-btn-first" type="button" (click)="moveTdAllItemsToLeft()" [disabled]="selectedTdItems.length==0"><i class="fa fa-chevron-left"></i><i class="fa fa-chevron-left"></i></button>
+                                                <button class="move-btn" type="button" (click)="moveTdItemToLeft()" [disabled]="selectTdChoosedItemsCount==0"><i class="fa fa-chevron-left"></i></button>
+                                                <input class="filter-box" placeholder="Filter Values" [(ngModel)]="searchSelectedTargetTerms" (ngModelChange)="searchSelectedTargets()">
+                                                <ul>
+                                                    <li *ngFor="let selectedTdItem of selectedTdItems; let idx = index" (click)="onClickSelectedTdItem(idx, selectedTdItem, selectedTdItem.targetName)" [ngClass]="{selected: this.selectTdChoosedItems[idx]}">{{selectedTdItem.targetName}}</li>
+                                                    <div class="not-found" *ngIf="searchSelectedTargetTerms!=='' && selectedTdItems.length==0 && selectedTdItemsCopy.length!=0">
+                                                        <div class="not-found-image"></div>
+                                                        <div class="not-found-title">
+                                                            No values matching for :
+                                                        </div>
+                                                        <div class="highlight-pink not-found-title">
+                                                            <b>{{searchSelectedTargetTerms}}</b>
+                                                        </div>
+                                                    </div>
+                                                    <div class="not-selected not-found" *ngIf="selectedTdItems.length==0 && selectedTdItemsCopy.length==0">
+                                                        <div class="not-selected-image"></div>
+                                                        <div class="not-found-title">
+                                                            No targets selected!!!
+                                                        </div>
+                                                    </div>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="formcontainerwrapper" *ngIf="!pageContent[3].hide">
+                                    <div class="attribute-contents asset-formctn">
+                                        <div class="outer-div">
+                                            <div class="inner-div attrlist" *ngFor="let attributeDetail of allAttributeDetails; let idx = index;">
+                                                <h1>{{attributeDetail.targetName}}</h1>
+                                                <div class="attrspacer"></div>
+                                                <h3 class="added" *ngIf="!attributeDetail.includeAll">{{attributeDetail.attributes.length}}</h3>
+                                                <h3 class="added" *ngIf="attributeDetail.includeAll">{{attributeDetail.allAttributesName.length}}</h3>
+                                                <h2 class="text">Attributes added</h2>
+                                                <div class="btnctn"><button class="attrbutton" (click)="openAttributeConfigure(attributeDetail, idx)" [disabled]="attributeDetail.includeAll">CONFIG</button></div>
+                                                <div class="include-all-checkbox btnctn">
+                                                    <input type="checkbox" id="{{attributeDetail.targetName}}" (change)="includeAllAttributes(attributeDetail, idx)" name="{{attributeDetail.targetName}}" [checked]="attributeDetail.includeAll">
+                                                    <label for="{{attributeDetail.targetName}}">Include All</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="attributes-not-found pacman-alert" *ngIf="allAttributeDetails.length==0">
+                                        <div class="not-found-image"></div>
+                                        <div class="attributes-not-found-title">
+                                            Attributes not found for :
+                                        </div>
+                                        <div class="highlight-pink attributes-not-found-title">
+                                            <b>{{searchTerm}}</b>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="data-table-paginator-wrap flex flex-center flex-align-center ">
+                                <a class="save-container flex flex-row-reverse ">
+                                    <button class="submit-btn uppercase" (click)="prevStep()" [disabled]="!(stepIndex>0) || assetLoader"><i class="fa fa-chevron-left"></i> PREV</button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse" *ngIf="stepIndex<3">
+                                    <button class="submit-btn uppercase" (click)="nextStep()" [disabled]="isStepDisabled(stepIndex) || assetLoader">NEXT  <i class="fa fa-chevron-right"></i></button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse" *ngIf="stepIndex==3 && isCreate">
+                                    <button class="submit-btn uppercase" (click)="create(assetForm)"><i class="fa fa-check"></i> SUBMIT</button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse" *ngIf="stepIndex==3 && !isCreate">
+                                    <button class="submit-btn uppercase" (click)="update(assetForm)"><i class="fa fa-check"></i> UPDATE</button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse">
+                                    <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CANCEL</button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isAssetGroupFailed">
+                            <div class="sa-icon sa-error animateErrorIcon" style="display: block;">
+                                <span class="sa-x-mark animateXMark">
+                                    <span class="sa-line sa-left"></span>
+                                <span class="sa-line sa-right"></span>
+                                </span>
+                            </div>
+                            <div class="pacman-alert-message">
+                                {{failedTitleStart}} <span class="highlight-pink">{{highlightedText}}</span> {{failedTitleEnd}}
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="closeErrorMessage()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isAssetGroupSuccess">
+                            <div class="sa-icon sa-success animate">
+                                <span class="sa-line sa-tip animateSuccessTip"></span>
+                                <span class="sa-line sa-long animateSuccessLong"></span>
+                                <div class="sa-placeholder"></div>
+                                <div class="sa-fix"></div>
+                            </div>
+                            <div class="pacman-alert-message">
+                                {{successTitleStart}} <span class="highlight-pink">{{highlightedText}}</span> {{successTitleEnd}}
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-progress" *ngIf="assetGroupLoader">
+                            <pacman-loading></pacman-loading>
+                            <div class="title">
+                                Please Wait...
+                            </div>
+                            <div class="pacman-alert-message">
+                                {{progressText}} <span class="highlight-pink">{{highlightedText}}</span> is in progress...
+                            </div>
+                        </div>
+                        <div [@fadeInOut]="state" class="overlay" (click)="closeAttributeConfigure()"></div>
+                        <div class="side-bar-window configure-attributes" [@slideInOut]="menuState">
+                            <div class="data-table-wrap relative">
+                                <div class="sub-head">
+                                    <div class="flex flex-between flex-align-center ">
+                                        <div class="sub-head-title capitalize flex flex-align-center after-load ">
+                                            <div class="header-text ">Configure Attributes</div>
+                                        </div>
+                                        <div class="popup">
+                                            <a class="close fa fa-times-circle" (click)="closeAttributeConfigure()"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="data-content">
+                                    <div class="">
+                                        <div class="asset-formctn">
+                                            <div class="formctn">
+                                                <div class="input-box">
+                                                    <ul class="parameters">
+                                                        <label>Select Attribute Name :</label>
+                                                        <ng-select #attributeNameElement name="attributeName" [(ngModel)]="attributeName" (selected)="getAttributeValues($event)" [allowClear]="true" [items]="selectedAttributeDetails" placeholder="Select Attribute Name" required>
+                                                        </ng-select>
+                                                    </ul>
+                                                    <ul class="parameters">
+                                                        <label>Enter Attribute Value :</label>
+                                                        <ul class="input-wrapper">
+                                                            <input type="text" name="attributeValue" [(ngModel)]="attributeValue" class="inputarea-container " placeholder="Enter Attribute Value" required>
+                                                        </ul>
+                                                    </ul>
+                                                    <button class="tmbutton btm30 ib" [disabled]="attributeValue=='' || attributeName.length==0" (click)="addAttributes(attributeName, attributeValue)">+ Add</button>
+                                                </div>
+                                            </div>
+                                            <div class="data-table-content">
+                                                <div class='data-table-head-outer'>
+                                                    <div class="data-table-head flex flex-around flex-align-center">
+                                                        <div class="head-cells table-cells">
+                                                            Attribute Name
+                                                            <span class="list-sortable-arrow relative"></span>
+                                                        </div>
+                                                        <div class="head-cells table-cells">
+                                                            Attribute Value
+                                                            <span class="list-sortable-arrow relative"></span>
+                                                        </div>
+                                                        <div class="head-cells table-cells">
+                                                            Action
+                                                            <span class="list-sortable-arrow relative"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <!-- Table Content -->
+                                                <div class='data-table-inner-wrap relative' *ngIf="selectedIndex!==-1">
+                                                    <div currentTable class="data-table-inner-content data-table-current">
+                                                        <div class="data-table-rows flex flex-around flex-align-center" *ngFor="let attribute of allAttributeDetails[selectedIndex].attributes; let idx = index">
+                                                            <div class="row-cells table-cells flex flex-align-center">
+                                                                <div class="column-wrapper">
+                                                                    <div class='nowrap-ellipsis'>
+                                                                        {{attribute.name}}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row-cells table-cells flex flex-align-center">
+                                                                <div class="column-wrapper">
+                                                                    <div class='nowrap-ellipsis'>
+                                                                        {{attribute.value}}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="row-cells table-cells flex flex-align-center">
+
+                                                                <div class="column-wrapper">
+                                                                    <div class='nowrap-ellipsis'>
+                                                                        <a (click)="deleteAttributes(attribute.name, idx)">Delete</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>

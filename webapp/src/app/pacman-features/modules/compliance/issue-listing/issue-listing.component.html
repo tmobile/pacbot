@@ -1,0 +1,60 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.admin-rights]='adminAccess' [class.filter-absent]='filters.length == 0'>
+    <div class="page-overlay" *ngIf='showExceptionalModal'></div>
+    <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+    <div class="floating-widgets-header flex flex-between">
+        <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text nowrap-ellipsis">{{pageTitle}}</h1>
+        </div>
+        <div class='flex relative z-index' [class.disabled]='showExceptionalModal'>
+            <div class='drop-options'>
+                <app-searchable-dropdown *ngIf='filterTypeLabels.length' [firstDD]='true' (selection)='changeFilterType($event)' [placeholder]="'Select filter type'" [items]='filterTypeLabels'></app-searchable-dropdown>
+            </div>
+            <div class='drop-search-box'>
+                <app-searchable-dropdown (selection)='changeFilterTags($event)' [placeholder]="'Search filter tags'" [items]='filterTagLabels'></app-searchable-dropdown>
+            </div>
+        </div>
+    </div>
+    <div class='floating-widgets-filter-wrapper' *ngIf='filters.length'>
+        <app-filtered-selector (deleteAllFilters)="deleteFilters($event)" (deleteFilter)="deleteFilters($event)" [(filteredArray)]="filters"></app-filtered-selector>
+    </div>
+    <div class="floating-widgets-container">
+        <section>
+            <ul>
+                <li class="widget-wrapper relative">
+                    <div>
+                        <div class='relative'>
+                            <app-data-table [(cbModel)]='cbModel' (cbClicked)='checkBoxClicked($event)' [checkBox]='adminAccess' [searchTextValues]='searchTxt' [showGenericMessage]='showGenericMessage' [errorValue]='errorValue' [parentName]="'policyDetailsTableMessage'" [showingArr]='showingArr' [outerArr]='outerArr' [searchableHeader]='true' [allColumns]='allColumns'
+                            [dataHead]="'Policy Violations'" (selectedRow)='goToDetails($event)' [columnWhiteList]="['Issue ID', 'Policy Name', 'Resource ID', 'Status', 'Severity', 'Rule Category', 'Account Name', 'Account ID', 'AWS Region', 'Created On', 'Modified On', 'Target Type', 'Description', 'Application', 'Environment']"
+                            [firstPaginator]='firstPaginator' [lastPaginator]='lastPaginator' [totalRows]='totalRows' [currentPointer]='currentPointer' (searchRowTxt)='searchCalled($event)' (previousPageCalled)='prevPg()' (nextPageCalled)='nextPg()' (searchTriggerred)='callNewSearch()'
+                            [popRows]='popRows' [checkedList]='cbArr' (rowClickText)='handlePopClick($event)'>
+                            </app-data-table>
+                            <app-issue-exception *ngIf='adminAccess && showExceptionalModal' [issueList]='cbArr' [exceptionAction]='exceptionAction' (closeExceptionalModal)='closeExceptionalModal($event)' (refreshDataTable)='refreshDataTable($event)'></app-issue-exception>
+                        </div>
+                        <div class='flex flex-align-center flex-between bottom-wrap no-shrink'>
+                            <div class="data-table-desc">Note: This page may include 'Exempted' issues with 'Open' issues</div>
+                            <div>
+                                <app-button class='each-button' *ngIf='adminAccess && issueListingdata.length > 0' [class.disabled]='showExceptionalModal || cbArr.length === 0' (click)='$event.stopPropagation(); showExceptionModal("addException")'>ADD EXCEPTION</app-button>
+                                <app-button class='each-button' *ngIf='adminAccess && issueListingdata.length > 0' [class.disabled]='showExceptionalModal || cbArr.length === 0' (click)='$event.stopPropagation(); showExceptionModal("revokeException")'>REVOKE EXCEPTION</app-button>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>

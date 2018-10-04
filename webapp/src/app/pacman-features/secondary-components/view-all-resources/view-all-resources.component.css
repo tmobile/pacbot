@@ -1,0 +1,133 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.view-all-resources-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgb(241, 241, 241);
+    z-index: 14;
+    width: 82vw;
+    margin: auto 3.5vw auto 14.5vw;
+    height: 78vh;
+    padding: 0 2em;
+    border-radius: 5px;
+}
+
+.resources-header {
+    height: 10vh;
+    padding: 3vh 0;
+}
+
+.resource-categories {
+    /*min-height: 7vh;
+    height: auto;
+    handled by flex */
+}
+
+.resource-tiles-container {
+    overflow-y: hidden;
+    margin: 1em 0 0em;
+    height: 53vh; /* Added this height to keep the save button at one position and not move when content changes. */
+}
+
+.resource-tiles-container:hover {
+    overflow-y: auto; overflow-y: overlay;
+}
+
+.resource-tiles-container li.flex {
+    margin: 1vh;
+    width: calc(82vw / 7 - 2.4em);
+    min-width: 9em;
+}
+
+.resource-categories li.flex {
+    padding: 0.5em 2em 0.5em 0;
+    cursor: pointer;
+}
+
+.resource-categories .category-color {
+    border: none;
+    width: 1em;
+    height: 1em;
+    position: relative;
+    border-radius: 50%;
+    top: 50%;
+    transform: translate(0, -50%);
+}
+
+.resource-categories .category-name {
+    font-size: 1.2em;
+    padding-left: 0.7em;
+    text-transform: capitalize;
+    color: rgba(51, 51, 51, 0.8);
+    transition: all 0.2s ease;
+}
+
+.resource-categories li.flex:hover .category-name,
+.resource-categories li.flex.active .category-name {
+    color: rgba(51, 51, 51, 1) !important;
+    font-weight: bold;
+}
+
+.resource-categories li.flex.active {
+    font-family: ex2-bold;
+}
+
+.close-overlay {
+    position: absolute;
+    display: block;
+    right: 2vw;
+    top: 4vh;
+    width: 2.5em;
+    height: 2.5em;
+}
+
+img.close-icon {
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+    transition: 0.4s ease;
+}
+
+.close-overlay:hover {
+    transform: rotate(0deg);
+    transition: 0.4s ease;
+}
+
+.close-overlay:not(focus) {
+    transform: rotate(90deg);
+    transition: 0.4s ease;
+}
+
+.save-container {
+    min-height: 3em;
+    margin: 1.5em 2em 1.5em;
+}
+
+.resource-tiles-container .no-content {
+    padding: 3em 0;
+    font-size: 2em;
+    text-align: center;
+    color: #ccc;
+    font-family: ex2-light;
+    transition: all 0.3s ease;
+}
+
+.view-all-resources-wrapper div:first-child {
+    min-height: 0;
+    flex: 1 1 auto;
+}

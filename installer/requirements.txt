@@ -1,0 +1,11 @@
+awscli==1.15.49
+boto3==1.7.48
+click==6.7
+docker-py==1.10.6
+progressbar==2.5
+python-terraform==0.10.0
+termcolor==1.1.0
+client==0.0.1
+websocket-client==0.53.0
+GitPython==2.1.11
+npm==0.1.1

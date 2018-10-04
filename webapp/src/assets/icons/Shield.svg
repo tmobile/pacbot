@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="91px" height="110px" viewBox="0 0 91 110" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Shield</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Statistics-Dashboard-v3.3" transform="translate(-996.000000, -504.000000)">
+            <g id="Group-8-Copy-7" transform="translate(958.000000, 502.000000)">
+                <g id="ic/verified_user/grey600" transform="translate(28.500000, 0.000000)">
+                    <g id="ic_verified_user_24px">
+                        <polygon id="Shape" points="0 0 110 0 110 110 0 110"></polygon>
+                        <path d="M55,4.58333333 L13.75,22.9166667 L13.75,50.4166667 C13.75,75.8541667 31.35,99.6416667 55,105.416667 C78.65,99.6416667 96.25,75.8541667 96.25,50.4166667 L96.25,22.9166667 L55,4.58333333 Z M45.8333333,77.9166667 L27.5,59.5833333 L33.9625,53.1208333 L45.8333333,64.9458333 L76.0375,34.7416667 L82.5,41.25 L45.8333333,77.9166667 Z" id="Shape" fill="#FF7F0D" fill-rule="nonzero"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

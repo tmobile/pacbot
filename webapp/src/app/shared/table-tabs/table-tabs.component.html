@@ -1,0 +1,28 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="data-table-tabs flex flex-between flex-align-center" *ngIf="tabsData">
+    <div class="tabs-header flex flex-align-center">
+        <div class="individual-tag-header filter-by">Filter by:</div>
+        <div (click)="selectTab(null, 0)" [class.selected]="!selected" class="individual-tag-header">
+            <span>All</span>
+        </div>
+        <div class="individual-tag-header" *ngFor="let tab of tabsData; let i = index " [class.selected]="tabSelected(tab)" (click)="selectTab(tab, i + 1)">
+            <span>{{tab['displayName']}}</span>
+        </div>
+    </div>
+    <div class="policies-count">
+        <ng-content selector="[message]"></ng-content>
+    </div>
+</div>

@@ -1,0 +1,123 @@
+[
+  {
+    "name": "admin",
+    "image": "${image}",
+    "essential": true,
+    "entrypoint": ["sh","-c"],
+    "command": ["./entrypoint.sh"],
+    "portMappings": [
+      {
+        "containerPort": 80,
+        "hostPort": 80
+      }
+    ],
+    "memory": 1024,
+    "networkMode": "awsvpc",
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "${log_group}",
+        "awslogs-region": "${region}",
+        "awslogs-stream-prefix": "${prefix_name}"
+      }
+    },
+    "environment": [
+      {
+        "name": "JAR_FILE",
+        "value": "${JAR_FILE}"
+      },
+      {
+        "name": "CONFIG_PASSWORD",
+        "value": "${CONFIG_PASSWORD}"
+      },
+      {
+        "name": "CONFIG_SERVER_URL",
+        "value": "${CONFIG_SERVER_URL}"
+      },
+      {
+        "name": "ES_CLUSTER_NAME",
+        "value": "${ES_CLUSTER_NAME}"
+      },
+      {
+        "name": "ES_HEIMDALL_HOST_NAME",
+        "value": "${ES_HEIMDALL_HOST_NAME}"
+      },
+      {
+        "name": "ES_HEIMDALL_PORT",
+        "value": "${ES_HEIMDALL_PORT}"
+      },
+      {
+        "name": "ES_HOST_NAME",
+        "value": "${ES_HOST_NAME}"
+      },
+      {
+        "name": "ES_PORT",
+        "value": "${ES_PORT}"
+      },
+      {
+        "name": "LOGGING_ES_HOST_NAME",
+        "value": "${LOGGING_ES_HOST_NAME}"
+      },
+      {
+        "name": "LOGGING_ES_PORT",
+        "value": "${LOGGING_ES_PORT}"
+      },
+      {
+        "name": "PACMAN_HOST_NAME",
+        "value": "${PACMAN_HOST_NAME}"
+      },
+      {
+        "name": "RDS_PASSWORD",
+        "value": "${RDS_PASSWORD}"
+      },
+      {
+        "name": "RDS_URL",
+        "value": "${RDS_URL}"
+      },
+      {
+        "name": "RDS_USERNAME",
+        "value": "${RDS_USERNAME}"
+      },
+      {
+        "name": "ES_UPDATE_HOST",
+        "value": "${ES_UPDATE_HOST}"
+      },
+      {
+        "name": "ES_UPDATE_PORT",
+        "value": "${ES_UPDATE_PORT}"
+      },
+      {
+        "name": "ES_UPDATE_CLUSTER_NAME",
+        "value": "${ES_UPDATE_CLUSTER_NAME}"
+      },
+      {
+        "name": "SECURITY_USERNAME",
+        "value": "${SECURITY_USERNAME}"
+      },
+      {
+        "name": "SECURITY_PASSWORD",
+        "value": "${SECURITY_PASSWORD}"
+      },
+      {
+        "name": "ACCESS_KEY",
+        "value": "${ACCESS_KEY}"
+      },
+      {
+        "name": "SECRET_KEY",
+        "value": "${SECRET_KEY}"
+      },
+      {
+        "name": "DOMAIN_URL",
+        "value": "${DOMAIN_URL}"
+      },
+      {
+        "name": "ADMIN_SERVER",
+        "value": "${ADMIN_SERVER}"
+      },
+      {
+        "name": "ROLE_ARN",
+        "value": "${ROLE_ARN}"
+      }
+    ]
+  }
+]

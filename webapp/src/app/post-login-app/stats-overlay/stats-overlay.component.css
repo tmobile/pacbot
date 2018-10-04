@@ -1,0 +1,383 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.overlay-vertical-center {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    transition: 0.4s ease;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    z-index: 11;
+    font-size: 1em;
+}
+
+.overlay-innerwrap {
+    width: 100%;
+    margin: 0;
+    height: 100%;
+    /* background-image: radial-gradient(circle at 50% 50%, #6c8aa2, #20384b);
+    */
+    background: url('../../../assets/images/bg/background.png') no-repeat;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    background-size: cover;
+}
+
+.event-container {
+    background-color: rgba(29, 65, 95, 0.61);
+    min-height: 100vh;
+}
+
+.header {
+    color: #fff;
+    padding: 0 3em;
+    height: 12vh;
+}
+
+.back-arrow {
+    margin-right: 0.5em;
+    width: 0.9em;
+    transition: 0.3s ease;
+    height: .7em;
+}
+
+.goBack:hover .back-arrow {
+    transform: translate(-5px);
+}
+
+.goBack {
+    cursor: pointer;
+    font-size: 2em;
+    font-family: ex2-extralight;
+}
+
+.download {
+    cursor: pointer;
+    padding-left: 10em;
+}
+
+.download-icon {
+    width: 2em;
+}
+
+.header-text {
+    font-size: 2em;
+    font-weight: bold;
+    letter-spacing: .5px;
+}
+
+.topSection {
+    color: #fff;
+    padding: 2em 4em;
+    /* margin-top: 4em; */
+    justify-content: space-around;
+    height: 42vh;
+}
+
+.bottomSection {
+    color: #fff;
+    padding: 2em 4em;
+    justify-content: space-around;
+    height: 46vh;
+}
+
+.events {
+    font-size: 1.2em;
+    text-align: center;
+    font-family: ex2-bold;
+    margin: 0 1em;
+    min-height: 16em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 20%;
+}
+
+.events-icon {
+    height: 6em;
+}
+
+.events-icon-middle {
+    height: 5em;
+}
+
+.events-text {
+    font-family: ex2-regular;
+    margin-bottom: 0.5em;
+    font-size: 1.1em;
+    letter-spacing: .5px;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.events-image-wrapper {
+    padding: 1.5em 0;
+}
+
+.opacity-0 {
+    opacity: 0;
+    font-size: 1.3em;
+    text-align: center;
+}
+
+.hide-this {
+    opacity: 1;
+}
+
+.events-count {
+    font-size: 1.5em;
+    margin: 1em 0;
+}
+
+.sub-text {
+    font-size: 0.8em;
+    font-family: ex2-extralight;
+}
+
+.year-wrapper {
+    margin: 25vh 0;
+    height: 50vh;
+    top: 0;
+    left: -7.5em;
+    background-color: #d0387e;
+    box-shadow: 0 3px 8px 1px rgba(49, 49, 49, 0.5);
+    width: 7em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-top-right-radius: 1.3em;
+    transition: .5s ease;
+}
+
+.show-year-wrapper {
+    left: 0;
+}
+
+.year-inner-wrapper {
+    transform: rotate(-90deg);
+    font-size: 3em;
+    white-space: nowrap;
+    color: #fff;
+}
+
+.year-inner-wrapper .month {
+    margin-right: .2em;
+    font-family: ex2-extralight;
+    letter-spacing: 2px;
+}
+
+.year-inner-wrapper .year {
+    font-family: ex2-light;
+    letter-spacing: .5px;
+}
+
+.graph-wrapper {
+    width: 18em;
+    height: 18em;
+}
+
+.topsection-each {
+    height: 17em;
+}
+
+.graph-chart-cont {
+    width: 100%;
+    height: 15em;
+}
+
+.arrow-indicator-up,
+.arrow-indicator-down {
+    display: inline-block;
+    width: 0;
+    height: 0;
+    content: '';
+    border: 5px solid;
+    margin-left: 10px;
+}
+
+.arrow-indicator-up {
+    border-color: #22cc3a transparent transparent transparent;
+    align-self: flex-end;
+}
+
+.arrow-indicator-down {
+    border-color: transparent transparent #f2425f transparent;
+    align-self: flex-start;
+}
+
+:host ::ng-deep app-error-message .error-handling .bold-text {
+    color: #fff;
+}
+
+:host ::ng-deep app-error-message .error-handling .light-text {
+    color: #ffffff;
+}
+
+/*
+    * below keyframe animations are added for page load animation in the stats page
+    */
+
+@keyframes rocket {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(15%);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+@keyframes bidirectional-arrow {
+    0% {
+        transform: rotate(0deg);
+    }
+    50% {
+        transform: rotate(-180deg);
+    }
+    100% {
+        transform: rotate(-360deg);
+    }
+}
+
+@keyframes hammer {
+    0% {
+        transform: rotate(0deg);
+    }
+    25%,
+    75% {
+        transform: rotate(45deg);
+    }
+    50% {
+        transform: rotate(10deg)
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+@keyframes asset-scanned {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+@keyframes aws-account {
+    0% {
+        transform: rotateY(0deg);
+    }
+    100% {
+        transform: rotateY(180deg);
+    }
+}
+
+@keyframes policy-evalutions {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.5);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.policy-evalutions img {
+    animation-name: policy-evalutions;
+    animation-duration: 1.5s;
+    animation-iteration-count: 1;
+    animation-timing-function: ease;
+    animation-delay: .5s;
+}
+
+.aws-account img {
+    animation-name: aws-account;
+    animation-duration: 1.5s;
+    animation-iteration-count: 1;
+    animation-timing-function: ease;
+    animation-delay: .5s;
+}
+
+.events-processed img {
+    animation-name: bidirectional-arrow;
+    animation-duration: 1.5s;
+    animation-iteration-count: 1;
+    animation-timing-function: ease;
+    animation-delay: .5s;
+}
+
+/* The element to apply the animation to */
+
+.policies-image-wrapper img {
+    animation-name: rocket;
+    animation-duration: 1.5s;
+    animation-iteration-count: 1;
+    animation-timing-function: ease;
+    animation-delay: .5s;
+}
+
+.policies-enforced img {
+    animation-name: hammer;
+    animation-duration: 1.5s;
+    animation-iteration-count: 1;
+    animation-timing-function: ease;
+    animation-delay: .5s;
+}
+
+.asset-scanned img {
+    animation-name: asset-scanned;
+    animation-duration: 1.5s;
+    animation-iteration-count: 1;
+    animation-timing-function: ease;
+    animation-delay: .5s;
+}
+
+/* ******************************************************************* */
+
+@media only screen and (min-width: 1920px) {
+    .overlay-innerwrap {
+        font-size: 1.4em;
+    }
+}
+@media only screen and (max-width: 1200px) {
+    .year-wrapper {
+        font-size: .5em;
+    }
+}
+
+.total-violations {
+    height: 21em;
+    max-width: 22em;
+    margin: 0 1em;
+}
+
+.bottomsection-each {
+    height: 17em;
+}
+
+.bg-wrapper {
+    background-color: rgba(0, 0, 0, 0.1);
+}

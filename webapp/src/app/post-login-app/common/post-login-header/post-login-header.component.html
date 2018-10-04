@@ -1,0 +1,86 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="post-login-header-wrapper flex-align-center flex flex-between relative ">
+    <div class="header-left flex flex-between flex-align-center">
+        <div class='burger-container' (click)='showMenu = true'>
+            <i class="fa fa-bars mr-burger-menu" aria-hidden="true"></i>
+        </div>
+        <a>
+            <app-default-asset-group></app-default-asset-group>
+        </a>
+    </div>
+    <div class="header-center center">
+        <nav>
+            <app-nav-icon class="nav-icon" [moduleName]="'compliance'" [iconImage]="navigationDetails.compliance.image" [activeIconImage]="navigationDetails.compliance.activeImage" [linkToRoute]="navigationDetails['compliance'].route" *ngIf="config.required.featureModules.COMPLIANCE_MODULE"></app-nav-icon>
+            <app-nav-icon class="nav-icon" [moduleName]="'assets'" [iconImage]="navigationDetails.assets.image" [activeIconImage]="navigationDetails.assets.activeImage" [linkToRoute]="navigationDetails['assets'].route" *ngIf="config.required.featureModules.ASSETS_MODULE"></app-nav-icon>
+            <app-nav-icon class="nav-icon" [moduleName]="'omnisearch'" [iconImage]="navigationDetails.omnisearch.image" [activeIconImage]="navigationDetails.omnisearch.activeImage" [linkToRoute]="navigationDetails.omnisearch.route" *ngIf="config.required.featureModules.OMNI_SEARCH_MODULE"></app-nav-icon>
+            <app-nav-icon class="nav-icon" [moduleName]="'tools'" [iconImage]="navigationDetails.tools.image" [activeIconImage]="navigationDetails.tools.activeImage" [linkToRoute]="navigationDetails.tools.route" *ngIf="config.required.featureModules.TOOLS_MODULE"></app-nav-icon>
+            <app-nav-icon class="nav-icon" [moduleName]="'admin'" [iconImage]="navigationDetails.admin.image" [activeIconImage]="navigationDetails.admin.activeImage" [linkToRoute]="navigationDetails.admin.route" *ngIf="haveAdminPageAccess && config.required.featureModules.ADMIN_MODULE"></app-nav-icon>
+        </nav>
+    </div>
+    <div class="header-right flex flex-between flex-align-center">
+        <div class="domain-dropdown-wrapper ">
+            <app-domain-group></app-domain-group>
+        </div>
+        <div class="header-user-image flex flex-row flex-end flex-align-center">
+            <div class="username">
+                <span>Hi, {{FirstName}}</span>
+                <span *ngIf='userType'>({{userType}})</span>
+            </div>
+            <div class="user-profile-wrapper relative" tabindex="1" (blur)="closeUserInfo();">
+                <img class="profile pointer" width="33px" src="/assets/icons/profile-picture.svg" (click)='showUserInfo=!showUserInfo; ' />
+                <app-user-info (click)='showUserInfo=false' *ngIf="showUserInfo" class="user-options"></app-user-info>
+            </div>
+        </div>
+    </div>
+</div>
+<div class='fixed pacman-menu' (click)='showMenu = false' [class.active]='showMenu'>
+    <span class='pacman-version'>stable (v{{environment.version}})</span>
+    <img class="absolute close-img" src="../assets/png/delete.png">
+    <div class='menu-content start'>
+        <ng-container *ngFor="let data of burgerMenuModuleLinks">
+            <div class='menu-container' *ngIf='data.shown'>
+                <div class='flex flex-align-center menu-head-container'>
+                    <div>
+                        <img style='height: 1.33em; width: 1.33em;' src="{{data.img}}">
+                    </div>
+                    <div class='menu-head'>{{data.title}}</div>
+                    <div class="menu-underline"></div>
+                </div>
+                <div class="menu-content-item" *ngFor="let row of data.rows">
+                    <span *ngIf="row.overlay" routerLinkActive="active" [routerLink]="[  {outlets: { modalBGMenu : [row.route] } } ]" [queryParams]=agAndDomain (click)='clearPageLevel()'>{{row.name}}</span>
+                    <span *ngIf="!row.overlay" routerLinkActive="active" routerLink={{row.route}} [queryParams]=agAndDomain (click)='clearPageLevel()'>{{row.name}}</span>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+    <div class='menu-footer'>
+        <img class="pacman-logo" src="../../../../assets/icons/application-logo.svg" alt="">
+        <div class="flex">
+            <div class='menu-container' [class.hide]='!data.makePresent' *ngFor="let data of footerData; let i=index; ">
+                <div class='flex flex-align-center menu-head-container'>
+                    <div>
+                        <img style='height: 1.2em; ' src="{{data.img}}">
+                    </div>
+                    <div class='menu-head'>{{data.title}}</div>
+                    <div class="menu-underline"></div>
+                </div>
+                <ng-container *ngFor="let row of data.rows">
+                    <a *ngIf='row.route' [class.present]='makePresent(i)' (click)="$event.stopPropagation();" target="{{row.target}}" href={{row.route}} class="menu-content-item">{{row.name}}</a>
+                </ng-container>
+            </div>
+        </div>
+    </div>
+</div>

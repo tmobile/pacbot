@@ -1,0 +1,12 @@
+{"properties": [
+  {
+    "name": "rule.s3-bucket-name",
+    "type": "java.lang.String",
+    "description": "A description for 'rule.s3-bucket-name'"
+  },
+  {
+    "name": "app.notification.domain",
+    "type": "java.lang.String",
+    "description": "A description for 'app.notification.domain'"
+  }
+]}

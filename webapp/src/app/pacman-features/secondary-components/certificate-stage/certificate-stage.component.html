@@ -1,0 +1,32 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="certificater-stage-wrapper relative">
+  <section class="sub-head">
+      <header class="header">
+            <app-title-burger-head [subHeadTitle]="headerText"></app-title-burger-head>
+        </header>
+    </section>
+    <ul class="flex flex-wrap each-progress-tracker-wrapper flex-center" *ngIf='dataComing && !showLoader'>
+        <li class="each-progress-tracker" *ngFor = "let appProgressData of progressdata.data" >
+            <app-progress-summary [bardata]="appProgressData" [barColor] = "appProgressData.barColor" [flexleftvalue]="appProgressData.leftBarWidth" [flexrightvalue]="appProgressData.rightBarWidth" [appNum] ="appProgressData.appNum" [appName] ="appProgressData.appName" [leftBarValue] ="appProgressData.expiry30Days" [rightBarValue] ="appProgressData.expiry45Days" [zeroValueColor] = "appProgressData.zeroValueColor" [showBar] = "appProgressData.showBar" (navigatePage)="navigatePage($event)"></app-progress-summary>
+        </li>
+    </ul>
+    <article class='center error_handling' *ngIf='!datacoming'>
+        <div class="error_msg">
+            <app-error-message *ngIf='seekdata == true' [selectedValue]="errorMessage"></app-error-message>
+        </div>
+      </article>
+      <div *ngIf='showLoader' class="loader"></div>
+</div>

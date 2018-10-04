@@ -1,0 +1,66 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.mr-user-dropdown-wrapper {
+    border-radius: .2em;
+    background-color: #ffffff;
+    box-shadow: 0px 3px 3px 0 rgba(0, 0, 0, 0.32);
+    overflow: hidden;
+}
+
+.mr-each-desc {
+    padding: 1em 1.4em;
+    min-width: 13.8em;
+    min-height: 2.5em;
+    transition: all .2s ease;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 1.1em;
+    line-height: 1.4;
+    transition: 0.2s ease;
+}
+.mr-each-desc:hover{
+    text-shadow: 1px 0;
+    background-color: #F6F6F7;
+}
+.mr-user-dropdown-wrapper::after {
+    content: '';
+    clear: both;
+    width: 0;
+    height: 0;
+    position: absolute;
+    top: 1%;
+    right: 7%;
+    transform-origin: 0 0;
+    transform: rotate(-45deg);
+    border: 10px solid;
+    border-color: #fff #fff transparent transparent;
+    box-shadow: 2px -2px 1px -1px rgba(0, 0, 0, 0.11);
+    z-index: -1;
+}
+.dropdown-select-box{
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    border: 1px solid #757575;
+    margin-right: 1em;
+    background: #fff;
+    flex-shrink: 0;
+}
+.dropdown-selected-active{
+    font-family: ex2-bold;
+    background-color: #F6F6F7;
+}
+.dropdown-selected-active .dropdown-select-box{
+    background-color: #a5a0a0;
+}

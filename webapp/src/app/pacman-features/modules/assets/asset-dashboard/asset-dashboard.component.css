@@ -1,0 +1,137 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.asset-dashboard-wrapper {
+    width: 100%;
+    height: 100%;
+    font-size: 1em;
+}
+
+
+
+/* Left side section */
+
+.asset-widgets-section {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.asset-widgets-section:hover {
+    overflow: auto;
+    overflow: overlay;
+}
+
+.asset-widgets-header {
+    height: 6em;
+    padding: 1.9em 1.8em;
+}
+
+.asset-widgets-header h1 {
+    text-transform: capitalize;
+}
+
+.asset-widget-container {
+    padding: 0 1.7em;
+}
+
+
+
+
+/*alarms css goes here*/
+
+.notif-number {
+    background: #e20074;
+    color: #fff;
+    font-family: ex2-Light;
+    border-radius: 3em;
+    min-width: 1.7em;
+    padding: 0.22em 0.28em;
+    top: 0;
+    right: 0;
+    text-align: center;
+    line-height: 1.33;
+    transform: translate(59%, -26%);
+}
+
+.alarm-container {
+    transform: translate( -11%, -7%);
+    z-index: 11;
+}
+
+.alarm-container:hover .alarms-img {
+    animation: ring 0.5s ease;
+}
+
+
+@keyframes ring {
+    10%,
+    20% {
+        transform: rotate(-5deg);
+    }
+
+    30%,
+    40%,
+    70%,
+    80% {
+        transform: rotate(15deg);
+    }
+
+    50%,
+    60% {
+        transform: rotate(-15deg);
+    }
+}
+
+.alarms-img {
+    width: 2em;
+    height: 2em;
+}
+
+
+
+/* base tiles css */
+
+.base-tiles-wrap {
+    margin: 2em 0;
+}
+
+.base-tile-each {
+    flex: 1;
+    margin: 0 .3em;
+    max-width: 25%;
+    min-height: 10em;
+    box-shadow: 0px 0px 6px #757575;
+    border-radius: 4px;
+    /* box-shadow: 0px 0px 6px #d6e2f1; */
+}
+
+.base-tile-each:first-child {
+    margin-left: 0;
+}
+
+.base-tile-each:last-child {
+    margin-right: 0;
+}
+
+.asset-widget-container .aws-resource-selection-container {
+    margin: 1.67em 0.2em 2em;
+}
+
+/* css for edge browser */
+@supports (-ms-ime-align: auto) { 
+    .asset-widgets-section {
+        overflow: auto;
+    }
+}

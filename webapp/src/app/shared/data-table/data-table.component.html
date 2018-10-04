@@ -1,0 +1,146 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class='data-table-wrap relative' [class.loading]='errorValue < 1' [class.small-content]='outerArr && outerArr.length > 0 && outerArr.length < 10' (click)='rowIndex=-1' [class.no-min-height]='noMinHeight'>
+    <!-- Table header -->
+    <div class="sub-head">
+        <app-title-burger-head [tableIdAppend]='tableIdAppend' (rowText)='emitRowText($event)'
+         [popRows]='popRows' [showSearch]='searchableHeader' [subHeadTitle]="dataHead" 
+         (searchTxt)='searchCalled($event)' (enterPressed)='triggerSearch()'>
+        </app-title-burger-head>
+    </div>
+    <!-- Table tabs ( Currently only in Compliance Overview ) -->
+    <app-table-tabs *ngIf='outerArr && outerArr.length > 0' (onSelectChange)="changeTabSelection($event)" [tabsData]="tabsData" [displayProperty]="rowAccessProperty">
+        <div message>{{'Total of ' + currentTableData.length + ' policies'}}</div>
+    </app-table-tabs>
+    <!-- Table Body -->
+    <div class="data-table-content" *ngIf='outerArr && outerArr.length > 0' [class.no-min-height]='noMinHeight'>
+        <!-- Table Column Names -->
+        <div class='data-table-head-outer' *ngIf='errorValue > 0 && loaded && filteredColumns.length > 0 && sortArr.length > 0'>
+            <div class="data-table-head flex flex-around flex-align-center">
+                <div class="flex flex-align-center checkbox" *ngIf='checkBox'></div>
+                <div (click)='sortArr[i].showUp = !sortArr[i].showUp; headerClicked(i, header);' *ngFor='let header of filteredColumns; let i = index' class="head-cells table-cells" [class.hide]="header == 'nonDisplayableAttributes' || header == 'dropDownShown'">
+                    {{header}}
+                    <span [class.up-arr-shown]='sortArr[i].showUp == true' [class.down-arr-shown]='sortArr[i].showUp == false' class="list-sortable-arrow relative"></span>
+                </div>
+                <div *ngIf='buttonColumn' class="head-cells table-cells">{{buttonColumn}}</div>
+            </div>
+        </div>
+        <!-- Table Content -->
+        <div class='data-table-inner-wrap relative' [class.stop-scroll]='!scrollEnabled && paginatorAbsent' *ngIf='errorValue > 0' [@tableCarousel]="animationState" [ngStyle]="{'max-height': heightValue }">
+            <div currentTable class="data-table-inner-content data-table-current" [class.stop-scroll]='!scrollEnabled && paginatorAbsent'>
+                <div (click)='$event.stopPropagation(); currentRowData = row.IssueId; tableRowClicked(row, i)' [class.dark-bg]='rowIndex == i' class="data-table-rows flex flex-around flex-align-center" *ngFor="let row of currentTableData | searchFilter:searchPassed | orderBy : { property: headerColName, direction: direction , childProperty: 'valText'}; let i = index; ">
+                    <div class="flex flex-align-center checkbox" *ngIf='checkBox'>
+                        <input [(ngModel)]='cbModel[firstPaginator - 1 + i]' (click)='$event.stopPropagation();'  class='common-cb' [class.hide]='true' type="checkbox" id='pv_cb{{i}}'>
+                        <label (click)='$event.stopPropagation(); callCheckbox(i, row) ' for='pv_cb{{i}}' class="relative">
+                            <img src='../assets/icons/white-tick.svg'>
+                        </label>
+                    </div>
+                    <div *ngFor='let column of filteredColumns ; let j = index ' class="row-cells table-cells flex flex-align-center" [ngStyle]="row[column].properties" [class.hide]="column == 'nonDisplayableAttributes' || column == 'dropDownShown'">
+                        <div class="column-wrapper">
+                            <!-- Table Image Cell -->
+                            <div title="{{row[column].text}}" class='flex flex-align-center' *ngIf='row[column].imgLink && row[column].hasPreImg'><img class='data-table-img' [ngStyle]='row[column].imgProp' src='{{row[column].imgLink}}'></div>
+                            <!-- Table PreImage Cell -->
+                            <div title="{{row[column].text}}" [ngStyle]="row[column].statusProp" class='status-indicator' *ngIf='row[column].hasPreImg'></div>
+                            <!-- Table Normal Data Cell -->
+                            <div title="{{row[column].text}}" [ngStyle]='row[column].textProp' class='nowrap-ellipsis' *ngIf='!row[column].link && ( row[column].text || row[column].text == 0) && !row[column].isArray'>
+                                {{row[column].text}}
+                            </div>
+                            <!-- Table Array Cell -->
+                            <div *ngIf='row[column].isArray'>
+                                <div [ngStyle]="obj.styling" title='{{obj.text}}' class='flex flex-align-center' *ngFor="let obj of row[column].text"></div>
+                            </div>
+                            <!-- Table Redirectable Link/#Anchor Cell -->
+                            <a title="{{row[column].text}}" (click)='currentRowData = row; goToDetails(currentRowData, column)' *ngIf='row[column].link && row[column].text'>{{row[column].text}}</a>
+                            <!-- Table PostImage Cell -->
+                            <div title="{{row[column].text}}" (click)='currentRowData = row; goToDetails(currentRowData, column)' class='flex flex-align-center' *ngIf='row[column].hasPostImg && row[column].imgLink'><img [ngStyle]='row[column].imgProp' class='data-table-img' src='{{row[column].imgLink}}'></div>
+                            <!-- Table Select Dropdown -->
+                            <div *ngIf='(row[column].dropDownEnabled)' (click)='$event.stopPropagation();'>
+                                <select name="selectOptionValue" (change)='currentRowData = row; goToDetails(currentRowData, $event.target.value)'>
+                                    <option value="-1"></option>
+                                    <option *ngFor="let item of row[column].dropDownItems" [value]="item">{{item}}</option>
+                                </select>
+                            </div>
+                            <!-- Table No Data Cell -->
+                            <div class='nowrap-ellipsis' *ngIf="((!row[column].text && row[column].text !== 0 && row[column].text !== false) || ( row[column].isArray && !row[column].text.length)) && !(row[column].dropDownEnabled)">no data
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Table Customised Button Dropdown -->
+                    <div *ngIf='buttonColumn' class="flex flex-align-center table-btn-wrap">
+                        <div class='table-btn flex flex-align-center relative' (click) ="$event.stopPropagation(); row.dropDownShown = !row.dropDownShown">
+                            <div>{{buttonColumn}}</div>
+                            <img src='../assets/icons/back-arrow.svg'>
+                            <div class="arrow_box" (click) ="$event.stopPropagation();"  *ngIf='row.dropDownShown'>
+                                <div (click) ="$event.stopPropagation(); menuClicked(row, menu);" class='menu-rows' *ngFor='let menu of buttonsArr'>{{menu}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Table Pagination Strip -->
+    <div *ngIf='!paginatorAbsent && outerArr && outerArr.length > 0 && errorValue > 0' class='data-table-paginator-wrap flex flex-end flex-align-center' [class.pagination-wrap]='checkBox'>
+        <div class='checked-list' *ngIf='checkBox'>Selected: <span class='checked-list-length'>{{checkedList.length}}</span></div>
+        <div class='flex flex-end'>
+            <div class='paginator-txt'> {{firstPaginator}}<span *ngIf='lastPaginator > 1'>-{{lastPaginator}}</span> of <span class='total-rows'>{{totalRows}}</span>
+            </div>
+            <div class='paginator-arrow' (click)='prevPage()'><img [class.fade]='currentPointer==0' src='../assets/icons/back-arrow.svg'>
+            </div>
+            <div class='paginator-arrow rotate180' (click)='nextPage()'><img [class.fade]='lastPaginator==totalRows' src='../assets/icons/back-arrow.svg'>
+            </div>
+        </div>
+    </div>
+    <!-- Table View More ( Currently only in Compliance Overview ) -->
+    <div *ngIf='paginatorAbsent && !scrollEnabled && outerArr && outerArr.length > 0 && errorValue > 0' (click)='scrollEnabled = true;' class='flex flex-align-center flex-center enable-scroll'>
+        <div>view more</div>
+        <div class='view-more-arrow'><img src='../assets/icons/black-arrow.svg'></div>
+    </div>
+    <!-- Table Sidebar -->
+    <div class='absolute details-bar flex flex-col' (click)='$event.stopPropagation();' [class.active]='rowIndex > -1'>
+        <div class='details-bar-header relative flex flex-align-center flex-between'>
+            <app-title-burger-head [subHeadTitle]="'additional details'">
+            </app-title-burger-head>
+            <img class='pointer' (click)='rowIndex=-1' style='height: 1.3em;' src='../assets/png/delete.png'>
+        </div>
+        <div class='details-bar-inner flex flex-wrap'>
+            <div class='details-cell' *ngFor='let cells of rowDetails' [class.hide]="cells == 'nonDisplayableAttributes' || cells == 'dropDownShown'">
+                <div class='details-cell-head'>{{cells}}</div>
+                <div class="details-wrapper flex flex-align-center">
+                    <div title="{{rowObj[cells].text}}" class='flex flex-align-center' *ngIf='rowObj[cells].imgLink && rowObj[cells].hasPreImg'><img [ngStyle]='rowObj[cells].imgProp' class='data-table-img' src='{{rowObj[cells].imgLink}}'></div>
+                    <div *ngIf='(!rowObj[cells].link || rowObj[cells].link == 0) && !rowObj[cells].isArray' [ngStyle]="rowObj[cells].properties" class='details-cell-value flex flex-align-center'>
+                        <div [ngStyle]="rowObj[cells].statusProp" class='status-indicator' *ngIf='rowObj[cells].hasPreImg'></div>
+                        <span [ngStyle]='rowObj[cells].textProp'>{{rowObj[cells].text}}</span>
+                    </div>
+                    <div class='flex' *ngIf='rowObj[cells].isArray'>
+                        <div [ngStyle]="obj.styling" title='{{obj.text}}' class='flex flex-align-center' *ngFor="let obj of rowObj[cells].text"></div>
+                    </div>
+                    <a (click)='currentRowData = rowObj; goToDetails(currentRowData, cells)' [ngStyle]="rowObj[cells].properties" *ngIf='rowObj[cells].link'>{{rowObj[cells].text}}</a>
+                    <div title="{{rowObj[cells].text}}" (click)='currentRowData = rowObj; goToDetails(currentRowData, cells)' class='flex flex-align-center' *ngIf='rowObj[cells].hasPostImg && rowObj[cells].imgLink'><img [ngStyle]='rowObj[cells].imgProp' class='data-table-img' src='{{rowObj[cells].imgLink}}'></div>
+                    <div *ngIf="(!rowObj[cells].text && rowObj[cells].text!==0 && rowObj[cells].text!== false) || ( rowObj[cells].isArray && !rowObj[cells].text.length)" class='details-cell-value no-data'>no data
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Table Error Messages -->
+    <article class='center error_handling' *ngIf='errorValue == -1 && errorMessage'>
+        <div class="error_msg">
+            <app-error-message *ngIf='errorValue == -1 && errorMessage' [selectedValue]="errorMessage"></app-error-message>
+        </div>
+    </article>
+    <!-- Table Loader -->
+    <div *ngIf='errorValue == 0' class='loader absolute'></div>
+</div>

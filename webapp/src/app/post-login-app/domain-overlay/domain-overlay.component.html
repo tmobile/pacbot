@@ -1,0 +1,49 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="overlay-vertical-center">
+    <div class="overlay-innerwrap">
+        <div class="event-container relative flex flex-col">
+            <header class="header flex flex-align-center flex-between">
+                <div class="goBack flex flex-align-center" (click)='closeStatsModal()'>
+                    <img class="back-arrow" src="../assets/icons/BackArrow.svg"> Back
+                </div>
+                <div class="header-text">Compliance summary of <span class='ag-name'> {{assetGroupName}}</span> across all domains</div>
+            </header>
+            <div class="main-container flex flex-center flex-align-center" *ngIf="errorVal>0 && dataArr.length > 0">
+                <div class='each-tile' [class.stretch]="dataArr.length < 4" *ngFor='let tiles of dataArr'>
+                    <div class='each-tile-body flex flex-col relative' (click)='changeDomain(tiles.name)'>
+                        <div class='tile-head-txt'>{{tiles.name}}</div>
+                        <div class='absolute flex flex-align-center flex-col overall-percentage'>
+                            <div class='percent-txt' 
+                            [class.orange]='tiles.overallPercentage<100 && tiles.overallPercentage > 49' 
+                            [class.red]='tiles.overallPercentage < 50 && tiles.overallPercentage >=0' 
+                            [class.green]='tiles.overallPercentage==100'>{{tiles.overallPercentage}}<span class='percent-symbol'>%</span></div>
+                            <div class='total-txt'>Total Compliance</div>
+                        </div>
+                        <div class='bottom-keys-wrap flex'>
+                            <div class='flex flex-col flex-align-center flex-wrap each-key-wrap' *ngFor='let data of tiles.data'>
+                                <div class='key-value'>{{data.value}}<span class='key-percent'>%</span></div>
+                                <div class='key-name'>{{data.displayName}}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <article *ngIf='errorVal==-1 || (dataArr.length == 0 && errorVal!=0)' class='center error_handling absolute'> {{errorMsg}}
+            </article>
+            <div *ngIf='errorVal==0' class="loader"></div>
+        </div>
+    </div>
+</div>

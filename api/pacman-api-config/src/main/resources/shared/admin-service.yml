@@ -1,0 +1,51 @@
+server:
+  context-path: /api/admin
+
+aws:
+  access-key: ''
+  secret-key: ''
+
+admin:
+  api-role: ROLE_ADMIN2, ROLE_ADMIN
+ 
+job:
+  s3:
+    bucket-name: pacman-aws-rule-executables 
+  lambda:
+    target-id: jobTargetId
+    function-name: ${JOB_FUNCTION_NAME}
+    function-arn: ${JOB_FUNCTION_ARN}
+    principal: events.amazonaws.com
+    action-enabled: lambda:InvokeFunction
+    action-disabled: lambda:DisableInvokeFunction
+  
+
+rule:
+  s3:
+    bucket-name: pacman-aws-rule-executables
+  lambda:
+    target-id: ruleTargetId
+    function-name: ${RULE_FUNCTION_NAME}
+    function-arn: ${RULE_FUNCTION_ARN}
+    principal: events.amazonaws.com
+    action-enabled: lambda:InvokeFunction
+    action-disabled: lambda:DisableInvokeFunction
+
+management: 
+  security:
+    enabled: false
+    
+security: 
+  basic:
+    enabled: false   
+  oauth2: 
+    client:
+      user-authorization-uri: ${PACMAN_HOST_NAME}/api/auth/oauth/authorize
+        
+elastic-search:
+  dev-ingest-host: ${ES_UPDATE_HOST}
+  dev-ingest-port: ${ES_UPDATE_PORT}
+
+target-types: 
+  categories: Compute,Developer Tools,Analytics,Application Services,Storage,Management Tools,Messaging,Artificial Intelligence,Database,Business Productivity,Security,Identity & Compliance,Networking & Content Delivery,Contact Center,Internet Of Things,Desktop & App Streaming,Desktop & App Streaming,Migration,Mobile Services,Game Development,Contact Center,Application Integration
+    

@@ -1,0 +1,141 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+    <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+    <div class="floating-widgets-header flex flex-between">
+        <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text">{{pageTitle}}</h1>
+        </div>
+    </div>
+
+    <div class="floating-widgets-container ">
+        <section>
+            <ul>
+                <li class="widget-wrapper relative">
+                    <div class="data-table-wrap relative">
+                        <div class="sub-head">
+                            <div class="flex flex-between flex-align-center">
+                                <div class="sub-head-title capitalize flex flex-align-center after-load">
+                                    <div class="header-text">Policy Details</div>
+                                </div>
+                            </div>
+                        </div>
+                        <form (ngSubmit)="createOrUpdatePolicy(policyForm)" #policyForm="ngForm" [hidden]="hideContent">
+                            <div class="data-content">
+                                <div>
+                                    <div class="text-wrapper-header">Policy ID *
+                                        <span *ngIf="isPolicyIdValid==0" class="not-available">(Not Available)</span>
+                                        <span *ngIf="isPolicyIdValid==1" class="available">(Available)</span>
+                                    </div>
+                                    <div *ngIf="!isCreate">
+                                        <div class="policy-text-value highlight-pink">PacMan_{{policyName}}_{{policyVersion}}</div>
+                                    </div>
+                                    <div *ngIf="isCreate">
+                                        <div class="policy-text-value">PacMan_{{policyName}}_{{policyVersion}}</div>
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="text-wrapper-header">Policy Version</div>
+                                    <div class="policy-text-value">{{policyVersion}}</div>
+                                </div>
+                                <div *ngIf="isCreate">
+                                    <div class="text-wrapper-header">Policy Name *</div>
+                                    <ul class="input-wrapper">
+                                        <input autocomplete="off" type="text" class="inputarea-container" placeholder="Enter Policy Name" name="policyName" [(ngModel)]="policyName" (input)="isPolicyIdAvailable($event.target.value)" required>
+                                    </ul>
+                                </div>
+                                <div *ngIf="!isCreate">
+                                    <div class="text-wrapper-header">Policy Name</div>
+                                    <div class="policy-text-value">{{policyName}}</div>
+                                </div>
+                                <div>
+                                    <div class="text-wrapper-header">Description</div>
+                                    <ul>
+                                        <textarea class="textarea-container" placeholder="Enter Policy Description" name="policyDesc" [(ngModel)]="policyDesc"></textarea>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <div class="text-wrapper-header">Resolution</div>
+                                    <ul>
+                                        <textarea class="textarea-container" placeholder="Enter Policy Resolution" name="policyResolution" [(ngModel)]="policyResolution"></textarea>
+                                    </ul>
+                                </div>
+                                <div class="last-input">
+                                    <div class="text-wrapper-header">Policy URL</div>
+                                    <ul class="input-wrapper">
+                                        <input autocomplete="off" type="text" class="inputarea-container" placeholder="Enter Policy URL" name="policyUrl" [(ngModel)]="policyUrl">
+                                    </ul>
+                                </div>
+                            </div>
+
+                            <div class="data-table-paginator-wrap flex flex-center flex-align-center">
+                                <a class="save-container flex flex-row-reverse">
+                                    <button class="submit-btn uppercase" type="submit" [disabled]="policyForm.form.invalid || isPolicyIdValid<1"><span *ngIf="isCreate"><i class="fa fa-plus"></i> CREATE</span> <span *ngIf="!isCreate"><i class="fa fa-check"></i> UPDATE</span></button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse">
+                                    <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CANCEL</button>
+                                </a>
+                            </div>
+                        </form>
+
+                        <div class="pacman-alert" *ngIf="isPolicyCreationFailed">
+                            <div class="sa-icon sa-error animateErrorIcon" style="display: block;">
+                                <span class="sa-x-mark animateXMark">
+                                    <span class="sa-line sa-left"></span>
+                                <span class="sa-line sa-right"></span>
+                                </span>
+                            </div>
+
+                            <div class="pacman-alert-message">
+                                {{failedTitle}}
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="closeErrorMessage()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isPolicyCreationSuccess">
+                            <div class="sa-icon sa-success animate">
+                                <span class="sa-line sa-tip animateSuccessTip"></span>
+                                <span class="sa-line sa-long animateSuccessLong"></span>
+                                <div class="sa-placeholder"></div>
+                                <div class="sa-fix"></div>
+                            </div>
+
+                            <div class="pacman-alert-title">
+                                {{successTitle}}
+                            </div>
+                            <div class="pacman-alert-message">
+                                <span class="highlight-pink">{{this.policyId}}</span> has been successfully {{successSubTitle}} !!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-progress" *ngIf="policyLoader">
+                            <pacman-loading></pacman-loading>
+                            <div class="title">
+                                Please Wait...
+                            </div>
+                            <div class="content">
+                                <span class="highlight-pink">{{this.policyId}}</span> {{loadingStatus}}...
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>

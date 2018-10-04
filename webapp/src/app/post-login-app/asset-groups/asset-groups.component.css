@@ -1,0 +1,268 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+.overlay-state {
+    display: flex;
+    height: 100%;
+    min-height: 780px;
+    width: 100%;
+    background-color: rgba(24, 33, 44, 0.5);
+}
+
+.overlay-vertical-center {
+    width: 70vw;
+    height: 70vh;
+    position: fixed;
+    transition: 0.4s ease;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    z-index: 13;
+    font-size: 1em;
+}
+
+.overlay-innerwrap {
+    width: 100%;
+    margin: 0;
+    background: #fff;
+    border-radius: 0.5em;
+    background-color: #fff;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.4);
+    height: 100%;
+}
+
+.asset-tabs-outer-wrap {
+    width: calc(70vw - 28em);
+    max-height: 1.8em;
+}
+
+.event-container {
+    border-radius: 0.5em;
+    height: calc(70vh);
+    overflow: hidden;
+    box-shadow: inset 0 5px 10px -8px rgba(0, 0, 0, 0.7), inset 0 -5px 10px -8px rgba(0, 0, 0, 0.7);
+}
+
+.asset-tile-container {
+    padding: 1.5em 1.2em 1em 1.2em;
+    background-color: #fbfbfb;
+    height: calc(70vh - 9.5em);
+    border-radius: 0.5em;
+    overflow: hidden;
+}
+
+.asset-tile-container:hover {
+    overflow: auto; overflow: overlay;
+}
+
+.header-asset {
+    padding: 2em 1.3em 1em 1.3em;
+}
+
+.sub-header-asset {
+    padding: 0.2em 1.3em 2em 0.2em;
+    background: #fff;
+}
+
+
+.header-title {
+    font-family: ex2-medium;
+    font-size: 1.8em;
+    color: #666;
+}
+
+img.delete-icon {
+    width: 2em;
+    height: 2em;
+    cursor: pointer;
+    transition: 0.4s ease;
+}
+
+.delete-title:hover {
+    transform: rotate(0deg);
+    transition: 0.4s ease;
+}
+
+.delete-title:not(focus) {
+    transform: rotate(90deg);
+    transition: 0.4s ease;
+}
+
+.asset-tiles-wrapper {
+    height: 100%;
+}
+
+.asset-tile-content {
+    overflow: auto;
+    align-content: flex-start;
+    width: 100%;
+}
+
+.container {
+    border-radius: 0.5em;
+    padding: 1em 1em 2.4em 1em;
+    height: 11.8em;
+    color: #000;
+    transition: 0.3s ease;
+    margin: 0.2em;
+    text-align: left;
+    cursor: pointer;
+    width: calc(25% - 0.4em);
+    background-color: #dce3e9;
+}
+
+.container:hover {
+    box-shadow: 2px 1px 11px 2px rgba(0, 0, 0, 0.2);
+}
+
+.container.active {
+    width: calc(33.33% - 0.4em);
+}
+
+.select-tile {
+    left: 1em;
+    bottom: 1em;
+    background: #989898;
+    padding: 0.5em 0.8em;
+    border-radius: 3px;
+    color: #f3f3f3;
+    opacity: 0;
+    transition: 0.3s ease;
+    pointer-events: none;
+}
+
+.container:hover .select-tile {
+    pointer-events: initial;
+    opacity: 1;
+}
+
+.container .select-tile:hover {
+    background: #5a616b;
+    color: #fff;
+}
+
+.dark-bg.container .select-tile:hover {
+    background: #b6b2b2;
+    color: #fff;
+}
+
+.name-title {
+    font-family: ex2-bold;
+    font-size: 1.3em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 1.2em;
+    margin-bottom: 1em;
+    line-height: 1.3;
+    text-transform: capitalize;
+}
+
+.description {
+    font-size: 1em;
+    white-space: normal;
+    overflow-y: hidden;
+    line-height: 1.25;
+    height: 4em;
+    padding-bottom: 1em;
+    overflow: hidden;
+}
+
+.line-clamp {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+}
+
+.transformState {
+    transition: 0.5s ease;
+    transform: translate3d(100%, 0, 0);
+}
+
+.transformBack {
+    transition: 1s ease;
+    transition-delay: 0.5s;
+    transform: translate3d(0%, 0, 0);
+}
+
+.side-btn-wrap {
+    margin: 1.5em 0;
+}
+
+.search{
+    border-bottom: 2px solid #ddd;
+    width: 18em;
+}
+
+.domain-icon {
+    bottom: 1.2em;
+    right: 1em;
+    max-height: 2em;
+    max-width: 5em;
+}
+
+.domain-icon img {
+    height: 1.5em;
+    width: 1.5em;
+    margin-left: 0.33em;
+}
+
+.domain-number {
+    padding-bottom: 2px;
+    color: #5a616b;
+}
+
+.dark-bg .domain-number {
+    color: #dce3e9;
+}
+
+.user-options {
+    position: absolute;
+    bottom: -1.4em;
+    transform: translateY(100%);
+    right: -0.85em;
+    z-index: 4;
+    color: #444;
+    font-style: 0.83em;
+}
+
+.left-most .user-options {
+    left: -0.75em;
+    right: initial;
+}
+
+.left-most /deep/ .mr-user-dropdown-wrapper::after {
+    left: 7%;
+    right: initial;
+}
+
+.currently-selected.container {
+    background: #bed0e0;
+}
+
+.container.dark-bg {
+    box-shadow: 2px 2px 11px 2px rgba(0, 0, 0, 0.2);
+    color: #fff;
+    background-color: #5a616b;
+}
+
+/* css for edge browser */
+@supports (-ms-ime-align: auto) { 
+    .asset-tile-container {
+        overflow: auto;
+    }
+}

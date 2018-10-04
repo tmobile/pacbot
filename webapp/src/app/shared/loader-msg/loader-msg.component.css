@@ -1,0 +1,27 @@
+.traction-respone-wrapper {
+    text-align: center;
+}
+.generic-msg {
+    text-align: center;
+    margin-bottom: 30px
+}
+.generic-msg .title {
+    padding: 8px 0;
+    font-size: 1.5em;
+    font-family: ex2-bold;
+}
+.generic-msg .details {
+    padding: 8px 0;
+    font-size: 1.2em;
+}
+.generic-msg .description {
+    padding: 8px 0;
+    font-size: 1.2em;
+}
+
+.generic-msg.success .title {
+    color: green;
+}
+.generic-msg.error .title {
+    color: red;
+}

@@ -1,0 +1,163 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.sub-head-title {
+    font-size: 1em;
+    font-family: ex2-medium;
+    font-weight: bolder;
+    opacity: 0.4;
+    letter-spacing: 2px;
+    transition-delay: 0.2s;
+    transition: 0.5s ease;
+    white-space: nowrap;
+    transform: translateX(0.5em);
+}
+
+.sub-head-title.after-load {
+    letter-spacing: 0.2px;
+    opacity: 1;
+    transform: translateX(0em);
+}
+
+.sub-head-title:hover {
+    letter-spacing: 0.5px;
+}
+
+.bulb-img {
+    margin-right: 0.7em;
+}
+
+.drop-options {
+    height: 2em;
+    width: 11.25em;
+    border-radius: 3px;
+    background-color: #ffffff;
+    border: solid 1px #c3cbd7;
+    position: relative;
+    cursor: pointer;
+    line-height: 1.8em;
+    z-index: 2;
+}
+
+.drop-search-box {
+    height: 2em;
+    width: 21em;
+    border-radius: 3px;
+    background-color: #ffffff;
+    border: solid 1px #c3cbd7;
+    position: relative;
+    cursor: pointer;
+    line-height: 1.8em;
+    z-index: 2;
+}
+
+.contextual-menu-img {
+    padding-left: 0.4em;
+    letter-spacing: 0.5px;
+}
+
+.search-container {
+    cursor: pointer;
+}
+
+.header-search-input {
+    border: none;
+    border-bottom: 2px solid transparent;
+    width: 0em;
+    box-shadow: none;
+    overflow: hidden;
+    transition: 0.5s ease;
+    background: transparent;
+    padding: 0.3em 0.5em 0.3em 1.9em;
+}
+
+.header-search-input:focus {
+    width: 19.8em;
+    border-bottom: 2px solid #ddd;
+}
+
+.header-search-input.ng-valid {
+    width: 19.8em;
+    border-bottom: 2px solid #ddd;
+}
+
+.search-label {
+    top: 50%;
+    transform: translateY(-50%) scale(1) rotate(0deg);
+    transition: 0.4s ease;
+    left: 1px;
+}
+
+.header-search-input:focus+label.search-label {
+    transform: translateY(-50%) scale(0.75) rotate(0deg);
+}
+
+.header-search-input.ng-valid+label.search-label {
+    transform: translateY(-50%) scale(0.75) rotate(0deg);
+}
+
+.arrow-icon {
+    margin: 0.1em 0 0 0.5em;
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.arrow-icon:hover {
+    padding-left: 0.3em;
+}
+
+.data-header-popup {
+    right: -1px;
+    z-index: 4;
+    background: #eff3f6;
+    bottom: 2px;
+    transform: translate( 0.74em, calc(100% + 0.92em));
+    min-width: 13em;
+    box-shadow: 0px 1px 8px -1px rgba(0, 0, 0, 0.2);
+    padding: 0.3em 0;
+    border: 1px solid #dcdcdc;
+}
+
+.each-pop-row {
+    padding: 0.7em 1em;
+    text-transform: capitalize;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.each-pop-row:hover {
+    background-color: #ed0295;
+    color: white;
+}
+
+.active-context-menu {
+    transform: scale(1.2);
+}
+
+.help-text-container {
+    margin: 0 0.5em 0 1em;
+    cursor: pointer;
+    height: 1.1em;
+    height: 100%;
+    transition: 0.2s ease;
+    transform-origin: center;
+}
+
+.help-text-container:hover {
+    transform: scale(1.07);
+}
+
+.help-text-container img {
+    width: 1.3em;
+}

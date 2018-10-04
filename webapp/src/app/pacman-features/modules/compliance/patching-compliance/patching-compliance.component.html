@@ -1,0 +1,67 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="patching-dashboard-wrapper flex flex-between">
+  <div class="floating-widgets-section flex flex-col">
+  <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+      <div class="floating-widgets-header flex flex-between">
+          <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text">{{pageTitle}}</h1>
+          </div>
+      </div>
+      <div class='floating-widgets-filter-wrapper ' *ngIf='filterArr.length'>
+          <app-filtered-selector (deleteFilter)='removeFilter($event)' (deleteAllFilters)='clearAllFilters()' [(filteredArray)]='filterArr'></app-filtered-selector>
+      </div>
+      <div class="floating-widgets-container">
+          <section>
+              <ul class="list-wrapper">
+                  <li class="widget-wrapper" *ngIf="!hiddenComponent || hiddenComponent=='onpremPatchingGraph'">
+                      <div #widget class="widget widget-container">
+                          <app-patching-trend [hiddenComponent]='hiddenComponent'></app-patching-trend>
+                      </div>
+                  </li>
+                  <!-- Commenting the On prem widget temporarily -->
+                  <!--<li class="widget-wrapper" *ngIf="hiddenComponent!='onpremPatchingGraph'">
+                      <div #onpremWidget class="widget widget-container">
+                          <app-onprem-patching-graph (errorOccurred)="hiddenComponent='onpremPatchingGraph'" (dataSuccess)="hiddenComponent='patchingTrend'">
+                          </app-onprem-patching-graph>
+                      </div>
+                  </li>
+                  <li class="widget-wrapper" *ngIf='!patchingSnapshotHidden'>
+                      <div #widget class="widget widget-container">
+                          <app-patching-snapshot (errorOccurred)='patchingSnapshotHidden=true'></app-patching-snapshot>
+                      </div>
+                  </li>
+                  <li class="widget-wrapper" *ngIf='!patchingSponsorHidden'>
+                    <div #widget class="widget widget-container">
+                        <app-patching-sponsor (errorOccurred)='patchingSponsorHidden=true'></app-patching-sponsor>
+                    </div>
+                </li> -->
+                  <li class="widget-wrapper">
+                      <div class="widget">
+                          <app-all-patching-table></app-all-patching-table>
+                      </div>
+                  </li>
+              </ul>
+          </section>
+      </div>
+  </div>
+  <div class="fixed-widgets-section">
+      <div class="compliance-issues-container">
+          <app-patching-issue [pageLevel]="pageLevel"></app-patching-issue>
+          <app-patching-current-state [pageLevel]="pageLevel"></app-patching-current-state>
+      </div>
+  </div>
+</div>

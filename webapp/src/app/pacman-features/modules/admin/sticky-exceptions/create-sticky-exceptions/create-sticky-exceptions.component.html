@@ -1,0 +1,289 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="sticky-exceptions-wrapper floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+    <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+    <div class="floating-widgets-header flex flex-between">
+        <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text">{{pageTitle}}</h1>
+        </div>
+        <div class="md-stepper-horizontal orange">
+            <div class="md-step active">
+                <div class="md-step-circle"><span class="fa fa-arrows"></span></div>
+                <div class="md-step-title">Exception Details</div>
+                <div class="md-step-bar-left"></div>
+                <div class="md-step-bar-right" [ngClass]="{'md-step-active': (stepIndex>0)}"></div>
+            </div>
+            <div class="md-step" [ngClass]="{'active': (stepIndex>0)}">
+                <div class="md-step-circle"><span class="fa fa-tasks"></span></div>
+                <div class="md-step-title">Target Types</div>
+                <div class="md-step-bar-left" [ngClass]="{'md-step-active': (stepIndex>0)}"></div>
+                <div class="md-step-bar-right" [ngClass]="{'md-step-active': (stepIndex>1)}"></div>
+            </div>
+        </div>
+    </div>
+    <div class="floating-widgets-container ">
+        <section>
+            <ul>
+                <li class="widget-wrapper relative ">
+                    <div class="data-table-wrap relative ">
+                        <div class="sub-head ">
+                            <div class="flex flex-between flex-align-center ">
+                                <div class="sub-head-title capitalize flex flex-align-center after-load ">
+                                    <div class="header-text ">{{stepTitle}}</div>
+                                </div>
+                                <input type="text" class="searchBox" placeholder="Filter Target Types..." [(ngModel)]="searchTerm" (ngModelChange)="searchAttribute()" *ngIf="stepIndex==1">
+                            </div>
+                        </div>
+                        <div [hidden]="hideContent">
+                            <div class="data-content group-details">
+                                <div class="pacman-progress" [hidden]="!assetLoader">
+                                    <pacman-loading></pacman-loading>
+                                    <div class="title">
+                                        Please Wait...
+                                    </div>
+                                    <div class="pacman-alert-message">
+                                        <span class="highlight-pink">{{assetLoaderTitle}}</span> is been loading...
+                                    </div>
+                                </div>
+                                <div class="pacman-progress pacman-alert" [hidden]="!assetLoaderFailure">
+                                    <div class="sa-icon sa-error animateErrorIcon" style="display: block;">
+                                        <span class="sa-x-mark animateXMark">
+                                                <span class="sa-line sa-left"></span>
+                                        <span class="sa-line sa-right"></span>
+                                        </span>
+                                    </div>
+                                    <div class="title">
+                                        Loading Failed!!!
+                                    </div>
+
+                                    <div class="pacman-alert-message">
+                                        Failed in loading <span class="highlight-pink small">{{assetLoaderTitle}}</span> ...
+                                    </div>
+                                    <button *ngIf="isCreate" class="sa-x-btn" type="button" (click)="closeAssetErrorMessage()"><div><i class="fa fa-remove"></i>  CLOSE</div></button>
+                                    <button *ngIf="!isCreate" class="sa-x-btn" type="button" (click)="navigateBack()"><div><i class="fa fa-remove"></i>  CLOSE</div></button>
+                                </div>
+                                <div class="formcontainerwrapper" [hidden]="pageContent[0].hide">
+                                    <div class="asset-formctn">
+                                        <div class="formctnleft">
+                                            <div class="input-box" *ngIf="!isCreate">
+                                                <label>Asset Group</label>
+                                                <div class="text-value">{{selectedAssetGroup}}</div>
+                                            </div>
+                                            <div class="input-form" *ngIf="isCreate">
+                                                <label>Select Asset Group * <a (click)="navigateToCreateAssetGroup()">(Create New)</a></label>
+                                                <ng-select [allowClear]="true" name="exceptionDetailsForm.assetGroup" [(ngModel)]="exceptionDetailsForm.assetGroup" [items]="allAssetGroupNames" placeholder="Select Asset Group">
+                                                </ng-select>
+                                            </div>
+                                            <div class="input-box" *ngIf="!isCreate">
+                                                <label>Exception Name</label>
+                                                <div class="text-value">{{exceptionDetailsForm.name}}</div>
+                                            </div>
+                                            <div class="input-box" *ngIf="isCreate">
+                                                <label>Exception Name *
+                                                    <span *ngIf="isExceptionNameValid==0" class="not-available">(Not Available)</span>
+                                                    <span *ngIf="isExceptionNameValid==1" class="available">(Available)</span>
+                                                </label>
+                                                <ul class="input-wrapper">
+                                                    <input type="text" name="createdBy" class="inputarea-container" placeholder="Enter Exception Name" [(ngModel)]="exceptionDetailsForm.name" (input)="isExceptionNameAvailable($event.target.value)" autocomplete="off">
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="formctnright">
+                                            <div class="input-box">
+                                                <label>Expiry Date *</label>
+                                                <ng-datepicker [options]="options" (ngModelChange)='getDateData($event)' [(ngModel)]="exceptionDetailsForm.expiry"></ng-datepicker>
+                                            </div>
+                                            <div class="bm10 input-box">
+                                                <label>Exception Reason *</label>
+                                                <ul>
+                                                    <textarea name="description" class="textarea-container " placeholder="Enter Exception Reason" [(ngModel)]="exceptionDetailsForm.reason"></textarea>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="formcontainerwrapper" *ngIf="!pageContent[1].hide ">
+                                    <div class="attribute-contents asset-formctn">
+                                        <div class="outer-div">
+                                            <div class="inner-div attrlist" *ngFor="let attributeDetail of allAttributeDetails; let idx = index;" [ngClass]="attributeDetail.added? 'added-target-types':''">
+                                                <h1>{{attributeDetail.targetName}}</h1>
+                                                <div class="attrspacer"></div>
+                                                <h3 class="added">{{attributeDetail.rules.length}}</h3>
+                                                <h2 class="text">Rules added</h2>
+                                                <div class="btnctn"><button class="attrbutton" (click)="openAttributeConfigure(attributeDetail, idx)">CONFIG</button></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="attributes-not-found pacman-alert" *ngIf="allAttributeDetails.length==0">
+                                        <div class="not-found-image"></div>
+                                        <div class="attributes-not-found-title">
+                                            Target Types not found for :
+                                        </div>
+                                        <div class="highlight-pink attributes-not-found-title">
+                                            <b>{{searchTerm}}</b>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="data-table-paginator-wrap flex flex-center flex-align-center ">
+                                <a class="save-container flex flex-row-reverse">
+                                    <button class="submit-btn uppercase" (click)="prevStep()" [disabled]="!(stepIndex>0) || assetLoader"><i class="fa fa-chevron-left"></i> PREV</button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse" *ngIf="stepIndex<1">
+                                    <button class="submit-btn uppercase" (click)="nextStep()" [disabled]="(exceptionDetailsForm.name===''|| exceptionDetailsForm.reason===''|| exceptionDetailsForm.assetGroup[0].length===0) || assetLoader || isExceptionNameValid==0">NEXT  <i class="fa fa-chevron-right"></i></button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse" *ngIf="stepIndex==1 && isCreate">
+                                    <button class="submit-btn uppercase" (click)="createException(exceptionDetailsForm)"><i class="fa fa-check"></i> CREATE</button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse" *ngIf="stepIndex==1 && !isCreate">
+                                    <button class="submit-btn uppercase" (click)="updateException(exceptionDetailsForm)"><i class="fa fa-check"></i> UPDATE</button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse">
+                                    <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CANCEL</button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isAssetGroupExceptionCreationUpdationFailed">
+                            <div class="sa-icon sa-error animateErrorIcon" style="display: block;">
+                                <span class="sa-x-mark animateXMark">
+                                    <span class="sa-line sa-left"></span>
+                                <span class="sa-line sa-right"></span>
+                                </span>
+                            </div>
+                            <div class="pacman-alert-title">
+                                {{failedTitle}}
+                            </div>
+                            <div class="pacman-alert-message">
+                                Exception <span class="highlight-pink">{{highlightName}}</span> failed!!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="closeErrorMessage()"><span *ngIf="failedTitle!=='Loading Failed'"><i class="fa fa-remove"></i> CLOSE</span> <span *ngIf="failedTitle==='Loading Failed'"><i class="fa fa-refresh"></i> RETRY</span></button>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isAssetGroupExceptionCreationUpdationSuccess">
+                            <div class="sa-icon sa-success animate">
+                                <span class="sa-line sa-tip animateSuccessTip"></span>
+                                <span class="sa-line sa-long animateSuccessLong"></span>
+                                <div class="sa-placeholder"></div>
+                                <div class="sa-fix"></div>
+                            </div>
+
+                            <div class="pacman-alert-title">
+                                {{successTitle}}
+                            </div>
+                            <div class="pacman-alert-message">
+                                Exception <span class="highlight-pink">{{highlightName}}</span> has been successfully <span *ngIf="isCreate">created</span><span *ngIf="!isCreate">updated</span> !!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-progress" *ngIf="assetGroupExceptionLoader">
+                            <pacman-loading></pacman-loading>
+                            <div class="title">
+                                Please Wait...
+                            </div>
+                            <div class="pacman-alert-message">
+                                <span class="highlight-pink">{{highlightName}}</span> {{loadingContent}} is in progress...
+                            </div>
+                        </div>
+
+
+                        <div [@fadeInOut]="state" class="overlay" (click)="closeAttributeConfigure()"></div>
+                        <div class="side-bar-window configure-attributes" [@slideInOut]="menuState">
+                            <div class="data-table-wrap relative">
+                                <div class="sub-head">
+                                    <div class="flex flex-between flex-align-center ">
+                                        <div class="sub-head-title capitalize flex flex-align-center after-load ">
+                                            <div class="header-text ">Configure Rules</div>
+                                        </div>
+                                        <div class="popup">
+                                            <a class="close fa fa-times-circle" (click)="closeAttributeConfigure()"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="data-content">
+                                    <div class="">
+                                        <div class="asset-formctn">
+                                            <div class="formctn rule-attribute">
+                                                <div class="input-box">
+                                                    <ul class="parameters">
+                                                        <label>Select Rule Name :</label>
+                                                        <ng-select #targetTypeRuleSelect name="attributeName" [(ngModel)]="attributeName" [allowClear]="true" [items]="selectedAllRules" placeholder="Select Rule Name" required>
+                                                        </ng-select>
+                                                    </ul>
+                                                    <button class="tmbutton btm30 ib" [disabled]="attributeName.length==0" (click)="addAttributes(attributeName, attributeValue)">+ Add</button>
+                                                </div>
+                                            </div>
+                                            <div class="data-table-content">
+                                                <div class='data-table-head-outer'>
+                                                    <div class="data-table-head flex flex-around flex-align-center">
+                                                        <div class="head-cells table-cells">
+                                                            Rule Name
+                                                            <span class="relative"></span>
+                                                        </div>
+                                                        <div class="head-cells table-cells">
+                                                            Type
+                                                            <span class="relative"></span>
+                                                        </div>
+                                                        <div class="head-cells table-cells">
+                                                            Action
+                                                            <span class="relative"></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class='data-table-inner-wrap relative' *ngIf="selectedIndex!==-1">
+                                                    <div currentTable class="data-table-inner-content data-table-current">
+                                                        <div class="data-table-rows flex flex-around flex-align-center" *ngFor="let attribute of selectedRules; let idx = index">
+                                                            <div class="row-cells table-cells flex flex-align-center">
+                                                                <div class="column-wrapper">
+                                                                    <div class='nowrap-ellipsis'>
+                                                                        {{attribute.text}}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row-cells table-cells flex flex-align-center">
+                                                                <div class="column-wrapper">
+                                                                    <div class='nowrap-ellipsis'>
+                                                                        {{attribute.type}}
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <div class="row-cells table-cells flex flex-align-center">
+
+                                                                <div class="column-wrapper">
+                                                                    <div class='nowrap-ellipsis'>
+                                                                        <a (click)="deleteAttributes(attribute.name, idx)">Delete</a>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>

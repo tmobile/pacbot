@@ -1,0 +1,127 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.vuln-distribution-wrapper {
+    margin: 1em;
+    min-height: 25em;
+}
+
+ th, td { 
+    padding: 0.4em 1em;
+    vertical-align: middle;
+    text-align: center;
+    white-space: nowrap;
+}
+
+tr {
+    border-bottom: 0.5px dotted #f6f6f6;
+    border-collapse: collapse;
+}
+
+tr:first-child {
+    border-bottom: 1px solid #ccc;
+}
+
+tr:last-child {
+    border: none;
+    text-shadow: 0.33px 0;
+}
+
+th:first-child, td:first-child {
+    border-right: 0.5px solid #ccc;
+    text-align: left;
+    padding: 0.1em 1em 0.1em 0;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.first-table-data {
+    margin-left: 0.3em;
+    vertical-align: middle;
+}
+
+table {
+    max-width: 340px;
+    width: 100%;
+}
+
+.table-wrapper {
+    margin: 1em 0;
+}
+
+.table-img{
+    height: 1em;
+}
+
+.info-text-wrapper {
+    border-radius: 5px;
+    background-color: #e5eaf1;
+    width: 12em;
+    height: fit-content;
+    align-self: center;
+    line-height: 1.4;
+    padding: 1em;
+    text-align: left;
+}
+
+.info-text-heading {
+    text-shadow: 0.33px 0;
+    margin:0.5em 0;
+}
+
+.each-donut {
+    padding-right: 2em;
+    width: calc(33.33% - 2em);
+    flex-grow: 1; 
+}
+.donut-transition:first-child {
+    opacity: 1;
+    transition: all 1s ease 1s;
+}
+
+.donut-transition:not(:first-child) {
+    opacity: 0;
+    -webkit-animation: opacity 1s ease 100ms forwards;
+    -o-animation: opacity 1s ease 100ms forwards;
+    animation: opacity 1s ease 100ms forwards;
+}
+
+@-webkit-keyframes opacity {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@-o-keyframes opacity {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+@keyframes opacity {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.table-img {
+    vertical-align: middle;
+}

@@ -1,0 +1,236 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.tmobile.cloud</groupId>
+	<artifactId>awsrules</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+
+	<name>awsrules</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<additionalparam>-Xdoclint:none</additionalparam>
+		<artifact.name>pac-managed-rules</artifact.name>
+	</properties>
+
+	<dependencies>
+
+
+		<!-- https://mvnrepository.com/artifact/org.json/json -->
+		<dependency>
+		    <groupId>org.json</groupId>
+		    <artifactId>json</artifactId>
+		    <version>20180130</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.tmobile.cloud</groupId>
+			<artifactId>batch-commons</artifactId>
+			<version>1.0.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+			<version>2.6</version>
+		</dependency>
+
+		<dependency>
+			<groupId>com.jcraft</groupId>
+			<artifactId>jsch</artifactId>
+			<version>0.1.54</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.apache.xmlrpc/xmlrpc-client -->
+		<dependency>
+			<groupId>org.apache.xmlrpc</groupId>
+			<artifactId>xmlrpc-client</artifactId>
+			<version>3.1.3</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.maven</groupId>
+			<artifactId>maven-artifact</artifactId>
+			<version>3.3.9</version>
+		</dependency>
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-access</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+
+		<dependency>
+ 		  <groupId>org.powermock</groupId>
+  		  <artifactId>powermock-module-junit4</artifactId>
+  		  <version>1.6.4</version>
+          <scope>test</scope>
+	   </dependency>
+
+	   <dependency>
+ 		  <groupId>org.powermock</groupId>
+  		  <artifactId>powermock-api-mockito</artifactId>
+  		  <version>1.6.4</version>
+   		  <scope>test</scope>
+	   </dependency>
+
+	   <!-- https://mvnrepository.com/artifact/org.springframework/spring-test -->
+<dependency>
+    <groupId>org.springframework</groupId>
+    <artifactId>spring-test</artifactId>
+    <version>4.0.5.RELEASE</version>
+    <scope>test</scope>
+</dependency>
+
+<!-- https://mvnrepository.com/artifact/org.assertj/assertj-core -->
+<dependency>
+    <groupId>org.assertj</groupId>
+    <artifactId>assertj-core</artifactId>
+    <version>3.8.0</version>
+    <scope>test</scope>
+</dependency>
+
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>build-a</id>
+						<configuration>
+							<archive>
+								<!-- <manifest> <mainClass>com.tmobile.pacman.commons.main.RuleExecutor</mainClass>
+									</manifest> -->
+							</archive>
+							<descriptorRefs>
+								<descriptorRef>jar-with-dependencies</descriptorRef>
+							</descriptorRefs>
+							<finalName>${artifact.name}</finalName>
+							<appendAssemblyId>false</appendAssemblyId>
+						</configuration>
+						<phase>package</phase>
+						<goals>
+							<goal>assembly</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Plugin to build java doc -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.0-M1</version>
+				<configuration>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.9</version>
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<artifactId>maven-site-plugin</artifactId>
+				<version>3.5.1</version>
+			</plugin>
+
+			 <plugin>
+                                <groupId>org.apache.maven.plugins</groupId>
+                                <artifactId>maven-antrun-plugin</artifactId>
+                                <version>1.8</version>
+                                <executions>
+                                        <execution>
+                                                <phase>install</phase>
+                                                <configuration>
+                                                        <target>
+                                                                <copy file="target/${artifact.name}.jar" tofile="../../dist/jobs/${artifact.name}.jar"/>
+                                                        </target>
+                                                </configuration>
+                                                <goals>
+                                                        <goal>run</goal>
+                                                </goals>
+                                        </execution>
+                                </executions>
+                        </plugin>
+
+
+		</plugins>
+	</build>
+
+	<reporting>
+		<excludeDefaults>true</excludeDefaults>
+
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>3.0.3</version>
+				<configuration>
+					<effort>Max</effort>
+					<!--Restrict analysis to the given comma-separated list of classes and
+						packages -->
+					<!--<onlyAnalyze>com.example.*</onlyAnalyze> -->
+					<plugins>
+						<plugin>
+							<groupId>com.h3xstream.findsecbugs</groupId>
+							<artifactId>findsecbugs-plugin</artifactId>
+							<version>LATEST</version>
+						</plugin>
+					</plugins>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>3.6</version>
+				<configuration>
+					<!--A list of files to include into checking. Can contain Ant-style
+						wildcards and double wildcards. Defaults to **/*.java. -->
+					<!--<includes> <include>**/*Example.java</include> </includes> -->
+					<!--A list of files to exclude from checking. Can contain Ant-style
+						wildcards and double wildcards. -->
+					<!--<excludes> <exclude>**/*Example.java</exclude> </excludes> -->
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>1.3.6</version>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>aggregate</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>${versions.jacoco}</version>
+			</plugin>
+		</plugins>
+	</reporting>
+
+
+
+</project>

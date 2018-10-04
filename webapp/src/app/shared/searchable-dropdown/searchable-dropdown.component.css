@@ -1,0 +1,106 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.filter-arrow {
+    width: 0;
+    height: 0;
+    border-left: 0.3em solid transparent;
+    border-right: 0.3em solid transparent;
+    border-top: 0.4em solid #e20074;
+    margin-left: 0.4em;
+    cursor: pointer;
+    pointer-events: none;
+    top: 0.75em;
+    right: 0.5em;
+}
+
+.search-img {
+    left: 0.8em;
+    top: 0.2em;
+    pointer-events: none;
+}
+.searchable-dropdown-wrapper{
+    width: 100%;
+    height: 100%;
+}
+/deep/ input.form-control.ui-select-search {
+    height: 100%!important;
+    width: 100%!important;
+    border: none!important;
+    padding: 0 0.6em!important;
+}
+
+/deep/ span.ui-select-placeholder.text-muted {
+    height: 100%!important;
+    width: 100%!important;
+    padding: 0 0.6em!important;
+    min-height: 2em;
+}
+
+/deep/ span.ui-select-match-text.pull-left.ui-select-allow-clear {
+    height: 100%!important;
+    width: 100%!important;
+    padding: 0 0.6em!important;
+}
+
+/deep/ .drop-search-box span.ui-select-placeholder.text-muted {
+    padding: 0 1em 0 2.5em!important;
+}
+
+/deep/ .drop-search-box span.ui-select-match-text.pull-left.ui-select-allow-clear {
+    padding: 0 1em 0 2.5em!important;
+    text-transform: capitalize;
+}
+
+/deep/ .drop-search-box input.form-control.ui-select-search {
+    padding: 0 1em 0 2.5em!important;
+}
+
+/deep/ .ui-select-choices-row>a {
+    background-color: white!important;
+    padding: 3px 0.6em!important;
+    white-space: normal!important;
+    border-bottom: 1px solid #f8f8f8;
+    word-break: break-all;
+    /*text-transform: capitalize;*/
+}
+
+/deep/ .ui-select-choices-row>a:first-letter {
+    text-transform: uppercase;
+}
+
+/deep/ .ui-select-choices-row>a:hover {
+    background-color: #e20074!important;
+    padding: 3px 0.6em!important;
+}
+
+/deep/ .ui-select-choices-row.active>a {
+    background-color: #e20074!important;
+}
+
+/deep/ ul.ui-select-choices {
+    border-radius: 3px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px 0 #00000050;
+    border: solid 1px #c3cbd7;
+    max-height: 25em!important;
+}
+
+/deep/ .drop-search-box .ui-select-choices-row>a {
+    padding: 3px 2.2em!important;
+}
+
+/deep/ .drop-search-box .ui-select-choices-row>a:hover {
+    padding: 3px 2.2em!important;
+}

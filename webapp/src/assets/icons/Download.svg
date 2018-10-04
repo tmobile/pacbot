@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="20px" height="23px" viewBox="0 0 20 23" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Download</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Statistics-Dashboard-v3.3" transform="translate(-1209.000000, -45.000000)">
+            <g id="ic/get_app/grey600" transform="translate(1203.000000, 41.000000)">
+                <g id="ic_get_app_24px">
+                    <path d="M25.3333333,12 L20,12 L20,4 L12,4 L12,12 L6.66666667,12 L16,21.3333333 L25.3333333,12 Z M6.66666667,24 L6.66666667,26.6666667 L25.3333333,26.6666667 L25.3333333,24 L6.66666667,24 Z" id="Shape" fill="#ffffff" fill-rule="nonzero"></path>
+                    <polygon id="Shape" points="0 0 32 0 32 32 0 32"></polygon>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

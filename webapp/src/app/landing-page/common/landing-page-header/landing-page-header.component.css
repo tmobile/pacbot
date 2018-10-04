@@ -1,0 +1,75 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.mr-header-list-left {
+    display: flex;
+    font-size: 1em;
+    color: #ffffff;
+    align-items: center;
+}
+
+.mr-header-list-right {
+    display: flex;
+    color: #ffffff;
+    font-size: 1.15em;
+    margin-left: auto;
+    align-items: center;
+}
+
+.mr-each-item-right,
+.mr-each-item-left {
+    padding: 0.5em 1.5em;
+    cursor: pointer;
+}
+
+.mr-common-header-wrapper {
+    display: flex;
+    align-items: center;
+    min-height: 80px;
+    background-color: rgba(33, 52, 68, .9);
+    padding: 0em 4em;
+}
+
+.mr-header-logo-icon {
+    width: 40px;
+}
+
+.mr-login-btn-header {
+    font-size: .9em;
+}
+
+.mr-header-list-left :first-child {
+    padding-left: 0;
+}
+
+.mr-header-list-right :last-child {
+    padding-right: 0;
+}
+
+:host ::ng-deep app-button.white button {
+    background-color: #ffffff;
+    color: #2c2e3d;
+}
+
+:host ::ng-deep app-button.white button:hover {
+    background-color: #2c2e3d;
+    color: #ffffff;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, .32);
+}
+
+:host ::ng-deep app-button.white button:active {
+    background-color: #2c2e3d;
+    color: #ffffff;
+    box-shadow: 0 2px 10px 1px rgba(0, 0, 0, .32);
+}

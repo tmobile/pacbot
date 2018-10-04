@@ -1,0 +1,98 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="compliance-dashboard-wrapper flex flex-between">
+    <div class="floating-widgets-section-full flex flex-col">
+        <app-breadcrumb [breadcrumbLinks]="breadcrumbDetails.breadcrumbLinks" [breadcrumbArray]="breadcrumbDetails.breadcrumbArray" [breadcrumbPresent]="breadcrumbDetails.breadcrumbPresent"></app-breadcrumb>
+        <div class="floating-widgets-header flex flex-between">
+            <div>
+                <img *ngIf="backButtonRequired" class="arrow-img" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+                <h1 class="title-text">{{pageTitle}}</h1>
+            </div>
+            <div class='flex relative z-index' *ngIf="isFilterRquiredOnPage">
+                <app-generic-page-filter [filterId]="9" [filterArray]="filterArray" (onFilterValueChange)="updateUrlWithNewFilters($event)"></app-generic-page-filter>
+            </div>
+        </div>
+        <div class='floating-widgets-filter-wrapper '>
+            <app-filtered-selector (updateFilterArray)='updateUrlWithNewFilters($event)' [(filteredArray)]='filterArray'></app-filtered-selector>
+        </div>
+        <div class="floating-widgets-section-full page-scroll">
+            <!-- Dev Strategy section starts here-->
+            <section class='section'>
+                <app-widget-section-starter [title]="'Branching Strategy'"></app-widget-section-starter>
+                <ul>
+                    <li class="widget-wrapper dev-strategy-widget-wrapper flex">
+                        <!--    Digital dev Strategy -->
+                        <div class="widget widget-container dev-strategy-each-widget">
+                            <app-digital-dev-strategy-distribution [filter]='applicationFilter'></app-digital-dev-strategy-distribution>
+                        </div>
+                        <div class="widget widget-container dev-strategy-each-widget">
+                            <app-digital-application-distribution [filter]='applicationFilter'></app-digital-application-distribution>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+            <!--  Dev Strategy section ends here -->
+            <!--***********************************************************************************-->
+            <!-- Pull Request Metrics section starts here-->
+            <section class='section'>
+                <app-widget-section-starter [title]="'Pull Request Metrics'"></app-widget-section-starter>
+                <ul>
+                    <li class="widget-wrapper">
+                        <div class="widget widget-container">
+                            <app-pull-request-line-metrics [filter]='applicationFilter'></app-pull-request-line-metrics>
+                        </div>
+                    </li>
+                    <li class="widget-wrapper">
+                        <div class="widget widget-container">
+                            <app-dev-standard-pull-request-age [filter]='applicationFilter'></app-dev-standard-pull-request-age>
+                        </div>
+                    </li>
+                    <li class="widget-wrapper">
+                        <div class="widget widget-container">
+                            <app-dev-pull-request-applications [filter]='applicationFilter'></app-dev-pull-request-applications>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+            <!-- Pull Request Metrics section ends here-->
+            <!--***********************************************************************************-->
+            <!-- Stale branches section starts here-->
+            <section>
+                <app-widget-section-starter [title]="'Stale Branches'"></app-widget-section-starter>
+                <ul>
+                    <li class="flex flex-row">
+                        <div class="widget-wrapper stale-branch-donut-chart">
+                            <div class="widget widget-container">
+                                <app-dev-standard-total-stale-branches [filter]='applicationFilter'> </app-dev-standard-total-stale-branches>
+                            </div>
+                        </div>
+                        <div class="widget-wrapper stale-branch-bar-chart flex flex-col">
+                            <div class="widget widget-container flex-grow">
+                                <app-dev-standard-stale-branch-age [filter]='applicationFilter'></app-dev-standard-stale-branch-age>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="widget-wrapper">
+                        <div class="widget widget-container">
+                            <app-dev-stale-branch-applications [filter]='applicationFilter'></app-dev-stale-branch-applications>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+            <!-- Stale branches section starts here-->
+            <!--***********************************************************************************-->
+        </div>
+    </div>
+</div>

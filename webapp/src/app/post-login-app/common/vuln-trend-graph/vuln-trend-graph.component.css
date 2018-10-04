@@ -1,0 +1,490 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.today-line {
+    width: 3px;
+    background-color: #ed0004;
+    top: 20px;
+    bottom: 20px;
+    right: 18px;
+    z-index: 2;
+    color: #fff;
+    font-size: 0.84em;
+}
+
+.today-flag {
+    background: #ed0004;
+    padding: 4px 10px 4px 8px;
+    top: 1px;
+    transform: translate(0%, -100%);
+    right: 0;
+    font-family: ex2-light;
+    font-style: italic;
+}
+
+.today-txt {
+    padding-bottom: 4px;
+    letter-spacing: 0.3px;
+}
+
+.zero-opacity {
+    visibility: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.graph-container {
+    min-height: 200px;
+}
+
+@media print {
+    .today-flag{
+        font-family: ex2-bold;
+    }
+}
+
+.svg-wrapper {
+    top: 45px;
+    left: 70px;
+    right: 20px;
+    bottom: 20px;
+    z-index: 1;
+}
+
+.y0-axis {
+    left: 0;
+    top: 0;
+    bottom: 0;
+    transform: translate(-100%, -4px);
+    min-width: 2em;
+    padding-right: 6px;
+    font-size: 0.8em;
+    color: #000000;
+}
+
+.y0-axis .each-tick {
+    justify-content: flex-end;
+    font-family: ex2-light;
+}
+
+.each-tick {
+    height: 100%;
+}
+
+.left-label {
+    left: 8px;
+    top: calc(50% - 14px);
+    transform: rotate(-90deg);
+    color: #000000;
+    letter-spacing: 0;
+    font-size: 0.9em;
+    opacity: 0.9;
+    width: 12px;
+    height: 12px;
+    white-space: nowrap;
+    display: flex;
+    font-family: ex2-medium;
+    align-items: center;
+    justify-content: center;
+}
+
+.each-grid {
+    height: 100%;
+    border-top: 2px dotted #e6e6e688;
+}
+
+.legends-value {
+    margin-right: 1.5em;
+}
+
+.legends-value {
+    margin: 6px 9px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+.legend {
+    width: 1em;
+    height: 1em;
+    margin-right: 9px;
+}
+
+.legend {
+    flex-shrink: 0;
+    opacity: 1;
+}
+
+.legend-txt {
+    line-height: 1.3;
+    color: #555555;
+}
+
+.notes-wrap {
+    background-color: #faf9f9;
+    border: solid 1px #c3cbd7;
+    min-height: 2em;
+    margin: 4px 18px 0.66em 70px;
+    padding: 0.25em 1em;
+    border-radius: 2px;
+    max-width: calc(100% - 90px);
+}
+
+.each-note {
+    background-color: #ffffff;
+    border: solid 1px #79b2dd;
+    border-radius: 3px;
+    padding: 0.5em 1em;
+    margin: 0.25em 0.5em;
+    align-self: stretch;
+    min-height: 3em;
+    line-height: 1.4;
+    width: calc(25% - 1em);
+    max-width: 24em;
+    font-family: ex2-light;
+    letter-spacing: 0.4px;
+    position: relative;
+}
+
+.vulnReportGraph {
+    position: relative;
+    z-index: 3;
+}
+
+.svg-wrapper.z-4 {
+    z-index: 4;
+}
+
+.svg-wrapper.z-5 {
+    z-index: 5;
+}
+
+.each-date {
+    flex-grow: 2;
+    cursor: pointer;
+    background: rgba(0,0,0,0);
+    position: relative;
+}
+
+.each-date:first-child, .each-date:last-child {
+    flex-grow: 1;
+}
+
+.each-date:hover {
+    background: rgba(0,0,0,0.04);
+}
+
+.label-txt {
+    color: #79b2dd;
+    font-family: ex2-bold;
+    font-size: 0.92em;
+    margin-right: 2px;
+}
+
+.label-desc {
+    font-size: 0.92em;
+    color: #333;
+    font-family: ex2-light;
+}
+
+.each-note.ag-specific {
+    border: solid 1px #4c69a1;
+}
+
+.each-note.ag-specific .label-txt {
+    color: #4c69a1;
+}
+
+.legends-wrapper {
+    margin: 4px 72px 0 70px;
+    position: relative;
+}
+
+.graph-point.container.legend {
+    background-color: transparent;
+    border-radius: 0.6em;
+    height: 1.2em;
+    width: 1.2em;
+    margin-right: 9px;
+    opacity: 1;
+}
+
+.point-wrapper {
+    transform: translate(calc(-50% - 1px), -8px);
+    transition: 0.2s ease;
+}
+
+.data-point {
+    border: solid 2px #79b2dd;
+    color: #79b2dd;
+    min-height: 18px;
+    min-width: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 10px;
+    box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.2);
+    background: rgba(255, 255, 255, 0.85);
+    font-size: 10px;
+    font-family: ex2-bold;
+    margin-top: 2px;
+}
+
+.data-point:first-child {
+    margin-top: 0px;
+}
+
+.data-point.ag-specific {
+    border: solid 2px #4c69a1;
+    color: #4c69a1;
+}
+
+.date-display {
+    bottom: 0;
+    color: #888;
+    background: rgba(255, 255, 255, 0.8);
+    padding: 1px 5px;
+    border-radius: 2px;
+    font-family: ex2-medium;
+    font-size: 10px;
+    transform: translate(-50%, 18px);
+    opacity: 0;
+    pointer-events: none;
+    left: 50%;
+}
+
+.each-date:hover .date-display {
+    opacity: 1;
+}
+
+.each-date:first-child:hover .date-display {
+    opacity: 0;
+}
+
+.each-date:last-child:hover .date-display {
+    opacity: 0;
+}
+
+.each-date:last-child:hover {
+    background: rgba(255,0,0,0.06);
+}
+
+.transition {
+    transition: 0.3s ease;
+}
+
+.notes-container {
+    overflow: hidden;
+    transition: 0.3s ease;
+    max-height: 0px;
+}
+
+.notes-container.active {
+    max-height: 16em;
+}
+
+.each-note.admin-access {
+    cursor: pointer;
+}
+
+.edit-icon {
+    opacity: 0;
+    transition: 0.2s ease;
+    position: absolute;
+    top: 0.2em;
+    right: 0.33em;
+}
+
+.edit-icon img {
+    height: 0.8em;
+    width: 0.8em;
+}
+
+.each-note.admin-access:hover .edit-icon {
+    opacity: 1;
+}
+
+.bg-overlay {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 13;
+}
+
+.notes-modal {
+    z-index: 14;
+    width: 55vw;
+    height: 69vh;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    background: #fff;
+    border-radius: 3px;
+    box-shadow: 0px 0px 6px 2px rgba(0,0,0,0.2);
+    max-width: 740px;
+    max-height: 620px;
+    padding: 1.3em 1.3em 1.3em 1.7em;
+}
+
+.cross-img {
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.cross-img:hover {
+    transform: rotate(-90deg);
+}
+
+.header-title {
+    font-size: 1.6em;
+}
+
+.header-title::first-letter {
+    text-transform: uppercase;
+}
+
+.popup-header {
+    padding-bottom: 2.5em;
+    flex-shrink: 0;
+}
+
+.scroll {
+    overflow: auto;
+    padding: 0 2em 0 1.7em;
+}
+
+.drop-options {
+    height: 2em;
+    width: 100%;
+    border: none;
+    border-radius: 0px;
+    background-color: #ffffff;
+    border-bottom: solid 2px #c3cbd7;
+    position: relative;
+    transition: 0.3s ease;
+    cursor: pointer;
+    line-height: 1.8em;
+    font-size: 1.1em;
+}
+
+.input-wrap {
+    margin-bottom: 3.33em;
+}
+
+.drop-options:hover {
+    box-shadow: none;
+}
+
+.input-title {
+    color: #999;
+    padding-bottom: 0.5em;
+}
+
+.text-area {
+    width: 100%;
+    border: 1px solid #c3cbd7;
+    border-radius: 3px;
+    min-height: 4em;
+    padding: 0.4em 0.6em;
+    font-size: 1.04em;
+    resize: none;
+    margin: 0.3em 0;
+    line-height: 1.5;
+    font-family: ex2-light;
+}
+
+/deep/ span.ui-select-match-text.pull-left.ui-select-allow-clear {
+    text-transform: capitalize;
+}
+
+/deep/ .ui-select-choices-row > a {
+    text-transform: capitalize;
+}
+
+.vibration {
+    animation: shake 0.300s ease;
+}
+
+@keyframes shake {
+    0%, 100% {
+        transform: translateX(0px);
+    }
+    25%, 75% {
+        transform: translateX(3px);
+    }
+    50% {
+        transform: translateX(-3px);
+    }
+}
+
+.data-text {
+    padding: 1.1em 0.6em 0;
+    font-size: 1.05em;
+    color: #444;
+    font-family: ex2-light;
+}
+
+.data-text.bold {
+    color: #000;
+    font-family: ex2-bold;
+}
+
+.data-text.bold span {
+    letter-spacing: 0.3px;
+}
+
+.selected-txt {
+    color: #222;
+    font-family: ex2-regular;
+}
+
+.modal-button {
+    background: #bbb;
+    height: 2.5em;
+    border-radius: 1.25em;
+    margin: 0em 0 1em 1.5em;
+    padding: 0.5em 1em;
+    color: #fff;
+    cursor: not-allowed;
+    min-width: 6em;
+    flex-shrink: 0;
+    transition: 0.25s ease;
+}
+
+.modal-button.active {
+    background: #ed0074;
+    cursor: pointer;
+}
+
+.modal-button.active:hover {
+    box-shadow: 1px 1px 4px 1px rgba(0,0,0,0.2);
+}
+
+.admin-select-btn-wrap {
+    padding-top: 1em;
+    padding-right: 1em;
+}
+
+.update-loader {
+    z-index: 20;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: #fffc;
+}

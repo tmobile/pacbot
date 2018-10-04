@@ -1,0 +1,120 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.resource-details-wrapper {
+    width: auto;
+    height: auto;
+}
+
+.resource-details-container {
+    width: 100%;
+    height: auto;
+    min-height: 27em;
+    border-radius: 5px;
+    background: rgb(221, 226, 233);
+}
+
+
+/*chart css*/
+
+.wrapper-container {
+    background-color: #dce3e9;
+    padding: 0.33em;
+}
+
+.multiline-chart {
+    width: 78%;
+    background-color: #fff;
+    border-radius: 0.4em;
+    box-shadow: 0px 0px 6px #bbb;
+}
+
+.tagged {
+    border-radius: 0.4em;
+    box-shadow: 0px 0px 6px #bbb;
+    background-color: #fff;
+    width: 21%;
+}
+
+.wrapper-container-utilization {
+    background-color: #dce3e9;
+    padding: 0.33em;
+}
+
+.wrapper-container-recommendation {
+    background-color: #dce3e9;
+    padding: 0.33em;
+}
+
+.wrapper-parent {
+    padding: 1.42em;
+    background-color: #dce3e9;
+    border-radius: 3px;
+}
+
+.resource-types-container {
+    position: relative;
+    height: auto;
+    min-height: 9em;
+}
+
+.resource-types-container li.flex {
+    margin: 0 0.7em;
+    position: relative;
+    padding: 0 1px;
+}
+
+.resource-types-container li.flex.active::after {
+    content: "";
+    width: 0.6em;
+    height: 2em;
+    background-color: rgb(221, 226, 233);
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translate(-50%, 100%);
+}
+.resource-types-container ul {
+    max-width: 100%;
+    overflow-x: hidden;
+    padding-bottom: 2em;
+    overflow-y: hidden;
+    width: 100%;
+    border-right: 1px solid #ededed2f;
+}
+
+.resource-types-container ul:hover {
+    max-width: 100%;
+    overflow-y: hidden;
+    overflow-x: auto; overflow-x: overlay;
+}
+.asset-dist-header{
+    padding: 0.6em 0.5em 0.7em 1em;
+    font-family: ex2-medium;
+    background-color: #fff;
+    color: #3f4a59;
+    border-top-left-radius: 0.4em;
+    border-top-right-radius: 0.4em;
+    border-bottom: 0.1em solid #d5dce2;
+    text-transform: capitalize;
+    word-spacing: 2px;
+}
+
+/* css for edge browser */
+@supports (-ms-ime-align: auto) { 
+    .resource-types-container ul {
+        overflow-x: auto;
+    }
+}

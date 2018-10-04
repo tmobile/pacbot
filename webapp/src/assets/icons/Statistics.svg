@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="14px" height="8px" viewBox="0 0 14 8" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Statistics</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="MainNav_v1" transform="translate(-46.000000, -467.000000)">
+            <g id="Group-43-Copy" transform="translate(45.000000, 463.000000)">
+                <g id="ic/trending_up/grey600">
+                    <g id="ic_trending_up_24px">
+                        <polygon id="Shape" fill="#FFFFFF" fill-rule="nonzero" points="10.6666667 4 12.1933333 5.52666667 8.94 8.78 6.27333333 6.11333333 1.33333333 11.06 2.27333333 12 6.27333333 8 8.94 10.6666667 13.14 6.47333333 14.6666667 8 14.6666667 4"></polygon>
+                        <polygon id="Shape" points="0 0 16 0 16 16 0 16"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

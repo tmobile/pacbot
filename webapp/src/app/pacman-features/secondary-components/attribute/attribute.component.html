@@ -1,0 +1,41 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <article class="attribute-parent-wrapper" *ngIf='dataObjArray.length > 0'>
+	<section class="system-info" *ngFor='let data of dataObjArray'>
+		<div class="system-info-topic" *ngIf="data.name != ''">
+			<header class="header">
+				{{data.name}}
+			</header>
+		</div>
+		<div class="system-values flex flex-wrap flex-between">
+			<div class="values-wrapper widthWrapper" *ngFor='let tiles of data.values'>
+				<div *ngIf='tiles.value.length > 0'>
+					<div>
+						<div class="values-wrapper-field nowrap-ellipsis uncategorizedWrapper" title="{{tiles.name}}">
+						{{tiles.name}}
+						</div>
+						<div class="values-wrapper-value" *ngFor='let subTiles of tiles.value'>
+							<div *ngIf="tiles.name==='EBS Volumes'" class="nowrap-ellipsis uncategorizedWrapper link-text pointer" title="{{subTiles}}" (click)="navigatePage(subTiles)">
+								{{subTiles}}
+							</div>
+							<div *ngIf="tiles.name!=='EBS Volumes' && subTiles.href" class="nowrap-ellipsis uncategorizedWrapper" title="{{subTiles.href}}" [innerHTML]='subTiles.href'></div>
+							<div *ngIf="tiles.name!=='EBS Volumes' && !subTiles.href" class="nowrap-ellipsis uncategorizedWrapper" title="{{subTiles}}" [innerHTML]='subTiles'></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</article>

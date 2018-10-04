@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="52px" height="52px" viewBox="0 0 52 52" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>AWS</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <polygon id="path-1" points="19.4263503 43.9061666 0 36.927128 0 8.39987753 19.4263503 15.0493203"></polygon>
+        <filter x="-36.0%" y="-14.1%" width="172.1%" height="139.4%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.227383379 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <polygon id="path-3" points="23.0108818 43.9061666 42.4372321 36.927128 42.4372321 8.39987753 23.0108818 15.0493203"></polygon>
+        <filter x="-36.0%" y="-14.1%" width="172.1%" height="139.4%" filterUnits="objectBoundingBox" id="filter-4">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.227383379 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+        <polygon id="path-5" points="1.98002694 5.65829761 21.6902352 0.0938334354 39.9377734 5.98789345 21.6902352 12.2115493"></polygon>
+        <filter x="-18.4%" y="-41.3%" width="136.9%" height="215.5%" filterUnits="objectBoundingBox" id="filter-6">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.227383379 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Statistics-Dashboard-v3.3" transform="translate(-764.000000, -500.000000)" fill-rule="nonzero">
+            <g id="Group-4" transform="translate(488.500000, 502.000000)">
+                <g id="Group-8-Copy-4" transform="translate(260.000000, 0.000000)">
+                    <g id="AWS" transform="translate(20.176817, 0.000000)">
+                        <g id="Shape">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                            <use fill="#FFE00D" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        </g>
+                        <g id="Shape">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-4)" xlink:href="#path-3"></use>
+                            <use fill="#FFE00D" fill-rule="evenodd" xlink:href="#path-3"></use>
+                        </g>
+                        <g id="Shape">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-6)" xlink:href="#path-5"></use>
+                            <use fill="#FFE00D" fill-rule="evenodd" xlink:href="#path-5"></use>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

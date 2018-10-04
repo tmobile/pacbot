@@ -1,0 +1,49 @@
+<div class="compliance-dashboard-wrapper flex flex-between">
+  <div class="floating-widgets-section-full flex flex-col">
+      <app-breadcrumb [breadcrumbLinks]="breadcrumbDetails.breadcrumbLinks" [breadcrumbArray]="breadcrumbDetails.breadcrumbArray" [breadcrumbPresent]="breadcrumbDetails.breadcrumbPresent"></app-breadcrumb>
+      <div class="floating-widgets-header flex flex-between">
+          <div>
+              <img *ngIf="backButtonRequired" class="arrow-img" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+              <h1 class="title-text">{{pageTitle}}</h1>
+          </div>
+          <div class='flex relative z-index' *ngIf="isFilterRquiredOnPage">
+              <app-generic-page-filter [filterId]="1" [filterArray]="filterArray" (onFilterValueChange)="updateUrlWithNewFilters($event)"></app-generic-page-filter>
+          </div>
+      </div>
+      <div class='floating-widgets-filter-wrapper ' *ngIf='filterArray.length'>
+          <app-filtered-selector (updateFilterArray)='updateUrlWithNewFilters($event)' [(filteredArray)]='filterArray'></app-filtered-selector>
+      </div>
+      <div class="floating-widgets-section-full flex flex-col">
+        <section class='flex flex-col'>
+            <ul class='flex flex-col'>
+                <li class="widget-wrapper relative ag-grid-wrapper flex flex-col">
+                    <div class="flex flex-col flex-grow relative">
+                        <div class="loader absolute" *ngIf='errorValue == 0'></div>
+                        <div class="error-message absolute" *ngIf='errorValue < 0'>
+                            <app-error-message [selectedValue]="errorMessage"></app-error-message>
+                        </div>
+                        <app-ag-grid-table [class.hide]='errorValue != 1' class='flex flex-col wrap-grid' 
+                        [totalRows]='totalRows'
+                        (previousPageCalled)='prevPg()' 
+                        (nextPageCalled)='nextPg()'
+                        [identifier] = "'IssueId'"
+                        (searchRowTxt) = 'searchEntered($event)'
+                        (searchTriggerred) = 'searchTrigger()'
+                        (rowClickText)='handlePopClick($event)'
+                        [firstPaginator]='firstPaginator' [lastPaginator]='lastPaginator'
+                        [currentPointer]='currentPointer'[data]='issueListingdata'>
+                    </app-ag-grid-table>
+                    <div *ngIf='errorValue > 0' class="flex flex-align-center flex-between bottom-wrap no-shrink">
+                        <div class="data-table-desc">Note: This page may include 'Exempted' issues with 'Open' issues</div>
+                        <div>
+                            <app-button class='each-button'>INVOKE</app-button>
+                            <app-button class='each-button'>REVOKE</app-button>
+                        </div>
+                    </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,56 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <section class="tools-outer-wrapper">
+  <h1 class="tools-header">
+    tools
+  </h1>
+  <section class="tools-body-wrapper flex" *ngIf="content && content.tools">
+    <div class="each-flex-layout flex flex-col">
+      <div class="each-flex-child pacbot-height" *ngIf="content.tools.pacbot">
+        <h2 class="each-flex-header">{{content.tools.pacbot.title}}</h2>
+        <div class="each-flex-content">
+          {{content.tools.pacbot.description}}
+        </div>
+        <a class="link-txt relative" target='_blank' href="{{content.tools.pacbot.link}}">{{content.tools.pacbot.linkText}}</a>
+      </div>
+    </div>
+    <div class="each-flex-layout flex flex-col">
+      <div class="each-flex-child vault-height" *ngIf="content.tools.vault">
+        <h2 class="each-flex-header">{{content.tools.vault.title}}</h2>
+        <div class="each-flex-content">
+          {{content.tools.vault.description}}
+        </div>
+            <a class="link-txt relative" target='_blank' href="{{content.tools.vault.link}}">{{content.tools.vault.linkText}}</a>
+      </div>
+      <div class="each-flex-child self-service-height" *ngIf="content.tools.ad">
+        <h2 class="each-flex-header">{{content.tools.ad.title}}</h2>
+        <div class="each-flex-content">
+          {{content.tools.ad.description}}
+        </div>
+          <a class="link-txt relative" target='_blank' href="{{content.tools.ad.link}}">{{content.tools.ad.linkText}}</a>
+      </div>
+    </div>
+    <div class="each-flex-layout flex flex-col">
+      <div class="each-flex-child blackbox-height" *ngIf="content.tools.blackbox">
+        <h2 class="each-flex-header">{{content.tools.blackbox.title}}</h2>
+        <div class="each-flex-content">
+          {{content.tools.blackbox.description}}
+        </div>
+            <a class="link-txt relative" target='_blank' href="{{content.tools.blackbox.link}}">{{content.tools.blackbox.linkText}}</a>
+      </div>
+    </div>
+  </section>
+  <app-error-message *ngIf="!(content && content.tools)" [selectedValue]="'noDataAvailable'"></app-error-message>
+</section>

@@ -1,0 +1,45 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="parent-wrapper flex flex-col">
+    <div class="sub-head">
+        <app-title-burger-head [subHeadTitle]="'Non Compliant Assets'"></app-title-burger-head>
+    </div>
+    <section class="relative patch-across-app-wrapper">
+        <div class="top-tile" [class.addPadding]='seekdata'>
+            <div class='flex-col relative' *ngIf='topState && !showLoader'>
+                <div class="state-wrapper">
+                    <app-state-table [data]='topState' [headers]='listArrays' [top]='true' [pageLevel]="pageLevel"></app-state-table>
+                    <hr align="left" class="width-rule">
+                </div>
+            </div>
+        </div>
+        <div class="bottom-tile" [class.addPadding]='seekdataExec'>
+            <div class='flex-col relative' *ngIf='execState && !showLoaderExec'>
+                <div class="state-wrapper">
+                    <app-state-table [pageLevel]="pageLevel" [data]='execState' [headers]='execArrays' [bottom]='true'></app-state-table>
+                </div>
+            </div>
+        </div>
+        <div class="showDateandTime" *ngIf='topState || execState'>
+            Report date: {{reportDate}} {{reportTime}}
+        </div>
+    </section>
+    <article class='positioning center error_handling' *ngIf='!topState && !execState'>
+        <div class="error_msg">
+            <app-error-message *ngIf='seekdataExec == true' [selectedValue]="errorMessage"></app-error-message>
+        </div>
+    </article>
+    <div *ngIf='showLoader && showLoaderExec' class="loader"></div>
+</div>

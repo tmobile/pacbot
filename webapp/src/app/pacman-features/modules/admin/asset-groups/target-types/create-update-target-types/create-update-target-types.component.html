@@ -1,0 +1,146 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="sticky-exceptions-wrapper floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+    <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+    <div class="floating-widgets-header flex flex-between">
+        <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text">{{pageTitle}}</h1>
+        </div>
+    </div>
+    <div class="floating-widgets-container ">
+        <section>
+            <ul>
+                <li class="widget-wrapper relative ">
+                    <div class="data-table-wrap relative ">
+                        <div class="sub-head ">
+                            <div class="flex flex-between flex-align-center ">
+                                <div class="sub-head-title capitalize flex flex-align-center after-load ">
+                                    <div class="header-text ">Target Type Details</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div [hidden]="hideContent">
+                            <div class="data-content group-details">
+                                <div class="formcontainerwrapper">
+                                    <div class="asset-formctn">
+                                        <div class="formctnleft">
+                                            <div class="input-form">
+                                                <label>Select Domain *</label>
+                                                <ng-select [allowClear]="true" name="exceptionDetailsForm.assetGroup" [items]="allDomainDetails" [(ngModel)]="targetTypes.domain" placeholder="Select Asset Group">
+                                                </ng-select>
+                                            </div>
+
+                                            <div class="input-box" *ngIf="isCreate">
+                                                <label>Target Type Name *</label>
+                                                <ul class="input-wrapper">
+                                                    <input type="text" name="type" class="inputarea-container" [(ngModel)]="targetTypes.name" placeholder="Enter Target Type Name" autocomplete="off">
+                                                </ul>
+                                            </div>
+
+                                            <div class="input-box" *ngIf="!isCreate">
+                                                <label>Target Type Name *</label>
+                                                <div class="text-value">{{targetTypes.name}}</div>
+                                            </div>
+
+                                            <div class="bm10 input-box">
+                                                <label>Description *</label>
+                                                <ul>
+                                                    <textarea name="description" class="textarea-container " [(ngModel)]="targetTypes.desc" placeholder="Enter Target Type Description"></textarea>
+                                                </ul>
+                                            </div>
+
+                                        </div>
+                                        <div class="formctnright">
+                                            <div class="input-form">
+                                                <label>Select Category *</label>
+                                                <ng-select [allowClear]="true" name="exceptionDetailsForm.assetGroup" [items]="allCategoryDetails" [(ngModel)]="targetTypes.category" placeholder="Select Category">
+                                                </ng-select>
+                                            </div>
+
+                                            <div class="bm10 input-box">
+                                                <label>Config *</label>
+                                                <ul>
+                                                    <textarea name="description" class="textarea-container " [(ngModel)]="targetTypes.config" placeholder="Enter Target Type Config"></textarea>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="data-table-paginator-wrap flex flex-center flex-align-center">
+                                <a class="save-container flex flex-row-reverse" *ngIf="isCreate">
+                                    <button class="submit-btn uppercase" (click)="createTargetType(targetTypes)" [disabled]="targetTypes.name==='' || targetTypes.desc==='' || targetTypes.domain.length==0 || targetTypes.category.length==0 || targetTypes.config===''"><i class="fa fa-check"></i> CREATE</button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse" *ngIf="!isCreate">
+                                    <button class="submit-btn uppercase" (click)="updateTargetType(targetTypes)" [disabled]="targetTypes.name==='' || targetTypes.desc==='' || targetTypes.domain.length==0 || targetTypes.category.length==0 || targetTypes.config===''"><i class="fa fa-check"></i> UPDATE</button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse">
+                                    <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CANCEL</button>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="pacman-alert" *ngIf="isTargetTypeCreationUpdationFailed">
+                            <div class="sa-icon sa-error animateErrorIcon" style="display: block;">
+                                <span class="sa-x-mark animateXMark">
+                                    <span class="sa-line sa-left"></span>
+                                <span class="sa-line sa-right"></span>
+                                </span>
+                            </div>
+                            <div class="pacman-alert-title">
+                                {{failedTitle}}
+                            </div>
+                            <div class="pacman-alert-message">
+                                {{loadingContent}} <span class="highlight-pink">{{highlightName}}</span> failed!!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="closeErrorMessage()"><span *ngIf="failedTitle!=='Loading Failed'"><i class="fa fa-remove"></i> CLOSE</span> <span *ngIf="failedTitle==='Loading Failed'"><i class="fa fa-refresh"></i> RETRY</span></button>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isTargetTypeCreationUpdationSuccess">
+                            <div class="sa-icon sa-success animate">
+                                <span class="sa-line sa-tip animateSuccessTip"></span>
+                                <span class="sa-line sa-long animateSuccessLong"></span>
+                                <div class="sa-placeholder"></div>
+                                <div class="sa-fix"></div>
+                            </div>
+
+                            <div class="pacman-alert-title">
+                                {{successTitle}}
+                            </div>
+                            <div class="pacman-alert-message">
+                                Target Type <span class="highlight-pink">{{selectedTargetTypeName}}</span> has been successfully <span *ngIf="isCreate">created</span><span *ngIf="!isCreate">updated</span> !!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-progress" *ngIf="targetTypeLoader">
+                            <pacman-loading></pacman-loading>
+                            <div class="title">
+                                Please Wait...
+                            </div>
+                            <div class="pacman-alert-message">
+                                <span class="highlight-pink">{{highlightName}}</span> {{loadingContent}} is in progress...
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>

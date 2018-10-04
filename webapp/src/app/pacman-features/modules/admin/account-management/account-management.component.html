@@ -1,0 +1,34 @@
+<div class="compliance-dashboard-wrapper flex flex-between">
+    <div class="floating-widgets-section-full flex flex-col">
+        <app-breadcrumb [breadcrumbLinks]="breadcrumbDetails.breadcrumbLinks" [breadcrumbArray]="breadcrumbDetails.breadcrumbArray"
+            [breadcrumbPresent]="breadcrumbDetails.breadcrumbPresent" [parentRouteName]="'admin'" [isCustomParentRoute]="true"></app-breadcrumb>
+        <div class="floating-widgets-header flex flex-between">
+            <div>
+                <img *ngIf="backButtonRequired" class="arrow-img" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+                <h1 class="title-text">{{pageTitle}}</h1>
+            </div>
+            <app-button (click)='goToCreate()'>CREATE</app-button>
+        </div>
+        <div class="floating-widgets-section-full issue-listing-wrapper ac-man-wrap flex flex-col">
+            <section class='flex flex-col full-height'>
+                <ul class='flex flex-col full-height'>
+                    <li class="widget-wrapper flex flex-col full-height">
+                        <div class="widget flex flex-col full-height">
+                            <div class="relative flex flex-col full-height">
+                                <app-data-table class="flex flex-col full-height" [errorValue]='errorValue' [outerArr]='outerArr' [allColumns]='allColumns'
+                                    [dataHead]="'Account Management'" [parentName]='errorMessage' (selectedRow)='goToDetails($event)'
+                                    [firstPaginator]='firstPaginator' [lastPaginator]='lastPaginator' [totalRows]='totalRows'
+                                    [currentPointer]='currentPointer' (searchRowTxt)='searchCalled($event)' (searchTriggerred)='callNewSearch()'
+                                    [searchPassed]='searchPassed' (menuClick)='handleDropdown($event);' [searchableHeader]='true'
+                                    [buttonsArr]='actionsArr' [buttonColumn]="'Action'">
+                                </app-data-table>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</div>
+<app-confirmation-box *ngIf='showConfBox' [text]="deleteCondition()" (emitConfirm)='confirmBox();' (emitClose)='showConfBox = false;'
+    [errorValue]="errorValue"></app-confirmation-box>

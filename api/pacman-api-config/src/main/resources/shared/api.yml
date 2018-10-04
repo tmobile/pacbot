@@ -1,0 +1,79 @@
+service:
+  dns:
+    name: ${PACMAN_HOST_NAME}
+  url:
+    compliance: ${PACMAN_HOST_NAME}/api/compliance
+    asset: ${PACMAN_HOST_NAME}/api/asset
+    statistics: ${PACMAN_HOST_NAME}/api/statistics
+    devstandards: ${PACMAN_HOST_NAME}/api/devstandards
+    auth: ${PACMAN_HOST_NAME}/api/auth
+    admin: ${PACMAN_HOST_NAME}/api/admin
+    
+endpoints:
+  refresh:
+    sensitive: false
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 100000
+            
+application:
+  cors:
+    allowed:
+      domains: all
+                 
+monitoring:
+  contextRootNames: asset,compliance,statistics,auth,admin
+
+auth: 
+  active: db
+
+spring:
+    cache:
+        cache-names: trends,compliance,assets
+        caffeine:
+            spec: maximumSize=500, expireAfterWrite=6h
+    datasource:
+      url: ${RDS_URL}
+      username: ${RDS_USERNAME}
+      password: ${RDS_PASSWORD}
+      driver-class-name: com.mysql.jdbc.Driver
+    cloud:
+      bus:
+          enabled: false
+  
+api:
+  services:
+  - name: Admin Service
+    url: ${PACMAN_HOST_NAME:http://localhost:8080}/api/admin/v2/api-docs
+    version: 2.0
+  - name: Auth Service
+    url: ${PACMAN_HOST_NAME:http://localhost:8080}/api/auth/v2/api-docs
+    version: 2.0
+  - name: Asset Service
+    url: ${PACMAN_HOST_NAME:http://localhost:8080}/api/asset/v2/api-docs
+    version: 2.0
+  - name: Dev Standards Service
+    url: ${PACMAN_HOST_NAME:http://localhost:8080}/api/devstandards/v2/api-docs
+    version: 2.0
+  - name: Compliance Service
+    url: ${PACMAN_HOST_NAME:http://localhost:8080}/api/compliance/v2/api-docs
+    version: 2.0
+  - name: Statistics Service
+    url: ${PACMAN_HOST_NAME:http://localhost:8080}/api/statistics/v2/api-docs
+    version: 2.0
+  - name: Notification Service
+    url: ${PACMAN_HOST_NAME:http://localhost:8080}/api/notifications/v2/api-docs
+    version: 2.0
+      
+tagging:
+  mandatoryTags: Application,Environment
+  
+vulnerability:
+  types: ec2,onpremserver
+  summary:
+    severity: 5

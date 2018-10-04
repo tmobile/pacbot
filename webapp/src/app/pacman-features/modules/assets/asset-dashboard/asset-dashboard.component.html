@@ -1,0 +1,35 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="asset-dashboard-wrapper flex flex-between">
+    <div class="asset-widgets-section ">
+        <div class="asset-widgets-header flex flex-between">
+            <h1 class="">{{pageTitle}}</h1>
+        </div>
+        <div class="asset-widget-container">
+            <div class='tracker-wrap'>
+                <app-asset-tracker [pageLevel]="pageLevel"></app-asset-tracker>
+            </div>
+            <div class="aws-resource-selection-container">
+                <app-aws-resource-details [pageLevel]="pageLevel"></app-aws-resource-details>
+            </div>
+            <div class='base-tiles-wrap flex' *ngIf="!oss">
+                <app-asset-application [pageLevel]="pageLevel" class="base-tile-each relative"></app-asset-application>
+                <app-asset-waf [pageLevel]="pageLevel" class="base-tile-each relative"></app-asset-waf>
+                <app-asset-crop [pageLevel]="pageLevel" class="base-tile-each relative"></app-asset-crop>
+                <app-asset-certificate [pageLevel]="pageLevel" class="base-tile-each relative"></app-asset-certificate>
+            </div>
+        </div>
+    </div>
+</div>

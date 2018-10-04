@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="17px" viewBox="0 0 16 17" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Back arrow</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Statistics-Dashboard-v3.3" transform="translate(-49.000000, -48.000000)" fill-rule="nonzero" fill="#FFFFFF">
+            <g id="Group-6" transform="translate(45.000000, 40.000000)">
+                <g id="Group-2">
+                    <g id="ic_arrow_back_24px" transform="translate(0.000000, 4.500000)">
+                        <polygon id="Back-arrow" points="20 11 7.83 11 13.42 5.41 12 4 4 12 12 20 13.41 18.59 7.83 13 20 13"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

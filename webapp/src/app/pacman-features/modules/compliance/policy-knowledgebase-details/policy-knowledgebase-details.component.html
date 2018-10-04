@@ -1,0 +1,59 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="policy-knowledgebase-wrapper flex flex-between flex-col flex-start relative">
+  <div class="flex flex-col pk-header-wrapper">
+      <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+      <div class="floating-widgets-header flex flex-between">
+          <div>
+              <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+              <h1 class="title-text" title = "{{pageTitle}}">{{pageTitle}}</h1>
+          </div>
+      </div>
+  </div>
+  <div class='policy-knowledgebase-content' *ngIf='dataComing && !showLoader'>
+      <div class='pk-top-content'>
+          <div class='pk-top-header' title = "{{displayName}}">{{displayName}}</div>
+          <div class="pk-top-desc-header" title = "{{Description}}">Description</div>
+          <div class="pk-top-desc-subheader" title = "{{ruleDescription}}">{{ruleDescription}}</div>
+          <div class="pk-category-wrapper">
+            <div class="pk-each-category-wrapper" *ngFor = "let data of policyDesc">
+                <div class="pk-each-category-left" title = "{{data.key}}">
+                        {{data.key}}
+                </div>
+                <div class="pk-each-category-right capitalize" title = "{{data.value}}" [class.critical-color]="data.value == 'critical'" [class.medium-color]="data.value == 'medium'" [class.low-color]="data.value == 'low'" [class.high-color]="data.value == 'high'">
+                        {{data.value}}
+                </div>
+            </div>
+          </div>
+          <div class="pk-resolution-wrapper" *ngIf = "resolution.length > 0 ">
+            <div class="pk-resolution-header">Resolution</div>
+            <div class="pk-resolution-desc-wrapper">
+                <div class="pk-resolution-each-desc">
+                    To remediate this issue: 
+                </div>
+                <div class="pk-resolution-each-desc" *ngFor = "let data of resolution; let i = index " title = "{{data}}">
+                    {{i+1}}) {{data}}
+                </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <article class='center error_handling' *ngIf='!datacoming'>
+    <div class="error_msg">
+        <app-error-message *ngIf='seekdata == true' [selectedValue]="errorMessage"></app-error-message>
+    </div>
+    </article>
+<div *ngIf='showLoader' class="loader"></div>
+</div>

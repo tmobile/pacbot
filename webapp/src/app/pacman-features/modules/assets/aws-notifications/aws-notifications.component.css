@@ -1,0 +1,72 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.floating-widgets-section {
+    height: 100%;
+    width: 100%;
+}
+
+.floating-widgets-container {
+    overflow: hidden;
+}
+
+.floating-widgets-container:hover {
+    overflow: auto; overflow: overlay;
+}
+
+.floating-widgets-filter-wrapper {
+    padding: 0em 1.5em 1.5em;
+}
+
+.widget-wrapper {
+    min-height: 17em;
+} 
+
+.issue-listing-wrapper /deep/ .data-table-wrap .table-cells:nth-child(1) {
+    width: 178px;
+}
+
+
+.issue-listing-wrapper /deep/ .data-table-wrap .table-cells {
+    width: 130px;
+}
+
+
+.issue-listing-wrapper /deep/ .data-table-wrap {
+    min-height: calc(100vh - 22em );
+}
+
+.issue-listing-wrapper /deep/ .data-table-content {
+    min-height: calc( 100vh - 30em );
+}
+
+.issue-listing-wrapper /deep/ .data-table-inner-wrap {
+    max-height: calc(100vh - 32em)
+}
+
+.issue-listing-wrapper /deep/ .data-table-wrap.loading {
+    min-height: calc( 100vh - 21em );
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-wrap {
+    min-height: calc(100vh - 19em );
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-content {
+    min-height: calc( 100vh - 27em );
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
+    max-height: calc(100vh - 30em)
+}

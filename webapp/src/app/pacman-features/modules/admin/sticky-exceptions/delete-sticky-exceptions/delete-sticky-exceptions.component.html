@@ -1,0 +1,104 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+    <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+    <div class="floating-widgets-header flex flex-between">
+        <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text">{{pageTitle}}</h1>
+        </div>
+    </div>
+    <div class="floating-widgets-container ">
+        <section>
+            <ul>
+                <li class="widget-wrapper relative">
+                    <div class="data-table-wrap relative">
+                        <div class="sub-head">
+                            <div class="flex flex-between flex-align-center">
+                                <div class="sub-head-title capitalize flex flex-align-center after-load">
+                                    <div class="header-text">Delete Sticky Exception</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div [hidden]="hideContent">
+                            <div class="data-content">
+                                <div class="formcontainerwrapper">
+
+                                    <div class="formctn">
+                                        <div class="pacman-alert">
+                                            <div class="sa-icon sa-info" style="display: block;">
+                                                <span class="sa-x-mark">
+                                                    <span class="sa-line sa-left"></span>
+                                                <span class="sa-line sa-right"></span>
+                                                </span>
+                                            </div>
+
+                                            <div class="pacman-alert-title  confirm">
+                                                Are you sure to delete <span class="highlight-pink"><b class="exception-deletion">{{exceptionName}}</b></span>?
+                                            </div>
+                                            <div class="pacman-alert-button">
+                                                <button class="submit-btn uppercase" type="button" (click)="deleteException()"><i class="fa fa-check"></i> DELETE</button>
+                                                <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CANCEL</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isExceptionDeletionFailed">
+                            <div class="sa-icon sa-error animateErrorIcon" style="display: block;">
+                                <span class="sa-x-mark animateXMark">
+                                    <span class="sa-line sa-left"></span>
+                                <span class="sa-line sa-right"></span>
+                                </span>
+                            </div>
+
+                            <div class="pacman-alert-message">
+                                Failed in deleting exception <span class="highlight-pink"><b class="exception-deletion">{{exceptionName}}</b></span> !!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="closeErrorMessage()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isExceptionDeletionSuccess">
+                            <div class="sa-icon sa-success animate">
+                                <span class="sa-line sa-tip animateSuccessTip"></span>
+                                <span class="sa-line sa-long animateSuccessLong"></span>
+                                <div class="sa-placeholder"></div>
+                                <div class="sa-fix"></div>
+                            </div>
+
+                            <div class="pacman-alert-message">
+                                Sticky Exception <span class="highlight-pink"><b class="exception-deletion">{{exceptionName}}</b></span> successfully deleted !!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-progress" *ngIf="exceptionLoader">
+                            <pacman-loading></pacman-loading>
+                            <div class="title">
+                                Please Wait...
+                            </div>
+                            <div class="pacman-alert-message">
+                                Deleting Exception <span class="highlight-pink">{{exceptionName}}</span> is in progress...
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>

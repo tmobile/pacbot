@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<springProperty scope="context" name="microserviceName"
+		source="spring.application.name" />
+	<springProperty scope="context" name="profile"
+		source="spring.profiles.active" />
+	<springProperty scope="context" name="esHost"
+		source="logging.esHost" />
+	<springProperty scope="context" name="esPort"
+		source="logging.esPort" />
+	<springProperty scope="context" name="esLoggingLevel"
+		source="logging.esLoggingLevel" />
+	<springProperty scope="context"
+		name="consoleLoggingLevel" source="logging.consoleLoggingLevel" />
+
+	<property name="esUrl"
+		value="http://${esHost}:${esPort}/_bulk" />
+
+	<appender name="STDOUT"
+		class="ch.qos.logback.core.ConsoleAppender">
+		<filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+			<level>${consoleLoggingLevel}</level>
+		</filter>
+		<encoder>
+			<Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%thread] %-5level
+				%logger{36}.%M - %msg%n</Pattern>
+		</encoder>
+	</appender>
+
+	<appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <file>/var/log/pacman-api-${microserviceName}-${profile}.log</file>
+        <append>true</append>
+		<encoder
+			class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
+			<layout class="ch.qos.logback.contrib.json.classic.JsonLayout">
+			    <appendLineSeparator>true</appendLineSeparator>
+				<timestampFormat>yyyy-MM-dd'T'HH:mm:ss.SSSX</timestampFormat>
+				<timestampFormatTimezoneId>Etc/UTC</timestampFormatTimezoneId>
+				<jsonFormatter
+					class="ch.qos.logback.contrib.jackson.JacksonJsonFormatter">
+					<prettyPrint>false</prettyPrint>
+				</jsonFormatter>
+			</layout>
+		</encoder>
+	</appender>
+	
+	<root level="DEBUG">
+		<appender-ref ref="STDOUT" />
+		<appender-ref ref="FILE" />
+	</root>
+
+</configuration>

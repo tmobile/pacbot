@@ -1,0 +1,218 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.filter-wrapper {
+  height: 100%;
+}
+.filter-header {
+  display: flex;
+  padding: 0.5em 1em;
+  font-size: 1.2em;
+  /* background-color: #e20074; */
+  background-color: #566d9b;
+  color: #fff;
+  justify-content: space-between;
+  align-items: center;
+}
+.filter-header h1 {
+  font-size: inherit;
+  margin-right: 10px;
+}
+.mr-panel-icon {
+  font-size: 1.5em;
+  transition: all 0.5s ease;
+}
+.mr-panel-icon.hideFilter {
+  transform: rotate(180deg);
+}
+.filter-main-content {
+  flex: 1;
+}
+.each-filter-column {
+  border-right: 1px solid #c3cbd7;
+  border-top: 1px solid #c3cbd7;
+  border-bottom: 1px solid #c3cbd7;
+  /* width: 15em; */
+  transform-origin: 0% 0%;
+  transition: all .5s;
+  background-color: #fbfbfb;
+}
+
+.each-filter-column:first-child {
+  border-left: 1px solid #c3cbd7;
+}
+.primary-column{
+  width: 15em;
+}
+.secondary-column{
+  width: 20em;
+}
+.tertiary-column{
+  width: 20em;
+}
+.each-filter-header {
+  padding: 1em;
+  font-size: 0.9em;
+  font-family: ex2-bold;
+  text-align: left;
+  color: #383c4d;
+  border-bottom: 1px solid #c3cbd7;
+}
+.each-filter-options {
+  padding: 1em;
+  font-size: 1.1em;
+  line-height: 1.5;
+  font-family: ex2-bold;
+  color: #3c5079;
+  border-bottom: 1px solid #c3cbd7;
+  transition: all 0.5s;
+}
+.filter-count {
+  font-family: ex2-light;
+  font-size: 0.9em;
+}
+.each-filter-desc {
+  overflow-y: auto;
+  height: 95%;
+  overflow-x: hidden;
+}
+.active {
+  background-color: #e20074;
+  color: #fff;
+}
+.sub-filter-each {
+  font-family: ex2-light;
+  padding: 1em 0;
+}
+.filter-dropDdown-arrow {
+  /* width: 0;
+  height: 0;
+  border-top: 6px solid transparent;
+  border-left: 7px solid #3b5176;
+  border-bottom: 6px solid transparent;
+  margin-right: 1em;
+  transition: all 0.2s; */
+
+  width: 0;
+  height: 0;
+  border-top: 8px solid transparent;
+  border-left: 8px solid #3b5176;
+  border-bottom: 8px solid transparent;
+  transition: all 0.2s;
+  border-right: 0;
+  content: '';
+  position: absolute;
+  left: 1em;
+  top: 1.1em;
+}
+.openOptions {
+  transform: rotate(90deg);
+}
+.refine-criteria-count {
+  font-family: ex2-medium;
+  color: #000;
+}
+.check-btn-refinedBy {
+  max-width: 70%;
+}
+.radio-btn-column-width{
+  max-width: 80%;
+}
+
+/* code added for accordion functionality by using css */
+
+.filter-multiselect-options{
+  padding: 0;
+}
+.sub-filter-criteria {
+    max-height: 0;
+    overflow: hidden;
+    transition: all .1s ease-in-out;
+    padding: 0 1em;
+}
+.accordion-input{
+    opacity: 0;
+    z-index: -1;
+}
+input:checked ~ .sub-filter-criteria {
+  max-height: 40vh;
+  overflow: auto;
+}
+input:checked ~ .filter-dropDdown-arrow {
+  transform: rotate(90deg);
+}
+.filter-multiselect-type{
+  position: relative;
+  padding: 1em 1em 1em 3em;
+  display: block;
+
+}
+.sub-filter-criteria::-webkit-scrollbar-thumb {
+  width: 7px;
+  background-color: #88888855;
+  border-radius: 4px;
+}
+.applied-filter-count{
+  color: #e20074;
+  top: 1em;
+  right: 1em;
+}
+.filter-pesudo-opener{
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 0.5em 1em;
+  font-size: 1.2em;
+  background-color: #566d9b;
+  color: #fff;
+  width: 10em;
+  transform: translate(0);
+  z-index: 30;
+  border-radius: 4px;
+  align-items: center;
+  border-bottom-left-radius: 0;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 3px 0px 2px 0 rgba(98, 98, 98, 0.5);
+  transition: all 0.3s ease-in-out;
+}
+.filter-wrapper {
+
+  box-shadow: 3px 0px 2px 0 rgba(98, 98, 98, 0.5);
+  border-radius: 4px;
+  transition: all 0.3s ease-in-out;
+  overflow: hidden;
+  max-height: 100%;
+  position: absolute;
+  z-index: 20;
+  min-width: 10em;
+  height: 100%;
+  transform: translate(-101%);
+  
+}
+.filter-show{
+  transform: translate(0);
+}
+.filter-hide{
+  transform: translate(-101%);
+}
+.mr-panel-icon {
+  font-size: 1.5em;
+  transition: all 0.5s ease;
+}
+.filter-loader{
+  min-width: 15em;
+  height: 100%;
+  background-color: #fff;
+}

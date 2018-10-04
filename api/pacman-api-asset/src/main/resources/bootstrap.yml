@@ -1,0 +1,22 @@
+spring:
+  application:
+    name: asset-service
+    title: Pacman Service
+    description: Pacman Asset API provides Asset capabilities
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL:http://localhost:8888/api/config/}
+      enabled: true
+      fail-fast: true
+      name: api,asset-service
+      password: ${CONFIG_PASSWORD}
+      username: user
+      label: latest
+
+  profiles:
+    active: ${ENVIRONMENT:prd}
+
+security: 
+  oauth2:
+    resource:
+      user-info-uri: ${PACMAN_HOST_NAME}/api/auth/user

@@ -1,0 +1,222 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div #patchProgressContainer class="issue-trend-wrapper">
+    <div class='multiline-brush-zoom-container'>
+        <div class="sub-head">
+            <app-title-burger-head [subHeadTitle]="'Patch Progress'"></app-title-burger-head>
+        </div>
+        <div class="sub-head-text" *ngIf="(dataLoaded && graphData) && (hiddenComponent=='onpremPatchingGraph' || hiddenComponent=='patchingTrend')">
+            This report shows progress towards compliance to kernel versions that will be mandatory on the final day of the quarter.
+        </div>
+        <div class="right text-right" *ngIf="(dataLoaded && graphData) && (hiddenComponent=='onpremPatchingGraph' || hiddenComponent=='patchingTrend')">
+            <div class="quarter-desc clearfix relative" (click)='showOtherDiv()'>
+                <div class='pp-time left'>{{year}}
+                </div>
+                <div class='pp-quarter left'>Q{{showQuarter}}
+                </div>
+                <div class="arrow-right absolute">
+                </div>
+            </div>
+            <a class="pp-view-quarter" (click)='showCurrentQuarter()'>
+                View Current Quarter
+            </a>
+        </div>
+        <div id="current">
+            <app-patching-graph *ngIf="(dataLoaded && graphData) && (hiddenComponent=='onpremPatchingGraph' || hiddenComponent=='patchingTrend')" [today]='todayValue' [lastDate]='lastDate' [internal_target]='internal_target' [position]='true' [end_date]='end_date' [amiavail_date]='amiavail_date' [showLegend]="showGraphLegend" [axis]='true' [yAxisLabel]="yAxisLabel" [graphWidth]="graphWidth" [graphLinesData]="graphData" [idUnique]="'current'"></app-patching-graph>
+            <div class="relative x-axes-wrap" *ngIf="(dataLoaded && graphData) && (hiddenComponent=='onpremPatchingGraph' || hiddenComponent=='patchingTrend')">
+                <div class="percent-wrap flex clearfix">
+                    <div class="x-percent" *ngFor='let data of weekValue | slice:0:weekValue.length'>{{data}}
+                        <span class="percent-value" *ngIf='data != ""'>%</span>
+                        <span class="percent-value" *ngIf="data == '0'">%</span>
+                    </div>
+                </div>
+                <div class="labels-wrap flex clearfix">
+                    <div class="x-label" *ngFor='let data of weekNumber | slice:0:weekNumber.length-1'>W{{data}}
+                    </div>
+                    <div class="x-label">EOQ
+                    </div>
+                </div>
+                <div class="legends-wrap flex flex-align-center">
+                    <div class="ilb container">
+                        <div class="legends-value ilb container colored" *ngIf="quarterDataArray[0].ami == undefined && quarterDataArray[0].projectedTarget == 'invalid'">
+                            <div class="ilb container legend-txt">* AMI Date Unavailable</div>
+                        </div>
+                        <div class="legends-value ilb container">
+                            <div class="ilb container legend unpatched"></div>
+                            <div class="ilb container legend-txt">Not Compliant</div>
+                        </div>
+                        <div class="legends-value ilb container">
+                            <div class="ilb container legend patched"></div>
+                            <div class="ilb container legend-txt">Compliant</div>
+                        </div>
+                        <div class="legends-value ilb container" *ngIf="quarterDataArray[0].projectedTarget == 'valid'">
+                            <div class="ilb container legend target"></div>
+                            <div class="ilb container legend-txt">Projected Patching Target</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="loader" *ngIf="(!dataLoaded && !error) && (hiddenComponent!='onpremPatchingGraph' || hiddenComponent!='patchingTrend') "></div>
+        <div class="error-msg-block">
+            <app-error-message *ngIf="error && (hiddenComponent=='onpremPatchingGraph' || hiddenComponent=='patchingTrend')" [selectedValue]="errorMessage"></app-error-message>
+        </div>
+    </div>
+    <div class="pp-quarter-overlay absolute clearfix" *ngIf="dataLoaded && (hiddenComponent=='onpremPatchingGraph' || hiddenComponent=='patchingTrend')" [class.displaySide]='showOpposite'>
+        <ul class="patching-year-wrapper left">
+            <li class="patching-each-year" *ngFor='let data of yearArray; let i = index ' [class.fade]="i != 0" [class.selected]="isActive(i)" (click)='getMetaData(data,i)'>{{data}}</li>
+        </ul>
+        <div class="loader adjustment" *ngIf='tempLoader'></div>
+        <ul class="patching-quarter-wrapper left" *ngIf='!tempLoader'>
+            <li class="patching-quarter-header clearfix relative">
+                {{quarterDataArray[0].year}}
+                <div class="mr-close absolute" (click)='showOtherDiv()'>close</div>
+            </li>
+            <div class="li-container">
+                <ul>
+                    <li class="patching-each-quarter clearfix" *ngIf='quarterDataArray[0] != undefined'>
+                        <div class="ind-quarter" id="q0">
+                            <app-quarter-graph *ngIf="dataLoaded && (hiddenComponent=='onpremPatchingGraph' || hiddenComponent=='patchingTrend') " [graphWidth]="graphWidth-546" [dataResponse]="quarterDataArray[0].data" [idUnique]="'q0'"></app-quarter-graph>
+                            <div class="quarterNumText">Q{{quarterDataArray[0].key}}</div>
+                        </div>
+                        <div class="patching-each-quarter-desc left">
+                            <div class="clearfix stats-wrap">
+                                <div class='pp-stats'>
+                                    <div class='pp-stats-txt pp-total-patched'> {{quarterDataArray[0].compliance}}%
+                                    </div>
+                                    <div class='pp-stats-desc pp-total-patched-text'> Complete
+                                    </div>
+                                </div>
+                                <div class='pp-stats'>
+                                    <div class='pp-stats-txt '> {{quarterDataArray[0].patched}}
+                                    </div>
+                                    <div class='pp-stats-desc'> Compliant
+                                    </div>
+                                </div>
+                                <div class='pp-stats'>
+                                    <div class='pp-stats-txt'> {{quarterDataArray[0].unpatched}}
+                                    </div>
+                                    <div class='pp-stats-desc'>Non Compliant
+                                    </div>
+                                </div>
+                                <div class='pp-stats pp-view-btn' *ngIf='checkBtn != (1)' (click)='showQuarterDiv(1,quarterDataArray[0].year)'>view
+                                </div>
+                                <div class='pp-stats pp-view-btn opaque' *ngIf='checkBtn == (1)'>selected
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="patching-each-quarter clearfix" *ngIf='quarterDataArray[1] != undefined'>
+                        <div class="ind-quarter" id="q1">
+                            <app-quarter-graph *ngIf="dataLoaded && (hiddenComponent=='onpremPatchingGraph' || hiddenComponent=='patchingTrend')" [graphWidth]="graphWidth-546" [dataResponse]="quarterDataArray[1].data" [idUnique]="'q1'"></app-quarter-graph>
+                            <div class="quarterNumText">Q{{quarterDataArray[1].key}}</div>
+                        </div>
+                        <div class="patching-each-quarter-desc left">
+                            <div class="clearfix stats-wrap">
+                                <div class='pp-stats'>
+                                    <div class='pp-stats-txt pp-total-patched'> {{quarterDataArray[1].compliance}}%
+                                    </div>
+                                    <div class='pp-stats-desc pp-total-patched-text'> Complete
+                                    </div>
+                                </div>
+                                <div class='pp-stats'>
+                                    <div class='pp-stats-txt '> {{quarterDataArray[1].patched}}
+                                    </div>
+                                    <div class='pp-stats-desc'> Compliant
+                                    </div>
+                                </div>
+                                <div class='pp-stats'>
+                                    <div class='pp-stats-txt'> {{quarterDataArray[1].unpatched}}
+                                    </div>
+                                    <div class='pp-stats-desc'>Non Compliant
+                                    </div>
+                                </div>
+                                <div class='pp-stats pp-view-btn' *ngIf='checkBtn != (2)' (click)='showQuarterDiv(2,quarterDataArray[1].year)'>view
+                                </div>
+                                <div class='pp-stats pp-view-btn opaque' *ngIf='checkBtn == (2)'>selected
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="patching-each-quarter clearfix" *ngIf='quarterDataArray[2] != undefined'>
+                        <div class="ind-quarter" id="q2">
+                            <app-quarter-graph *ngIf="dataLoaded && (hiddenComponent=='onpremPatchingGraph' || hiddenComponent=='patchingTrend')" [graphWidth]="graphWidth-546" [dataResponse]="quarterDataArray[2].data" [idUnique]="'q2'"></app-quarter-graph>
+                            <div class="quarterNumText">Q{{quarterDataArray[2].key}}</div>
+                        </div>
+                        <div class="patching-each-quarter-desc left">
+                            <div class="clearfix stats-wrap">
+                                <div class='pp-stats'>
+                                    <div class='pp-stats-txt pp-total-patched'> {{quarterDataArray[2].compliance}}%
+                                    </div>
+                                    <div class='pp-stats-desc pp-total-patched-text'> Complete
+                                    </div>
+                                </div>
+                                <div class='pp-stats'>
+                                    <div class='pp-stats-txt '> {{quarterDataArray[2].patched}}
+                                    </div>
+                                    <div class='pp-stats-desc'> Compliant
+                                    </div>
+                                </div>
+                                <div class='pp-stats'>
+                                    <div class='pp-stats-txt'> {{quarterDataArray[2].unpatched}}
+                                    </div>
+                                    <div class='pp-stats-desc'>Non Compliant
+                                    </div>
+                                </div>
+                                <div class='pp-stats pp-view-btn' *ngIf='checkBtn != (3)' (click)='showQuarterDiv(3,quarterDataArray[2].year)'>view
+                                </div>
+                                <div class='pp-stats pp-view-btn opaque' *ngIf='checkBtn == (3)'>selected
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="patching-each-quarter clearfix" *ngIf='quarterDataArray[3] != undefined'>
+                        <div class="ind-quarter" id="q3">
+                            <app-quarter-graph *ngIf="dataLoaded && (hiddenComponent=='onpremPatchingGraph' || hiddenComponent=='patchingTrend')" [graphWidth]="graphWidth-546" [dataResponse]="quarterDataArray[3].data" [idUnique]="'q3'"></app-quarter-graph>
+                            <div class="quarterNumText">Q{{quarterDataArray[3].key}}</div>
+                        </div>
+                        <div class="patching-each-quarter-desc left">
+                            <div class="clearfix stats-wrap">
+                                <div class='pp-stats'>
+                                    <div class='pp-stats-txt pp-total-patched'> {{quarterDataArray[3].compliance}}%
+                                    </div>
+                                    <div class='pp-stats-desc pp-total-patched-text'> Complete
+                                    </div>
+                                </div>
+                                <div class='pp-stats'>
+                                    <div class='pp-stats-txt '> {{quarterDataArray[3].patched}}
+                                    </div>
+                                    <div class='pp-stats-desc'> Compliant
+                                    </div>
+                                </div>
+                                <div class='pp-stats'>
+                                    <div class='pp-stats-txt'> {{quarterDataArray[3].unpatched}}
+                                    </div>
+                                    <div class='pp-stats-desc'>Non Compliant
+                                    </div>
+                                </div>
+                                <div class='pp-stats pp-view-btn' *ngIf='checkBtn != (4)' (click)='showQuarterDiv(4,quarterDataArray[3].year)'>view
+                                </div>
+                                <div class='pp-stats pp-view-btn opaque' *ngIf='checkBtn == (4)'>selected
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </ul>
+    </div>
+    <div *ngIf='showOpposite' class='pp-quarter-overlay-bg' (click)='showOtherDiv()'></div>
+</div>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="47px" height="49px" viewBox="0 0 47 49" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>ENI</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="Asset-Dashboard-AWS-Copy" transform="translate(-502.000000, -339.000000)" fill-rule="nonzero">
+            <g id="Group-66" transform="translate(191.000000, -128.000000)">
+                <g id="Group-48" transform="translate(20.000000, 0.000000)">
+                    <g id="Group-11" transform="translate(0.000000, 449.000000)">
+                        <g id="Group-56" transform="translate(256.000000, 1.000000)">
+                            <g id="ENI" transform="translate(34.765625, 16.960099)">
+                                <circle id="Oval" fill="#263555" cx="23.734375" cy="25.4570312" r="23.2979687"></circle>
+                                <rect id="Rectangle-path" fill="#9D5025" x="0.43640625" y="23.5429688" width="46.5959375" height="1.9140625"></rect>
+                                <circle id="Oval" fill="#3C5079" cx="23.734375" cy="23.5429688" r="23.2979687"></circle>
+                                <polygon id="Shape" fill="#FFFFFF" points="7.84765625 13.5898438 7.84765625 13.5898438 7.84765625 15.3125 9.9684375 15.3125 9.9684375 33.6875 7.84765625 33.6875 7.84765625 35.4101562 11.9514062 35.4101562 11.9514062 13.5898438 7.84765625 13.5898438 7.84765625 13.5898438"></polygon>
+                                <polygon id="Shape" fill="#FFFFFF" points="39.6210938 15.9709375 39.6210938 15.9709375 13.8042188 15.9709375 13.8042188 30.3876562 16.323125 30.3876562 16.323125 33.289375 27.3098437 33.289375 27.3098437 30.3876562 31.2757813 30.3876562 31.2757813 33.289375 36.045625 33.289375 36.045625 30.3876562 39.6210938 30.3876562 39.6210938 15.9709375 39.6210938 15.9709375"></polygon>
+                                <polygon id="Shape" fill="#516A9C" points="16.5834375 18.0917187 16.5834375 18.0917187 36.44375 18.0917187 36.44375 28.1367188 16.5834375 28.1367188 16.5834375 18.0917187 16.5834375 18.0917187"></polygon>
+                                <polygon id="Shape" fill="#FFFFFF" points="18.7042187 19.6765625 18.7042187 19.6765625 25.5871875 19.6765625 25.5871875 26.4140625 18.7042187 26.4140625 18.7042187 19.6765625 18.7042187 19.6765625"></polygon>
+                                <polygon id="Shape" fill="#FFFFFF" points="27.7079687 19.6765625 27.7079687 19.6765625 34.5909375 19.6765625 34.5909375 26.4140625 27.7079687 26.4140625 27.7079687 19.6765625 27.7079687 19.6765625"></polygon>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

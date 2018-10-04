@@ -1,0 +1,32 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="tagging-across-target-type-wrapper">
+    <div class="sub-header">
+      <app-title-burger-head [subHeadTitle]="'Tagging Across Target Types'"></app-title-burger-head>
+    </div>
+    <div class="tiles-wrapper">
+      <div class='container-parent flex' *ngIf="!loading && !error">
+          <ul>
+              <li *ngFor="let data of taggingSummary">
+                  <app-target-type-tagging-tile [awsResourceDetails]="data" class="flex" (navigatePage)="navigatePage($event)"></app-target-type-tagging-tile>
+              </li>
+          </ul>                  
+      </div>    
+      <div class="error_msg">
+        <app-error-message *ngIf='error && !loading' [selectedValue]="errorMessage"></app-error-message>
+      </div>
+      <div class="loader" *ngIf='loading'></div>
+    </div>    
+</div>

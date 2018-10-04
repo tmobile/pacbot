@@ -1,0 +1,24 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="contextual-menu-wrapper" [ngStyle]="theme && {'background-color': theme['contextual-menu-bg-color']}">
+    <div class="contextual-menu-title">
+        <h6>{{pageTitle}}</h6>
+    </div>
+    <ul>
+        <li #rla="routerLinkActive"  class="contextual-menu-item flex flex-align-center" *ngFor="let menu of listOfMenus" (click)="onSelect(menu)" routerLink={{menu.route}} routerLinkActive="active" [queryParams]="agAndDomain" [ngStyle]="theme && (rla.isActive ? {'background-color': theme['contextual-menu-active-color']} : {})">
+            <a class='pointer'>{{menu.name}}</a>
+        </li>
+    </ul>
+</div>

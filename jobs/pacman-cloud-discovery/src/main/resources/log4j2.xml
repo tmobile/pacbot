@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorInterval="60" packages="com.tmobile.cso.pacman.inventory.log">
+    <Properties>
+        <Property name="PD_LOG-PATH">/home/ec2-user/logs</Property>
+    </Properties>
+    <Appenders>
+        <Console name="Console-Appender" target="SYSTEM_OUT">
+            <PatternLayout>
+                <pattern>
+                   [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+                </pattern>
+            </PatternLayout>
+           
+        </Console>
+        <File name="App-Appender" fileName="${sys:PD_LOG-PATH}/pac_discovery.log">
+            <PatternLayout>
+                <pattern>
+                    [%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
+                </pattern>
+            </PatternLayout>
+        </File>
+      
+        <CloudwatchAppender name="CloudwatchAppender" logGroup ="pacman" logStream="clouddiscovery" >
+       		<PatternLayout pattern="[%-5level]*%msg%n" />
+        </CloudwatchAppender>
+        
+     </Appenders>
+    <Loggers>
+        <Logger name="com.tmobile.cso.pacman.inventory" level="debug">
+            <AppenderRef ref="App-Appender"></AppenderRef>
+            <AppenderRef ref="CloudwatchAppender" level="warn" />
+        </Logger>
+        <Root>
+            <AppenderRef ref="Console-Appender" />
+        </Root>
+    </Loggers>
+</Configuration>

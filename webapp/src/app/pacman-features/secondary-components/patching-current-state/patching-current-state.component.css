@@ -1,0 +1,101 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.sub-head {
+    padding: 0.6em 0.5em 0.7em 1em;
+    background-color: #dce3e9;
+    font-size: 1em;
+    color: #3f4a59;
+}
+
+.text-header {
+    font-size: 1.06em;
+    font-weight: 600;
+    margin-bottom: 1.8em;
+}
+
+.patch-across-app-wrapper {
+    padding: 1px;
+    max-height: 95%;
+    font-size: 1em;
+    overflow: hidden;
+}
+
+.patch-across-app-wrapper:hover {
+    overflow: auto;
+    overflow: overlay;
+}
+
+.patch-app-wrapper {
+    width: 100%;
+    max-height: 25vh;
+    overflow-y: hidden;
+    margin: 2em 0;
+    /* height: 100%; */
+}
+
+.patch-app-wrapper:hover {
+    overflow-y: auto;
+    overflow-y: overlay;
+}
+
+.search-wrapper {
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border: solid 1px #c3cbd7;
+    width: 90%;
+    margin: 2em auto 0 auto;
+}
+
+.state-wrapper {
+    padding: 1.5em 1em 0 1em;
+}
+
+.width-rule {
+    width: 37%;
+    border: 0;
+    background-color: #ddd;
+    height: 0.2em;
+    margin-top: 1.5em;
+}
+
+.positioning {
+    padding: 2em;
+    position: relative;
+}
+
+.showOnFailure {
+    font-size: 1.06em;
+    font-weight: 600;
+    padding-left: 1em;
+    margin-bottom: 1.8em;
+}
+
+.addPadding {
+    padding: 2em 0;
+}
+
+.showDateandTime {
+    padding: 1em;
+    font-family: ex2-extralight;
+    font-style: italic;
+    font-size: 0.9em;
+}
+
+.parent-wrapper {
+    /*min-height: 70%;*/
+    border-left: 1px solid #c3cbd7;
+    height: calc(100% - 20em);
+    position: relative;
+}

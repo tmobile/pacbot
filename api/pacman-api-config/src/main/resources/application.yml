@@ -1,0 +1,29 @@
+spring:
+  cloud:
+    config:
+      server:
+        jdbc:
+          sql: SELECT cfkey, value from  pac_config_properties where application=? and profile=? and label=?
+        native:
+          search-locations: classpath:/shared
+  datasource:
+    url: ${RDS_URL}
+    driver-class-name: com.mysql.jdbc.Driver
+    username: ${RDS_USERNAME}
+    password: ${RDS_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 5000
+  profiles:
+    active: ${CONFIG_SOURCE:native}          
+  security:
+    user:
+      name: user
+      password: ${CONFIG_PASSWORD}
+
+server:  
+  port: 8888
+  servlet:
+    context-path: /api/config
+
+ 

@@ -1,0 +1,61 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.data-table-tabs{
+    background-color: #eff3f6;
+    color: #5a616b;
+    font-size: 0.9em;
+    font-family: ex2-light;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+.individual-tag-header{
+    padding: 1em;
+    transition: 0.2s;
+    min-width: 6.4em;
+    text-align: center;
+    font-size: 1.1em;
+    text-transform: capitalize;
+}
+
+.individual-tag-header:first-letter {
+    text-transform: uppercase;
+}
+
+.individual-tag-header:hover {
+    text-shadow: 1px 0;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+}
+
+.individual-tag-header.filter-by {
+    font-size: 0.88em;
+}
+
+.individual-tag-header.filter-by:hover{
+    font-family: ex2-light;
+    letter-spacing: 0.1px;
+    cursor: default;
+}
+
+.policies-count{
+    padding: 1em 1em 1em 3em;
+    font-size: 0.88em;
+}
+.selected {
+    background-color: #5a616b;
+    color: #fff;
+    text-shadow: 1px 0;
+}

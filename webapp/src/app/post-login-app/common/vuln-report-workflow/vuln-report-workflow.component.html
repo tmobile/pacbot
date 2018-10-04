@@ -1,0 +1,66 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ 
+<div class="container relative">
+  <div class="header-container widget">
+ <div class="pacman-img absolute">
+    <img *ngIf="this.logoName" class="pacman-img" src="../assets/icons/{{this.logoName}}">
+ </div>
+ <div class="page-heading">
+  Vulnerability Report Calculation Workflow
+ </div>
+ <img (click)='closeWorkflow()' class='close-imgicon absolute' src='../assets/png/delete.png'>
+ <div class="workflow-banner">
+  <div class="cloud">
+    <span>CLOUD</span>
+    <img class="banner-left" width="88px" height="30px" src="../assets/images/cloud_icon.png">
+  </div>
+  <div class="on-prem">
+      <img class="banner-right" width="50px" height="62px" src="../assets/images/on-prem_icon.png">
+    <span>ON-PREM</span>
+  </div>
+ </div>
+
+  </div>
+  <div class="workflow-container">
+    <div class = "workflow-row" *ngFor='let item of workflowData; let i = index;'>
+      <div class="middle-line">
+          <div class="text-left flex flex-col" ><div class="last-element" *ngFor='let point of item.leftTxt'>{{point}}</div></div>
+          <div class="red-line" *ngIf='i < workflowData.length ' ></div>
+          <div class='center-section flex flex-col flex-align-center'>
+            <div class="icon">{{i + 1}}</div>
+            <div class="text">{{item.title | uppercase}}</div> 
+            <div class="vertical-line" *ngIf='i < workflowData.length '></div>
+          </div>
+          <div class="red-line" *ngIf='i < workflowData.length '></div>
+          <div class="text-aside">{{item.rightTxt}}</div>
+       </div>
+    </div>
+    <div class="workflow-row">
+      <div class="middle-line">
+        <div class='center-section flex flex-col flex-align-center'>
+          <div class="icon">7</div>
+          <div class="text">REPORT GENERATED</div> 
+        </div>
+      </div>
+    </div>
+    <!--<div class = "workflow-row-last" >
+      <div class="icon-text">
+        <div class="icon">7</div>
+        <div class="text">REPORT GENERATED</div>
+      </div>
+    </div> -->
+  </div>
+</div>

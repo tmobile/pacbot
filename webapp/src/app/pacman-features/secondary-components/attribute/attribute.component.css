@@ -1,0 +1,119 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.attribute-parent-wrapper {
+    padding: 1.5em 1em 1em 2em;
+    max-height: 33em;
+    overflow: hidden;
+}
+
+.attribute-parent-wrapper:hover {
+    overflow: auto; overflow: overlay;
+}
+
+section.system-info {
+    padding: 1.5em 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.system-info-topic {
+    font-size: 0.9em;
+    padding-right: 2em;
+    width: 30em;
+}
+
+.header {
+    margin-bottom: 2em;
+    font-family: ex2-bold;
+}
+
+.server-wrapper,
+.related-assets-topic,
+.access-groups-wrapper {
+    margin-left: 2em;
+    line-height: 2;
+    font-weight: 800;
+}
+
+.system-values {
+    align-content: space-between;
+}
+
+.values-wrapper {
+    margin: 0.5em 1em;
+    line-height: 1.5;
+    min-width: 12em;
+}
+
+.values-wrapper-field {
+    font-size: 0.8em;
+    font-family: ex2-light;
+}
+
+section.related-assets {
+    padding: 1.5em 1em 1em 0;
+    /*border-bottom: 1px solid #ddd;*/
+}
+
+.assets {
+    margin-bottom: 1em;
+    font-size: 0.9em;
+}
+
+section.bottom-wrapper.flex {
+    padding: 1.5em 1em 1em 0;
+}
+
+section.access-groups {
+    width: 50%;
+}
+
+.access-groups-list {
+    width: 13em;
+}
+
+.header-text {
+    font-family: ex2-light;
+}
+
+.text {
+    font-family: ex2-extralight;
+}
+
+.uncategorizedWrapper {
+    max-width: 12em;
+}
+
+.uncategorizedWrapper:first-letter {
+    text-transform: uppercase;
+}
+
+.widthWrapper {
+    width: calc(33.33% - 2em);
+}
+
+.marginWrapper {
+    margin-bottom: 1em;
+}
+
+.attribute-parent-wrapper .system-info:nth-last-child(1){
+    border: none;
+}
+
+/* css for edge browser */
+@supports (-ms-ime-align: auto) { 
+    .attribute-parent-wrapper {
+        overflow: auto;
+    }
+}

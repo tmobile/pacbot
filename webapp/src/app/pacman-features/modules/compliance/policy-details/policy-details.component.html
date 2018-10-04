@@ -1,0 +1,57 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="compliance-dashboard-wrapper flex flex-between">
+    <div class="floating-widgets-section flex flex-col">
+        <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+        <div class="floating-widgets-header flex flex-between">
+            <div>
+                <img *ngIf="backButtonRequired" class="arrow-img" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+                <h1 class="title-text">{{pageTitle}}</h1>
+            </div>
+        </div>
+        <div class="floating-widgets-container">
+            <section>
+                <ul>
+                    <li class="widget-wrapper">
+                        <div class="widget" *ngIf="setRuleIdObtained == true">
+                            <app-policy-content-slider [pageLevel]="pageLevel" [ruleID]="ruleID"></app-policy-content-slider>
+                        </div>
+                    </li>
+                    <li class="widget-wrapper">
+                        <div #widget class="widget widget-container">
+                            <app-policy-trend [ruleID]="ruleID" *ngIf="setRuleIdObtained == true"></app-policy-trend>
+                        </div>
+                    </li>
+                    <li class="widget-wrapper">
+                        <div class="widget widget-container">
+                            <app-policy-assets-trend [ruleID]="ruleID" *ngIf="setRuleIdObtained == true"></app-policy-assets-trend>
+                        </div>
+                    </li>
+                    <li class="widget-wrapper">
+                        <div class="widget" *ngIf="setRuleIdObtained == true">
+                            <app-all-policy-violations [ruleID]="ruleID" *ngIf="setRuleIdObtained == true"></app-all-policy-violations>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </div>
+    <div class="fixed-widgets-section" *ngIf="setRuleIdObtained == true">
+        <div class="compliance-issues-container">
+            <app-policy-summary [ruleID]="ruleID" [pageLevel]="pageLevel"></app-policy-summary>
+            <app-policy-across-application [ruleID]="ruleID" [pageLevel]="pageLevel"></app-policy-across-application>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,38 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class='flex flex-between flex-align-center' >
+    <div [class.after-load]='loaded' class='sub-head-title capitalize flex flex-align-center'>
+        <div *ngIf=imagePresent class="bulb-img"><img style="height: 1.6em;" src="assets/icons/lightbulb.svg">
+        </div>
+        <div class="header-text" (click)="navigateTo()" [class.pointer] = 'arrow'>{{subHeadTitle}}</div>
+        <img *ngIf="arrow" class="arrow-icon" (click)="navigateTo()" style="height: 1em;" src="assets/icons/right-arrow.svg">
+    </div>
+    <div class="flex flex-align-center">
+        <div class='drop-options' *ngIf="dropDownpresent">
+            <app-searchable-dropdown [firstDD]='true' (selection)='selectionDD($event)' [placeholder]="'Select filter type'" [items]='complianceDropdowns'></app-searchable-dropdown>
+        </div>
+        <div id='dropSearchBox' class='drop-search-box' *ngIf="dropDownpresent">
+            <app-searchable-dropdown (selection)='selectionDD($event)' [placeholder]="'Search filter tags'" [items]='dropDowndata'></app-searchable-dropdown>
+        </div>
+        <div class='relative search-container' *ngIf='showSearch'>
+            <input required type='text' class='header-search-input' id='headSearch{{tableIdAppend}}' (keydown)="keyDownFunction($event)" [(ngModel)]='searchQuery' (ngModelChange)='searchCalled()'>
+            <label class='absolute search-label' for='headSearch{{tableIdAppend}}'> <img class='pointer' style="height: 1.33em;" src='../assets/icons/search.svg'></label>
+        </div>
+        <div *ngIf='popRows' (click)="$event.stopPropagation(); emitRowClicked('Download data');" class='contextual-menu-img flex relative' tabindex='1'>
+            <img class='pointer' style="height: 1.33em; transition: 0.2s ease;" src='assets/icons/Download-active.svg'>
+        </div>
+        <div (click)='callHelp()' *ngIf='helpId' class='help-text-container'><img src='assets/icons/Help.svg'></div>
+    </div>
+</div>

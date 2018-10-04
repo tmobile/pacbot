@@ -1,0 +1,130 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+    <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+    <div class="floating-widgets-header flex flex-between">
+        <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text">{{pageTitle}}</h1>
+        </div>
+    </div>
+    <div class="floating-widgets-container ">
+        <section>
+            <ul>
+                <li class="widget-wrapper relative">
+                    <div class="data-table-wrap relative">
+                        <div class="sub-head">
+                            <div class="flex flex-between flex-align-center">
+                                <div class="sub-head-title capitalize flex flex-align-center after-load">
+                                    <div class="header-text">Domain Details</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div [hidden]="hideContent">
+                            <div class="data-content">
+                                <div class="formcontainerwrapper">
+                                    <div class="formctn">
+                                        <div *ngIf="isCreate">
+                                            <div class="text-wrapper-header"><label>Name * 
+                                                <span *ngIf="isDomainNameValid==0" class="not-available">(Not Available)</span>
+                                                <span *ngIf="isDomainNameValid==1" class="available">(Available)</span>
+                                            </label></div>
+                                            <ul class="input-wrapper">
+                                                <input type="text" class="inputarea-container" placeholder="Enter Domain Name" name="domainName" [(ngModel)]="domain.name" (input)="isDomainNameAvailable($event.target.value)" required>
+                                            </ul>
+                                        </div>
+                                        <div *ngIf="!isCreate">
+                                            <div class="text-wrapper-header"><label>Name</label></div>
+                                            <div class="text-value">{{domain.name}}</div>
+                                        </div>
+                                        <div>
+                                            <div class="text-wrapper-header"><label>Description *</label></div>
+                                            <ul>
+                                                <textarea class="textarea-container" placeholder="Enter Domain Description" name="domainDesc" [(ngModel)]="domain.desc"></textarea>
+                                            </ul>
+                                        </div>
+                                        <div>
+                                            <div class="text-wrapper-header"><label>Configuration *</label></div>
+                                            <ul>
+                                                <textarea class="textarea-container" placeholder="Enter Domain Configuration" name="domainConfig" [(ngModel)]="domain.config"></textarea>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="data-table-paginator-wrap flex flex-center flex-align-center">
+                                <a class="save-container flex flex-row-reverse" *ngIf="isCreate">
+                                    <button class="submit-btn uppercase" (click)="createDomain(domain)" [disabled]="domain.name.trim()==='' || domain.desc.trim()==='' || domain.config.trim()==='' || isDomainNameValid<1"><i class="fa fa-check"></i> CREATE</button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse" *ngIf="!isCreate">
+                                    <button class="submit-btn uppercase" (click)="updateDomain(domain)" [disabled]="domain.name.trim()==='' || domain.desc.trim()==='' || domain.config.trim()===''"><i class="fa fa-check"></i> UPDATE</button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse">
+                                    <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CANCEL</button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isDomainCreationUpdationFailed">
+                            <div class="sa-icon sa-error animateErrorIcon" style="display: block;">
+                                <span class="sa-x-mark animateXMark">
+                                    <span class="sa-line sa-left"></span>
+                                <span class="sa-line sa-right"></span>
+                                </span>
+                            </div>
+                            <div class="pacman-alert-title">
+                                {{failedTitle}}
+                            </div>
+                            <div class="pacman-alert-message">
+                                Domain <span class="highlight-pink">{{domainName}}</span> {{loadingContent}} failed!!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="closeErrorMessage()"><span *ngIf="failedTitle!=='Loading Failed'"><i class="fa fa-remove"></i> CLOSE</span> <span *ngIf="failedTitle==='Loading Failed'"><i class="fa fa-refresh"></i> RETRY</span></button>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isDomainCreationUpdationSuccess">
+                            <div class="sa-icon sa-success animate">
+                                <span class="sa-line sa-tip animateSuccessTip"></span>
+                                <span class="sa-line sa-long animateSuccessLong"></span>
+                                <div class="sa-placeholder"></div>
+                                <div class="sa-fix"></div>
+                            </div>
+
+                            <div class="pacman-alert-title">
+                                {{successTitle}}
+                            </div>
+                            <div class="pacman-alert-message">
+                                Domain <span class="highlight-pink">{{domainName}}</span> has been successfully <span *ngIf="isCreate">created</span><span *ngIf="!isCreate">updated</span> !!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+
+                        <div class="pacman-progress" *ngIf="domainLoader">
+                            <pacman-loading></pacman-loading>
+                            <div class="title">
+                                Please Wait...
+                            </div>
+                            <div class="pacman-alert-message">
+                                Domain <span class="highlight-pink">{{domainName}}</span> {{loadingContent}} is in progress...
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>

@@ -1,0 +1,40 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="vuln-trend-wrapper relative" *ngIf='graphResponse >= 0' (window:resize)='onResize()'>
+    <div *ngIf='graphResponse == 0' class='loader absolute'></div>
+    <div class="vuln-trend-body flex flex-col">
+        <div *ngIf='graphResponse > 0' class='flex flex-align-center flex-between top-section'>
+            <div class='flex flex-align-center'>
+                <div (click)='closeMonths=!closeMonths' class='filter-icon'>
+                    <img src='../assets/icons/Filter-magenta.svg'>
+                </div>
+                <div class='time-selection flex flex-align-center' [class.closed]='closeMonths'>
+                    <div (click)='selectedMonth=i; updateComponent()' [class.active]='i==selectedMonth' *ngFor='let month of months; let i = index;' class='each-range'>{{month}} Month<span *ngIf='i>0'>s</span></div>
+                </div>
+            </div>
+            <div *ngIf='!adminAccess && notesData.length' class='info-wrap hide-in-print' (click)='infoActive=!infoActive; infoState.emit(infoActive);'>
+                <img [class.hide]='infoActive' src='../assets/icons/Info-inactive.svg'>
+                <img [class.hide]='!infoActive' src='../assets/icons/Info-Filled.svg'>
+            </div>
+            <div class='admin-instr' *ngIf='adminAccess'> {{notesStatus}} </div>
+        </div>
+        <div class='flex flex-grow graph-parent-container graphParent' id='graphParent'>
+            <app-vuln-trend-graph (fetchNewNotes)='fetchNotesData()' [selectedAssetGroup]='selectedAssetGroup' [agName]='agName' [notesResponse]='notesResponse' [infoActive]='infoActive' [adminAccess]='adminAccess' [parentWidth]='parentWidth' [selectedMonth]='selectedMonth' [months]='months' [svgId]="'webGraph'" [maxVal]='maxVal' [graphData]='graphData' [axisValues]='axisValues' [graphResponse]='graphResponse' [notesData]='notesData'></app-vuln-trend-graph>
+        </div>
+        <div class='flex flex-grow graph-parent-container print-container'>
+            <app-vuln-trend-graph [selectedAssetGroup]='selectedAssetGroup' [agName]='agName' [notesResponse]='notesResponse' [infoActive]='infoActive' [adminAccess]='adminAccess' [parentWidth]="'720'" [selectedMonth]='selectedMonth' [months]='months' [svgId]="'printGraph'" [maxVal]='maxVal' [graphData]='graphData' [axisValues]='axisValues' [graphResponse]='graphResponse' [notesData]='notesData'></app-vuln-trend-graph>
+        </div>
+    </div>
+</div>

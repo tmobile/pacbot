@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="20px" height="20px" viewBox="0 0 20 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47 (45396) - http://www.bohemiancoding.com/sketch -->
+    <title>Shape</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="8-Asset-Dashboard-1" transform="translate(-250.000000, -955.000000)" fill-rule="nonzero" fill="#F75C03">
+            <g id="Group-53" transform="translate(211.000000, 915.000000)">
+                <g id="Group-28" transform="translate(0.000000, 6.000000)">
+                    <path d="M39,39 L44,39 L44,34 L39,34 L39,39 Z M46.5,54 L51.5,54 L51.5,49 L46.5,49 L46.5,54 Z M39,54 L44,54 L44,49 L39,49 L39,54 Z M39,46.5 L44,46.5 L44,41.5 L39,41.5 L39,46.5 Z M46.5,46.5 L51.5,46.5 L51.5,41.5 L46.5,41.5 L46.5,46.5 Z M54,34 L54,39 L59,39 L59,34 L54,34 Z M46.5,39 L51.5,39 L51.5,34 L46.5,34 L46.5,39 Z M54,46.5 L59,46.5 L59,41.5 L54,41.5 L54,46.5 Z M54,54 L59,54 L59,49 L54,49 L54,54 Z" id="Shape"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

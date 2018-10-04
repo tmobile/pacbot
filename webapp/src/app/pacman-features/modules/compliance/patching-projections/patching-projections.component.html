@@ -1,0 +1,108 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="patching-wrapper flex flex-between flex-col">
+  <div class="flex flex-col pk-head-wrap">
+      <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+      <div class="floating-widgets-header flex flex-between">
+          <div>
+              <img *ngIf="backButtonRequired" class="arrow-img" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+              <h1 class="title-text">{{pageTitle}}</h1>
+          </div>
+      </div>
+  </div>
+  <div class="floating-widgets-container">
+      <section>
+          <ul class='adjust-padding'>
+            <li class="widget-wrapper relative" >
+              <div class='full-width relative overflow-hidden' >          
+               <div class='target-wrap flex flex-col'>
+                <div *ngIf='errorValue==-4' class='error-text'>Unable to fetch target types!</div>                
+                <div *ngIf='errorValue==-2' class='error-text'>Updating projections not allowed for this asset group!</div>
+                <div class='flex flex-center target-tile-wrap'>
+                  <div class='target-tiles flex flex-between'>
+                    <div class='select-target'>
+                      <div class='heading-text'>Select Target Type, Year and Quarter to fetch projections.</div>
+                      <div class= 'flex flex-col relative target-dropdown'>
+                        <span class='sub-text'>Target Type</span>
+                        <div id='clear-value' class='drop-options z-index-1'>
+                            <app-searchable-dropdown (selection)='changeTargetFilterTags($event)' [placeholder]="'Select a Target type'" [items]='targetDropdown' [initValue]="targetTypeSelected" [firstDD]='true'></app-searchable-dropdown>
+                          </div>
+                      </div>
+                      <div class='flex flex-between flex-row relative'> 
+                          <div class='period-dropdown year-dropdown'><span class='sub-text'>Year</span>
+                            <div class='drop-options'>
+                              <app-searchable-dropdown (selection)='changeYearFilterTags($event)' [items]='yearsDropdown' [initValue]="yearSelected" [firstDD]='true'></app-searchable-dropdown>
+                            </div>
+                        </div>
+                        <div class='period-dropdown'><span class='sub-text'>Quarter</span>
+                            <div class='drop-options'>
+                              <app-searchable-dropdown (selection)='changeQuarterFilterTags($event)' [items]='quarterDropdown' [initValue]="quarterSelected" [firstDD]='true'></app-searchable-dropdown>
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div [class.selection-disabled]='dropdownDisable' class="weekly-section">
+                      <div class='heading-text'>Input weekly patching projections </div>
+                      <div class='sub-text'>Add projections for corresponding quarter by week. Once saved, your data will be visible for that quarter on every visit.</div>
+                        <div class="week-wrapper flex flex-row">
+                            <div>
+                                <div class='week-loop' *ngFor="let data of weekProjections;let i = index">                        
+                                    <div class="weeks-title"><span class='sub-text'>Week {{data.week}}</span></div>
+                                    <input type="number" class="week-input" [disabled]='dropdownDisable' [(ngModel)]="weekProjections[i].projection" (ngModelChange)="updateTotalAssets($event,i)" value="{{data.projection}}"/>                          
+                                </div>
+                                <div class="total-assets">
+                                    <div>Projected Total* - {{totalweeksProjection}} </div>
+                                    <div class='total-count'>Total assets currently in scope - {{totalAseets}}</div>
+                                </div>
+                            </div>                       
+                        </div> 
+                      <div class='sub-text info-text'>*Total projected must be less than the total available assets</div>                     
+                    </div>
+                  </div>
+                </div>
+                <div class='flex flex-end save-wrap'>
+                  <div class='flex flex-between bottom-buttons'>
+                    <app-button [disabled]='!enableSaveButton' class='reset-btn' (click)='resetToFetchData()'>RESET</app-button>
+                    <app-button [disabled]='!enableSaveButton' (click)='saveData()'>SAVE</app-button>
+                  </div>
+                </div>
+                <div *ngIf='errorValue==0' class='loader'></div>
+                </div>
+              </div>
+            </li>
+          </ul>
+          <div *ngIf="startUpdate" class='flex flex-col flex-align-center absolute loader-overlay'>
+            <div class='absolute loader-content flex flex-align-center flex-col'>
+            <div class="circle-container">
+                <div class="circle-loader" [class.load-complete-failure]='updateState==-1' [class.load-complete-success]='updateState==1'>
+                    <div *ngIf='updateState==1' class="checkmarks draw" [class.checkmark-show]='updateState==1'></div>
+                    <div *ngIf='updateState==-1' class="crossmark draw" [class.crossmark-show]='updateState==-1'></div>
+                </div>
+            </div>
+                <div *ngIf='updateState==1' class='summary-desc text-center'>
+                    <p>Changes have been applied successfully.</p>
+                    <p><a class="anchor-link" [routerLink]="['./../patching-compliance']" (click)="clearPageLevel()">Click here</a> to view updated projections</p>
+                </div>
+            <div *ngIf='updateState==-1' class='summary-desc text-center'> Couldn't update the projections. Please try again. </div>
+            <div *ngIf='updateState==0' class='summary-desc text-center'> Updating the projections, please wait... </div>
+            <div>
+              <app-button [disabled]='updateState==0' [class.no-event]='updateState==0' (click)='closeUpdateloader()'> CLOSE
+              </app-button>
+            </div>
+            </div>
+          </div>
+      </section>      
+  </div>
+</div>

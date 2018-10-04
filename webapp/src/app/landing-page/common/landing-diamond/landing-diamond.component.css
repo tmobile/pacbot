@@ -1,0 +1,140 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.container-centered {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}
+
+.mr-diamond-titles {
+    position: relative;
+    margin-top: 7.9em;
+    display: inline-block;
+    height: 36em;
+    width: 87em;
+}
+
+.pulse-ball-title-left {
+    position: absolute;
+    top: 0;
+    left: 3em;
+}
+
+.pulse-ball-title-right {
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.pulse-ball-title-center {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+.pulse-ball-title {
+    font-size: 2em;
+    color: white;
+    letter-spacing: 1.2px;
+    font-family: ex2-light;
+}
+
+.mr-diamond {
+    transform: rotate(45deg) translate(-20%, -20%);
+    display: inline-block;
+    position: relative;
+    height: 42em;
+    width: 42em;
+}
+
+.diamond-line {
+    stroke-width: 3px;
+    stroke: rgb(255, 255, 255);
+    stroke-dasharray: 10, 5;
+}
+
+.diamond-line-secondary {
+    stroke-width: 2px;
+    stroke: #A4A4A4;
+    stroke-dasharray: 10, 5;
+    opacity: .3;
+}
+
+.pulse-ball {
+    font-size: 1.3em;
+    position: absolute;
+    width: 4.5em;
+    height: 4.5em;
+    background-color: #213444 !important;
+    border-radius: 2.25em;
+    text-align: center;
+    transform: rotate(-90deg);
+    z-index: 2;
+}
+
+.pulse-ball-left {
+    left: calc(-2.25em + 1px);
+    bottom: calc(-2.25em + 1px);
+}
+
+.pulse-ball-right {
+    top: calc(-2.25em + 1px);
+    right: calc(-2.25em + 1px);
+}
+
+.pulse-ball-center {
+    bottom: calc(-2.25em + 1px);
+    right: calc(-2.25em + 1px);
+}
+
+.glow-traveller {
+    z-index: 1;
+    position: absolute;
+}
+
+
+
+/*vertical*/
+
+.glow-traveller-right {
+    bottom: 0;
+    right: 2px;
+    height: 100%;
+}
+
+
+
+/*horizontal*/
+
+.glow-traveller-left {
+    bottom: 2px;
+    left: 0;
+    width: 100%;
+}
+
+.mr-diamond-text {
+    margin-top: 4em;
+    width: 18em;
+    display: inline-block;
+    color: white;
+    font-size: 2em;
+    line-height: 1.5em;
+    letter-spacing: .8px;
+}

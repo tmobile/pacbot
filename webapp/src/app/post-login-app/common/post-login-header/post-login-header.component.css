@@ -1,0 +1,227 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.post-login-header-wrapper {
+    font-size: 1em;
+    padding-top: 1em;
+    height: 4em;
+    white-space: nowrap;
+}
+
+.header-left {
+    padding-left: 2.805%;
+}
+
+.header-right {
+    padding-right: 2.805%;
+    z-index: 5;
+    ;
+}
+
+.header-right img {
+    transition: 0.2s ease;
+}
+
+.header-right img:hover {
+    transform: scale(1.2);
+}
+
+.pacman-logo {
+    width: 40px;
+    margin-bottom: 2.2em;
+}
+
+nav .nav-icon:last-child {
+    margin-right: 0em;
+}
+
+.mr-burger-menu {
+    font-size: 2.5em;
+    color: #ffffff;
+    vertical-align: middle;
+    cursor: pointer;
+    transform-style: preserve-3d;
+    transition: 0.2s ease;
+}
+
+.burger-container {
+    height: 2.5em;
+    cursor: pointer;
+    opacity: 0.99;
+}
+
+.burger-container:hover .mr-burger-menu {
+    transform: rotateX(180deg);
+}
+
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 25%;
+    z-index: 0;
+}
+
+
+/* user options dropdown  */
+
+.header-user-image {
+    position: relative;
+}
+
+.user-options {
+    position: absolute;
+    right: 100%;
+    top: 150%;
+    transform: translateX(30%);
+    transition: all 0.5s;
+    opacity: 1;
+}
+
+.user-option.visible {
+    opacity: 1;
+}
+
+.username {
+    font-family: ex2-Thin;
+    font-size: 1em;
+    color: #ffffff;
+    padding: 0 5px 0 0;
+}
+
+.pacman-menu {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    opacity: 0.98;
+    background-color: #424850;
+    box-shadow: 4px 0 18px 0 #000000bd;
+    min-width: 40em;
+    z-index: 5;
+    transition: 0.3s ease;
+    transform: translateX(-101%);
+    padding: 4.8em 4em 3.4em;
+    color: #fff;
+}
+
+.pacman-menu.active {
+    transform: translateX(0%);
+}
+
+.close-img {
+    right: 2.5em;
+    height: 2.8em;
+    top: 1em;
+    transition: 0.3s ease;
+    cursor: pointer;
+}
+
+.close-img:hover {
+    transform: rotate(-90deg);
+}
+
+.menu-container {
+    width: 50%;
+    padding-bottom: 20px;
+}
+
+.menu-head-container {
+    min-width: 9em;
+    padding: 0.45em 0;
+    position: relative;
+}
+
+.menu-head {
+    text-transform: uppercase;
+    font-weight: bold;
+    padding-left: 0.83em;
+}
+
+.menu-content {
+    display: flex;
+    margin-bottom: 2.5em;
+    flex-direction: column;
+    flex-wrap: wrap;
+    overflow-x: auto;
+}
+
+.menu-underline {
+    width: 10em;
+    border-bottom: 1.5px solid #c3cbd7;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+.menu-content-item {
+    padding: calc(19em / (2 * 12)) 0;
+    opacity: 0.75;
+    transition: 0.2s ease;
+    cursor: pointer;
+    display: flex;
+}
+
+.menu-content-item:hover {
+    opacity: 1;
+    letter-spacing: 0.3px;
+}
+
+.menu-content-item.active {
+    font-family: ex2-bold;
+    opacity: 1;
+}
+
+.menu-footer {
+    margin-top: auto;
+}
+
+.menu-content .menu-container img {
+    transform-origin: bottom;
+    opacity: 0.7;
+    transition: 0.3s ease;
+}
+
+.menu-content .menu-container:hover img {
+    transform: scale(1.15);
+    opacity: 1;
+}
+
+.menu-footer .menu-container img {
+    transform-origin: bottom;
+    opacity: 0.7;
+    transition: 0.3s ease;
+}
+
+.menu-footer .menu-container:hover img {
+    transform: scale(1.15);
+    opacity: 1;
+}
+
+.domain-dropdown-wrapper {
+    padding-right: 1.5em;
+}
+
+.pacman-version {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    transform: translateX(-50%);
+    font-family: ex2-light;
+    font-size: 1em;
+    color: #999999;
+}

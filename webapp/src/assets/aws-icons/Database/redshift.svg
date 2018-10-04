@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="45px" height="50px" viewBox="0 0 45 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>redshift</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="Asset-Dashboard-AWS-Copy" transform="translate(-1138.000000, -210.000000)" fill-rule="nonzero">
+            <g id="Group-66" transform="translate(191.000000, -128.000000)">
+                <g id="Group-48" transform="translate(20.000000, 0.000000)">
+                    <g id="Group-11">
+                        <g id="Group-63" transform="translate(891.000000, 322.000000)">
+                            <g id="redshift" transform="translate(35.934211, 16.692308)">
+                                <polygon id="Shape" fill="#516A9C" points="40.9214474 7.105 44.5964474 8.87802632 44.5964474 40.0252632 40.9214474 41.8047368 35.1059211 24.5"></polygon>
+                                <polygon id="Shape" fill="#263555" points="4.21013158 7.105 0.541578947 8.87802632 0.541578947 40.0252632 4.21013158 41.8047368 13.3911842 24.5"></polygon>
+                                <polygon id="Shape" fill="#263555" points="22.5657895 37.3238158 40.9214474 41.7918421 40.9214474 7.105 22.5657895 11.5730263"></polygon>
+                                <polygon id="Shape" fill="#516A9C" points="22.5657895 37.3238158 4.21013158 41.7918421 4.21013158 7.105 22.5657895 11.5730263"></polygon>
+                                <polygon id="Shape" fill="#516A9C" points="26.9693421 48.7292105 33.9905263 45.2282895 33.9905263 3.77171053 26.9693421 0.270789474 19.9997368 23.3136842"></polygon>
+                                <polygon id="Shape" fill="#263555" points="18.1622368 48.7292105 11.1475 45.2282895 11.1475 3.77171053 18.1622368 0.270789474 24.4032895 24.5"></polygon>
+                                <rect id="Rectangle-path" fill="#3C5079" x="18.1622368" y="0.270789474" width="8.81355263" height="48.4584211"></rect>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

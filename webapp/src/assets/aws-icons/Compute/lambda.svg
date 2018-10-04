@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="41px" height="49px" viewBox="0 0 41 49" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>lambda</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="lambda" transform="translate(0.410156, -0.167969)" fill-rule="nonzero">
+            <polygon id="Shape" fill="#263555" points="0.530833333 38.57 3.0625 39.8358333 7.53666667 24.5233333 3.0625 9.16416667 0.530833333 10.43"></polygon>
+            <polygon id="Shape" fill="#3C5079" points="7.9625 10.3308333 3.0625 9.18166667 3.0625 39.8358333 7.9625 38.6866667"></polygon>
+            <polygon id="Shape" fill="#263555" points="6.1075 7.64166667 9.82333333 5.78083333 14.4608333 24.5233333 9.82333333 43.2191667 6.1075 41.3583333"></polygon>
+            <polygon id="Shape" fill="#3C5079" points="17.4358333 40.7225 9.82333333 43.1491667 9.82333333 5.78083333 17.4358333 8.21333333"></polygon>
+            <polygon id="Shape" fill="#263555" points="34.72 12.3491667 37.765 12.3491667 37.765 35.6533333 34.72 35.4841667"></polygon>
+            <polygon id="Shape" fill="#1D2126" points="22.9075 12.6875 26.3258333 10.9258333 37.5258333 12.3491667 37.8583333 15.33 34.79 15.7616667"></polygon>
+            <polygon id="Shape" fill="#516A9C" points="23.0066667 36.3125 26.4191667 38.0741667 37.9516667 33.6641667 34.8891667 33.2383333"></polygon>
+            <polygon id="Shape" fill="#263555" points="23.87 31.3658333 29.9658333 32.1825 29.9658333 16.8175 23.87 17.6283333"></polygon>
+            <polygon id="Shape" fill="#263555" points="14.4608333 45.535 20.4108333 48.51 25.5208333 24.465 20.4108333 0.49 14.4608333 3.465"></polygon>
+            <path d="M20.4166667,0.49 L20.4166667,48.51 L40.3083333,38.5641667 L40.3083333,10.4358333 L20.4166667,0.49 Z M37.765,33.6991667 L26.3608333,37.1233333 L26.3608333,11.8766667 L37.7591667,15.295 L37.765,33.6991667 Z" id="Shape" fill="#3C5079"></path>
+            <polygon id="Shape" fill="#3C5079" points="29.9658333 16.8175 29.9658333 32.2291667 36.3066667 24.5233333"></polygon>
+        </g>
+    </g>
+</svg>

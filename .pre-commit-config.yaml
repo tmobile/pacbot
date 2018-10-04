@@ -1,0 +1,8 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v1.4.0-1
+    hooks:
+    -   id: trailing-whitespace
+    -   id: detect-aws-credentials
+    -   id: detect-private-key
+

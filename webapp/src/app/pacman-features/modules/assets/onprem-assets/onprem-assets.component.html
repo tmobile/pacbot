@@ -1,0 +1,160 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="floating-widgets-section flex flex-col asset-update-wrapper">
+    <div class='flex flex-align-center flex-between bc-wrap'>
+        <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [asset]="true" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+        <div class='saved-target' *ngIf='savedTarget'>Target Type: {{savedTarget | uppercase}}</div>
+    </div>
+    <div class="floating-widgets-header flex flex-between">
+        <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text">{{pageTitle}}</h1>
+        </div>
+        <div class='onprem-button-wrap'>
+            <app-button (click)='openTargets()'> CHANGE TARGET TYPE </app-button>
+            <app-button (click)='updateCols()' [disabled]='rowSelectData.length==0'> Update Data </app-button>
+        </div>
+    </div>
+    <div class="floating-widgets-container">
+        <section>
+            <ul class='adjust-padding'>
+                <li class="widget-wrapper relative">
+                    <div class='full-width relative overflow-hidden' (window:resize)='onresize()'>
+                        <img [class.hide]='errorTabValue<1' (click)='downloadCsv()' class='ag-download-onprem' src='../assets/icons/Download-active.svg'>
+                        <!-- AG-GRID Table -->
+                        <ag-grid-angular [class.blur-overlay]='errorTabValue==0' #agGrid class="ag-theme-material full-width table-wrap" [gridOptions]="gridOptions" [getContextMenuItems]="getContextMenuItems" [enableRangeSelection]="true" [enableFilter]='true' [allowContextMenuWithControlKey]="true" [showToolPanel]="true" [rowGroupPanelShow]="'never'" (selectionChanged)='onRowSelected()' (filterChanged)='onFilterChanged()' (gridReady)="onGridReady($event)" rowHeight='36' enableColResize enableSorting animateRows='true' suppressFieldDotNotation='true' toolPanelSuppressRowGroups='true' toolPanelSuppressValues='true' toolPanelSuppressPivots='true' toolPanelSuppressPivotMode='true' rowSelection='multiple' rowDeselection='true' enableMultiRangeSelection='true' enableCsvExport='true' suppressNoRowsOverlay='true' suppressRowClickSelection='true' pagination='true' paginationAutoPageSize='true'>
+                        </ag-grid-angular>
+                        <!-- Paginated Loader -->
+                        <div *ngIf='errorTabValue==0' class='absolute loader-overlay'>
+                            <div class='absolute loader-content'>
+                                <div class='loader-txt'>Hang on! We're fetching your data..</div>
+                                <div class='download-tracker relative'>
+                                    <div class='download-range absolute gradient' [ngStyle]="{'width': ( 100 * bucketNumber * paginatorSize / currentTotal ) + '%' }">
+                                    </div>
+                                </div>
+                                <div [class.visibility-hidden]="((bucketNumber * paginatorSize) > currentTotal) || (bucketNumber <= 0) || currentData.length==0 || (currentTotal <= 0) " class='flex flex-end loaded-txt'>Loaded {{currentData.length}} of {{currentTotal}}</div>
+                            </div>
+                        </div>
+                        <div *ngIf='errorTabValue==-1' class='absolute error-msg'>Unable to fetch assets!</div>
+                        <div *ngIf='errorTabValue==-3' class='absolute error-msg'>No data available!</div>
+                        <div class='table-overlay absolute' *ngIf='showSidebar && rowSelectData.length>0' (click)='$event.stopPropagation(); showSidebar=false; carouselState=0;'></div>
+                        <!-- Update column sidebar -->
+                        <div class='ag-sidebar absolute flex flex-col' [class.active]='showSidebar && rowSelectData.length>0'>
+                            <div class='details-bar-header relative flex flex-align-center flex-between'>
+                                <app-title-burger-head [subHeadTitle]="'update columns'">
+                                </app-title-burger-head>
+                                <img class='pointer' [class.no-event]='updateState==0 && carouselState==2 ' (click)='$event.stopPropagation(); showSidebar=false; carouselState=0; ' style='height: 1.3em;' src='../assets/png/delete.png'>
+                            </div>
+                            <div class='flex flex-strip' [ngStyle]="{'transform': 'translateX(' + -carouselState * 100 + '%' }">
+                                <!-- Slide One -->
+                                <div class='details-bar-inner flex flex-wrap flex-col no-shrink'>
+                                    <div class='flex flex-col full-width col-update-wrap' *ngIf='editableFields.length'>
+                                        <div class='ag-sidebar-title'>Select the column names to update</div>
+                                        <div class='each-col-wrap'>
+                                            <div class='flex each-col flex-col' *ngFor='let col of editableFields; let i = index; '>
+                                                <div class='flex flex-align-center'>
+                                                    <label class="container" (click)='checkboxClicked(col, i); '>
+                                                        <input name='cbName' [(ngModel)]="cbModel[i]" type="checkbox">
+                                                        <span class="checkmark"></span>
+                                                    </label>
+                                                    <div>{{col.displayName}}</div>
+                                                </div>
+                                                <div *ngIf='selectFields.length'>
+                                                    <div *ngIf="selectFields[i].type=='textField'" class='input-wrap flex flex-align-center'>
+                                                        <input [(ngModel)]="ipModel[i]" [disabled]='!cbModel[i]' type='text'>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf='selectFields.length'>
+                                                    <div class='drop-options' [class.disabled-selection]='!cbModel[i]' *ngIf="selectFields[i].type=='weekDropdown'">
+                                                        <app-searchable-dropdown *ngIf='selectFields[i].values.length' (selection)='changeFilterTags($event, i)' [placeholder]="selectFields[i].placeholder" [items]='selectFields[i].values' [firstDD]='true'>
+                                                        </app-searchable-dropdown>
+                                                    </div>
+                                                </div>
+                                                <div *ngIf='selectFields.length'>
+                                                    <div [class.disabled-radio]='!cbModel[i]' class='radio-wrap flex' *ngIf="selectFields[i].type=='radio'">
+                                                        <div class='each-radio flex' *ngFor='let list of selectFields[i].values; let j = index; ' (click)='activeRadio=list; setRadioInput(list, i)'>
+                                                            <div [class.active]="list==activeRadio || (activeRadio=='' && list=='true')" class='radio-btn'>
+                                                                <div class='radio-indicator'>
+                                                                </div>
+                                                            </div>
+                                                            <div class='radio-txt'>{{list}}</div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div *ngIf='editableFields.length==0' class='center absolute no-editable-fields'> There are no editable fields in this table. </div>
+                                    <div *ngIf='editableFields.length' class='flex flex-end sidebar-save full-width'>
+                                        <app-button [disabled]='rowSelectData.length == 0 || editableFields.length == 0 || verifyIfChecked()' (click)='updateColSave();'>PROCEED</app-button>
+                                    </div>
+                                </div>
+                                <!-- Slide Two -->
+                                <div class='details-bar-inner flex flex-wrap flex-col no-shrink '>
+                                    <div class='flex flex-col flex-align-center'>
+                                        <div class='key-val-summary'>
+                                            <div class='txt' *ngFor='let val of updateColData'> {{val.key}} = {{val.value}}<span class='null-txt' *ngIf="(!val.value && val.value!=false && val.value!=0 && val.value!='0' && val.value!='false') || (val.value=='' && typeof(val.value)!='boolean')">--blank--</span></div>
+                                        </div>
+                                        <div class='summary-desc text-center'>These changes are going to be applied on {{rowSelectData.length}} selected row<span *ngIf='rowSelectData.length>1'>s</span> on the current table. Are you sure you want to update?</div>
+                                        <div>
+                                            <app-button (click)='updateTable();' class='flex'>YES
+                                            </app-button>
+                                            <app-button class='cancel-update flex' (click)='carouselState=carouselState-1;'>CANCEL
+                                            </app-button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- Slide Three -->
+                                <div class='details-bar-inner flex flex-wrap flex-col no-shrink '>
+                                    <div class='flex flex-col flex-align-center'>
+                                        <div class="circle-container">
+                                            <div class="circle-loader" [class.load-complete-failure]='updateState==-1' [class.load-complete-success]='updateState==1'>
+                                                <div *ngIf='updateState==1' class="checkmarks draw" [class.checkmark-show]='updateState==1'></div>
+                                                <div *ngIf='updateState==-1' class="crossmark draw" [class.crossmark-show]='updateState==-1'></div>
+                                            </div>
+                                        </div>
+                                        <div *ngIf='updateState==1' class='summary-desc text-center'>Changes have been applied successfully</div>
+                                        <div *ngIf='updateState==-1' class='summary-desc text-center'> Couldn't update the table. Please try again </div>
+                                        <div *ngIf='updateState==0' class='summary-desc text-center'> Updating the table, please wait.. </div>
+                                        <div>
+                                            <app-button [disabled]='updateState==0 && carouselState==2 ' [class.no-event]='updateState==0 && carouselState==2 ' class='flex' (click)='carouselState=0; showSidebar=false; closeUpdateSidebar()'> CLOSE
+                                            </app-button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- select target type popup -->
+                    <div class='absolute target-wrap flex flex-col' *ngIf='showTargets'>
+                        <div *ngIf='savedTarget' (click)='showTargets=false;' class='close-img'><img src='../../assets/png/delete.png'></div>
+                        <div class='target-title'> Choose a target type to show the data
+                        </div>
+                        <div class='flex flex-center target-tile-wrap' *ngIf='errorValue >0'>
+                            <div [class.active]="targetTypeSelected == tiles.type" (click)='targetTypeSelected = tiles.type' *ngFor="let tiles of targetTiles | orderBy : { property: 'count', direction: -1 }" class='target-tiles flex flex-center flex-align-center'> {{tiles.type}}
+                            </div>
+                        </div>
+                        <div class='flex flex-end save-wrap' *ngIf='errorValue >0'>
+                            <app-button (click)=' getTableData()' [disabled]='!targetTypeSelected'>SELECT</app-button>
+                        </div>
+                        <div *ngIf='errorValue==0' class='loader'></div>
+                        <div *ngIf='errorValue<0' class='absolute error-msg'>Unable to fetch target types!
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>

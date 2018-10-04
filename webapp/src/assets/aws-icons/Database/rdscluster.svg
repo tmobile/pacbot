@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="45px" height="50px" viewBox="0 0 45 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>rdscluster</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="Asset-Dashboard-AWS-Copy" transform="translate(-247.000000, -336.000000)" fill-rule="nonzero">
+            <g id="Group-66" transform="translate(191.000000, -128.000000)">
+                <g id="Group-48" transform="translate(20.000000, 0.000000)">
+                    <g id="Group-11" transform="translate(0.000000, 449.000000)">
+                        <g id="Page-1" transform="translate(0.000000, 0.500000)">
+                            <g id="rdscluster" transform="translate(36.972222, 15.460099)">
+                                <g id="Group">
+                                    <polygon id="Shape" fill="#7690C6" points="43.5555556 10.8276389 38.1111111 4.84555556 30.4344444 24.5 38.1111111 44.1408333 43.5555556 38.1723611"></polygon>
+                                    <polygon id="Shape" fill="#516A9C" points="28.5833333 49 38.1111111 44.1408333 38.1111111 4.84555556 28.5833333 0 17.2725 24.5"></polygon>
+                                    <polygon id="Shape" fill="#3C5079" points="14.9722222 49 28.5833333 49 28.5833333 0 14.9722222 0 6.80555556 24.5"></polygon>
+                                    <polygon id="Shape" fill="#263555" points="5.44444444 44.1340278 14.9722222 49 14.9722222 0 5.44444444 4.84555556 1.23180556 24.5"></polygon>
+                                    <polygon id="Shape" fill="#1D2126" points="0 38.1723611 5.44444444 44.1340278 5.44444444 4.84555556 0 10.8276389"></polygon>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,285 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>com.tmobile.cloud</groupId>
+	<artifactId>batch-commons</artifactId>
+	<version>1.0.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+
+	<name>commons</name>
+	<url>http://maven.apache.org</url>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<downloadSources>true</downloadSources>
+		<downloadJavadocs>true</downloadJavadocs>
+	</properties>
+
+
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.amazonaws</groupId>
+				<artifactId>aws-java-sdk-bom</artifactId>
+				<version>1.11.264</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+
+	<dependencies>
+
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-efs</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-redshift</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-ses -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-ses</artifactId>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-route53 -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-route53</artifactId>
+		</dependency>
+
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-events</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-guardduty</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-ec2</artifactId>
+		</dependency>
+
+		<dependency>
+			<artifactId>aws-java-sdk-cloudwatch</artifactId>
+			<groupId>com.amazonaws</groupId>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-elasticloadbalancing -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-elasticloadbalancing</artifactId>
+		</dependency>
+
+		<dependency>
+			<artifactId>aws-java-sdk-elasticloadbalancingv2</artifactId>
+			<groupId>com.amazonaws</groupId>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-s3 -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-s3</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-rds -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-rds</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-sts -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-sts</artifactId>
+		</dependency>
+
+		<dependency>
+			<artifactId>aws-java-sdk-iam</artifactId>
+			<groupId>com.amazonaws</groupId>
+		</dependency>
+
+		<dependency>
+			<artifactId>aws-java-sdk-config</artifactId>
+			<groupId>com.amazonaws</groupId>
+		</dependency>
+
+		<dependency>
+			<artifactId>aws-java-sdk-lambda</artifactId>
+			<groupId>com.amazonaws</groupId>
+		</dependency>
+
+		<dependency>
+			<artifactId>aws-java-sdk-api-gateway</artifactId>
+			<groupId>com.amazonaws</groupId>
+		</dependency>
+
+		<dependency>
+			<artifactId>aws-java-sdk-dynamodb</artifactId>
+			<groupId>com.amazonaws</groupId>
+		</dependency>
+
+		<dependency>
+			<artifactId>aws-java-sdk-cloudtrail</artifactId>
+			<groupId>com.amazonaws</groupId>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-elasticsearch -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-java-sdk-elasticsearch</artifactId>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-lambda-java-core -->
+		<dependency>
+			<groupId>com.amazonaws</groupId>
+			<artifactId>aws-lambda-java-core</artifactId>
+			<version>1.1.0</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/com.google.code.gson/gson -->
+		<dependency>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
+			<version>2.8.1</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/commons-httpclient/commons-httpclient -->
+		<dependency>
+			<groupId>commons-httpclient</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>3.1</version>
+		</dependency>
+
+
+
+
+		<!-- https://mvnrepository.com/artifact/org.elasticsearch/elasticsearch -->
+		<!-- <dependency> <groupId>org.elasticsearch</groupId> <artifactId>elasticsearch</artifactId>
+			<version>2.3.5</version> </dependency> -->
+
+		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-ec2 -->
+
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/org.reflections/reflections -->
+		<dependency>
+			<groupId>org.reflections</groupId>
+			<artifactId>reflections</artifactId>
+			<version>0.9.10</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
+		<dependency>
+			<groupId>com.google.guava</groupId>
+			<artifactId>guava</artifactId>
+			<version>19.0</version>
+		</dependency>
+
+
+		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-classic -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-classic</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+
+		<!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-core -->
+		<dependency>
+			<groupId>ch.qos.logback</groupId>
+			<artifactId>logback-core</artifactId>
+			<version>1.2.3</version>
+		</dependency>
+
+	</dependencies>
+
+	<distributionManagement>
+	</distributionManagement>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+
+				<plugin>
+					<groupId>org.jfrog.buildinfo</groupId>
+					<artifactId>artifactory-maven-plugin</artifactId>
+					<version>2.4.1</version>
+					<inherited>false</inherited>
+					<executions>
+						<execution>
+							<id>build-info</id>
+							<goals>
+								<goal>publish</goal>
+							</goals>
+							<configuration>
+								<deployProperties>
+									<groupId>${project.groupId}</groupId>
+									<artifactId>${project.artifactId}</artifactId>
+									<version>${project.version}</version>
+								</deployProperties>
+								<artifactory>
+									<includeEnvVars>true</includeEnvVars>
+									<timeoutSec>60</timeoutSec>
+									<propertiesFile>publish.properties</propertiesFile>
+								</artifactory>
+
+								<buildInfo>
+									<buildName>pacman-commons</buildName>
+									<buildNumber>1</buildNumber>
+									<buildUrl>http://build-url.org</buildUrl>
+								</buildInfo>
+								<licenses>
+									<autoDiscover>true</autoDiscover>
+									<includePublishedArtifacts>false</includePublishedArtifacts>
+									<runChecks>true</runChecks>
+									<scopes>compile,runtime</scopes>
+									<violationRecipients>kkumar@t-mobile.com</violationRecipients>
+								</licenses>
+							</configuration>
+						</execution>
+					</executions>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+	</build>
+
+	<pluginRepositories>
+		<pluginRepository>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>central</id>
+			<name>bintray-plugins</name>
+			<url>http://jcenter.bintray.com</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+
+
+
+
+
+
+</project>

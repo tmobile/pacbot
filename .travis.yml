@@ -1,0 +1,7 @@
+language: java
+notifications:
+  email:
+    recipients:
+      - pacman@T-Mobile.com
+    on_success: never # default: change
+    on_failure: always # default: always

@@ -1,0 +1,461 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.exception-container {
+    position: relative;
+}
+
+.actions-wrapper {
+    position: absolute;
+    background-color: rgba(239, 243, 246, 0.5);
+    border-radius: 0.3em;
+    border: 0.5px solid #c3cbd7;
+    -webkit-transition: 0.5s ease;
+    transition: 0.5s ease;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    z-index: 15;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    margin: auto;
+    width: 35em;
+    background-color: #fff;
+    color: #000;
+    box-shadow: 0 3px 4px 0 #0000001e, 0 2px 4px 0 #00000023;
+    border: 1px solid #ededed;
+    height: 100%;
+}
+
+.recommend-flip {
+    background-color: #f9f9f9;
+    padding: 1.1em;
+    border-bottom: 1px solid #ededed;
+}
+
+.text-wrapper {
+    margin: 2em 0;
+    font-size: 1.1em;
+    padding: 0 1em;
+}
+
+.text-wrapper-header {
+    margin: 1em 0 0.6em 0;
+    color: rgb(82, 79, 79);
+}
+
+.showNone {
+    display: none;
+}
+
+.textarea-container {
+    width: 100%!important;
+    margin-bottom: 0.5em;
+    height: 8em;
+    border-radius: 0.3em;
+    border: 1px solid #aaa;
+    padding: 0.2em 0.5em;
+    line-height: 1.5;
+    letter-spacing: 0.2px;
+}
+
+.error-reason {
+    color: red;
+    margin-bottom: 0.5em;
+}
+
+.textarea-button {
+    margin: 1.5em 1em;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.circle-loader {
+    margin: 0 0 30px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-left-color: #ed0295;
+    animation-name: loader-spin;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.circle-loader,
+.circle-loader:after {
+    border-radius: 50%;
+    width: 8em;
+    height: 8em;
+}
+
+.load-complete-success {
+    -webkit-animation: none;
+    animation: none;
+    border-color: #5cb85c;
+    transition: border 500ms ease-out;
+}
+
+.load-complete-failure {
+    -webkit-animation: none;
+    animation: none;
+    border-color: red;
+    transition: border 500ms ease-out;
+}
+
+.checkmark {
+    display: none;
+}
+
+.checkmark-show {
+    display: block;
+}
+
+.crossmark {
+    display: none;
+}
+
+.crossmark-show {
+    display: block;
+}
+
+.checkmark.draw:after {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: checkmark;
+    transform: scaleX(-1) rotate(135deg);
+}
+
+.checkmark:after {
+    opacity: 1;
+    height: 5em;
+    width: 2.3em;
+    transform-origin: left top;
+    border-right: 1px solid #5cb85c;
+    border-top: 1px solid #5cb85c;
+    content: '';
+    left: 1.5em;
+    top: 4em;
+    position: absolute;
+}
+
+.crossmark.draw:after {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: crossmark;
+    transform: scaleX(1) rotate(135deg);
+}
+
+.crossmark:after {
+    opacity: 1;
+    height: 4.5em;
+    width: 0em;
+    -webkit-transform-origin: left top;
+    transform-origin: left top;
+    border-right: 1px solid red;
+    border-top: 1px solid red;
+    content: '';
+    left: 5.5em;
+    top: 5.5em;
+    position: absolute;
+}
+
+.crossmark.draw:before {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: crossmark;
+    transform: scaleX(-1) rotate(135deg);
+}
+
+.crossmark:before {
+    opacity: 1;
+    height: 4.5em;
+    width: 0;
+    transform-origin: left top;
+    border-right: 1px solid red;
+    border-top: 1px solid red;
+    content: '';
+    left: 2.3em;
+    top: 5.5em;
+    position: absolute;
+}
+
+
+.circle-container {
+    text-align: center;
+    /* margin-top: 11vh; */
+}
+
+@keyframes loader-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes checkmark {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 1;
+    }
+    20% {
+        height: 0;
+        width: 2.3em;
+        opacity: 1;
+    }
+    40% {
+        height: 5em;
+        width: 2.3em;
+        opacity: 1;
+    }
+    100% {
+        height: 5em;
+        width: 2.3em;
+        opacity: 1;
+    }
+}
+
+@keyframes crossmark {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 1;
+    }
+    20% {
+        height: 3.5em;
+        width: 0;
+        opacity: 1;
+    }
+    40% {
+        height: 4.5em;
+        width: 0;
+        opacity: 1;
+    }
+    100% {
+        height: 4.5em;
+        width: 0;
+        opacity: 1;
+    }
+}
+
+.error_msg_exception {
+    text-align: center;
+    color: red;
+    font-size: 1em;
+    height: 100%;
+    overflow: hidden;
+    padding: 0 1em 1em 1em;
+}
+
+.success_msg_exception {
+    text-align: center;
+    font-size: 1em;
+    color: #5cb85c;
+    line-height: 1.4;
+}
+
+.search-results-overlay {
+    opacity: 0.3;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 11;
+    background-color: #000;
+}
+
+.exception-btn {
+    border: none;
+    border-radius: 4px;
+    background-color: #e20074;
+    color: #fff;
+    display: inline-block;
+    padding: 0.5em;
+    margin: 0 0.3em 0.3em 0;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    min-height: 2em;
+    text-align: center;
+    -webkit-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    font-size: 1.2em;
+    font-family: ex2-medium;
+    transition: 0.3s ease;
+}
+
+.exception-btn:hover, .exception-btn:focus {
+    -webkit-box-shadow: 0px 0px 6px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 6px 0 rgba(0, 0, 0, 0.5);
+    background-color: #c20064;
+}
+
+.textarea-button /deep/ .app-button, 
+.textarea-button-first-screen /deep/ .app-button {
+    min-width: 5em !important;
+    min-height: 2em !important;
+    width: 8em;
+    padding: 0.7em 1.5em;
+}
+
+.cancel-btn {
+    margin-right: 1em;
+}
+
+.exception-text {
+    padding-bottom: 1em; 
+    line-height: 1.3em;
+}
+
+.bold {
+    text-shadow: 0.33px 0;
+    color: rgba(0, 0, 0, 0.712);
+}
+
+.disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.content-wrapper {
+    font-size: 1.16em;
+    padding: 1.5em;
+    height: 100%;
+}
+
+.textarea-button-first-screen {
+	margin: 1.5em 0em;
+    justify-content: flex-end;
+}
+
+.empty-issuelist {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    width: 90%;
+    line-height: 1.5;
+}
+
+.first-screen {
+    height: 100%;
+    justify-content: space-between;
+}
+
+.issue-list {
+    /* padding: 1em 0; */
+    height: 6em;
+    height: 100%;
+    overflow-y: auto;
+    overflow-y: overlay;
+}
+
+.issue-list li {
+    padding: 0.5em 0em;
+    text-align: left;
+    color: rgb(82, 79, 79);
+}
+
+.header-text {
+    font-size: 1.1em;
+    text-shadow: 0.33px 0;
+    letter-spacing: 0.5px;
+}
+
+.cross-img {
+    height: 1.5em;
+    transition: 0.3s ease;
+}
+
+.cross-img:hover {
+    transform: rotate(-90deg);
+}
+
+.text-color {
+    color:rgb(82, 79, 79);
+}
+
+.note-text {
+    color: rgba(0, 0, 0, 0.8);
+    font-size: 12px;
+}
+
+.failed-list-wrapper {
+    padding: 1em 0;
+    color: rgb(82, 79, 79);
+    height: 100%;
+}
+
+.margin {
+    margin: 1em 0 0.5em 0;
+}
+
+.contact-btn /deep/ .app-button {
+    min-width: 5em !important;
+    min-height: 2em !important;
+    width: 8em;
+    padding: .7em 1em;
+    font-size: 13px;
+}
+
+.ids-wrapper {
+    border: 1px solid #ccc !important;
+    border-radius: 0px;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    background-color: #eeeeee;
+}
+
+.icon-content_copy:before {
+    content: "\e91c";
+}
+
+.copy-btn {
+    align-self: flex-start;
+    margin: 0.5em 0 1em 0;
+}
+
+.copy-btn /deep/ .app-button {
+    min-width: 5em !important;
+    min-height: 2em !important;
+    width: 8em;
+    padding: .7em 1em;
+    font-size: 13px;
+}
+
+.error_msg {
+    font-size: 1em;
+}
+
+.disable-btn {
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.disable-btn /deep/ button {
+    background-color: #c0c0c0; 
+}
+
+.err-msg {
+    color: red;
+    margin: 1em 0;
+}
+

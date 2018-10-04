@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="61px" height="64px" viewBox="0 0 61 64" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>appelb</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="appelb" transform="translate(-0.517555, 0.261719)" fill-rule="nonzero">
+            <circle id="Oval" fill="#263555" cx="31" cy="33.25" r="30.43"></circle>
+            <circle id="Oval" fill="#3C5079" cx="31" cy="30.75" r="30.43"></circle>
+            <rect id="Rectangle-path" fill="#FFFFFF" transform="translate(31.000000, 11.695000) rotate(90.000000) translate(-31.000000, -11.695000) " x="25.475" y="2.815" width="11.05" height="17.76"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" transform="translate(49.120000, 42.650000) rotate(90.000000) translate(-49.120000, -42.650000) " x="44.62" y="38.15" width="9" height="9"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" transform="translate(37.740000, 42.650000) rotate(90.000000) translate(-37.740000, -42.650000) " x="33.24" y="38.15" width="9" height="9"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" transform="translate(23.890000, 42.650000) rotate(90.000000) translate(-23.890000, -42.650000) " x="19.39" y="38.15" width="9" height="9"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" transform="translate(12.510000, 42.650000) rotate(90.000000) translate(-12.510000, -42.650000) " x="8.01" y="38.15" width="9" height="9"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="11.7" y="30.36" width="1.62" height="8.83"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="11.7" y="30.36" width="13" height="1.62"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="23.08" y="30.36" width="1.62" height="8.83"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="36.93" y="30.36" width="1.62" height="8.83"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="36.93" y="30.36" width="13" height="1.62"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="48.31" y="30.36" width="1.62" height="8.83"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="17.4" y="24.06" width="1.62" height="7.11"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="30.19" y="15.59" width="1.62" height="8.6"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="17.4" y="23.38" width="26.87" height="1.62"></rect>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="42.65" y="24.06" width="1.62" height="7.11"></rect>
+        </g>
+    </g>
+</svg>

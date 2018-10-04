@@ -1,0 +1,11 @@
+<div class="form-input">
+    <div class="relative input-box-group">
+        <label for="{{id}}" *ngIf="inputLabel" class="input-label">{{inputLabel}}</label>
+        <div class="relative">
+            <div class="validate" *ngIf="parentForm.get(formControlName).touched && parentForm.get(formControlName).dirty" [ngClass]="{'invalid': formErrors[formControlName], 'valid': !formErrors[formControlName]}"></div>
+            <input *ngIf="inputType === 'input'" class='input-box' type="{{type}}" spellcheck="false" [(ngModel)]="value" placeholder="{{placeHolderValue}}" name="{{formControlName}}" id="{{id}}"/>
+            <textarea *ngIf="inputType === 'desc'" class='text-area' spellcheck="false" [(ngModel)]="value" name="{{formControlName}}" id="{{id}}"></textarea>
+        </div>
+        <div class = "error" *ngIf="formErrors[formControlName]">{{formErrors[formControlName]}}</div>
+    </div>
+</div>

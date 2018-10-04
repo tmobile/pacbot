@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="41px" height="49px" viewBox="0 0 41 49" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>cloudfront</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="Asset-Dashboard-AWS-Copy" transform="translate(-759.000000, -339.000000)" fill-rule="nonzero">
+            <g id="Group-66" transform="translate(191.000000, -128.000000)">
+                <g id="Group-48" transform="translate(20.000000, 0.000000)">
+                    <g id="Group-11" transform="translate(0.000000, 449.000000)">
+                        <g id="Group-58" transform="translate(510.000000, 1.000000)">
+                            <g id="cloudfront" transform="translate(37.585366, 16.960099)">
+                                <polygon id="Shape" fill="#516A9C" points="14.7836585 28.665 5.4497561 41.1958537 0.561707317 28.6889024 9.47731707 28.145122"></polygon>
+                                <polygon id="Shape" fill="#516A9C" points="26.95 28.665 36.3795122 41.267561 41.1719512 28.7008537 32.3519512 28.145122"></polygon>
+                                <polygon id="Shape" fill="#1D2126" points="14.7836585 20.2991463 5.4497561 7.73243902 0.561707317 20.3110976 9.555 20.8489024"></polygon>
+                                <polygon id="Shape" fill="#1D2126" points="26.95 20.2991463 36.3795122 7.73243902 41.267561 20.3110976 32.3519512 20.854878"></polygon>
+                                <polygon id="Shape" fill="#263555" points="26.95 20.2991463 36.3795122 19.6 36.3795122 7.73243902 26.95 10.1704878"></polygon>
+                                <polygon id="Shape" fill="#3C5079" points="41.267561 20.3110976 36.3795122 19.6 36.3795122 7.73243902 41.267561 10.1764634"></polygon>
+                                <polygon id="Shape" fill="#263555" points="26.95 28.665 36.3795122 29.4 36.3795122 41.267561 26.95 38.7936585"></polygon>
+                                <polygon id="Shape" fill="#3C5079" points="41.1719512 28.7008537 36.3795122 29.4 36.3795122 41.267561 41.1719512 38.8713415"></polygon>
+                                <polygon id="Shape" fill="#3C5079" points="14.7836585 20.2991463 5.4497561 19.6 5.4497561 7.73243902 14.7836585 10.1704878"></polygon>
+                                <polygon id="Shape" fill="#263555" points="0.561707317 20.3110976 5.4497561 19.6 5.4497561 7.73243902 0.561707317 10.1764634"></polygon>
+                                <polygon id="Shape" fill="#3C5079" points="14.7836585 28.665 5.4497561 29.4 5.4497561 41.267561 14.7836585 38.7936585"></polygon>
+                                <polygon id="Shape" fill="#263555" points="0.561707317 28.6889024 5.4497561 29.4 5.4497561 41.267561 0.561707317 38.8235366"></polygon>
+                                <polygon id="Shape" fill="#516A9C" points="30.6309756 30.2306098 20.9146341 29.2685366 11.1026829 30.2186585 20.9146341 49"></polygon>
+                                <polygon id="Shape" fill="#1D2126" points="30.6309756 18.7693902 20.9146341 19.7314634 11.1026829 18.7813415 20.9146341 0"></polygon>
+                                <polygon id="Shape" fill="#3C5079" points="30.6309756 18.7693902 20.9146341 17.3591463 20.9146341 0 30.6309756 4.85817073"></polygon>
+                                <polygon id="Shape" fill="#263555" points="11.1026829 18.7813415 20.9146341 17.3591463 20.9146341 0 11.1026829 4.90597561"></polygon>
+                                <polygon id="Shape" fill="#3C5079" points="30.6309756 30.2306098 20.9146341 31.6408537 20.9146341 49 30.6309756 44.1418293"></polygon>
+                                <polygon id="Shape" fill="#263555" points="11.1026829 30.2186585 20.9146341 31.6408537 20.9146341 49 11.1026829 44.0940244"></polygon>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

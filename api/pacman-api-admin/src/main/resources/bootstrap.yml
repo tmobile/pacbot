@@ -1,0 +1,49 @@
+security: 
+  user: 
+    name: ${SECURITY_USERNAME:admin}
+    password: ${SECURITY_PASSWORD:admin@123}
+  oauth2:
+    resource:
+      user-info-uri: ${PACMAN_HOST_NAME}/api/auth/user
+spring:
+  application:
+    name: admin-service
+    title: Pacman Service
+    description: Pacman Admin API provides admin capabilities
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL:http://localhost:8888/config/}
+      enabled: true
+      fail-fast: true
+      name: api,admin-service
+      password: ${CONFIG_PASSWORD}
+      username: user
+      label: latest
+  jpa: 
+    hibernate:
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+  profiles:
+    active: ${ENVIRONMENT:prd}
+  http:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+  boot:
+    admin:
+      url: ${ADMIN_SERVER:http://localhost:8080/pacmonitor}
+      username: ${security.user.name}
+      password: ${security.user.password}
+      client:
+        metadata: 
+          user: 
+            name: ${security.user.name}
+            password: ${security.user.password}
+        management-url: ${DOMAIN_URL:http://localhost:8080/admin}/
+        health-url: ${DOMAIN_URL:http://localhost:8080/admin}/health/
+        service-url: ${DOMAIN_URL:http://localhost:8080/admin}/
+        
+management:
+  health:
+    rabbit:
+      enabled: false

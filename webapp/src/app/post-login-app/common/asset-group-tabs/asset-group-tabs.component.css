@@ -1,0 +1,92 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.asset-tab-wrap {
+    cursor: pointer;
+    margin-bottom: 0.4em;
+    padding: 0 1px;
+}
+
+.asset-tabs-inset {
+    margin: 0 1.1em;
+    padding-bottom: 3px;
+    letter-spacing: 0.2px;
+    color: #aaaaaa;
+    text-transform: capitalize;
+}
+
+.asset-tabs-inset:hover {
+    color: #888;
+}
+
+.asset-tabs-inset:hover .each-pop-row {
+    color: #aaa;
+}
+
+.asset-tabs-inset.active .each-pop-row {
+    color: #aaaaaa;
+}
+
+::selection {
+    background: transparent;
+}
+
+.asset-tabs-inset .each-pop-row:hover {
+    color: #888;
+    background: #f0f0f0;
+}
+
+.asset-tabs-inset.active {
+    font-weight: bolder;
+    color: #e20074;
+    border-bottom: 2px solid #e20074;
+}
+
+.asset-tabs-outer {
+    display: flex;
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+.show-more-pop {
+    left: 0;
+    bottom: 0;
+    transform: translateY(calc(100% + 0.4em));
+    background: rgba(253, 253, 253, 0.97);
+    box-shadow: 1px 1px 9px 0px rgba(0, 0, 0, 0.2);
+    padding: 0.4em 0em;
+    z-index: 3;
+    max-height: 45vh;
+    overflow: auto;
+}
+
+.show-more-pop .each-pop-row {
+    padding: 0.5em 0.7em;
+    border-bottom: 1px solid #ededed66;
+}
+
+.show-more-pop .each-pop-row.pointer.active {
+    font-weight: bold;
+    font-family: ex2-bold;
+    color: #666;
+    background: #f0f0f0;
+}
+
+.more-selected {
+    top: 0;
+    white-space: nowrap;
+    right: 0;
+    transform: translateX(calc(100% + 3px));
+    z-index: 1;
+}

@@ -1,0 +1,50 @@
+<div class="compliance-dashboard-wrapper flex flex-between">
+  <div class="floating-widgets-section-full flex flex-col">
+      <app-breadcrumb [breadcrumbLinks]="breadcrumbDetails.breadcrumbLinks" [breadcrumbArray]="breadcrumbDetails.breadcrumbArray" [breadcrumbPresent]="breadcrumbDetails.breadcrumbPresent" [parentRouteName]="'admin'" [isCustomParentRoute]="true"></app-breadcrumb>
+      <div class="floating-widgets-header flex flex-between">
+          <div>
+              <img *ngIf="backButtonRequired" class="arrow-img" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+              <h1 class="title-text">{{pageTitle}}</h1>
+          </div>
+          <div class='flex relative z-index' *ngIf="isFilterRquiredOnPage">
+              <app-generic-page-filter [filterId]="1" [filterArray]="filterArray" (onFilterValueChange)="updateUrlWithNewFilters($event)"></app-generic-page-filter>
+          </div>
+      </div>
+      <div class='floating-widgets-filter-wrapper' *ngIf='filterArray.length'>
+          <app-filtered-selector (updateFilterArray)='updateUrlWithNewFilters($event)' [(filteredArray)]='filterArray'></app-filtered-selector>
+      </div>
+      <div class="floating-widgets-section-full">
+          <section>
+              <ul>
+                  <li class="widget-wrapper">
+                    <div class="widget-admin">
+                        <app-error-message class='error_msg' [selectedValue]="errorMessage" *ngIf='errorValue == -1'></app-error-message>
+                        <div class="form-container" *ngIf='errorValue == 1'>
+                            <form *ngIf='formData.length' class="form-class" [formGroup]="pluginManagementForm" (ngSubmit)="register(pluginManagementForm)" novalidate>
+                                <div class="widget-form-header">
+                                    <span>Plugin Management Details</span>
+                                </div>
+                                <app-forms *ngFor='let inputs of formData' [parentForm]="pluginManagementForm" formControlName="{{inputs.formControlName}}" [id]="inputs.formControlName" [inputLabel]="inputs.formControlDisplayName" [placeHolderValue]="inputs.formControlDisplayName" [formErrors]="formErrors"></app-forms>
+                                <div class="widget-form-footer button-list">
+                                    <div class="create-cancel">
+                                        <div *ngIf='backButtonRequired'>
+                                            <app-button [type]="'secondary'" (click)="navigateBack()">CANCEL</app-button>
+                                        </div>
+                                        <app-button [disabled]="!pluginManagementForm.valid">
+                                            <span>UPDATE</span>
+                                        </app-button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="loader" *ngIf='errorValue == 0'></div>
+                        <div class="full-page-center" *ngIf="errorValue == 2 || errorValue == -1">
+                                <app-loader-msg [response]="getMessages(errorValue)" (actionClick)="takeActionPostTransaction($event)"></app-loader-msg>
+                        </div>
+                    </div>
+                  </li>
+              </ul>
+          </section>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="27px" height="32px" viewBox="0 0 27 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Flag-Critical</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="6.2-Issue-Details" transform="translate(-441.000000, -256.000000)" fill="#F2425F">
+            <g id="Group-16" transform="translate(213.000000, 156.000000)">
+                <g id="Group-33" transform="translate(91.000000, 75.000000)">
+                    <g id="Group-31" transform="translate(132.000000, 0.000000)">
+                        <g id="Flag-Critical" transform="translate(5.000000, 25.000000)">
+                            <path d="M1.88512,0 C0.902624,0 0.106368,0.796256 0.106368,1.777504 L0.106368,31.9999039 L3.661248,31.9999039 L3.6624992,1.777504 C3.6624992,0.796256 2.8662432,0 1.8849952,0 L1.88512,0 Z" id="Fill-1"></path>
+                            <path d="M16.10624,4 C12.994976,4 11.66112,1.777504 5.44,1.777504 L5.44,15.111264 C11.6624,15.111264 12.99488,17.33376 16.10624,17.33376 C19.66112,17.33376 18.773728,13.77888 26.77376,16 L26.77376,2.66624 C18.77376,0.444992 19.72512,4 16.10624,4 Z M16.10624,15.11136 C15.369984,15.11136 14.773728,14.513856 14.773728,13.7776 C14.773728,13.041344 15.371232,12.44384 16.10624,12.44384 C16.842496,12.44384 17.44,13.041344 17.44,13.7776 C17.44,14.513856 16.842496,15.11136 16.10624,15.11136 Z M16.994976,10.66624 L15.217472,10.66624 L14.77248,5.7776 L17.43872,5.7776 L16.994976,10.66624 Z" id="Fill-2"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

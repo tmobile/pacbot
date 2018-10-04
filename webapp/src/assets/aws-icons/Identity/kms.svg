@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="41px" height="49px" viewBox="0 0 41 49" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>KMS</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="Asset-Dashboard-AWS-Copy" transform="translate(-505.000000, -467.000000)" fill-rule="nonzero">
+            <g id="Group-66" transform="translate(191.000000, -128.000000)">
+                <g id="Group-48" transform="translate(20.000000, 0.000000)">
+                    <g id="Group-11" transform="translate(0.000000, 578.000000)">
+                        <g id="Group-56" transform="translate(256.000000, 0.000000)">
+                            <g id="Group-45" transform="translate(0.000000, 0.500000)">
+                                <g id="KMS" transform="translate(38.000000, 16.514648)">
+                                    <polygon id="Shape" fill="#7690C6" points="8.925 15.505 4.52083333 14.84 4.52083333 8.44083333 10.4708333 10.0916667"></polygon>
+                                    <polygon id="Shape" fill="#1D2126" points="9.22833333 16.3275 0.525 17.1091667 0.525 10.4358333 4.52083333 8.44083333"></polygon>
+                                    <polygon id="Shape" fill="#1D2126" points="31.9141667 15.505 36.3183333 14.84 36.3183333 8.44083333 30.3625 10.0916667"></polygon>
+                                    <polygon id="Shape" fill="#516A9C" points="31.605 16.3275 40.3083333 17.1091667 40.3083333 10.4358333 36.3183333 8.44083333"></polygon>
+                                    <polygon id="Shape" fill="#263555" points="12.0108333 4.69 7.455 13.9825 7.455 13.9825 0.525 16.0591667 0.525 21.9916667 8.55166667 39.2233333 20.4166667 48.51 28.6591667 38.2083333 28.6591667 9.3975 20.4166667 0.49"></polygon>
+                                    <polygon id="Shape" fill="#3C5079" points="40.3083333 21.9916667 40.3083333 16.0591667 33.3783333 13.9825 33.3783333 13.9825 28.8225 4.69 20.4166667 0.49 20.4166667 10.0916667 20.4166667 38.9083333 20.4166667 48.51 32.2816667 39.2233333"></polygon>
+                                </g>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Pacman 2.0 Login</title>
+<link href="css/custom.css" rel="stylesheet" type="text/css" media="all">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+</head>
+<body>
+	<div class="main">
+		<div class="login">
+			<div class="login-top">
+				<img src="imgs/p.png">
+			</div>
+			<h1 class="header-pac">Pacman 2.0</h1>
+			<div class="login-bottom">
+			<#if RequestParameters['error']??>
+				<div class="row col-md-12 col-xs-12 col-sm-12">
+					<div class="alert alert-danger">
+						An error occurred during the login process. Try again.
+					</div>
+				</div>
+			</#if>
+			<form class="form-horizontal" role="form" action="login" method="post">
+				<div class="control-group input-text-wrapper error"> 
+					<label class="control-label" for="username"> Your NT ID </label>
+					<input type="text" id="username" name="username" placeholder="Enter your NT ID" required="" autocomplete="off">
+				</div>	
+				<div class="control-group input-text-wrapper error password" style="margin-top: 20px;margin-bottom: 20px;"> 				
+					<label class="control-label" for="password"><b> Password </b></label>				
+					<input type="password" id="password" name="password" placeholder="Enter your password for NT ID" required="" autocomplete="off">	
+				</div>
+				<input type="hidden" id="csrf_token" name="${_csrf.parameterName}" value="${_csrf.token}" />					
+				<input type="submit" value="login">
+			</form>
+			</div>
+		</div>
+	</div>
+	<div class="footer-pac">
+		<p>© 2018 PacMan (Policy as Code Manager) is developed by the <a>Cloud Strategy & Development Team</a> | <a>Request Feature</a> | <a>Report Issue</a></p>
+	</div>
+</body>
+</html>

@@ -1,0 +1,36 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div *ngIf='selectedSlide != images.length' class='fixed first-time-container'>
+    <div class='flex flex-align-center flex-between first-time-head-wrap'>
+        <div class='first-time-head'>
+            Get to Know Your Application
+        </div>
+        <div> <img (click)='selectedSlide = images.length; checkForLast()' class='delete-icon' src='../../assets/png/delete.png'></div>
+    </div>
+    <div class='image-parent'>
+        <div class='image-container flex' [ngStyle]="{'transform': 'translateX(-' + selectedSlide * 100 +'%)'}">
+            <div class='each-image-container' *ngFor='let img of images; let i = index; '>
+                <img src='{{img}}'>
+            </div>
+        </div>
+    </div>
+    <div class='flex flex-align-center base-bar relative flex-center'>
+        <div class='paginator-parent flex flex-align-center'>
+            <div class='paginator-indicator' [class.active]='selectedSlide == j' *ngFor='let page of images; let j = index; ' (click)='selectedSlide = j;'></div>
+        </div>
+        <div class='next-page absolute' (click)='selectedSlide = selectedSlide + 1; checkForLast()'><span *ngIf='selectedSlide < images.length - 1'>next</span><span *ngIf='selectedSlide == images.length - 1' >close</span></div>
+    </div>
+</div>
+<app-overlay (click)='closeModal()' *ngIf='selectedSlide != images.length'></app-overlay>

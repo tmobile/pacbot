@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="48px" height="50px" viewBox="0 0 48 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>customergateway</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="customergateway" transform="translate(0.000000, 0.261719)" fill-rule="nonzero">
+            <circle id="Oval" fill="#263555" cx="23.734375" cy="25.4570312" r="23.2979687"></circle>
+            <circle id="Oval" fill="#3C5079" cx="23.734375" cy="23.5429688" r="23.2979687"></circle>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="21.8203125" y="9.6621875" width="3.828125" height="27.9146875"></rect>
+            <polygon id="Shape" fill="#FFFFFF" points="18.9645313 11.055625 23.734375 2.79453125 28.5042187 11.055625"></polygon>
+            <polygon id="Shape" fill="#FFFFFF" points="18.9645313 36.1834375 23.734375 44.4445312 28.5042187 36.1834375"></polygon>
+            <rect id="Rectangle-path" fill="#FFFFFF" x="9.77703125" y="21.7054688" width="27.9146875" height="3.828125"></rect>
+            <polygon id="Shape" fill="#FFFFFF" points="11.1704688 28.3970313 2.909375 23.6195313 11.1704688 18.8496875"></polygon>
+            <polygon id="Shape" fill="#FFFFFF" points="36.2982812 28.3970313 44.559375 23.6195313 36.2982812 18.8496875"></polygon>
+        </g>
+    </g>
+</svg>

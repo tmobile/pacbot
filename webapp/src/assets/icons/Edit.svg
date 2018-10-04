@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="18px" height="18px" viewBox="0 0 18 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51 (57462) - http://www.bohemiancoding.com/sketch -->
+    <title>Edit</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M0,15.25 L0,19 L3.75,19 L14.81,7.94 L11.06,4.19 L0,15.25 Z M17.71,5.04 C18.1,4.65 18.1,4.02 17.71,3.63 L15.37,1.29 C14.98,0.9 14.35,0.9 13.96,1.29 L12.13,3.12 L15.88,6.87 L17.71,5.04 Z" id="path-1"></path>
+    </defs>
+    <g id="V2---Infographic" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Vuln_Add-Note-Copy" transform="translate(-631.000000, -285.000000)">
+            <g id="ic_edit_24px" transform="translate(631.000000, 284.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="Edit" fill="#E20074" fill-rule="nonzero" xlink:href="#path-1"></use>
+            </g>
+        </g>
+    </g>
+</svg>

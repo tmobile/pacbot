@@ -1,0 +1,43 @@
+<div class="flex flex-col flex-grow">
+<div class="sub-head flex flex-col no-shrink">
+        <app-title-burger-head  [subHeadTitle]="'Policy Violations'" 
+        (rowText)='emitRowText($event)' [popRows]='popRows' 
+        [showSearch]='true' (searchTxt)='searchCalled($event)' 
+        (enterPressed)='triggerSearch()'>
+        </app-title-burger-head>
+    </div>
+<ag-grid-angular class='flex flex-col ag-grid-angular' #agGrid 
+class="ag-theme-material full-width table-wrap"
+    [rowData]="rowData" 
+    [columnDefs]="columnDefs"
+    [gridOptions]="gridOptions" 
+    [enableRangeSelection]="true" 
+    [enableFilter]='true' 
+    [rowGroupPanelShow]="'never'" 
+    (selectionChanged)='onRowSelected()' 
+    (filterChanged)='onFilterChanged()' 
+    (gridReady)="onGridReady($event)" 
+    rowHeight='36' 
+    enableColResize ="true" 
+    enableSorting ="true" 
+    animateRows='true' 
+    suppressFieldDotNotation='true' 
+    rowSelection='multiple' 
+    enableCsvExport='true'
+    rowDeselection='true' 
+    enableMultiRangeSelection='true' 
+    suppressNoRowsOverlay='true' 
+    suppressRowClickSelection='true' 
+    pagination='false' 
+    paginationAutoPageSize='false'
+    >
+</ag-grid-angular>
+<div  class='data-table-paginator-wrap flex flex-end flex-align-center'>
+    <div class='paginator-txt'> {{firstPaginator}}<span >-{{lastPaginator}}</span> of <span class='total-rows'>{{totalRows}}</span>
+    </div>
+    <div class='paginator-arrow' (click)='prevPage()'><img [class.fade]='currentPointer==0' src='../assets/icons/back-arrow.svg'>
+    </div>
+    <div class='paginator-arrow rotate180' (click)='nextPage()'><img [class.fade]='lastPaginator==totalRows' src='../assets/icons/back-arrow.svg'>
+    </div>
+</div>
+</div>

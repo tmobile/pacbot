@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="63px" height="136px" viewBox="0 0 63 136" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Rocket</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M19.2111428,72.4848761 L34.4765772,57.2194418 L48.1237676,54.5223685 C65.4929191,30.8960072 98.720861,19.0828265 110.749808,19.0828265 C110.749808,31.1117731 98.9366269,64.339715 75.3102656,81.7088665 L72.6131924,95.356057 L57.347758,110.621491 L53.517914,91.5801545 C45.9121676,91.5801545 45.9121676,91.5801545 42.0823236,87.7503105 C38.2524797,83.9204665 38.2524797,83.9204665 38.2524797,76.3147201 L19.2111428,72.4848761 L19.2111428,72.4848761 Z M34.4765772,87.7503105 L42.0823236,95.356057 L27.7338941,109.758428 L20.0742062,109.758428 L20.0742062,102.09874 L34.4765772,87.7503105 L34.4765772,87.7503105 Z M26.8168892,80.144564 L33.5056308,81.0615689 L20.2360306,94.2772277 L20.2360306,86.6175398 L26.8168892,80.144564 L26.8168892,80.144564 Z M48.7710652,96.3270033 L49.6880701,103.015745 L43.2150944,109.596604 L35.5554064,109.596604 L48.7710652,96.3270033 L48.7710652,96.3270033 Z M74.1774948,47.5639197 C69.7088376,47.5639197 66.0862752,51.1864821 66.0862752,55.6551393 C66.0862752,60.1237965 69.7088376,63.7463589 74.1774948,63.7463589 C78.646152,63.7463589 82.2687145,60.1237965 82.2687145,55.6551393 C82.2687145,51.1864821 78.646152,47.5639197 74.1774948,47.5639197 Z" id="path-1"></path>
+        <filter x="-6.6%" y="-5.5%" width="115.3%" height="115.3%" filterUnits="objectBoundingBox" id="filter-3">
+            <feOffset dx="1" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0.186383929   0 0 0 0 0.186383929   0 0 0 0 0.186383929  0 0 0 0.5 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Statistics-Dashboard-v3.3" transform="translate(-1012.000000, -186.000000)">
+            <g id="Rocket" transform="translate(976.500000, 188.500000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g fill-rule="nonzero" transform="translate(64.980475, 64.852159) rotate(-45.000000) translate(-64.980475, -64.852159) ">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-1"></use>
+                    <use fill="#27B5A4" fill-rule="evenodd" xlink:href="#path-1"></use>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

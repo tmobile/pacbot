@@ -1,0 +1,189 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.tools-outer-wrapper {
+    width: 100%;
+    max-height: 100%;
+    padding: 1em 2em;
+    overflow: hidden;
+}
+
+.tools-outer-wrapper:hover {
+    overflow: auto; overflow: overlay;
+}
+
+.tools-header {
+    font-size: 2em;
+    color: #000000;
+    padding: .5em 0 1em 0;
+    text-transform: capitalize;
+}
+
+.each-flex-layout {
+    flex: 1;
+    border-radius: 4px;
+    height: calc(100vh - 16em);
+    width: 33.33%;
+    background: inherit;
+    margin: 0 5px;
+}
+
+.each-flex-layout:first-child {
+    margin-left: 0;
+}
+
+.each-flex-layout:last-child {
+    margin-right: 0;
+}
+
+.each-flex-child {
+    background: #4d4d4d;
+    padding: 1.5em 2em;
+    border-radius: 4px;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    flex-grow: 1;
+    background-origin: content-box;
+    background-position: 100% 100%;
+    background-size: 7em;
+    transition: 0.3s ease;
+    margin: 5px 0;
+}
+
+.each-flex-child:hover {
+    overflow: auto; overflow: overlay;
+}
+
+.each-flex-child:hover {
+    box-shadow: 0px 1px 6px 1px rgba(0, 0, 0, 0.2);
+    animation: 0.8s bounce ease;
+}
+
+.periscope-height {
+    background-image: url("../../../../../assets/images/periscope.svg");
+    height: 40%;
+    background-color: #c9ebe4;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+}
+
+.blackbox-height {
+    height: 100%;
+    background-image: url("../../../../../assets/images/blackbox.svg");
+    background-color: #d0d2d5;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+}
+
+.vault-height {
+    height: 60%;
+    background-image: url("../../../../../assets/images/vault.svg");
+    background-color: #c9ebe4;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+}
+
+.self-service-height {
+    height: 40%;
+    background-image: url("../../../../../assets/images/self-service.svg");
+    background-color: #ffe09f;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+}
+
+.delta-height {
+    margin: 0;
+    height: 100%;
+    background-image: url("../../../../../assets/images/delta.svg");
+    background-color: #d9def5;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+}
+
+.pacbot-height {
+    height: 100%;
+    background-image: url("../../../../../assets/images/PacBot.svg");
+    background-color: #d9def5;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+}
+
+.pacbot-height .each-flex-content {
+    padding-right: 40%;
+}
+
+.delta-height .each-flex-content {
+    padding-right: 40%;
+}
+
+.each-flex-header {
+    font-size: 3em;
+    color: #000000;
+    padding-bottom: .1em;
+    line-height: 1.2;
+}
+
+.each-flex-content {
+    font-size: 1.1em;
+    color: #000000;
+    line-height: 1.4;
+    padding: 1.5em 0 1em;
+    padding-right: 25%;
+}
+
+.link-txt {
+    font-size: 1.3em;
+    padding: .8em 0;
+    display: inline-block;
+    font-weight: 600;
+    font-family: ex2-medium;
+}
+
+.link-txt::after {
+    content: '';
+    clear: both;
+    width: 0;
+    height: 0;
+    position: absolute;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+    border: 5px solid;
+    border-color: transparent transparent transparent #e20074;
+    top: 50%;
+    right: -1.3em;
+    -webkit-transform: translate(0, -40%);
+    transform: translate(0px, -3px) scaleY(0.8);
+}
+
+a {
+    transition: 0.3s ease;
+}
+
+a:hover {
+    letter-spacing: 0.3px;
+}
+
+@keyframes bounce {
+    0%,
+    50%,
+    100% {
+        background-position: 100% 100%;
+    }
+
+    25%,
+    75% {
+        background-position: 100% 99%;
+    }
+}
+
+/* css for edge browser */
+@supports (-ms-ime-align: auto) { 
+    .each-flex-child {
+        overflow: auto;
+    }
+  }

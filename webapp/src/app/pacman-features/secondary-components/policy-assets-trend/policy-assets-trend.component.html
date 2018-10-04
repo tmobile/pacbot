@@ -1,0 +1,27 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div #policyAssetsTrendContainer class="issue-trend-wrapper">
+  <div class='multiline-brush-zoom-container'>
+      <div class="sub-header">
+          <app-title-burger-head [subHeadTitle]="'Trend of total and compliant assets'"></app-title-burger-head>
+      </div>
+      <div *ngIf="dataLoaded" id="policyAssetsTrend">
+        <app-multiline-brush-zoom (error)="setError($event)" [id]="'policyAssetsTrend'"  *ngIf="dataLoaded" [showLegend]="showGraphLegend" [yAxisLabel]="yAxisLabel" [graphWidth]="graphWidth" [graphLinesData]="graphData"></app-multiline-brush-zoom>
+      </div>
+      
+      <div class="loader" *ngIf='!dataLoaded && !error'></div>
+      <app-error-message *ngIf='error' [selectedValue]="errorMessage"></app-error-message>
+  </div>
+</div>

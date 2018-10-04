@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Email Unsubscribe</title>
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=PT+Sans+Narrow" /> 
+	<link href="css/custom.css" rel="stylesheet" type="text/css" media="all" >
+	<link rel="icon" type="image/x-icon" href="imgs/favicon.png">
+</head>
+<body class="cover" style="font-family: 'PT Sans Narrow', sans-serif !important;">
+	<div class="main">
+		<div class="login">
+			<div class="subscribe-top">
+				<img src="imgs/tick.png">
+			</div>
+			<input type="hidden" name="email" id="email" value="Test">
+			<h1 class="header-pac" style="margin-top: 0px !important;"><b>${model.message}</b></h1>
+			<h2 class="header-pac" style="font-size: 1.2rem;">You have successfully unsubscribed from email communications.</h2>
+			<h2 class="header-pac" style="font-size: 1.2rem;margin-bottom: 0px !important;">If you did this in error, you may re-subscribe by clicking the button below.</h2>
+			<div class="login-bottom">
+			
+				<a href="subscribe?email=${email}" target="_self" class="btn-pac btn-pac-subscribe">Subscribe</a>
+			</div>
+		</div>
+	</div>
+	<div class="footer-pac">
+		<p>© 2018 PacMan (Policy as Code Manager) is developed by the <a>Cloud Strategy & Development Team</a> | <a>Request Feature</a> | <a>Report Issue</a></p>
+	</div>
+</body>
+</html>

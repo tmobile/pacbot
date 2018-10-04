@@ -1,0 +1,32 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <section class="patching-summary-wrapper">
+	<div class="repeating-tiles flex flex-wrap">
+		<ng-container *ngFor="let data of finalData.response; let i = index ">
+			<div class="each-tile" *ngIf='data.value || data.value == 0'>
+				<div class="wrapper" (click)="data.value > 0 && instructParentToNavigate(data)" [ngStyle]="{'cursor': data.value > 0 && data.styling.cursor }" >
+					<div *ngIf='textValue == undefined' class="value nowrap-ellipsis" [style.border-bottom-color]="colors[i]" [style.color]="colors[i]" title="{{data.value | number}}" [ngClass]="{'link-text underline-link-num': data.value > 0 && data.link}">{{data.value | number}}
+						<span class="percent" *ngIf='percent[i]'>%</span>
+					</div>
+					<div *ngIf='textValue == true && (data.value || data.value == 0)' class="value nowrap-ellipsis" [class.small]="text[i] == true" [class.flexClass]="data.image" [style.color]="colors[i]" title="{{data.value}}">
+						<span class="image" *ngIf='data.image'><img class="image-wrapper" src="{{data.image}}"></span><span class='nowrap-ellipsis'>{{data.value}}</span><span class="percent" *ngIf='percent[i]'>%</span><span class="percent" *ngIf='outOf[i]'>/10</span>
+					</div>
+					<div *ngIf='data.value || data.value == 0' class="text" title="{{data.text}}">{{data.text}}
+					</div>
+				</div>
+			</div>
+		</ng-container>
+	</div>
+</section>

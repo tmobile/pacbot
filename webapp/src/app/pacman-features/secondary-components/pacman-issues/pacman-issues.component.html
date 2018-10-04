@@ -1,0 +1,68 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="pacman-issues-wrapper">
+    <header class="header">
+        <app-title-burger-head [subHeadTitle]="'Policy Violations'" [arrow]="'true'" [routeTo]="routeTo" [pageLevel]="pageLevel"></app-title-burger-head>
+    </header>
+    <div class='flex flex-align-center article-parent'>
+        <article class="issue_values clearfix" *ngIf='showdata'>
+            <div class="count_value">
+                <div class="all_values clearfix">
+                    <div class="enclosure flex flex-align-baseline flex-wrap">
+                        <div class="left_count anim-title" [class.link-text]='pacmanIssues.totalIssues' [class.underline-link-num]='pacmanIssues.totalIssues' [class.no-event]='!pacmanIssues.totalIssues' (click)="navigateTo()" [class.after-load]='showdata' id="countval">
+                            {{pacmanIssues.totalIssues}}
+                        </div>
+                        <div class="enclosure_within flex flex-align-center">
+                            <div class="total-issues-text anim-title-text" [class.no-event]='!pacmanIssues.totalIssues' (click)="navigateTo()"  [class.after-load]='showdata'>
+                                Total Violations
+                            </div>
+                            <div class="margin_line">
+                            </div>
+                            <div class="enclosure_within_values flex flex-align-baseline" (click)="navigateToCritical()" [class.no-event]='!pacmanIssues.severity[0].critical'>
+                                <div class="right_count anim-title "  [class.link-text]='pacmanIssues.severity[0].critical' [class.underline-link-num]='pacmanIssues.severity[0].critical' [class.after-load]='showdata'>
+                                    {{pacmanIssues.severity[0].critical}}
+                                </div>
+                                <div class="critical-issues-text anim-title-text" [class.after-load]='showdata'>
+                                    Critical
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="loading_bar flex" (click)="navigateTo()" [class.no-event]='!pacmanIssues.totalIssues'>
+                    <div class="total_issues_bar" [ngStyle]="{'width': 'calc(100% - ' + widthValue +  '%)'}" [class.rightBorder]="borderSet" [class.transition_block]="transit"></div>
+                    <div class="margin_bar" *ngIf='notloadedfull'></div>
+                </div>
+                <div class="enclosure-issue flex flex-align-center flex-wrap">
+                    <div [class.no-event]='!cat.value' class='flex flex-align-center' *ngFor='let cat of pacmanCategories; let i = index; '>
+                        <div class="left_count_issue anim-title-text"  [class.after-load]='showdata'>
+                        {{cat.displayName}}
+                        </div>
+                        <div class="total-issues-text-issue anim-title" [class.link-text]='cat.value' [class.underline-link-num]='cat.value' (click)="navigateToKey(cat.key)" [class.after-load]='showdata'> 
+                            {{cat.value}}%
+                        </div>
+                        <div *ngIf='i!= pacmanCategories.length - 1' class="margin_line_issue"></div>
+                    </div>
+                </div>
+            </div>
+        </article>
+        <article class='center error_handling' *ngIf='error'>
+            <div class="error_msg">
+                <app-error-message *ngIf='seekdata == true' [selectedValue]="errorMessage"></app-error-message>
+            </div>
+        </article>
+        <div class="loader" *ngIf='!loaded'></div>
+    </div>
+</div>

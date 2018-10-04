@@ -1,0 +1,45 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="view-all-resources-wrapper flex flex-col">
+    <div class='flex flex-col relative'>
+        <div class="resources-header">
+            <h1>Your AWS Apps</h1>
+        </div>
+        <div class="resource-categories">
+            <ul class="flex flex-flow-wrap">
+                <li (click)="filterByCategory(category)" [ngClass]="{'active' : activeFilterCategory.name == category.name}" *ngFor="let category of categories; let i = index" class="flex">
+                    <div class="category-name">{{category.name}}</div>
+                </li>
+            </ul>
+        </div>
+        <a (click)="closeViewAllModal()" class="close-overlay">
+            <div>
+                <img class="close-icon" src="../../assets/png/delete.png">
+            </div>
+        </a>
+        <div class="resource-tiles-container">
+            <ul class="flex flex-flow-wrap flex-start append-content">
+                <li *ngFor="let resource of filteredResources; let i = index" class="flex">
+                    <app-aws-app-tile [i]=[i] class='full-width' [active]="i == activeTileIndex" [awsResource]="resource" [awsResourceName]="resource.type" [resourceInstances]="resource.count" (awsResourceSelected)="awsTileClicked($event, i)"></app-aws-app-tile>
+                </li>
+            </ul>
+            <div class="no-content" *ngIf="filteredResources.length == 0">No Items Available In This Category</div>
+        </div>
+        <a *ngIf="filteredResources.length !== 0" (click)='saveSelectedResource()' class="save-container flex flex-row-reverse">
+            <app-button> SAVE </app-button>
+        </a>
+    </div>
+</div>
+<app-overlay (click)="closeViewAllModal()"></app-overlay>

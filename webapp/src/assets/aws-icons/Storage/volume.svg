@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="35px" height="50px" viewBox="0 0 35 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>Volume</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="Asset-Dashboard-AWS-Copy" transform="translate(-635.000000, -210.000000)" fill-rule="nonzero">
+            <g id="Volume" transform="translate(634.681818, 210.692308)">
+                <polygon id="Shape" fill="#263555" points="34.3965152 4.76636364 34.3965152 6.615 0.898333333 6.615 0.898333333 4.76636364 17.6474242 0.245"></polygon>
+                <rect id="Rectangle-path" fill="#263555" x="0.445454545" y="10.6983333" width="34.7380303" height="38.3016667"></rect>
+                <rect id="Rectangle-path" fill="#3C5079" x="0.445454545" y="9.0130303" width="34.7380303" height="38.1383333"></rect>
+                <polygon id="Shape" fill="#3C5079" points="29.6672727 0 5.99136364 0 0.898333333 4.76636364 1.26212121 4.76636364 34.3965152 4.76636364"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

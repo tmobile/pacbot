@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html style="overflow-y: overlay !important;">
+<head>
+  <meta charset="UTF-8">
+  <title>PacMan API</title>
+  <link rel="icon" href="images/favicon.ico">
+  <link rel="icon" type="image/png" href="images/favicon-32x32.png" sizes="32x32"/>
+  <link rel="icon" type="image/png" href="images/favicon-16x16.png" sizes="16x16"/>
+  <link href='webjars/springfox-swagger-ui/css/typography.css' media='screen' rel='stylesheet' type='text/css'/>
+  <link href='webjars/springfox-swagger-ui/css/reset.css' media='screen' rel='stylesheet' type='text/css'/>
+  <link href='webjars/springfox-swagger-ui/css/screen.css' media='screen' rel='stylesheet' type='text/css'/>
+  <link href='webjars/springfox-swagger-ui/css/reset.css' media='print' rel='stylesheet' type='text/css'/>
+  <link href='webjars/springfox-swagger-ui/css/print.css' media='print' rel='stylesheet' type='text/css'/>
+  <link href='css/styles.css' rel='stylesheet' type='text/css'/>
+  <script src='webjars/springfox-swagger-ui/lib/object-assign-pollyfill.js' type='text/javascript'></script>
+  <script src='webjars/springfox-swagger-ui/lib/jquery-1.8.0.min.js' type='text/javascript'></script>
+  <script src='webjars/springfox-swagger-ui/lib/jquery.slideto.min.js' type='text/javascript'></script>
+  <script src='webjars/springfox-swagger-ui/lib/jquery.wiggle.min.js' type='text/javascript'></script>
+  <script src='webjars/springfox-swagger-ui/lib/jquery.ba-bbq.min.js' type='text/javascript'></script>
+  <script src='webjars/springfox-swagger-ui/lib/handlebars-4.0.5.js' type='text/javascript'></script>
+  <script src='webjars/springfox-swagger-ui/lib/lodash.min.js' type='text/javascript'></script>
+  <script src='webjars/springfox-swagger-ui/lib/backbone-min.js' type='text/javascript'></script>
+  <script src='js/swagger-ui.js' type='text/javascript'></script>
+  <script src='webjars/springfox-swagger-ui/lib/highlight.9.1.0.pack.js' type='text/javascript'></script>
+  <script src='webjars/springfox-swagger-ui/lib/highlight.9.1.0.pack_extended.js' type='text/javascript'></script>
+  <script src='webjars/springfox-swagger-ui/lib/jsoneditor.min.js' type='text/javascript'></script>
+  <script src='webjars/springfox-swagger-ui/lib/marked.js' type='text/javascript'></script>
+  <script src='js/swagger-oauth.js' type='text/javascript'></script>
+  <script src='js/swagger.js' type='text/javascript'></script>
+</head>
+
+<body class="swagger-section">
+<div id='header'>
+  <div class="swagger-ui-wrap">
+    <a id="logo" href="#" onclick="window.location.reload(true);"><img class="logo__img" height="30" width="30" src="images/pacman_logo.svg" /><span class="logo__title">PacMan API</span></a>
+    <form id='api_selector'>
+      <div class='input'>
+        <select id="select_baseUrl" name="select_baseUrl"/>
+      </div>
+      <div class='input'><input placeholder="http://example.com/api" id="input_baseUrl" name="baseUrl" type="text"/></div>
+      <div id='auth_container'></div>
+      <div class='input'><a id="explore" class="header__btn" href="#" data-sw-translate>Reload</a></div>
+    </form>
+  </div>
+</div>
+<div id="message-bar" class="swagger-ui-wrap" data-sw-translate>&nbsp;
+	<div class="pacman-api-loading">
+		<div class="pacman-loading">
+		    <div class="loading-bar"></div>
+		    <div class="loading-bar"></div>
+		    <div class="loading-bar"></div>
+		    <div class="loading-bar"></div>
+		    <div class="loading-bar"></div>
+		    <div class="loading-bar"></div>
+		</div>
+		<div class="title">
+	        Please Wait...
+	    </div>
+	    <div class="pacman-alert-message">
+            <span class="highlight-pink"><span id="application-name"></span></span> is been loading...
+        </div>
+    </div>
+    <div class="pacman-alert" id="pacman-api-loading-failed">
+        <!-- <div class="sa-icon sa-error animateErrorIcon"><span class="sa-x-mark animateXMark"><span class="sa-line sa-left"></span><span class="sa-line sa-right"></span></span></div><div class="pacman-alert-title">Loading Failed</div><div class="pacman-alert-message">Failed in loading <span class="highlight-pink">${appName}</span> !!!</div> -->
+    </div>
+</div>
+<div id="swagger-ui-container" class="swagger-ui-wrap"></div>
+</body>
+</html>

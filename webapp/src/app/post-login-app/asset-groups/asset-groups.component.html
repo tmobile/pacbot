@@ -1,0 +1,69 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="overlay-vertical-center" (click)='$event.stopPropagation()'>
+    <div class="overlay-innerwrap">
+        <div class="event-container">
+            <article class="header-asset flex flex-between flex-align-center">
+                <div class="header-title">
+                    Asset Groups
+                </div>
+                <a *ngIf="!hideCloseButton" (click)="instructParentToCloseAssetGroup()">
+                    <div class="delete-title">
+                        <img class="delete-icon" src="../../assets/png/delete.png">
+                    </div>
+                </a>
+            </article>
+            <article class="sub-header-asset flex flex-between flex-align-center">
+                <div class='asset-tabs-outer-wrap'>
+                    <app-asset-group-tabs *ngIf='assetTabName' (updateTabs)='updateTab($event)' [(selectedTabName)]='selectedTabName' [assetTabName]='assetTabName'></app-asset-group-tabs>
+                </div>
+                <div class="search">
+                    <app-asset-group-search (searchQuery)='getSearch($event)'></app-asset-group-search>
+                </div>
+            </article>
+            <article class="asset-tile-container">
+                <div class="asset-tiles-wrapper flex flex-between">
+                    <div *ngIf='showError' class='error-msg absolute'>Unable to fetch asset groups!</div>
+                    <section class="asset-tile-content flex flex-wrap" *ngIf='loaded'>
+                        <div class="container relative" [class.left-most]='i%3 == 0' [hidden]="!((selectedTabName && selectedTabName.toLowerCase())==(assetTabName[0] && assetTabName[0].toLowerCase()) || (selectedTabName && selectedTabName.toLowerCase())==(assettile.type && assettile.type.toLowerCase()) || checkRecentlyViewed(assettile) ) " [class.active]='thisAssetTile' [class.dark-bg]='thisAssetTile ==  assettile.name' [class.currently-selected]='selectedGroup==assettile.name' *ngFor="let assettile of ( assetTiles | searchFilter: returnedSearch  ) | orderBy: { property: 'displayname', direction: 1}  ; let i = index; " (click)='assetTileClicked(assettile.name, assettile); getCurrentAssetInfo(assettile)'>
+                            <div class="name-title">{{assettile.displayname}}</div>
+                            <div *ngIf='assettile.description' class="description line-clamp">{{assettile.description}}</div>
+                            <div *ngIf='!assettile.description' class="description line-clamp">Select this asset group to fetch data under this asset group</div>
+                            <div class='absolute select-tile' (click)='$event.stopPropagation(); getCurrentAssetInfo(assettile); selectAsset(assettile); ' ><span *ngIf='selectedGroup!=assettile.name'>Select</span><span *ngIf='selectedGroup==assettile.name'>Selected</span></div>
+                            <div *ngIf='assettile.domains && assettile.domains.length && selectedGroup == assettile.name ' [class.hide]='true' tabindex="1" (blur)='assettile.showDomainInfo = false' class='absolute domain-icon flex flex-align-center'>
+                                <div class='domain-number'>{{assettile.domains.length}}</div>
+                                <div (click)='assettile.showDomainInfo=!assettile.showDomainInfo'>
+                                    <img *ngIf='thisAssetTile !=  assettile.name' src='../assets/icons/earth-grid-symbol-grey.svg'>
+                                    <img *ngIf='thisAssetTile ==  assettile.name' src='../assets/icons/earth-grid-symbol-blue.svg'>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="asset-details-content" *ngIf='thisAssetTile && loaded && !showError'>
+                        <div class="transformState" [class.transformBack]="thisAssetTile">
+                            <app-asset-group-details [assetDetailsState]='assetDetailsState' [detailsVal]='assetDetailTiles' (navigatePage)="navigatePage($event,thisAssetTile)"></app-asset-group-details>
+                        </div>
+                        <a>
+                            <div class='center side-btn-wrap'>
+                                <app-button (click)='sendAssetName = thisAssetTile; setDefault();'> SET AS MY DEFAULT </app-button>
+                            </div>
+                        </a>
+                    </section>
+                </div>
+                <div class="loader" *ngIf='!loaded'></div>
+            </article>
+        </div>
+    </div>
+</div>

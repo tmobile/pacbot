@@ -1,0 +1,66 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+ <div *ngIf="(!showloaderCpu || !showloaderNetwork || !showloaderDisk) || (graphData || networkDatamassaged || diskDatamassaged)" class="utilization-wrapper">
+	<header class="header">
+        <app-title-burger-head [subHeadTitle]="'Utilization'"></app-title-burger-head>
+	</header>
+	<div class='utilization-graph-content'>
+		<div class="common-wrapper" id="cpu" #widgetCpu>
+			<div *ngIf="graphData && !showerrorCpu" class='common-graph-container'>
+				<app-multiline-chart [colorSetLegends]="'true'" [yCoordinates]="4" [targetType]="targetType" [hover]="true" [colorSet]="colorSetCpu" [graphWidth]="widgetWidth" [graphHeight]="widgetHeight" [xAxisValues]="false" [smoothEdge]="false" [yAxisLabel]="'Cpu'" [axisUnit]="'%'" [dataResponse]="graphData" [verticalLines]="false" [multipleData]="false" [idUnique]="'cpu'"></app-multiline-chart>
+				<ul class="flex flex-row flex-center">
+					<li *ngFor="let line of graphData; let i = index;" class="flex flex-row flex-align-center">
+						<div class="legend-color" [ngStyle]="{'background-color': colorSetCpu[i]}"></div>
+						<div class="flex flex-col flex-center legend-text capitalize">{{line.values[0].legends[i]}}</div>
+					</li>
+				</ul>
+				<!--<div class="error_message">
+						<app-error-message *ngIf='showerrorCpu == true' [selectedValue]="errorMessage"></app-error-message>
+				</div>-->
+				<div class="loader" *ngIf="!showloaderCpu"></div>
+			</div>
+	    </div>
+	    <div class="common-wrapper" id="network" #widgetNet>
+			<div *ngIf="networkDatamassaged && !showerrorNetwork" class='common-graph-container'>
+				<app-multiline-chart [colorSetLegends]="'true'" [yCoordinates]="4" [targetType]="targetType" [hover]="true" [colorSet]="colorSetNetwork" [graphWidth]="widgetWidthNet" [graphHeight]="widgetHeightNet" [xAxisValues]="false" [smoothEdge]="false" [yAxisLabel]="'Network'" [axisUnit]="unitNetwork" [dataResponse]="networkDatamassaged" [multipleData]="true" [verticalLines]="false" [idUnique]="'network'"></app-multiline-chart>
+				<ul class="flex flex-row flex-center">
+					<li *ngFor="let line of networkDatamassaged; let i = index;" class="flex flex-row flex-align-center">
+						<div class="legend-color" [ngStyle]="{'background-color': colorSetNetwork[i]}"></div>
+						<div class="flex flex-col flex-center legend-text capitalize">{{line.values[0].legends[i]}}</div>
+					</li>
+				</ul>
+				<!--<div class="error_message">
+						<app-error-message *ngIf='showerrorNetwork == true' [selectedValue]="errorMessage"></app-error-message>
+				</div>-->
+				<div class="loader" *ngIf="!showloaderNetwork"></div>
+			</div>
+	    </div>
+	    <div class="common-wrapper" id="disk" #widgetDisk>
+			<div *ngIf='diskDatamassaged && !showerrorDisk' class='common-graph-container'>
+				<app-multiline-chart [colorSetLegends]="'true'" [yCoordinates]="4" [targetType]="targetType" [hover]="true" [colorSet]="colorSetDisk" [graphWidth]="widgetWidthDisk" [graphHeight]="widgetHeightDisk" [xAxisValues]="false" [smoothEdge]="false" [yAxisLabel]="'Disk'" [axisUnit]="unitDisk" [dataResponse]="diskDatamassaged" [verticalLines]="false" [multipleData]="true" [idUnique]="'disk'"></app-multiline-chart>
+				<ul class="flex flex-row flex-center">
+					<li *ngFor="let line of diskDatamassaged; let i = index;" class="flex flex-row flex-align-center">
+						<div class="legend-color" [ngStyle]="{'background-color': colorSetDisk[i]}"></div>
+						<div class="flex flex-col flex-center legend-text capitalize">{{line.values[0].legends[i]}}</div>
+					</li>
+				</ul>
+				<!--<div class="error_message">
+						<app-error-message *ngIf='showerrorDisk == true' [selectedValue]="errorMessage"></app-error-message>
+				</div>-->
+				<div class="loader" *ngIf="!showloaderDisk"></div>
+			</div>
+	    </div>
+	</div>
+	<div class="loader" *ngIf="!showloaderCpu || !showloaderNetwork || !showloaderDisk"></div>
+</div>

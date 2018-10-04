@@ -1,0 +1,53 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="issue-trend-wrapper flex flex-col">
+	<div class="sub-head relative">
+        <app-title-burger-head [subHeadTitle]="'Patching Snapshot by Executive Sponsors'"></app-title-burger-head>
+        <img [class.hide]='errorValue<1' (click)='downloadCsv()' class='ag-download' src='../assets/icons/Download-active.svg'>
+  </div>
+  <div class="full-width relative overflow-hidden flex-grow" (window:resize)='onresize()'>
+    	<ag-grid-angular [class.hide]='errorValue<1' #agGrid class="ag-theme-material full-width table-wrap"
+                      [gridOptions]="gridOptions" 
+                      [getContextMenuItems]="getContextMenuItems"
+                      [enableRangeSelection]="true" 
+                      [enableFilter]='true'
+                      [allowContextMenuWithControlKey]="true"
+                      [rowGroupPanelShow]="'never'"
+                      (gridReady)="onGridReady($event)"
+                      rowHeight='36'
+                      enableColResize='true'
+                      enableSorting='true'
+                      animateRows='true'
+                      suppressFieldDotNotation='true'
+                      toolPanelSuppressRowGroups='true'
+                      toolPanelSuppressValues='true'
+                      toolPanelSuppressPivots='true'
+                      toolPanelSuppressPivotMode='true'
+                      rowSelection='multiple'
+                      rowDeselection='true'
+                      enableMultiRangeSelection='true'
+                      enableCsvExport='true'
+                      suppressNoRowsOverlay='true' 
+                      suppressRowClickSelection='true'
+                      pagination='true'
+                      paginationAutoPageSize='true'
+                    >
+      </ag-grid-angular>
+      <div class='loader' *ngIf='errorValue==0'></div>      
+      <div class="error-msg-block center" *ngIf='errorValue == -1'>
+          <app-error-message *ngIf='errorValue == -1' [selectedValue]="errorMessage"></app-error-message>
+      </div>
+  </div>
+</div>

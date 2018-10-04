@@ -1,0 +1,146 @@
+{
+    "execution_order": ["baserole", "refresh", "baserole","security","s3",
+                            "es", "rds", "redshift","batch", "oss-api", "lambda-submit",
+                            "build-ui", "s3-upload", "oss-ui", "lambda-rule" ],
+    "execution_order_test": ["baserole", "refresh", "baserole","security","s3","batch","lambda-rule",
+        "oss-api","lambda-submit"],
+    "resources" :{
+        "baserole" : {
+            "client_accountid":"_get_client_accountid","check":1,"baseaccountrole":"_get_base_account_role_name",
+            "clientaccountrole": "_get_client_account_role_name","pacecsrole": "_get_pacecs_role_name",
+            "accountid":"_get_base_accountid","lambda_role":"_get_lambda_role_name",
+            "pacecsrolepolicy":"_get_pac_ecs_role_policy",
+            "cidr_block-ip" : "_get_cidr", "vpc-id": "_get_vpcid",
+            "pacrunbatch" : "_get_pacrunbatch_role_name",
+            "ecstaskexecution_role" :"_get_ecstaskexecution_role_name"
+        },
+        "clientrole" : {
+            "accountid":"_get_base_accountid","client_accountid":"_get_client_accountid",
+            "base_accountrole":"_get_base_account_role_name","client_accountrole":"_get_client_account_role_name",
+            "client_assumerole":"_get_client_assume_role"
+        },
+        "security" : {
+            "cidr_block-ip" : "_get_cidr", "vpc-id": "_get_vpcid"
+        },
+        "s3" : {
+            "bucketname":"_get_s3_bucket_name", "accountid": "_get_base_accountid",
+            "filenames":"_get_upload_file_names","folder_names": "_get_folder_names"
+        },
+        "s3-upload": {
+            "bucketname":"_get_s3_bucket_name","accountid": "_get_base_accountid",
+            "filenames":"_cluster_upload_file"
+        },
+        "rds" : {
+            "user_name": "_get_rds_db_user_name", "user_pwd" : "_get_rds_db_password", "snapshotname": "_get_rds_snapshotname",
+            "rdsdatabase" : "_get_rds_database", "rdsdbversion": "_get_rds_db_version", "rdsinstance": "_get_rds_instance",
+            "rdsname": "_get_rds_name", "cidr_block-ip" : "_get_cidr",
+            "vpc-id" : "_get_vpcid", "subnet_list" : "_get_subnet","option_group_name" : "_get_rds_subnet_name",
+            "parameter_group_name" : "_get_rds_param_name", "subnet_group_name" : "_get_rds_subnet_name",
+            "engine_name" : "_get_rds_engine_name", "engine_version":"_get_rds_engine_version",
+            "family_name": "_get_rds_family_name", "identifier" : "_get_rds_identifier", "pacman_sgid" : "_get_security_id"
+        },
+        "es" : {
+            "domain_name" : "_get_es_domain_name","es_version": "_get_es_version", "instance_type": "_get_es_instance_type",
+            "instance_count" : "_get_es_instance_count","ebs_volume_size": "_get_es_volume_size",
+            "espolicyname" : "_get_es_policy_name", "pacman_sgid" : "_get_security_id",
+            "subnetid" : "_get_es_subnet", "accountid" : "_get_base_accountid"
+        },
+        "redshift": {
+            "cluster_identifier":"_get_redshift_name","cluster_database_name":"_get_redshift_database_name",
+            "cluster_master_username":"_get_redshift_master_user_name",
+            "cluster_master_password":"_get_redshift_master_password",
+            "cluster_node_type":"_get_node_type","cluster_type":"_get_cluster_type",
+            "cluster_number_of_nodes":"_get_node_count","subnet_list":"_get_subnet",
+            "subnet_group_name":"_get_subnet_name","parameter_group_name":"_get_param_name",
+            "pacman_sgid":"_get_security_id"
+        },
+        "batch": {
+            "subnetid": "_get_subnet", "cidr_block-ip" : "_get_cidr", "vpc-id": "_get_vpcid",
+            "compute_environment" : "_get_compute_environment", "computeinstance_type" : "_get_compute_instance_type",
+            "maxvcpu" : "_get_compute_max_vcpu", "minvcpu" : "_get_compute_min_vcpu",
+            "desiredvcpu": "_get_compute_desired_vcpu", "job_queue_name" : "_get_job_queue_name",
+            "priority_value" : "_get_priority_value", "batch_job_definition_name" : "_get_batch_job_def_name",
+            "docker_parameters" : "_get_docker_params", "image_name" : "_get_image_name",
+            "memory_size" : "_get_memory_size", "job_definition_vcpu" : "_get_job_def_vcpu",
+            "attempts_number" : "_get_attempts_number", "resourcetype" : "_get_resource_type",
+            "keyname" : "_get_key_name", "accountid" : "_get_base_accountid",
+            "client_accountid": "_get_client_accountid", "pacman_sgid" : "_get_security_id",
+            "instance_profile" : "_get_pacecs_role_name","batchrole" : "_get_pacrunbatch_role_name",
+            "ES_HOST" : "_get_es_url", "BASE_AWS_ACCOUNT" : "_get_base_accountid", "ES_URI" : "_get_es_url",
+            "HEIMDALL_URI" : "_get_es_url", "PACMAN_API_URI" : "_get_dns_name"
+        },
+        "lambda-submit": {
+            "functionname": "_get_lambda_fn_name", "handler_name" :"_get_lambda_handler_name",
+            "runtime_name":"_get_lambda_runtime_name", "s3_bucket_name":"_get_s3_bucket_name",
+            "s3_file_name":"_get_submit_file_name","accountid" : "_get_base_accountid", "lambda_role" :"_get_lambda_role_name",
+            "job_queue_name": "_get_lambda_submit_job_queue_name", "jobdef_name" : "_get_lambda_job_def_name",
+            "client_accountid":"_get_client_accountid",
+            "redshift_url": "_get_redshift_url_db", "event_name1" : "_get_lambda_submit_evnt_name1",
+            "event_name2" : "_get_lambda_submit_evnt_name2", "targetid" : "_get_lambda_fn_name",
+            "redshift_info": "_get_redshift_info", "inventory" : "_get_lambda_inventory", "backup" : "_get_lambda_backup",
+            "baseaccountrole":"_get_base_account_role_name","rds_url":"_get_rds_url_db",
+            "rds_info":"_get_rds_info", "es_url" : "_get_es_url", "alb_url" : "_get_dns_name"
+        },
+        "lambda-rule": {
+            "functionname": "_get_lambda_rule_fn_name","handler_name" :"_get_lambda_rule_handler_name",
+            "runtime_name":"_get_lambda_runtime_name","s3_bucket_name":"_get_s3_bucket_name","s3_file_name":"_get_rule_file_name",
+            "accountid" : "_get_base_accountid","lambda_role" :"_get_lambda_role_name",
+            "job_queue_name": "_get_lambda_rule_job_queue_name", "jobdef_name": "_get_lambda_job_def_name",
+            "redshift_url" : "_get_redshift_url",
+            "client_accountid" : "_get_client_accountid","rdsurl" : "_get_rds_url",
+            "rdsinfo":"_get_rds_info", "redshiftinfo" : "_get_redshift_info", "targetid" : "_get_lambda_rule_fn_name",
+            "generate_tfvars_file": "_get_tf_vars"
+        },
+        "oss-api" : {
+            "api-ecs-cluster": "_get_api_ecs_cluster", "config_task_definition_name" : "_get_config_task_definition_name",
+            "ecs_execution_role_arn": "_get_ecs_execution_role_arn",
+            "vpc-id" : "_get_vpcid", "subnetid" : "_get_subnet",
+            "alb_sg" : "_get_security_id", "alb_name" : "_get_alb_name", "api_image" :"_get_api_image",
+            "api_container_name" : "_get_api_container_name","ES_HEIMDALL_HOST_NAME": "_get_es_url",
+            "ES_HOST_NAME":"_get_es_url","LOGGING_ES_HOST_NAME":"_get_es_url","ES_UPDATE_HOST":"_get_es_url",
+            "RDS_USERNAME":"_get_rds_db_user_name","RDS_PASSWORD": "_get_rds_db_password",
+            "RDS_URL":"_get_rds_url_db", "REDSHIFT_URL" :"_get_redshift_url_db", "RDS_HOST_ENDPOINT": "_get_rds_url_no_port",
+            "REDSHIFT_USERNAME" : "_get_redshift_master_user_name",
+            "REDSHIFT_PASSWORD" : "_get_redshift_master_password","ES_CLUSTER_NAME":"_get_es_domain_name",
+            "ES_HEIMDALL_PORT": "_get_es_port", "ES_PORT" : "_get_es_port", "LOGGING_ES_PORT":"_get_es_port",
+            "ES_UPDATE_PORT": "_get_es_port","RDS_HOSTNAME": "_get_rds_url","config_task_definition_name":"_get_config_task_definition_name",
+            "admin_task_definition_name": "_get_admin_task_definition_name",
+            "asset_task_definition_name": "_get_asset_task_definition_name",
+            "compliance_task_definition_name": "_get_compliance_task_definition_name",
+            "notifications_task_definition_name":"_get_notifications_task_definition_name",
+            "statistics_task_definition_name" : "_get_statistics_task_definition_name",
+            "config_jar_file_name": "_get_config_jar_file_name",
+            "admin_jar_file_name" : "_get_admin_jar_file_name","asset_jar_file_name":"_get_asset_jar_file_name",
+            "compliance_jar_file_name": "_get_compliance_jar_file_name",
+            "notifications_jar_file_name" : "_get_notifications_jar_file_name",
+            "statistics_jar_file_name":"_get_statistics_jar_file_name",
+            "PACMAN_URL":"_get_pacman_url","PACMAN_SERVICE_USER":"_get_pacman_service_user",
+            "PACMAN_SERVICE_PASSWORD":"_get_pacman_service_password",
+            "CLOUD_INSIGHTS_TOKEN_URL":"_get_cloud_insights_token_url",
+            "CLOUD_INSIGHTS_COST_URL": "_get_cloud_insights_cost_url",
+            "SVC_CORP_USER_ID":"_get_svc_corp_user_id","SVC_CORP_PASSWORD":"_get_svc_corp_password",
+            "apis_cloudwatch_group":"_get_apis_cloudwatch_group",
+            "CONFIG_PASSWORD": "_get_CONFIG_PASSWORD",
+            "LDAP_DOMAIN" : "_get_LDAP_DOMAIN", "LDAP_BASEDN" : "_get_LDAP_BASEDN",
+            "LDAP_PORT" : "_get_LDAP_PORT", "LDAP_RESPONSETIMEOUT" : "_get_LDAP_RESPONSETIMEOUT",
+            "LDAP_CONNECTIONTIMEOUT" : "_get_LDAP_CONNECTIONTIMEOUT",
+            "LDAP_HOSTLIST" : "_get_LDAP_HOSTLIST", "ES_UPDATE_CLUSTER_NAME" : "_get_es_domain_name",
+            "ROLE_ARN": "_get_ecs_execution_role_arn",
+            "ACCESS_KEY": "_get_ACCESS_KEY", "SECRET_KEY": "_get_SECRET_KEY",
+            "SECURITY_USERNAME": "_get_SECURITY_USERNAME", "SECURITY_PASSWORD": "_get_SECURITY_PASSWORD",
+            "ADMIN_SERVER": "_get_ADMIN_SERVER",
+            "update_sql_file": "update_sql_file_with_values_for_varaiables"
+        },
+        "oss-ui" : {
+            "ui-ecs-cluster": "_get_ui_ecs_cluster", "task_definition_name" : "_get_ui_task_definition_name",
+            "ecs_execution_role_arn": "_get_ecs_execution_role_arn",
+            "vpc-id" : "_get_vpcid", "subnetid" : "_get_subnet",
+            "alb_sg" : "_get_security_id", "alb_name" : "_get_ui_alb_name", "ui_image" :"_get_ui_image",
+            "ui_container_name" : "_get_ui_container_name", "api-ecs-cluster":"_get_ui_ecs_cluster"
+        },
+        "build-ui": {
+            "build-ui" : "_build_ui_apps"
+        }
+
+    }
+}

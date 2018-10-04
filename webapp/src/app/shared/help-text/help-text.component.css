@@ -1,0 +1,200 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.help-text-modal {
+    position: fixed;
+    left: 17%;
+    right: 24.5%;
+    top: 6.25em;
+    bottom: calc(100px - 6.25em);
+    background: rgba(255, 255, 255, 0.97);
+    z-index: 14;
+    border-radius: 4px;
+    box-shadow: 0px 0px 8px 1px rgba(0, 0, 0, 0.2);
+    padding: 3em 5.5em 3.2em 5.5em;
+}
+
+.close-popup {
+    height: 2em;
+    width: 2em;
+    transition: 0.3s;
+    cursor: pointer;
+    position: absolute;
+    top: 1.5em;
+    right: 1.5em;
+    z-index: 2;
+}
+
+.close-popup:hover {
+    transform: rotate(-90deg);
+}
+
+.close-popup img {
+    height: 100%;
+    width: 100%;
+}
+
+.help-title {
+    font-size: 1.5em;
+    padding-bottom: 0.7em;
+    border-bottom: 2px solid #c3cbd7;
+    width: 6.66em;
+}
+
+.help-content {
+    padding: 0 1.8em;
+}
+
+.each-qa {
+    padding: 1.2em 0;
+}
+
+.qa-wrap {
+    margin-top: 0.65em;
+    margin-bottom: 0.5em;
+    overflow: hidden;
+    padding-right: 1.2em;
+    text-align: justify;
+}
+
+.qa-wrap:hover {
+    overflow: auto;
+    overflow: overlay;
+}
+
+.question-text {
+    font-size: 1.17em;
+    font-family: ex2-bold;
+    color: #1c5066;
+    line-height: 1.36;
+}
+
+
+.answer-text {
+    font-size: 1.17em;
+    padding-top: 0.45em;
+    line-height: 1.36;
+}
+
+.border-break {
+    width: 16.66em;
+    height: 2px;
+    background: #c3cbd7;
+}
+
+.related-questions-wrap {
+    min-height: 13em;
+    border-radius: 3px;
+    background-color: #dce3e9;
+    padding: 1.8em 1.8em 2em;
+    position: relative;
+    transition: 0.25s ease;
+    max-height: 24em;
+}
+
+.related-title {
+    font-size: 1.16em;
+    font-family: ex2-medium;
+    padding-bottom: 1.8em;
+}
+
+.border-break-wrap {
+    margin-bottom: 2.1em;
+    min-height: 1em;
+}
+
+.left-arr {
+    left: 2em;
+    top: 50%;
+    transform: translateY(-50%);
+    position: absolute;
+    height: 2em;
+    width: 2em;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.right-arr {
+    right: 1.8em;
+    top: 50%;
+    transform: translateY(-50%);
+    position: absolute;
+    height: 2em;
+    width: 2em;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.right-arr:hover {
+    transform: scale(1.07) translateY(-50%);
+}
+
+.left-arr:hover {
+    transform: scale(1.07) translateY(-50%);
+}
+
+.carousel-wrap {
+    width: calc(100% - 9em);
+    margin: 0 auto;
+    overflow: hidden;
+    text-align: justify;
+}
+
+.carousel-strip {
+    width: 100%;
+    transition: 0.3s ease;
+}
+
+.each-carousel {
+    flex-shrink: 0;
+    width: 100%;
+}
+
+.carousel-title {
+    font-size: 1.16em;
+    font-family: ex2-medium;
+    font-style: italic;
+    line-height: 1.36;
+    color: #3c5079;
+    padding: 0 1em 0.3em;
+}
+
+.carousel-text {
+    font-size: 1.16em;
+    line-height: 1.36;
+    color: #000000;
+    overflow: hidden;
+    padding: 0 1em;
+}
+
+.carousel-text:hover {
+    overflow: auto;
+    overflow: overlay;
+}
+
+.uppercase-first-letter:first-letter {
+    text-transform: uppercase;
+}
+
+.error-head {
+    text-transform: initial;
+    text-align: center;
+}
+
+.error-txt {
+    color: #999;
+    text-align: center;
+    text-transform: initial;
+    padding-top: 0.7em;
+}

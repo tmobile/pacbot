@@ -1,0 +1,84 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class='onprem-graph-wrap multiline-brush-zoom-container flex flex-col' (window:resize)='onResize()'>
+	<div class="sub-head">
+        <app-title-burger-head [subHeadTitle]="'Patching Projection & Progress'"></app-title-burger-head>
+    </div>
+    <div class='outer-container flex flex-col'>
+    	<div class='flex flex-between flex-align-start transition'>
+    		<div class='container-desc'>This report shows progress towards patching to kernel vesions that will be mandatory on the final day of the quarter.</div>
+    		<div class='servers-btn' [class.hide-block]='dataState<1'>
+                <div class='flex flex-align-center flex-center year-quarter'>
+                    <div>{{dataResponse.year}}</div>
+                    <div> | </div>
+                    <div>Q{{dataResponse.quarter}}</div>
+                </div>
+                <div>{{dataResponse.totalAssets | number}} Servers in Scope</div>
+            </div>
+    	</div>
+	    <div [class.hide-block]='dataState<1' class='flex transition flex-col graph-container relative' id='onpremContainer'>
+			<svg id='onpremGraph'>
+			</svg>
+			<div class='absolute left-label' [ngStyle]="{'color': darkBlue}">Weekly Patches</div>
+			<div class='absolute right-label' [ngStyle]="{'color': lightGreen}">Overall (Cumulative) Patches</div>
+			<div class="absolute x-axes-wrap">
+                <div class="percent-wrap flex clearfix">
+                  	<div *ngFor='let tiles of dataResponse.projectionByWeek' [ngStyle]="{'width': 100/dataResponse.projectionByWeek.length + '%'}" class="x-percent">
+                    </div>
+                </div>
+                <div class="labels-wrap flex clearfix">
+                    <div *ngFor='let weeks of dataResponse.projectionByWeek; let i = index ' class="x-label" [ngStyle]="{'width': 100/dataResponse.projectionByWeek.length + '%'}">W{{i + 1}}</div>
+                </div>
+            </div>
+            <div class='absolute grid-container flex flex-col' *ngIf="axisValues['y0'].length">
+                <div class='absolute y0-axis flex flex-col'>
+                    <div class='each-tick flex flex-start' *ngFor="let y0 of axisValues['y0']">{{y0 | number}}</div>
+                    <div class='absolute zero-tick'>0</div>
+                </div>
+                <div class='each-grid' *ngFor="let y of axisValues['y0']">
+                </div>
+                <div *ngIf='percentToday>=0 && percentToday<=100 && percentToday' class='absolute today-line' [ngStyle]="{'left': percentToday + '%'}">
+                    <div class='absolute today-marker'>today</div>
+                </div>
+            </div>
+	    </div>
+	    <div [class.hide-block]='dataState<1' class="legends-wrap transition flex flex-align-center">
+            <div class="ilb container legend-outer">
+                <div class="legends-value  container">
+                    <div class="ilb container legend patched weekly-patches" [ngStyle]="{'background-color': darkBlue}"></div>
+                    <div class="ilb container legend-txt">Completed (Weekly)</div>
+                </div>
+                <div class="legends-value container">
+                    <div class="ilb container legend patched weekly-target" [ngStyle]="{'background-color': lightBlue}"></div>
+                    <div class="ilb container legend-txt">Projected (Weekly)</div>
+                </div>
+                <div class="legends-value container">
+                    <div class="ilb container legend patched patch-target" [ngStyle]="{'border-bottom': '3px dashed' + lightGreen}"></div>
+                    <div class="ilb container legend-txt">Projected (Overall)</div>
+                </div>
+                <div class="legends-value container">
+                    <div class="ilb container legend patched patch-complete" [ngStyle]="{'background-color': lightGreen}"></div>
+                    <div class="ilb container legend-txt">Completed (Overall)</div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf='onpremAccess' class='flex flex-align-center flex-end buttons-wrap'>
+            <app-button (click)="redirectTo('updateAssets')">Update Assets</app-button>
+            <app-button (click)="redirectTo('patchingProjections')">Patching Projections</app-button>
+        </div>
+	    <div *ngIf='dataState==0' class='loader'></div>
+	    <div *ngIf='dataState==-1' class='error-msg absolute'>{{errorMsg}}</div>
+    </div>
+</div>

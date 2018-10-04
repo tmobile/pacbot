@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="18px" viewBox="0 0 16 18" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Filter</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="V2---Infographic" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Vuln_1.2" transform="translate(-94.000000, -917.000000)" fill="#E20074" fill-rule="nonzero">
+            <g id="VulnSummary" transform="translate(30.000000, 76.000000)">
+                <g id="Group-66" transform="translate(44.000000, 771.000000)">
+                    <g id="Group-18">
+                        <g id="Group-91" transform="translate(20.000000, 70.000000)">
+                            <g id="np_filter_1359821_000000">
+                                <path d="M0.0511363636,2.39931818 C0.0319602273,2.66459318 0.127041136,2.92506136 0.3132,3.11522727 L5.67842727,9 L5.67842727,17.88975 L9.45781364,15.1547727 L9.45781364,9 L14.8230409,3.10888636 C15.00921,2.9187225 15.1042909,2.65825227 15.0851045,2.39297727 L15.0851045,0.11025 L0.0510136364,0.11025 L0.0511363636,2.39931818 Z" id="Filter"></path>
+                            </g>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

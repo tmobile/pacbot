@@ -1,0 +1,32 @@
+server:
+  contextPath: /api/notifications
+
+remind:
+  cron: 0 0 0 * * *
+  email:
+    text: "Hey, {0}! We''ve missed you here on Pacman. It''s time to check your compliance, Pacman team"
+    subject: Pacman reminder
+
+backup:
+  cron: 0 0 12 * * *
+  email:
+    text: "Howdy, {0}. Your account backup is ready.\r\n\r\nCheers,\r\nPiggyMetrics team"
+    subject: PiggyMetrics account backup
+    attachment: backup.json
+
+spring:
+  freemarker:
+    suffix: .html
+  mail:
+    host: ${MAIL_SERVER:localhost}
+    port: 25
+    protocol: smtp
+    defaultEncoding: UTF-8
+    
+cron:
+  frequency:
+    weekly-report-sync-trigger: 0 0 9 ? * MON *
+    
+template:
+  digest-mail:
+    url: https://s3.amazonaws.com/${PACMAN_S3:s3}/index.html

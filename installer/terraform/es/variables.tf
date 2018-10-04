@@ -1,0 +1,12 @@
+variable "aws_access_key" {}
+variable "aws_secret_key" {}
+variable "region" {}
+variable "domain_name" {}
+variable "es_version" {}
+variable "instance_type" {}
+variable "instance_count" {}
+variable "ebs_volume_size" {}
+variable "espolicyname" {}
+variable "pacman_sgid" {}
+variable "subnetid" {}
+variable "accountid" {}

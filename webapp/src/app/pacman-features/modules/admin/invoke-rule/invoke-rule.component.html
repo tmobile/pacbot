@@ -1,0 +1,184 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+    <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+    <div class="floating-widgets-header flex flex-between">
+        <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text">{{pageTitle}}</h1>
+        </div>
+    </div>
+    <div class="floating-widgets-container ">
+        <section>
+            <ul>
+                <li class="widget-wrapper relative">
+                    <div class="data-table-wrap relative">
+                        <div class="sub-head">
+                            <div class="flex flex-between flex-align-center">
+                                <div class="sub-head-title capitalize flex flex-align-center after-load">
+                                    <div class="header-text">Additional Rule Parameters</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div [hidden]="hideContent">
+                            <div class="data-content">
+
+                                <div class="formcontainerwrapper">
+
+                                    <div class="formctn">
+                                        <h5 class="invoke-title">Provide additional Rule parameters to invoke rule : <span class="highlight-pink">{{ruleId}}</span></h5>
+                                        <label>Rule Parameters (Optional)</label>
+                                        <div class="input-box">
+                                            <ul class="parameters input-wrapper">
+                                                <input type="text" #ruleParamKey class="inputarea-container" placeholder="Enter Key Name" name="ruleParamKey" ngModel>
+                                            </ul>
+                                            <ul class="parameters input-wrapper">
+                                                <input type="text" #ruleParamValue class="inputarea-container" placeholder="Enter Value" name="ruleParamValue" ngModel>
+                                            </ul>
+                                            <ul class="parameters bm30">
+                                                <input type="checkbox" #isRuleParamEncrypted id="encryptruleparam">
+                                                <label for="encryptruleparam" class="parameters bm30 ml10">Encrypt</label>
+                                            </ul>
+                                            <ul class="parameters">
+                                                <button class="tmbutton bm20 ib" [disabled]="!(ruleParamValue.value&&ruleParamKey.value)" (click)="addOptionalRuleParameters(ruleParamKey, ruleParamValue, isRuleParamEncrypted)">+ Add</button>
+                                            </ul>
+                                        </div>
+
+                                        <div class="">
+                                            <div class="no-params-box valueaddctn" id="style-1" *ngIf="allOptionalRuleParams.length==0">
+                                                <div class="no-parameters">
+                                                    No Optional Rule Parameters Added
+                                                </div>
+                                            </div>
+                                            <div class="params-attributes" *ngIf="allOptionalRuleParams.length!==0">
+                                                <div class='data-table-head-outer'>
+                                                    <div class="data-table-head flex flex-around flex-align-center">
+                                                        <div class="row-cells1 head-cells table-cells">
+                                                            Key
+                                                        </div>
+                                                        <div class="row-cells2 head-cells table-cells">
+                                                            Value
+                                                        </div>
+                                                        <div class="row-cells3 head-cells table-cells">
+                                                            Action
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="valueaddctn" id="style-1">
+                                                    <div class="data-table-content">
+                                                        <div class='data-table-inner-wrap relative'>
+                                                            <div currentTable class="data-table-inner-content data-table-current">
+                                                                <div class="data-table-rows flex flex-around flex-align-center" *ngFor="let ruleParams of allOptionalRuleParams;let ruleIndex = index">
+                                                                    <div class="row-cells1 row-cells table-cells flex flex-align-center">
+                                                                        <div class="column-wrapper">
+                                                                            <div class='nowrap-ellipsis'>
+                                                                                {{ruleParams.key}}
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row-cells2 row-cells table-cells flex flex-align-center">
+                                                                        <div class="column-wrapper">
+                                                                            <div class='nowrap-ellipsis'>
+                                                                                <span *ngIf="!ruleParams.encrypt; else elseBlock">{{ruleParams.value}}</span>
+                                                                                <ng-template #elseBlock>
+                                                                                    XXXX <span class="highlight-pink">(Encrypted)</span>
+                                                                                </ng-template>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row-cells3 row-cells table-cells flex flex-align-center">
+
+                                                                        <div class="column-wrapper">
+                                                                            <div class='nowrap-ellipsis'>
+                                                                                <a (click)="removeOptionalRuleParameters(ruleIndex)"><i class="highlight-pink fa fa-remove"></i></a>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!--<div class="valueaddctn" id="style-1" *ngIf="allOptionalRuleParams.length!==0">
+                                                <div class="valuerow" *ngFor="let ruleParams of allOptionalRuleParams;let ruleIndex = index">
+                                                    <a><i class="fa fa-remove" (click)="removeOptionalRuleParameters(ruleIndex)"></i></a>
+                                                    <span class="addedvalue key">{{ruleParams.key}} :</span>
+                                                    <span class="addedvalue">{{ruleParams.value}}</span>
+                                                </div>
+                                            </div>-->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="data-table-paginator-wrap flex flex-center flex-align-center">
+                                <a class="save-container flex flex-row-reverse">
+                                    <button class="submit-btn uppercase" (click)="invokeRule()"><i class="fa fa-check"></i> INVOKE</button>
+                                </a>
+                                <a class="save-container flex flex-row-reverse">
+                                    <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CANCEL</button>
+                                </a>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isRuleInvokeFailed">
+                            <div class="sa-icon sa-error animateErrorIcon" style="display: block;">
+                                <span class="sa-x-mark animateXMark">
+                                    <span class="sa-line sa-left"></span>
+                                <span class="sa-line sa-right"></span>
+                                </span>
+                            </div>
+
+                            <div class="pacman-alert-message">
+                                Rule Invocation Failed !!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="closeErrorMessage()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isRuleInvokeSuccess">
+                            <div class="sa-icon sa-success animate">
+                                <span class="sa-line sa-tip animateSuccessTip"></span>
+                                <span class="sa-line sa-long animateSuccessLong"></span>
+                                <div class="sa-placeholder"></div>
+                                <div class="sa-fix"></div>
+                            </div>
+
+                            <div class="pacman-alert-title">
+                                Rule Invoked
+                            </div>
+                            <div class="pacman-alert-message">
+                                <span class="highlight-pink">{{ruleId}}</span> has been successfully invoked !!!
+                                <div>Your Invocation ID is: <span class="highlight-pink"><b class="invocationId">{{invocationId}}</b></span></div>
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-progress" *ngIf="ruleLoader">
+                            <pacman-loading></pacman-loading>
+                            <div class="title">
+                                Please Wait...
+                            </div>
+                            <div class="pacman-alert-message">
+                                <span class="highlight-pink">{{ruleId}}</span> rule is been invoking...
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>

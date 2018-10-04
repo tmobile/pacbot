@@ -1,0 +1,67 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.widget.widget-container {
+  padding-bottom: 0em;
+  overflow: hidden;
+}
+
+.page-scroll {
+  overflow-y: auto;
+  overflow-y: overlay;
+}
+
+.floating-widgets-header {
+  padding: 0em 1.4em;
+}
+
+.section {
+  padding-bottom: 1em;
+}
+
+/* ********************************************************************************************************* */
+/*  Dev Strategy section css starts here */
+.dev-strategy-widget-wrapper {
+  justify-content: space-between;
+}
+
+.dev-strategy-each-widget {
+  width: 49%;
+  height: 28em;
+}
+/*  Dev Strategy section css ends here */
+/* ********************************************************************************************************* */
+
+/*  Pull Request Metrics css starts here */
+
+/*  Pull Request Metrics css ends here */
+/* ********************************************************************************************************* */
+/*  Stale branches css starts here */
+.stale-branch-donut-chart {
+  /* flex: 3; */
+  width: 30%;
+}
+.stale-branch-bar-chart {
+  /* flex: 7; */
+  width: 70%;
+}
+/* Stale branches css ends here */
+/* ********************************************************************************************************* */
+
+/* css for edge browser */
+@supports (-ms-ime-align: auto) { 
+  .page-scroll {
+      overflow-y: auto;
+  }
+}

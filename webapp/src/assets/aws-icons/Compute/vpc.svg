@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="41px" height="49px" viewBox="0 0 41 49" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>sg</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="Asset-Dashboard-AWS-Copy" transform="translate(-376.000000, -337.000000)" fill-rule="nonzero">
+            <g id="sg" transform="translate(376.182927, 336.960099)">
+                <polygon id="Shape" fill="#516A9C" points="26.7767073 27.9240244 20.3409756 27.5296341 0.047804878 28.8323171 5.77243902 41.757561"></polygon>
+                <polygon id="Shape" fill="#263555" points="5.6947561 7.29621951 0.047804878 10.1465854 0.047804878 24.5 5.6947561 24.5 13.6841463 17.257561"></polygon>
+                <polygon id="Shape" fill="#3C5079" points="26.7767073 27.9240244 5.77243902 29.674878 5.77243902 41.757561 26.7767073 36.0389024"></polygon>
+                <polygon id="Shape" fill="#3C5079" points="15.9309756 24.5 5.6947561 24.5 5.6947561 7.29621951 15.9309756 10.0689024"></polygon>
+                <polygon id="Shape" fill="#263555" points="30.6429268 24.4880488 37.9929268 24.5 37.9929268 10.3915854 30.6429268 11.6106098"></polygon>
+                <polygon id="Shape" fill="#1D2126" points="16.2536585 13.0328049 22.8686585 6.39390244 37.9929268 15.1123171 30.6429268 16.1460976"></polygon>
+                <polygon id="Shape" fill="#263555" points="9.48926829 24.5 20.2931707 24.5 25.9580488 13.1702439 20.2931707 0 9.48926829 5.40195122"></polygon>
+                <polygon id="Shape" fill="#3C5079" points="20.2931707 0 20.2931707 24.5 26.3643902 24.5 26.3643902 11.622561 37.9929268 15.1123171 37.9929268 24.5 40.5863415 24.5 40.5863415 10.1465854"></polygon>
+                <polygon id="Shape" fill="#263555" points="0.047804878 28.8323171 5.77243902 29.674878 5.77243902 41.757561 0.047804878 38.9012195"></polygon>
+                <polygon id="Shape" fill="#516A9C" points="40.5863415 28.7785366 30.8281707 28.175 9.48926829 30.242561 20.2931707 49"></polygon>
+                <polygon id="Shape" fill="#3C5079" points="40.5863415 28.7785366 20.2931707 31.820122 20.2931707 49 40.5863415 38.8534146"></polygon>
+                <polygon id="Shape" fill="#263555" points="9.48926829 30.242561 20.2931707 31.820122 20.2931707 49 9.48926829 43.61"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

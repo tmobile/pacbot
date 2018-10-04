@@ -1,0 +1,26 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="loading_bar flex" *ngIf="barHeight">
+    <div class="total_issues_bar" [ngStyle]="{'width': 'calc(' + widthValue +  '%)'}" [class.rightBorder]="borderSet" [class.transition_block]="transit">
+        <div class="left-count-value flex " [ngClass]="{'left-count-value':!lessWidthLeft,'left-count-tooltip':lessWidthLeft,'show-now':ShowLabel ,'link-text-secondary pointer':ShowLabel}" (click)="tagValue > 0 && instructParentToNavigate('tagged')">{{tagValue}}
+            <p>{{valueType1}}</p>
+        </div>
+    </div>
+    <div class="loading_bar_right  flex" [ngStyle]="{'width': 'calc(100% - ' + widthValue +  '%)'}">
+        <div class="right-count-value flex " [ngClass]="{'right-count-value':!lessWidthRight,'right-count-tooltip':lessWidthRight,'show-now':ShowLabel,'link-text-secondary pointer':ShowLabel}" (click)="tagValue > 0 && instructParentToNavigate('untagged')">{{untagValue}}
+            <p>{{valueType2}}</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="17px" height="16px" viewBox="0 0 17 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Tools-magenta</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Main-Navigation" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="OmniSearch-1" transform="translate(-660.000000, -24.000000)" fill="#E20074" fill-rule="nonzero">
+            <g id="Group-55" transform="translate(514.000000, 24.000000)">
+                <g id="Group-54">
+                    <g id="Group-46" transform="translate(142.000000, 0.000000)">
+                        <g id="Group-51">
+                            <path d="M19.8861848,13.0776467 L13.2378311,6.42929305 C13.8953606,4.74893993 13.5300664,2.77635147 12.1419486,1.38823367 C10.680772,-0.0729429612 8.48900705,-0.365178288 6.73559509,0.43846886 L9.87712485,3.57999862 L7.6853599,5.77176357 L4.47077131,2.63023381 C3.59406533,4.38364577 3.95935949,6.57541072 5.42053612,8.03658735 C6.80865392,9.42470515 8.78124238,9.78999931 10.4615955,9.13246983 L17.1099492,15.7808235 C17.4021845,16.0730588 17.8405375,16.0730588 18.1327728,15.7808235 L19.813126,14.1004704 C20.1784201,13.8082351 20.1784201,13.2968232 19.8861848,13.0776467 Z" id="Tools-magenta"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

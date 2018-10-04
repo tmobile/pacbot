@@ -1,0 +1,56 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="resource-details-wrapper">
+    <div class="resource-types-container flex flex-center">
+        <ul class="flex flex-row" *ngIf="dataLoaded && !error">
+            <li class='flex full-width' (click)="awsTileClicked(resource, i)" *ngFor="let resource of awsResourcesCache | slice: 0:7; let i = index" [ngClass]="{'active':selectedResource.type == resource.type}">
+                <a class='full-width'>
+                    <app-aws-app-tile class='full-width' [i]='i' [awsResource]="resource" [active]="selectedResource.type == resource.type" [recommendationAvailable]="resource.recommendationAvailable" [awsResourceName]="resource.type" [resourceInstances]="resource.count"></app-aws-app-tile>
+                </a>
+            </li>
+            <li class="flex full-width" *ngIf="showViewMore == true">
+                <a class='full-width' [routerLink]="[  {outlets: { modal: 'all-resources' } } ]" queryParamsHandling="merge">
+                    <app-aws-app-tile class='full-width' [awsResourceName]="'view-all'"></app-aws-app-tile>
+                </a>
+            </li>
+        </ul>
+        <div class="loader" *ngIf='!dataLoaded && !error'></div>
+        <app-error-message *ngIf='error' [selectedValue]="errorMessage"></app-error-message>
+    </div>
+    <div class="resource-details-container" *ngIf="dataLoaded">
+        <div class='wrapper-parent'>
+            <div class="wrapper-container flex flex-between">
+                <div class="tagged relative" *ngIf="selectedResource.type !== undefined">
+                    <p class="asset-dist-header">Asset by application</p>
+                    <app-asset-info [targetType]="selectedResource.type" [pageLevel]="pageLevel"></app-asset-info>
+                </div>
+                <div class="multiline-chart" *ngIf="selectedResource !== undefined">
+                    <app-inventory-container [targetType]="selectedResource.type" [pageLevel]="pageLevel"></app-inventory-container>
+                </div>
+            </div>
+            <div class="wrapper-container-utilization" *ngIf="selectedResource !== undefined">
+                <app-utilization-container *ngIf="(selectedResource.type === 'ec2') && !oss"></app-utilization-container>
+            </div>
+            <div class="wrapper-container-recommendation" *ngIf="selectedResource !== undefined">
+                <div *ngIf="selectedResource.recommendations !== undefined">
+                    <app-recommendation *ngIf="selectedResource.recommendations.length > 0" [recommendationData]="selectedResourceRecommendation" [selectedResource]="selectedResource.type"></app-recommendation>
+                </div>                
+            </div>
+        </div>
+    </div>
+</div>
+<div style="height: 0px; overflow: hidden">
+    <router-outlet name="modal"></router-outlet>
+</div>

@@ -1,0 +1,29 @@
+spring:
+  application:
+    name: notification-service
+    title: Pacman Service
+    description: Pacman Notification API provides notification capabilities	
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL:http://localhost:8888/api/config/}
+      enabled: true
+      fail-fast: true
+      name: api,notification-service
+      password: ${CONFIG_PASSWORD}
+      username: user
+      label: latest
+    
+  profiles:
+    active: ${ENVIRONMENT:prd}
+    
+  freemarker:
+    template-loader-path: /
+    suffix: .html
+    
+quartz:
+  enabled: true
+
+security: 
+  oauth2:
+    resource:
+      user-info-uri: ${PACMAN_HOST_NAME}/api/auth/user

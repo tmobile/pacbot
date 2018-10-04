@@ -1,0 +1,54 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <app-overlay (click)='closeModal()'></app-overlay>
+<div class='help-text-modal flex flex-col flex-between'>
+    <div class='close-popup' (click)='closeModal()'><img src='../../assets/png/delete.png'></div>
+    <div class='help-content flex flex-between flex-col' *ngIf='errorVal>0'>
+        <div class='help-title'>Help </div>
+        <div class='qa-wrap'>
+            <div *ngFor='let text of questionAns' class='each-qa'>
+                <div class='question-text uppercase-first-letter'>{{text.faqName}}</div>
+                <div class='answer-text uppercase-first-letter'>{{text.faqAnswer}}</div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf='errorVal>0'>
+        <div class='flex flex-center border-break-wrap'>
+            <div class='border-break'></div>
+        </div>
+        <div class='flex flex-col related-questions-wrap' *ngIf="relatedArr.length">
+            <div class='related-title'>Related Questions</div>
+            <img class='left-arr' src='../assets/icons/grey-arr-left.svg' (click)='prevClicked()'>
+            <img class='right-arr' src='../assets/icons/grey-arr-right.svg' (click)='nextClicked()'>
+            <div class='flex carousel-wrap flex-col'>
+                <div class='carousel-strip flex' [ngStyle]="{'transform': 'translateX(' + -slideNum * 100 + '%' }">
+                    <div class='each-carousel flex flex-col' *ngFor='let related of relatedArr'>
+                        <div class='carousel-title uppercase-first-letter'>
+                            {{related.faqName}}
+                        </div>
+                        <div class='carousel-text uppercase-first-letter'>
+                            {{related.faqAnswer}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div *ngIf='errorVal==0' class='loader'></div>
+    <div *ngIf='errorVal<0' class='faqs-error absolute error-msg'>
+        <div class='error-head'>Oops!</div>
+        <div class='error-txt'>Unable to fetch the data</div>
+    </div>
+</div>

@@ -1,0 +1,49 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.certificater-stage-wrapper{
+    height: calc(100% - 19em);
+    /*overflow: auto; overflow: overlay;*/
+}
+.sub-head{
+    background-color: #dce3e9;
+}
+ul.each-progress-tracker-wrapper{
+    padding: 1.5em 1em;
+    max-height: 90%;
+    overflow: hidden;
+}
+ul.each-progress-tracker-wrapper:hover {
+    overflow: auto; overflow: overlay;
+}
+li.each-progress-tracker {
+    width: 50%;
+    padding: 1em 1em 3em 1em;
+    border-right: 2px solid #ddd;
+    border-bottom: 2px solid #ddd;
+}
+li.each-progress-tracker:nth-child(even){
+    border-right: none;
+    padding-right: 0;
+}
+li.each-progress-tracker:nth-child(odd){
+    padding-left: 0;
+}
+li.each-progress-tracker:last-child:nth-child(even){
+    /* color : red; */
+}
+li.each-progress-tracker:last-child:nth-child(odd){
+    border-right: none;
+    border-bottom: none;
+}

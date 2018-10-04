@@ -1,0 +1,83 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class='vuln-report-stats-wrapper relative' *ngIf='statsResponse >= 0'>
+    <div *ngIf='statsResponse == 0' class='loader absolute'></div>
+    <div class='flex flex-align-center' *ngIf='statsResponse>0'>
+        <div class='assets-scanned-wrap relative flex flex-align-center' *ngIf='statsData.hostsScanned || statsData.hostsNotScanned || statsData.hostsScanned == 0 || statsData.hostsNotScanned == 0'>
+            <div class='flex flex-align-center assets-wrap flex-evenly' *ngIf='statsData.hostsScanned || statsData.hostsScanned == 0'>
+                <div class='num-txt'>{{statsData.hostsScanned | number }}</div>
+                <div class='scan-txt'>Assets Scanned</div>
+                <img src='../assets/icons/Scanned-Assets.svg'>
+            </div>
+            <div class='flex flex-align-center assets-wrap flex-evenly' *ngIf='statsData.hostsNotScanned || statsData.hostsNotScanned == 0'>
+                <div class='num-txt'>{{statsData.hostsNotScanned | number }}</div>
+                <div class='scan-txt'>Assets Not Scanned</div>
+                <img src='../assets/icons/not-scanned.svg'>
+            </div>
+            <div class='absolute bottom-line'></div>
+            <div class='absolute right-line move-right'>
+                <div class='circle-attached absolute'></div>
+            </div>
+        </div>
+        <div class='desc-text'> <span *ngIf='statsData.hostsScanCoverage || statsData.hostsScanCoverage >= 0' class='bold darker-txt'>{{statsData.hostsScanCoverage}}% scan coverage. </span> The total number of assets scanned by Qualys (agent or external) in the last 30 days. <span class='bold'> Having the Qualys agent installed on all assets is critical for obtaining accurate vulnerability metrics. </span></div>
+    </div>
+    <div class="widget assets-details flex flex-align-center flex-evenly" *ngIf='statsResponse>0'>
+        <div class='flex each-detail flex-align-center'>
+            <div>
+                <div class='flex flex-align-center'>
+                    <div>
+                        <img height="18px" src='../assets/icons/Vulnerabilities-magenta.svg'>
+                    </div>
+                    <div class='details-num red-text'>
+                        {{summaryObj.vulnerabilities | number }}
+                    </div>
+                    <div class='right-arrow red-arrow'></div>
+                </div>
+                <div class='details-subtext'>Vulnerabilities</div>
+            </div>
+            <div class='details-info'>The total number of unique vulnerabilities found across scanned assets.</div>
+        </div>
+        <div class='flex each-detail flex-align-center'>
+            <div>
+                <div class='flex flex-align-center'>
+                    <div>
+                        <img height="18px" src='../assets/icons/Assets-context.svg'>
+                    </div>
+                    <div class='details-num green-text'>
+                        {{summaryObj.assetsAffected | number }}
+                    </div>
+                    <div class='right-arrow green-arrow'></div>
+                </div>
+                <div class='details-subtext'>Assets Affected</div>
+            </div>
+            <div class='details-info'>The total number of assets found to have at least one vulnerability.</div>
+        </div>
+        <div class='flex each-detail flex-align-center'>
+            <div>
+                <div class='flex flex-align-center'>
+                    <div>
+                        <img height="20px" src='../assets/icons/Occurrences.svg'>
+                    </div>
+                    <div class='details-num grey-text'>
+                        {{summaryObj.occurrences | number }}
+                    </div>
+                    <div class='right-arrow grey-arrow'></div>
+                </div>
+                <div class='details-subtext'>Occurrences</div>
+            </div>
+            <div class='details-info'>Total occurrences to be remediated. This number best reflects the bottom line total surface area of security risk.</div>
+        </div>
+    </div>
+</div>

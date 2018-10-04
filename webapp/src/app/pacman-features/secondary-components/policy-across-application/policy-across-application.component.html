@@ -1,0 +1,59 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="vulnerability-across-app-outer-wrapper relative">
+<section class="appblock" *ngIf = "showAsset">
+  <div class="sub-head">
+      <app-title-burger-head [subHeadTitle] = "'Distribution across application'"></app-title-burger-head>
+  </div>
+  <div class="relative vul-across-app-wrapper">
+      <div class=' flex-col relative vul-across-app-inner-wrapper' *ngIf='dataComing && !showLoader'>
+          <div class="search-wrapper">
+              <app-search-bar (searchQuery)='getappSearch($event)' [placeHolderText]="placeHolderTextasset"></app-search-bar>
+          </div>
+          <div class="vul-app-wrapper">
+              <app-list-table [tableData]="apiAppData"
+                              [tableHeaderData]="tableHeaderData"
+                              [orderByProperty]="{ property: 'Totalcount', direction: -1 }"
+                              [searchText]="returnedSearchapp" (error)="getErrorValues($event)" (navigatePage)="navigatePage($event)"></app-list-table>
+          </div>
+      </div>
+    </div>
+</section>
+<section  class = "envblock"  *ngIf = "showEnv">
+    <div class="sub-head">
+        <app-title-burger-head [subHeadTitle] = "'Distribution across environments'"></app-title-burger-head>
+    </div>
+    <div class="relative vul-across-app-wrapper">
+        <div class=' flex-col relative vul-across-app-inner-wrapper' *ngIf='dataComing && !showLoader'>
+            <div class="search-wrapper">
+                <app-search-bar (searchQuery)='getenvSearch($event)' [placeHolderText]="placeHolderTextenv"></app-search-bar>
+            </div>
+            <div class="vul-app-wrapper">
+                <app-list-table [tableData]="apiEnvData"
+                                [tableHeaderData]="tableHeaderData"
+                                [orderByConfig]="{propertyKey: 'AppDetails', countKey: 'count', direction: 'desc'}"
+                                [searchText]="returnedSearchenv" (error)="getErrorValues($event)" (navigatePage)="navigatePageEnv($event)"></app-list-table>
+            </div>
+        </div>
+    </div>
+</section>
+ 
+  <article class='center error_handling' *ngIf="!datacoming">
+        <div class="error_msg">
+            <app-error-message *ngIf='seekdata == true' [selectedValue]="errorMessage"></app-error-message>
+        </div>
+    </article>
+    <div *ngIf='showLoader' class="loader"></div>
+</div>

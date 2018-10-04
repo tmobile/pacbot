@@ -1,0 +1,110 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+<!doctype html>
+<html lang="en">
+
+<head>
+
+    <title>Pacman2.0</title>
+    <base href="/">
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-control" content="no-cache, no-store, must-revalidate">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="msapplication-TileColor" content="#da532c">
+    <meta name="theme-color" content="#ffffff">
+    <meta name="application-version" content="app-version - v2.2.0">
+    <link rel="icon" href="/favicon.ico?v1.3">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="manifest" href="/site.webmanifest">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+
+    <style type="text/css">
+        
+        .app-loading {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+    
+    </style>
+
+</head>
+
+<body>
+    <app-root>
+        <div class="app-loading">
+            <div class="logo">
+            </div>
+        </div>
+    </app-root>
+
+    <!-- Global Site Tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-112530781-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-112530781-1');
+        // When  the url updates, we can add this line
+        /*gtag('config', 'UA-112530781-1', {'page_title': title, 'active_page': url}); */
+
+        window.onstorage = (e) => {
+            this.sessionStorage_transfer(e);
+        }
+
+        // Ask other tabs for session storage (this is ONLY to trigger event)
+        if (!sessionStorage.length) {
+            localStorage.setItem('getSessionStorage', '.');
+            localStorage.removeItem('getSessionStorage');
+        }
+
+        // transfers sessionStorage from one tab to another
+        sessionStorage_transfer = (event) => {
+            if(!event) { event = window.event; } // ie suq
+            if(!event.newValue) return;          // do nothing if no value to work with
+            if (event.key == 'getSessionStorage') {
+                // another tab asked for the sessionStorage -> send it
+                localStorage.setItem('sessionStorage', JSON.stringify(sessionStorage));
+                // the other tab should now have it, so we're done with it.
+                localStorage.removeItem('sessionStorage'); // <- could do short timeout as well.
+            } else if (event.key == 'sessionStorage') {
+                // another tab sent data <- get it
+                var data = JSON.parse(event.newValue);
+                for (var key in data) {
+                    sessionStorage.setItem(key, data[key]);
+                }
+            }
+            else if (event.key === 'logout') {
+                // another tab sent data <- get it
+                sessionStorage.clear();
+                window.location.replace('/home');
+            }
+            else if(event.key === 'loginsuccess') {
+                localStorage.setItem('getSessionStorage', '.');
+                localStorage.removeItem('getSessionStorage');
+            }
+        };
+
+    </script>
+
+</body>
+
+</html>

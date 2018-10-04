@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="32px" height="32px" viewBox="0 0 32 32" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47 (45396) - http://www.bohemiancoding.com/sketch -->
+    <title>Governance</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Issues" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Issue-Details_Jira-Ticket--(Already-Created)" transform="translate(-755.000000, -256.000000)" fill-rule="nonzero" fill="#289CF7">
+            <g id="Governance" transform="translate(755.000000, 256.000000)">
+                <polygon id="Shape" points="24.7212308 12.2018462 27.8860659 12.2018462 27.8860659 25.4586374 24.7212308 25.4586374"></polygon>
+                <polygon id="Shape" points="17.7223736 12.2018462 20.8872088 12.2018462 20.8872088 25.4586374 17.7223736 25.4586374"></polygon>
+                <polygon id="Shape" points="10.7611429 12.2018462 13.925978 12.2018462 13.925978 25.4586374 10.7611429 25.4586374"></polygon>
+                <polygon id="Shape" points="3.76228571 12.2018462 6.92712088 12.2018462 6.92712088 25.4586374 3.76228571 25.4586374"></polygon>
+                <polygon id="Shape" points="0 28.5893626 31.6483516 28.5893626 31.6483516 31.7184703 0 31.7184703"></polygon>
+                <polygon id="Shape" points="15.8241758 0.0700483516 0 9.07294945 31.6483516 9.07294945"></polygon>
+            </g>
+        </g>
+    </g>
+</svg>

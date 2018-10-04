@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.tmobile</groupId>
+    <artifactId>pacbot</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>PacMan</name>
+    <description>Build for T-Mobile PacMan Support</description>
+    <url>https://github.com/tmobile/pacman</url>
+
+    <licenses>
+        <license>
+            <name>Apache</name>
+            <url>https://github.com/tmobile/pacman/blob/master/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>PacMan Team</id>
+            <name>PacMan Team</name>
+            <email>pacbot@t-mobile.com</email>
+        </developer>
+    </developers>
+
+    <organization>
+        <name>T-Mobile</name>
+        <url>https://www.t-mobile.com</url>
+    </organization>
+
+    <scm>
+        <connection>scm:git:git://github.com/tmobile/pacman.git</connection>
+        <developerConnection>scm:git:ssh://github.com/tmobile/pacman.git</developerConnection>
+        <url>https://github.com/tmobile/pacman/tree/master</url>
+    </scm>
+
+
+
+    <modules>
+		<module>commons</module>
+                <module>api</module>
+		<module>jobs</module>
+		<module>webapp</module>
+    </modules>
+
+</project>

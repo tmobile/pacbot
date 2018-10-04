@@ -1,0 +1,651 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.search-details-wrapper {
+    width: 100%;
+    height: 100%;
+    padding: 2em;
+    font-size: 1em;
+}
+
+.search-details-filter-wrapper {
+    flex: 1;
+    margin-top: 3em;
+    background-color: #eff3f6;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px 0 rgba(98, 98, 98, 0.5);
+    overflow: auto;
+}
+
+.search-results-wrapper {
+    flex-wrap: wrap;
+    overflow: auto;
+    align-items: flex-start;
+    align-items: flex-start;
+    align-content: flex-start;
+    padding: 0 2em 4em;
+    justify-content: flex-start;
+    height: 95%;
+    overflow: auto;
+    margin: 3em 0 1em 0;
+}
+
+.search-card-each {
+    background-color: #fff;
+    border-radius: 4px;
+    margin: 1em;
+    box-shadow: 0 1px 4px 1px #d9dce3;
+    transition: all 0.5s;
+    width: calc(25% - 2em);
+    min-height: 12em;
+    justify-content: space-evenly;
+}
+
+.search-card-each:hover {
+    box-shadow: 0 3px 14px 1px #d9dce3;
+    transform: translateY(-2px);
+}
+
+.search-card-each:hover .arrow-icon-search-card {
+    right: -4px;
+}
+
+.search-card-name {
+    font-size: 1.2em;
+    letter-spacing: 0.5px;
+    padding-bottom: 1em;
+    width: 90%;
+}
+
+.search-card-name span:first-child {
+    font-family: ex2-bold;
+}
+
+.seach-card-desc-top {
+    padding-bottom: 2em;
+    white-space: nowrap;
+}
+
+.seach-card-desc-top span {
+    padding: 0 1em;
+    border-right: 1px solid #000;
+    font-family: ex2-medium;
+    flex: 1;
+}
+
+.seach-card-desc-top span:first-child {
+    font-family: ex2-bold;
+    padding-left: 0;
+}
+
+.seach-card-desc-top span:last-child {
+    padding-right: 0;
+    border: 0;
+}
+
+.seach-card-desc-bottom {
+    padding-bottom: .5em;
+    flex-wrap: wrap;
+}
+
+.search-card-type {
+    padding: 0 1em 1em 0;
+    width: 50%;
+}
+
+.search-card-type span:first-child {
+    font-family: ex2-bold;
+}
+
+.search-card-category {
+    background-color: #566d9b;
+    padding: 0.4em 1em;
+    color: #fff;
+    text-align: center;
+    transition: all 0.3s;
+    font-size: 1.2em;
+    color: #fff;
+    letter-spacing: 1px;
+    font-family: ex2-medium;
+    border-top-right-radius: 4px;
+    min-width: 4em;
+    min-height: 2em;
+}
+
+.search-result-count {
+    top: 50%;
+    right: 0;
+    padding: 0.5em 1em;
+    transform: translate(0, -50%);
+    font-size: 1.2em;
+}
+
+.search-results-outer-wrapper {
+    height: 100%;
+    overflow: hidden;
+}
+
+.pagination-wrapper {
+    bottom: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 3em;
+    background-color: #fff;
+    z-index: 9;
+    box-shadow: 1px 0px 2px 2px #ccc;
+}
+
+.arrow-icon-search-card {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 1em;
+    transition: 0.3s ease;
+}
+
+.search-card-middle-section {
+    height: 2em;
+}
+
+.search-card-bottom-section {
+    height: 4em;
+}
+
+.filter-pesudo-opener {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0.5em 1em;
+    font-size: 1.2em;
+    background-color: #566d9b;
+    color: #fff;
+    width: 10em;
+    transform: translate(0);
+    z-index: 10;
+    border-radius: 4px;
+    align-items: center;
+    border-bottom-left-radius: 0;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 3px 0px 2px 0 rgba(98, 98, 98, 0.5);
+    transition: all 0.3s ease-in-out;
+}
+
+
+.omni-search-filter-overlay {
+    left: 0;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 1;
+    background-color: #75757522;
+}
+
+.search-card-targettype-icon {
+    transition: all 0.3s;
+    right: 0;
+    bottom: 0;
+    height: 2em;
+    margin: 0 1.25em;
+    font-size: 1.2em;
+    padding: .4em 0;
+}
+
+.terminated-checkbox {
+    top: 0;
+    right: 0;
+    z-index: 1;
+    padding: 1em;
+    font-size: 1.2em;
+    transition: all .2s;
+}
+
+.upper-section-wrapper {
+    padding: 1em 1.5em;
+}
+
+.search-card-category.left-card {
+    margin-right: 1em;
+    line-height: 1.5;
+}
+
+.search-card-category.right-card {
+    margin-left: 1em;
+}
+
+.actions-wrapper {
+    position: absolute;
+    background-color: rgba(239, 243, 246, 0.5);
+    border-radius: 0.3em;
+    border: 0.5px solid #c3cbd7;
+    -webkit-transition: 0.5s ease;
+    transition: 0.5s ease;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    -webkit-transform-style: preserve-3d;
+    transform-style: preserve-3d;
+    z-index: 12;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    margin: auto;
+    width: 33em;
+    background-color: #fff;
+    color: #000;
+    box-shadow: 0 3px 4px 0 #0000001e, 0 2px 4px 0 #00000023;
+    border: 1px solid #ededed;
+    min-height: 35.7em;
+    height: 85%;
+    max-height: 47em;
+}
+
+.after-click-button {
+    transform: rotateY(180deg);
+}
+
+.recommend {
+    text-align: left;
+    font-size: 1.1em;
+    color: #555;
+    margin-bottom: 1.5em;
+}
+
+.header-text {
+    font-size: 1.1em;
+    font-family: 'ex2-bold';
+    letter-spacing: 0.5px;
+}
+
+.back {
+    transform: rotateY(-180deg);
+}
+
+.after-click-button-opposite {
+    transform: rotateY(0deg);
+}
+
+.btn-wrapper-actions {
+    margin-bottom: 3em;
+}
+
+.btn-wrapper-additional-actions {
+    margin-bottom: 1em;
+}
+
+.abcd {
+    /*display: none;*/
+    transform: rotateY(179.9deg);
+}
+
+.showClass {
+    display: block;
+}
+
+:host ::ng-deep .btn-wrapper-actions app-button button {
+    border-radius: 0.3em;
+    background-color: #f7f9fa;
+    color: #3f4a59;
+    border: 1px solid #3f4a59;
+    text-transform: capitalize;
+    padding: 1em;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+    width: 100%;
+}
+
+:host ::ng-deep .btn-wrapper-actions app-button button:hover {
+    background-color: #dee1e2;
+}
+
+:host ::ng-deep .btn-wrapper-additional-actions app-button button {
+    border-radius: 0.3em;
+    background-color: #3f4a59;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+    padding: 1.5em 2.7em;
+    width: 100%;
+}
+
+:host ::ng-deep .btn-wrapper-additional-actions app-button button:hover {
+    background-color: #566d9b;
+}
+
+:host ::ng-deep .btn-wrapper-additional-actions app-button-icon button {
+    border-radius: 0.3em;
+    background-color: #3f4a59;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+    padding: 1.5em 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+}
+
+:host ::ng-deep .btn-wrapper-additional-actions.jira app-button-icon button {
+    padding: 1.5em;
+}
+
+:host ::ng-deep .btn-wrapper-additional-actions app-button-icon button.app-button img {
+    width: 14px;
+    margin-right: 0.8em;
+}
+
+:host ::ng-deep .viewMore app-button-icon button.app-button img {
+    transform: rotate(-90deg);
+    width: 0.9em;
+    margin-left: 1em;
+}
+
+:host ::ng-deep .collapse app-button-icon button.app-button img {
+    transform: rotate(90deg);
+    width: 0.9em;
+    margin-left: 1em;
+}
+
+:host ::ng-deep .btn-wrapper-additional-actions app-button-icon button:hover {
+    background-color: #566d9b;
+}
+
+.exception-container {
+    position: relative;
+}
+
+.recommend-flip {
+    margin-bottom: 2em;
+    background-color: #f9f9f9;
+    padding: 1.1em;
+    border-bottom: 1px solid #ededed;
+}
+
+.text-wrapper {
+    margin: 2em 0;
+    font-size: 1.1em;
+    padding: 0 1em;
+}
+
+.text-wrapper-header {
+    margin: 1em 0 0.6em 0;
+}
+
+.showNone {
+    display: none;
+}
+
+.textarea-container {
+    width: 100%!important;
+    margin-bottom: 0.5em;
+    height: 8em;
+    border-radius: 0.3em;
+    border: 1px solid #aaa;
+    padding: 0.2em 0.5em;
+    line-height: 1.5;
+    letter-spacing: 0.2px;
+}
+
+.error-reason {
+    color: red;
+    margin-bottom: 0.5em;
+}
+
+.textarea-button {
+    margin: 1.5em 1em;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+}
+
+.circle-loader {
+    margin: 0 0 30px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-left-color: #ed0295;
+    animation-name: loader-spin;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.circle-loader,
+.circle-loader:after {
+    border-radius: 50%;
+    width: 8em;
+    height: 8em;
+}
+
+.load-complete-success {
+    -webkit-animation: none;
+    animation: none;
+    border-color: #5cb85c;
+    transition: border 500ms ease-out;
+}
+
+.load-complete-failure {
+    -webkit-animation: none;
+    animation: none;
+    border-color: red;
+    transition: border 500ms ease-out;
+}
+
+.checkmark {
+    display: none;
+}
+
+.checkmark-show {
+    display: block;
+}
+
+.crossmark {
+    display: none;
+}
+
+.crossmark-show {
+    display: block;
+}
+
+.checkmark.draw:after {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: checkmark;
+    transform: scaleX(-1) rotate(135deg);
+}
+
+.checkmark:after {
+    opacity: 1;
+    height: 5em;
+    width: 2.3em;
+    transform-origin: left top;
+    border-right: 1px solid #5cb85c;
+    border-top: 1px solid #5cb85c;
+    content: '';
+    left: 1.5em;
+    top: 4em;
+    position: absolute;
+}
+
+.crossmark.draw:after {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: crossmark;
+    transform: scaleX(1) rotate(135deg);
+}
+
+.crossmark:after {
+    opacity: 1;
+    height: 4.5em;
+    width: 0em;
+    -webkit-transform-origin: left top;
+    transform-origin: left top;
+    border-right: 1px solid red;
+    border-top: 1px solid red;
+    content: '';
+    left: 5.5em;
+    top: 5.5em;
+    position: absolute;
+}
+
+.crossmark.draw:before {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: crossmark;
+    transform: scaleX(-1) rotate(135deg);
+}
+
+.crossmark:before {
+    opacity: 1;
+    height: 4.5em;
+    width: 0;
+    transform-origin: left top;
+    border-right: 1px solid red;
+    border-top: 1px solid red;
+    content: '';
+    left: 2.3em;
+    top: 5.5em;
+    position: absolute;
+}
+
+
+.circle-container {
+    text-align: center;
+    margin-top: 11vh;
+}
+
+@keyframes loader-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes checkmark {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 1;
+    }
+    20% {
+        height: 0;
+        width: 2.3em;
+        opacity: 1;
+    }
+    40% {
+        height: 5em;
+        width: 2.3em;
+        opacity: 1;
+    }
+    100% {
+        height: 5em;
+        width: 2.3em;
+        opacity: 1;
+    }
+}
+
+@keyframes crossmark {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 1;
+    }
+    20% {
+        height: 3.5em;
+        width: 0;
+        opacity: 1;
+    }
+    40% {
+        height: 4.5em;
+        width: 0;
+        opacity: 1;
+    }
+    100% {
+        height: 4.5em;
+        width: 0;
+        opacity: 1;
+    }
+}
+
+.error_msg_exception {
+    text-align: center;
+    color: red;
+    font-size: 1em;
+}
+
+.success_msg_exception {
+    text-align: center;
+    font-size: 1em;
+    color: #5cb85c;
+    line-height: 1.4;
+}
+
+.search-results-overlay {
+    opacity: 0.3;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 11;
+    background-color: #000;
+}
+
+.exception-btn {
+    border: none;
+    border-radius: 4px;
+    background-color: #e20074;
+    color: #fff;
+    display: inline-block;
+    padding: 0.5em;
+    margin: 0 0.3em 0.3em 0;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    min-height: 2em;
+    text-align: center;
+    -webkit-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    font-size: 1.2em;
+    font-family: ex2-medium;
+    transition: 0.3s ease;
+}
+
+.exception-btn:hover, .exception-btn:focus {
+    -webkit-box-shadow: 0px 0px 6px 0 rgba(0, 0, 0, 0.5);
+    box-shadow: 0px 0px 6px 0 rgba(0, 0, 0, 0.5);
+    background-color: #c20064;
+}
+
+.textarea-button /deep/ .app-button {
+    min-width: 5em !important;
+    min-height: 2em !important;
+    width: 8em;
+    padding: 0.7em 1.5em;
+}
+
+.textarea-button .submit-btn {
+    margin-right: 1em;
+}
+
+.exception-card-type {
+    padding-bottom: 1em; 
+}
+
+.exception-card-type span:first-child {
+    text-shadow: 0.33px 0;
+}
+
+.disabled {
+    pointer-events: none;
+    cursor: not-allowed;
+}

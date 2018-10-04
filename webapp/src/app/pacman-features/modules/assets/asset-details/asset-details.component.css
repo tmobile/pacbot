@@ -1,0 +1,627 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.asset-details-wrapper {
+    width: 100%;
+    height: 100%;
+    font-size: 1em;
+    /*overflow: hidden;*/
+}
+
+.assets-issues-container {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+
+.assets-issues-container:hover {
+    overflow: auto;
+    overflow: overlay;
+}
+
+.widget-wrapper {
+    align-items: flex-start;
+}
+
+
+.widget {
+    box-shadow: 0 0 5px 0px rgba(0, 0, 0, 0.2);
+    background-color: #fff;
+    margin: 0 1em;
+    border-radius: 0.3em;
+    width: calc(100% - 2em);
+    overflow: hidden;
+    position: relative;
+}
+
+.header {
+    padding: 0.6em 0.5em 0.7em 1em;
+    font-family: ex2-medium;
+    background-color: #fff;
+    color: #3f4a59;
+    border-top-left-radius: 0.4em;
+    border-top-right-radius: 0.4em;
+    border-bottom: 0.1em solid #d5dce2;
+}
+
+.title-text {
+    display: inline-block;
+}
+
+.arrow-img {
+    transform: rotate(180deg);
+    margin-right: 1em;
+    transition: 0.4s ease;
+    cursor: pointer;
+}
+
+.arrow-img:hover {
+    transform: rotate(180deg) translateX(20%);
+}
+
+.sidebar-widget-container {
+    padding-bottom: 1px;
+}
+
+.donutDetails {
+    text-align: center;
+    width: 100%;
+    margin: 0 auto 2em;
+}
+
+.enclosure {
+    margin-bottom: 0.4em;
+}
+
+.environmentName {
+    font-family: ex2-bold;
+    margin-bottom: 1em;
+    max-width: 12em;
+    padding-bottom: 2px;
+}
+
+.details {
+    font-size: 0.9em;
+    text-align: left;
+    min-width: 12em;
+}
+
+.size {
+    color: #085e34;
+}
+
+.space {
+    color: #999;
+}
+
+.value {
+    font-family: ex2-bold;
+}
+
+.half-widget {
+    width: calc(50% - 2em);
+    min-height: 18em;
+    position: relative;
+    flex-grow: 1;
+}
+
+
+.half-widget.table {
+    min-height: 10em;
+}
+
+.half-widget-fixed {
+    width: calc(50% - 2em);
+    min-height: 18em;
+    position: relative;
+}
+
+.disk-container-wrapper {
+    overflow-x: hidden;
+    display: flex;
+    min-height: 16em;
+}
+
+.disk-container-wrapper:hover {
+    overflow-x: auto;
+    overflow-x: overlay;
+}
+
+.disk-container-ul {
+    max-width: 100%;
+}
+
+.adjust-padding {
+    padding-top: 0.33em;
+}
+
+.common-wrapper {
+    min-height: 17em;
+}
+
+.sub-head {
+    padding: 0.6em 0.5em 0.7em 1em;
+    background-color: #dce3e9;
+}
+
+.notifications-details {
+    padding: 1em 1.7em;
+    position: relative;
+    min-height: 3em;
+}
+
+.notifications-details .flex {
+    padding: 0 0.3em 0.75em;
+    /*flex-grow: 1;*/
+}
+
+.statusSymbol {
+    border-radius: 50%;
+    width: 0.65em;
+    height: 0.65em;
+}
+
+.status-text {
+    margin-left: 0.5em;
+    font-family: ex2-bold;
+    text-transform: capitalize;
+}
+
+.open {
+    background-color: green;
+}
+
+.closed {
+    background-color: red;
+}
+
+.scheduled {
+    background-color: #ffb00d;
+}
+
+.statusValue {
+    margin-left: 0.3em;
+}
+
+.metaData-content {
+    padding: 1em 1.6em 0;
+    min-height: 5em;
+    position: relative;
+}
+
+.tags {
+    padding: 1em;
+    min-height: 8em;
+    position: relative;
+}
+
+.button-parent /deep/ .app-button {
+    border-radius: 0.3em;
+    background-color: #3f4a59;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.32);
+    padding: 1.3em 2em;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 22em;
+    margin: auto;
+    text-transform: initial;
+    font-family: ex2-light;
+}
+
+.button-parent /deep/ .app-button:hover {
+    background-color: #566d9b;
+}
+
+.button-parent /deep/ .app-button img {
+    margin: 0 1em;
+}
+
+.button-parent {
+    margin: 1.6em 1em;
+}
+
+.buttons-wrapper {
+    padding: 0.5em 8%;
+}
+
+.asset-container {
+    position: relative;
+    min-height: 6em;
+}
+
+.header-description {
+    font-family: ex2-light;
+    font-size: 1.6em;
+    padding-left: 0.4em;
+    padding-bottom: 2px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.assets-header {
+    white-space: nowrap;
+}
+
+.padding-wrapper {
+    padding: 0 2em;
+}
+
+.allign-wrapper {
+    text-align: right;
+}
+
+.legend-color {
+    height: 0.3vh;
+    width: 1.5vw;
+    margin: 0 1em;
+}
+
+.legend-text {
+    font-size: 1.05em;
+}
+
+.legends-wrapper {
+    margin: 1.5em 0;
+}
+
+.actions-wrappers {
+    padding: 0;
+    transition: 0.5s ease;
+    min-height: 19em;
+    position: relative;
+}
+
+.add-margin {
+    margin: 2em;
+}
+
+.success_msg_email {
+    text-align: center;
+    font-size: 1.2em;
+    color: #5cb85c;
+    padding: 1em 0;
+}
+
+.error_msg_email {
+    text-align: center;
+    color: red;
+    font-size: 1.2em;
+    padding: 1em 0;
+}
+
+.header-text {
+    font-size: 1.1em;
+    color: #555;
+}
+
+.after-click-button-opposite {
+    transform: rotateY(0deg);
+}
+
+.delete-img {
+    transform: rotate(90deg);
+    transition: 0.4s ease;
+    cursor: pointer;
+}
+
+.delete-img:hover {
+    transform: rotate(0deg);
+    transition: 0.4s ease;
+}
+
+.recommend-flip {
+    margin-bottom: 3em;
+}
+
+.text-wrapper {
+    margin: 2em 0;
+    font-size: 1.1em;
+}
+
+.text-wrapper-header {
+    color: #566d9b;
+    margin-bottom: 0.6em;
+}
+
+.showNone {
+    display: none;
+}
+
+.error-reason {
+    color: red;
+    margin-bottom: 0.5em;
+}
+
+.textarea-button {
+    text-align: center;
+    padding: 2em 0 1em;
+    margin-bottom: 1em;
+}
+
+.button-textarea {
+    background-color: #ed0295;
+    border: none;
+    width: 50%;
+    height: 2.3em;
+    font-family: ex2-light;
+    font-size: 0.9em;
+    color: #fff;
+    border-radius: 1.3em;
+    transition: 0.3s ease;
+}
+
+.button-textarea:hover {
+    background-color: #fff;
+    color: #ed0295;
+    border: 1px solid #aaa;
+    box-shadow: 0 2px 0.25em 0 rgba(16, 16, 16, 0.5);
+}
+
+.circle-loader {
+    margin: 0 0 30px 10px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-left-color: #ed0295;
+    animation-name: loader-spin;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.circle-loader,
+.circle-loader:after {
+    border-radius: 50%;
+    width: 8em;
+    height: 8em;
+}
+
+.load-complete-success {
+    -webkit-animation: none;
+    animation: none;
+    border-color: #5cb85c;
+    transition: border 500ms ease-out;
+}
+
+.load-complete-failure {
+    -webkit-animation: none;
+    animation: none;
+    border-color: red;
+    transition: border 500ms ease-out;
+}
+
+.checkmark {
+    display: none;
+}
+
+.checkmark-show {
+    display: block;
+}
+
+.crossmark {
+    display: none;
+}
+
+.crossmark-show {
+    display: block;
+}
+
+.checkmark.draw:after {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: checkmark;
+    transform: scaleX(-1) rotate(135deg);
+}
+
+.checkmark:after {
+    opacity: 1;
+    height: 5em;
+    width: 2.3em;
+    transform-origin: left top;
+    border-right: 1px solid #5cb85c;
+    border-top: 1px solid #5cb85c;
+    content: '';
+    left: 1.5em;
+    top: 4em;
+    position: absolute;
+}
+
+.crossmark.draw:after {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: crossmark;
+    transform: scaleX(1) rotate(135deg);
+}
+
+.crossmark:after {
+    opacity: 1;
+    height: 4.5em;
+    width: 0em;
+    -webkit-transform-origin: left top;
+    transform-origin: left top;
+    border-right: 1px solid red;
+    border-top: 1px solid red;
+    content: '';
+    left: 5.5em;
+    top: 5.5em;
+    position: absolute;
+}
+
+.crossmark.draw:before {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: crossmark;
+    transform: scaleX(-1) rotate(135deg);
+}
+
+.crossmark:before {
+    opacity: 1;
+    height: 4.5em;
+    width: 0;
+    transform-origin: left top;
+    border-right: 1px solid red;
+    border-top: 1px solid red;
+    content: '';
+    left: 2.3em;
+    top: 5.5em;
+    position: absolute;
+}
+
+
+.circle-container {
+    text-align: center;
+}
+
+@keyframes loader-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes checkmark {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 1;
+    }
+    20% {
+        height: 0;
+        width: 2.3em;
+        opacity: 1;
+    }
+    40% {
+        height: 5em;
+        width: 2.3em;
+        opacity: 1;
+    }
+    100% {
+        height: 5em;
+        width: 2.3em;
+        opacity: 1;
+    }
+}
+
+@keyframes crossmark {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 1;
+    }
+    20% {
+        height: 3.5em;
+        width: 0;
+        opacity: 1;
+    }
+    40% {
+        height: 4.5em;
+        width: 0;
+        opacity: 1;
+    }
+    100% {
+        height: 4.5em;
+        width: 0;
+        opacity: 1;
+    }
+}
+
+input.inputarea-container {
+    /*width: 23%;*/
+    height: 2em;
+    padding: 0 0.5em;
+    display: inline-block;
+    border: none;
+}
+
+ul.input-wrapper {
+    border: 1px solid #aaa;
+    border-radius: 0.3em;
+    background-color: #fff;
+    padding: 0.3em;
+}
+
+li.list-inputs {
+    /*display: inline-block;*/
+    border: 1px solid #d9d9d9;
+    border-radius: 2em;
+    margin-top: 0.1em;
+    margin-left: 0.1em;
+    cursor: pointer;
+    position: relative;
+    padding: 0.3em 1.5em;
+}
+
+li.list-inputs:hover {
+    border: 1px solid #ed0295;
+}
+
+.suggestion-wrapper {
+    position: relative;
+    z-index: 1;
+}
+
+.suggestions {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #aaa;
+    width: 100%;
+    border-radius: 0.2em;
+    cursor: pointer;
+    max-height: 9em;
+    overflow: auto;
+    overflow: overlay;
+}
+
+.lists-suggestion {
+    padding: 0.5em 1em;
+    transition: 0.3s ease;
+}
+
+.lists-suggestion:hover {
+    background-color: #ed0295;
+    color: #fff;
+    cursor: pointer;
+}
+
+.crossmark-icon {
+    height: 1em;
+    position: absolute;
+    right: 0.3em;
+    transform: translate(-50%, -50%);
+    top: 50%;
+}
+
+.link-text {
+    cursor: pointer;
+}
+
+.border-bottom {
+    border: 1px solid #ccc;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+/* css for edge browser */
+@supports (-ms-ime-align: auto) { 
+    .assets-issues-container {
+        overflow: auto;
+    }
+}

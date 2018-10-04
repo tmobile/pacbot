@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Authorize</title>
+<link href="../css/custom.css" rel="stylesheet" type="text/css" media="all">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+</head>
+<body>
+	<div class="main">
+		<div class="login">
+			<div class="login-top">
+				<img src="../imgs/check.png" style="width: 24px;">
+			</div>
+			<h1 class="header-pac">Please Confirm</h1>
+			<div class="authorize-text ">
+				Do you authorize <b style="font-weight: bold;">${authorizationRequest.clientId}</b> at <b style="font-weight: bold;color: #ed0295;">${authorizationRequest.redirectUri}</b> to access your protected resources.
+			</div>
+			<div class="login-bottom" style="text-align: center;">
+			<form id="confirmationForm" name="confirmationForm" action="/auth/oauth/authorize" method="post" style="display: inline-block;"> 
+				<input name="user_oauth_approval" value="true" type="hidden"> 
+				<#assign array = authorizationRequest.scope?join(",") />
+				<#assign mappedArray = array?split(",")>
+				<#list mappedArray as item>
+				  <input name="scope.${item}" value="true" type="checkbox" checked style="display:none;">
+				</#list>
+				
+				<!-- <input name="scope.resource-write-scope" value="true" type="checkbox"> -->
+				<input type="hidden" name="_csrf" value="${_csrf.token}"> 
+				<input type="submit" value="Approve" style="margin-left: 0px;margin-right: 0px;width: 4em;">
+			</form>
+			
+			
+			</div>
+		</div>
+	</div>
+	<div class="footer-pac">
+		<p>© 2018 PacMan (Policy as Code Manager) is developed by the <a>Cloud Strategy & Development Team</a> | <a>Request Feature</a> | <a>Report Issue</a></p>
+	</div>
+</body>
+</html>

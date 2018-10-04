@@ -1,0 +1,773 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.floating-widgets-section {
+    height: 100%;
+    width: 100%;
+}
+
+.floating-widgets-container {
+    overflow: hidden;
+}
+
+.floating-widgets-container:hover {
+    overflow: auto;
+    overflow: overlay;
+}
+
+.floating-widgets-filter-wrapper {
+    padding: 0em 1.5em 1.5em;
+}
+
+.ag-theme-material {
+    border: 1px solid #ededed;
+    border-radius: 3px;
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.15);
+}
+
+.table-wrap {
+    height: calc(100vh - 17.5em);
+}
+
+.onprem-button-wrap /deep/ .app-button {
+    margin: 0 0 0 2em;
+    background-color: #e20074;
+    color: #fff;
+    padding: 0.7em 1.5em;
+}
+
+.onprem-button-wrap /deep/ .app-button:hover {
+    background-color: #e20074;
+    color: #fff;
+}
+
+.asset-update-wrapper /deep/ ul.ui-select-choices {
+    max-height: 9em!important;
+    z-index: 2;
+    position: relative;
+}
+
+.onprem-button-wrap {
+    min-height: 4.5em;
+}
+
+.target-wrap {
+    left: 1.25em;
+    right: 1.25em;
+    top: 0;
+    height: calc(100vh - 18.5em);
+    z-index: 12;
+    background-color: rgba(255, 255, 255, 0.97);
+    padding: 3em 2em;
+    border-radius: 3px;
+    box-shadow: 0px 0px 6px 0px rgba(0, 0, 0, 0.2);
+}
+
+.adjust-padding {
+    padding-top: 2px;
+}
+
+.target-title {
+    font-size: 1.5em;
+    padding-bottom: 1.5em;
+}
+
+.target-tile-wrap {
+    flex-flow: wrap;
+    overflow-y: hidden;
+    height: 100%;
+    align-content: flex-start;
+    padding: 0 0.5em;
+    border-bottom: 1px solid #ededed77;
+}
+
+.target-tile-wrap:hover {
+    overflow-y: auto;
+    overflow-y: overlay;
+}
+
+.target-tiles {
+    height: 7em;
+    max-width: 11em;
+    padding: 1em;
+    overflow: hidden;
+    margin: 0.5em;
+    background: #4f5566;
+    border-radius: 3px;
+    color: #fff;
+    border: 2px solid #4f5566;
+    transition: 0.3s ease;
+    flex-shrink: 0;
+    cursor: pointer;
+    font-family: ex2-medium;
+    letter-spacing: 0.3px;
+    font-size: 1.1em;
+    text-transform: capitalize;
+    flex-grow: 1;
+    text-overflow: ellipsis;
+    word-break: break-word;
+    line-height: 1.4;
+    width: 11em;
+}
+
+.target-tiles:hover {
+    background: #fafafa;
+    color: #4f5566;
+}
+
+.target-tiles.active {
+    background: #e20074;
+    color: #fff;
+    border: 2px solid #7f0041;
+}
+
+.target-tiles.active:hover {
+    background: #e20074;
+    color: #fff;
+    border: 2px solid #7f0041;
+}
+
+.save-wrap {
+    padding-top: 4em;
+}
+
+.error-msg {
+    text-transform: initial;
+    color: #333;
+}
+
+.close-img {
+    height: 2em;
+    width: 2em;
+    transition: 0.3s;
+    cursor: pointer;
+    position: absolute;
+    top: 1.5em;
+    right: 1.5em;
+    z-index: 6;
+}
+
+.close-img img {
+    height: 100%;
+    width: 100%;
+}
+
+.close-img:hover {
+    transform: rotate(-90deg);
+}
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.asset-update-wrapper /deep/ .app-button.disabled {
+    color: #fff;
+    background-color: #a4a4a4;
+}
+
+.ag-sidebar {
+    top: 0;
+    bottom: 0;
+    right: 0;
+    transform: translateX(101%);
+    max-width: 100%;
+    z-index: 5;
+    overflow: hidden;
+    background: white;
+    width: 32em;
+    transition: 0.3s ease;
+    box-shadow: 0 3px 4px 0 #0000001e, 0 2px 4px 0 #00000023;
+    border: 1px solid #ededed;
+}
+
+.ag-sidebar.active {
+    transform: translateX(0%);
+}
+
+.details-bar-header {
+    background-color: #f9f9f9;
+    padding: 0.6em 0.8em;
+    border-bottom: 1px solid #ededed;
+    line-height: 1.9;
+}
+
+.details-bar-header img {
+    transition: 0.3s ease;
+}
+
+.details-bar-header img:hover {
+    transform: rotate(-90deg);
+}
+
+.details-bar-inner {
+    padding: 2em;
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    word-break: break-word;
+    justify-content: space-between;
+}
+
+.table-overlay {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    opacity: 0.3;
+    background-color: #000;
+    z-index: 4;
+}
+
+.ag-sidebar-title {
+    padding-bottom: 1em;
+}
+
+.each-col {
+    padding: 1.3em;
+}
+
+.sidebar-save {
+    padding: 3em 1em 2em;
+}
+
+.each-col-wrap {
+    overflow: hidden;
+    height: 100%;
+}
+
+.each-col-wrap:hover {
+    overflow: auto;
+    overflow: overlay;
+}
+
+.input-wrap {
+    padding-top: 1.5em;
+}
+
+.input-wrap input {
+    width: 100%;
+    border-radius: 2px;
+    outline: none;
+    box-shadow: none;
+    background: #fff;
+    border: 1px solid #aeaeae;
+    padding: 0.5em 1em;
+}
+
+
+/* The container */
+
+.container {
+    display: block;
+    position: relative;
+    padding-left: 2em;
+    cursor: pointer;
+    font-size: 1em;
+    user-select: none;
+    height: 1.4em;
+}
+
+
+/* Hide the browser's default checkbox */
+
+.container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    display: none;
+}
+
+
+/* Create a custom checkbox */
+
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 1.4em;
+    width: 1.4em;
+    background-color: transparent;
+    border-radius: 2px;
+    transition: all .2s;
+    border: 2px solid #636363;
+    padding: 2px;
+}
+
+
+/* On mouse-over, add a grey background color */
+
+.container:hover input~.checkmark {
+    background-color: transparent;
+}
+
+
+/* When the checkbox is checked, add a blue background */
+
+.container input:checked~.checkmark {
+    background-color: #e20074;
+    border: 2px solid #e20074;
+}
+
+
+/* Create the checkmark/indicator (hidden when not checked) */
+
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+
+/* Show the checkmark when checked */
+
+.container input:checked~.checkmark:after {
+    display: block;
+}
+
+
+/* Style the checkmark/indicator */
+
+.container .checkmark:after {
+    left: 51%;
+    top: 38%;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0px;
+    transform: translate(-50%, -50%) rotate(45deg) scale(0.9);
+}
+
+.flex-strip {
+    transition: 0.24s ease;
+    height: 100%;
+}
+
+.key-val-summary {
+    background: #ededed;
+    border-radius: 2px;
+    width: 80%;
+    padding: 0.66em 2em;
+    margin: 2em 1em 3em;
+    overflow: auto;
+}
+
+.key-val-summary .txt {
+    padding: 0.75em 0;
+    line-height: 1.35;
+}
+
+.key-val-summary .txt:first-letter {
+    text-transform: uppercase;
+}
+
+.summary-desc {
+    width: 80%;
+    margin: 0 1em 3em;
+    font-size: 1.13em;
+    line-height: 1.5;
+}
+
+.cancel-update /deep/ .app-button {
+    background-color: #fff;
+    color: #ed0295;
+    margin-top: 1em;
+}
+
+.cancel-update /deep/ .app-button:hover {
+    background-color: #fff;
+    color: #ed0295;
+    box-shadow: none;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.col-update-wrap {
+    height: calc(100% - 8em);
+    border-bottom: 1px solid #ededed88;
+}
+
+.circle-loader {
+    margin: 0 0 30px 0px;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-left-color: #ed0295;
+    animation-name: loader-spin;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.circle-loader,
+.circle-loader:after {
+    border-radius: 50%;
+    width: 8em;
+    height: 8em;
+}
+
+.load-complete-success {
+    -webkit-animation: none;
+    animation: none;
+    border-color: #5cb85c;
+    transition: border 500ms ease-out;
+}
+
+.load-complete-failure {
+    -webkit-animation: none;
+    animation: none;
+    border-color: red;
+    transition: border 500ms ease-out;
+}
+
+.checkmarks {
+    display: none;
+}
+
+.checkmark-show {
+    display: block;
+}
+
+.crossmark {
+    display: none;
+}
+
+.crossmark-show {
+    display: block;
+}
+
+.checkmarks.draw:after {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: checkmarks;
+    transform: scaleX(-1) rotate(135deg) translateY(-5px);
+}
+
+.checkmarks:after {
+    opacity: 1;
+    height: 5em;
+    width: 2.3em;
+    transform-origin: left top;
+    border-right: 1px solid #5cb85c;
+    border-top: 1px solid #5cb85c;
+    content: '';
+    left: 1.5em;
+    top: 4em;
+    position: absolute;
+}
+
+.crossmark.draw:after {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: crossmark;
+    transform: scaleX(1) rotate(135deg);
+}
+
+.crossmark:after {
+    opacity: 1;
+    height: 4.5em;
+    width: 0em;
+    -webkit-transform-origin: left top;
+    transform-origin: left top;
+    border-right: 1px solid red;
+    border-top: 1px solid red;
+    content: '';
+    left: 5.5em;
+    top: 5.5em;
+    position: absolute;
+}
+
+.crossmark.draw:before {
+    animation-duration: 800ms;
+    animation-timing-function: ease;
+    animation-name: crossmark;
+    transform: scaleX(-1) rotate(135deg);
+}
+
+.crossmark:before {
+    opacity: 1;
+    height: 4.5em;
+    width: 0;
+    transform-origin: left top;
+    border-right: 1px solid red;
+    border-top: 1px solid red;
+    content: '';
+    left: 2.3em;
+    top: 5.5em;
+    position: absolute;
+}
+
+@keyframes loader-spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes checkmarks {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 1;
+    }
+    20% {
+        height: 0;
+        width: 2.3em;
+        opacity: 1;
+    }
+    40% {
+        height: 5em;
+        width: 2.3em;
+        opacity: 1;
+    }
+    100% {
+        height: 5em;
+        width: 2.3em;
+        opacity: 1;
+    }
+}
+
+@keyframes crossmark {
+    0% {
+        height: 0;
+        width: 0;
+        opacity: 1;
+    }
+    20% {
+        height: 3.5em;
+        width: 0;
+        opacity: 1;
+    }
+    40% {
+        height: 4.5em;
+        width: 0;
+        opacity: 1;
+    }
+    100% {
+        height: 4.5em;
+        width: 0;
+        opacity: 1;
+    }
+}
+
+.length-indicator {
+    top: 24px;
+    right: 1.6em;
+    transform: translateY(-50%);
+    color: #444;
+    font-family: ex2-medium;
+    letter-spacing: 0.3px;
+}
+
+.no-editable-fields {
+    align-self: center;
+    top: 50%;
+    transform: translateY(-50%);
+    letter-spacing: 0.2px;
+    font-family: ex2-medium;
+}
+
+.download-range {
+    max-width: 100%;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    background-color: green;
+    border-radius: 0.75em;
+    transition: 0.2s ease;
+    width: 0%;
+}
+
+.loader-overlay {
+    top: 0;
+    left: 0;
+    z-index: 5;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid #ededed;
+    border-radius: 3px;
+}
+
+.loader-content {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    z-index: 6;
+}
+
+.download-tracker {
+    margin-top: 2em;
+    border-radius: 0.75em;
+    overflow: hidden;
+    border: 1px solid #aaa;
+    background: rgba(0, 0, 0, 0.3);
+    width: 19.5em;
+    height: 1em;
+}
+
+.loader-txt {
+    font-size: 1.2em;
+    font-family: ex2-medium;
+}
+
+.loaded-txt {
+    margin-top: 1em;
+    color: #777;
+    opacity: 1;
+    transition: 0.3s ease;
+    font-size: 0.92em;
+    padding-right: 7px;
+}
+
+.visibility-hidden {
+    opacity: 0;
+}
+
+.saved-target {
+    padding-right: 1.2em;
+    font-size: 1.1em;
+    font-family: ex2-medium;
+}
+
+.bc-wrap {
+    min-height: 3.5em;
+}
+
+.drop-options {
+    height: 2em;
+    margin-top: 1.5em;
+    width: 100%;
+    border-radius: 3px;
+    background-color: #ffffff;
+    border: solid 1px #c3cbd7;
+    position: relative;
+    transition: 0.3s ease;
+    padding: 0 0.66em 0 0.6em;
+    cursor: pointer;
+    line-height: 1.8em;
+}
+
+.disabled-selection {
+    pointer-events: none;
+    cursor: not-allowed;
+    background: #ededed;
+    opacity: 0.4;
+}
+
+.disabled-radio {
+    pointer-events: none;
+    cursor: not-allowed;
+    opacity: 0.4;
+}
+
+.null-txt {
+    font-style: italic;
+    color: #666;
+    font-family: ex2-extralight;
+    letter-spacing: 0.5px;
+}
+
+.blur-overlay {
+    filter: blur(3px);
+}
+
+.access-denied {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 1.2em;
+    line-height: 1.5;
+}
+
+.gradient {
+    animation-duration: 2.2s;
+    animation-fill-mode: forwards;
+    animation-iteration-count: infinite;
+    animation-name: placeHolderShimmer;
+    animation-timing-function: ease-in;
+    background: green;
+    background: linear-gradient(to right, green 8%, #1b951b 38%, green 54%);
+    background-size: 1000px 640px;
+}
+
+.radio-wrap {
+    margin-top: 0.5em;
+    width: 100%;
+    background-color: #ffffff00;
+    position: relative;
+    transition: 0.3s ease;
+    padding: 0 0.66em 0 2em;
+    cursor: pointer;
+}
+
+.radio-btn {
+    height: 18px;
+    width: 18px;
+    border: 2px solid #636363;
+    border-radius: 9px;
+    position: relative;
+    margin-right: 0.5em;
+}
+
+.each-radio {
+    padding: 1em 2em 0 0;
+    align-items: center;
+}
+
+.each-radio .radio-btn .radio-indicator {
+    background-color: #ed029500;
+    transition: 0.2s ease;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 8px;
+    width: 8px;
+    border-radius: 4px;
+}
+
+.each-radio .radio-btn.active .radio-indicator {
+    background-color: #bf097b;
+}
+
+.radio-txt {
+    text-transform: capitalize;
+    letter-spacing: 0.3px;
+}
+
+@keyframes placeHolderShimmer {
+    0% {
+        background-position: -468px 0
+    }
+    100% {
+        background-position: 468px 0
+    }
+}
+
+.ag-download-onprem {
+    position: absolute;
+    bottom: 30px;
+    transform: translateY(50%);
+    left: 27px;
+    height: 1.33em;
+    cursor: pointer;
+    z-index: 3;
+}

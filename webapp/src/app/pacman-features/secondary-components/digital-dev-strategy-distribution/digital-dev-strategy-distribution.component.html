@@ -1,0 +1,28 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <section class="digital-dev-strategy-distribution-wrapper relative">
+    <div class="sub-header">
+        <app-title-burger-head [subHeadTitle]="'Repositories Distribution by Branching Strategies'"></app-title-burger-head>
+    </div>
+    <div class="graph-chart-cont show-links relative" id="devApplicationDist" *ngIf='dataComing && !showLoader'>
+        <app-doughnut-chart (linkData)='handleLink($event)' *ngIf='donutData' [chartContId]="'devApplicationDist'" [graphData]="donutData" [graphWidth]="widgetWidth" [flexTrue]="true" [graphHeight]="widgetHeight" [MainTextcolor]='MainTextcolor' [innerRadious]='innerRadious' [outerRadious]='outerRadious' [strokeColor]="strokeColor"></app-doughnut-chart>
+    </div>
+    <article class='center error_handling' *ngIf="!datacoming" >
+        <div class="error_msg">
+            <app-error-message *ngIf='seekdata == true' [selectedValue]="errorMessage"></app-error-message>
+        </div>
+    </article>
+    <div *ngIf='showLoader' class="loader"></div>
+</section>

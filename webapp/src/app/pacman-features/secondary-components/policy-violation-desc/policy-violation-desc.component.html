@@ -1,0 +1,79 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <section class="policy-violation-desc-wrapper flex flex-col" *ngIf="violationData">
+    <div class="policy-violation-label flex flex-col flex-align-start" *ngIf="violationData.policyViolated">
+        <div class="policy-violation-label-header capitalize">
+            Policy Violated
+        </div>
+        <div class="policy-violation-label-content anchor-link pointer" title="{{violationData.policyViolated}}" (click)="navigateTo('policy knowledgebase details',violationData.ruleId)">
+            {{violationData.policyViolated}}
+        </div>
+    </div>
+    <div class="policy-violation-label flex flex-col" *ngIf="violationData.policyDescription">
+        <div class="policy-violation-label-header capitalize">
+            Policy Description
+        </div>
+        <div class="policy-violation-label-content policy-description-content" [innerHTML]="violationData.policyDescription">
+        </div>
+    </div>
+    <div class="policy-violation-label flex flex-col" *ngIf="violationData.violationReason">
+        <div class="policy-violation-label-header capitalize">
+            violation Reason</div>
+        <div class="policy-violation-label-content" [innerHTML]="violationData.violationReason" title="{{violationData.violationReason}}">
+        </div>
+    </div>
+    <div class="policy-violation-label flex flex-col" *ngIf="labelData.length > 0">
+        <div class="policy-violation-label-header capitalize">
+            Violation Details
+        </div>
+        <div class="policy-violation-label-content flex" *ngIf="labelData.length > 0">
+            <div [class.full-width]='!eachData.isAccordion' class="each-label flex flex-col" *ngFor='let eachData of labelData;let i = index '>
+                <div class="policy-violation-label-name capitalize nowrap-ellipsis" title="{{eachData.labelName}}">
+                    {{eachData.labelName}}
+                </div>
+                <div class="policy-violation-label-value relative" *ngIf="eachData.isAccordion == true" tabindex="1" >
+                    <span class="anchor-link pointer" (click)='$event.stopPropagation(); showAccordion=!showAccordion '> View </span>
+                    <app-nested-accordion (click)='$event.stopPropagation()' (accodionClicked)="$event.stopPropagation(); closeAccordion($event)"  [nestedAccordionData]="eachData.values" class="nested-accordion-component-wrapper absolute" *ngIf="showAccordion"></app-nested-accordion>
+                </div>
+                <div class="policy-violation-label-value" title="{{eachData.labelCount}}" *ngIf="eachData.isAccordion == false" [innerHTML]="eachData.labelCount">
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="policy-violation-label flex flex-col flex-align-start" *ngIf="violationData.resouceViolatedPolicy">
+        <div class="policy-violation-label-header capitalize">
+            Resource ID </div>
+        <div class="policy-violation-label-content anchor-link pointer" title="{{violationData.resouceViolatedPolicy}}" (click)="navigateTo('asset details',violationData.resouceViolatedPolicy,violationData.resourceType)">
+            {{violationData.resouceViolatedPolicy}}
+        </div>
+    </div>
+    <div class="policy-violation-label flex flex-col" *ngIf="violationData.violationCreatedDate">
+        <div class="policy-violation-label-header capitalize">
+            Creation date
+        </div>
+        <div class="policy-violation-label-content" title="{{violationData.violationCreatedDate}}">
+            {{violationData.violationCreatedDate}}
+        </div>
+    </div>
+    <div class="policy-violation-label flex flex-col" *ngIf="violationData.violationModifiedDate">
+        <div class="policy-violation-label-header capitalize">
+            Last modified date
+        </div>
+        <div class="policy-violation-label-content" title="{{violationData.violationModifiedDate}}">
+            {{violationData.violationModifiedDate}}
+        </div>
+    </div>
+    <a *ngIf="violationData.policyViolated " class="capitalize anchor-link goto-link pointer" (click)="navigateTo('policy knowledgebase details',violationData.ruleId)"> View details for policy resolution</a>
+</section>

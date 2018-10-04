@@ -1,0 +1,42 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+
+.digital-application-distribution-wrapper{
+    height: 100%;
+}
+.digital-application-distribution-wrapper .graph-chart-cont {
+    height: 90%;
+}
+.total-count{
+    font-size: 1.5em;
+    margin: 1em auto;
+    text-align: center;
+}
+.total-untagged{
+    margin: 1em auto;
+    text-align: center;
+}
+.make-link {
+    transition: 0.2s ease;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.make-link:hover {
+    color: #ed0295;
+    text-decoration: underline;
+    fill: #ed0295;
+    text-shadow: 0.4px 0;
+}

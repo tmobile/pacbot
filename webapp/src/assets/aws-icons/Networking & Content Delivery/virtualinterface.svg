@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="42px" height="50px" viewBox="0 0 42 50" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>directconnect</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="directconnect" transform="translate(0.593750, 0.832031)" fill-rule="nonzero">
+            <polygon id="Shape" fill="#1D2126" points="40.6162195 15.8891463 20.3170732 18.4108537 0.023902439 15.8891463 20.3170732 0"></polygon>
+            <polygon id="Shape" fill="#516A9C" points="40.6162195 33.1108537 20.3170732 30.5891463 0.023902439 33.1108537 20.3170732 49"></polygon>
+            <polygon id="Shape" fill="#3C5079" points="40.6162195 15.8891463 20.3170732 9.8 20.3170732 0 40.6162195 10.1465854"></polygon>
+            <polygon id="Shape" fill="#3C5079" points="28.8920732 28.5454878 40.6162195 27.3682927 40.6162195 21.6317073 28.8920732 20.4604878"></polygon>
+            <polygon id="Shape" fill="#3C5079" points="40.6162195 33.1108537 20.3170732 39.2 20.3170732 49 40.6162195 38.8534146"></polygon>
+            <polygon id="Shape" fill="#263555" points="0.023902439 15.8891463 20.3170732 9.8 20.3170732 0 0.023902439 10.1465854"></polygon>
+            <polygon id="Shape" fill="#263555" points="9.51317073 32.1368293 20.3170732 34.3 31.1209756 24.5 20.3170732 14.7 9.51317073 16.8631707"></polygon>
+            <polygon id="Shape" fill="#3C5079" points="31.1209756 32.1368293 20.3170732 34.3 20.3170732 14.7 31.1209756 16.8631707"></polygon>
+            <polygon id="Shape" fill="#263555" points="11.7420732 28.5454878 0.023902439 27.3682927 0.023902439 21.6317073 11.7420732 20.4604878"></polygon>
+            <polygon id="Shape" fill="#263555" points="0.023902439 33.1108537 20.3170732 39.2 20.3170732 49 0.023902439 38.8534146"></polygon>
+        </g>
+    </g>
+</svg>

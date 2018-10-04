@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="22px" height="20px" viewBox="0 0 22 20" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 51 (57462) - http://www.bohemiancoding.com/sketch -->
+    <title>print</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M18.5833333,5.66666667 L3.41666667,5.66666667 C1.61833333,5.66666667 0.166666667,7.11833333 0.166666667,8.91666667 L0.166666667,15.4166667 L4.5,15.4166667 L4.5,19.75 L17.5,19.75 L17.5,15.4166667 L21.8333333,15.4166667 L21.8333333,8.91666667 C21.8333333,7.11833333 20.3816667,5.66666667 18.5833333,5.66666667 Z M15.3333333,17.5833333 L6.66666667,17.5833333 L6.66666667,12.1666667 L15.3333333,12.1666667 L15.3333333,17.5833333 Z M18.5833333,10 C17.9875,10 17.5,9.5125 17.5,8.91666667 C17.5,8.32083333 17.9875,7.83333333 18.5833333,7.83333333 C19.1791667,7.83333333 19.6666667,8.32083333 19.6666667,8.91666667 C19.6666667,9.5125 19.1791667,10 18.5833333,10 Z M17.5,0.25 L4.5,0.25 L4.5,4.58333333 L17.5,4.58333333 L17.5,0.25 Z" id="path-1"></path>
+    </defs>
+    <g id="V2---Infographic" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Vuln_1.3" transform="translate(-1204.000000, -105.000000)">
+            <g id="print" transform="translate(1204.000000, 105.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <use id="Shape" fill="#E20074" fill-rule="nonzero" xlink:href="#path-1"></use>
+            </g>
+        </g>
+    </g>
+</svg>

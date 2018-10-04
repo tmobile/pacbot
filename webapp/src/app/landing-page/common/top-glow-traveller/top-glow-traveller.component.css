@@ -1,0 +1,72 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.top-glow-traveller {
+    z-index: -1;
+}
+
+.spacer {
+    height: 1em;
+}
+
+.top-glow-traveller-right {
+    position: relative;
+    display: inline-block;
+    width: 60em;
+    height: 42em;
+    transform: rotate(18.5deg);
+    z-index: -1;
+}
+
+.top-glow-traveller-left {
+    z-index: -1;
+    position: relative;
+    display: inline-block;
+    width: 60em;
+    height: 42em;
+    transform: rotate(-18.5deg);
+}
+
+.glow-traveller-inside-right {
+    position: absolute;
+    top: -1px;
+    left: 54em;
+    right: 6em;
+    height: 3px;
+    background-color: #F5006D;
+    z-index: -1;
+}
+
+
+.glow-traveller-inside-left {
+    position: absolute;
+    top: -1px;
+    right: 22em;
+    left: 38em;
+    height: 3px;
+    background-color: #F5006D;
+    z-index: -1;
+}
+
+.container-centered {
+    z-index: -1;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+}

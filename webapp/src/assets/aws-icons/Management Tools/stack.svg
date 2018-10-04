@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="57px" height="45px" viewBox="0 0 57 45" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 49.3 (51167) - http://www.bohemiancoding.com/sketch -->
+    <title>stack</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Asset-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" opacity="0.8">
+        <g id="Asset-Dashboard-AWS-Copy" transform="translate(-1005.000000, -340.000000)" fill-rule="nonzero">
+            <g id="stack" transform="translate(1005.388889, 339.460099)">
+                <rect id="Rectangle-path" fill="#263555" x="0.425925926" y="2.76" width="55.3703704" height="11.9259259"></rect>
+                <rect id="Rectangle-path" fill="#263555" x="0.425925926" y="18.0933333" width="25.9814815" height="11.9259259"></rect>
+                <rect id="Rectangle-path" fill="#263555" x="29.7040741" y="18.0933333" width="25.9814815" height="11.9259259"></rect>
+                <rect id="Rectangle-path" fill="#263555" x="0.425925926" y="33.4266667" width="16.1851852" height="11.9259259"></rect>
+                <rect id="Rectangle-path" fill="#263555" x="20.0185185" y="33.4266667" width="16.1851852" height="11.9259259"></rect>
+                <rect id="Rectangle-path" fill="#263555" x="39.6111111" y="33.4266667" width="16.1851852" height="11.9259259"></rect>
+                <rect id="Rectangle-path" fill="#3C5079" x="0.425925926" y="0.647407407" width="55.3703704" height="11.9259259"></rect>
+                <rect id="Rectangle-path" fill="#3C5079" x="0.425925926" y="15.9807407" width="25.9814815" height="11.9259259"></rect>
+                <rect id="Rectangle-path" fill="#3C5079" x="29.7040741" y="15.9807407" width="25.9814815" height="11.9259259"></rect>
+                <rect id="Rectangle-path" fill="#3C5079" x="0.425925926" y="31.3140741" width="16.1851852" height="11.9259259"></rect>
+                <rect id="Rectangle-path" fill="#3C5079" x="20.0185185" y="31.3140741" width="16.1851852" height="11.9259259"></rect>
+                <rect id="Rectangle-path" fill="#3C5079" x="39.6111111" y="31.3140741" width="16.1851852" height="11.9259259"></rect>
+            </g>
+        </g>
+    </g>
+</svg>

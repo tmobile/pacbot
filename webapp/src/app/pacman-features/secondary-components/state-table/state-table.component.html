@@ -1,0 +1,52 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <section class="state-table-wrapper" *ngIf="data">
+    <div class="text-header" *ngIf='top'>Top <span *ngIf='count > 1'></span> Apps and Directors</div>
+    <div class="table-wrapper extra-padding-top" *ngIf='top'>
+        <div class="header-wrapper flex">
+            <div class="header-title" title="{{data}}" *ngFor='let data of headers'>{{data}}</div>
+        </div>
+        <div class="data-wrapper top-noncompliant" [ngStyle]="{'height': 2.25 * showMoreDirectors + 'em'}">
+            <div class="data-title-wrapper flex" *ngFor="let text of data.response | orderBy : { property: 'nonCompliantNumber', direction: -1 }">
+                <div class="data-title" title="{{text.app}}">{{text.app}}</div>
+                <div class="data-title" title="{{text.Director}}">{{text.Director}}</div>
+                <div class="data-title-exec" title="{{text.nonCompliantNumber}}" (click)="text.nonCompliantNumber > 0 && navigatePage('director',text.Director,text.app)">
+                    <span [ngClass]="{'link-text-secondary pointer underline-link-num': text.nonCompliantNumber > 0}">{{text.nonCompliantNumber}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="view-more-button">
+            <img class="view-more-wrapper" *ngIf='showMoreDirectors < 6 && viewDirectorsRequired' src="../assets/icons/black-arrow.svg" (click)='showMore()'>
+            <img class="view-less-wrapper" *ngIf='showMoreDirectors > 5' src="../assets/icons/black-arrow.svg" (click)='showLess()'>
+        </div>
+    </div>
+    <div class="text-header" *ngIf='bottom'>Top <span *ngIf='count > 1'></span> Executive Sponsors</div>
+    <div class="table-wrapper extra-padding" *ngIf='bottom'>
+        <div class="header-wrapper flex">
+            <div class="header-title-exec" *ngFor="let data of headers | orderBy : { property: 'nonCompliantNumber', direction: -1 }">{{data}}</div>
+        </div>
+        <div class="data-wrapper top-sponsors" [ngStyle]="{'height': 2.25 * showMoreSponsors + 'em'}">
+            <div class="data-title-wrapper flex" *ngFor='let text of data.response'>
+                <div class="data-title-exec" title="{{text.execSponsor}}">{{text.execSponsor}}</div>
+                <div class="data-title-exec" (click)="text.nonCompliantNumber > 0 && navigatePage('executiveSponsor',text.execSponsor)">
+                    <span [ngClass]="{'link-text-secondary pointer underline-link-num': text.nonCompliantNumber > 0}">{{text.nonCompliantNumber}}</span></div>
+            </div>
+        </div>
+        <div class="view-more-button">
+            <img class="view-more-wrapper" *ngIf='showMoreSponsors < 6 && viewSponsorsRequired' src="../assets/icons/black-arrow.svg" (click)='showMoreSponsorsList()'>
+            <img class="view-less-wrapper" *ngIf='showMoreSponsors > 5' src="../assets/icons/black-arrow.svg" (click)='showLessSponsorsList()'>
+        </div>
+    </div>
+</section>

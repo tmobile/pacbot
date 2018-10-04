@@ -1,0 +1,6 @@
+.app-loading .logo {     
+    width: 180px;
+    height: 180px;
+    background: url(./assets/icons/app-loader.gif) center center no-repeat;
+    background-size: contain;
+  }

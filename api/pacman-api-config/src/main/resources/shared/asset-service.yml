@@ -1,0 +1,8 @@
+server:
+  contextPath: /api/asset
+  
+cloudinsights:
+  tokenurl: ${CLOUD_INSIGHTS_TOKEN_URL}
+  costurl: ${CLOUD_INSIGHTS_COST_URL}
+  corp-user-id: ${SVC_CORP_USER_ID}
+  corp-password: ${SVC_CORP_PASSWORD}

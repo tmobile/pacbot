@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="19px" height="16px" viewBox="0 0 19 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47 (45396) - http://www.bohemiancoding.com/sketch -->
+    <title>High</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Compliance-Dashboard" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Compliance-Dashboard_v3.2" transform="translate(-244.000000, -262.000000)" fill-rule="nonzero" fill="#D40325">
+            <g id="Group-43" transform="translate(244.000000, 262.000000)">
+                <path d="M0,16 L18.5263158,16 L9.26315789,0 L0,16 Z M10.1052632,13.4736842 L8.42105263,13.4736842 L8.42105263,11.7894737 L10.1052632,11.7894737 L10.1052632,13.4736842 Z M10.1052632,10.1052632 L8.42105263,10.1052632 L8.42105263,6.73684211 L10.1052632,6.73684211 L10.1052632,10.1052632 Z" id="High"></path>
+            </g>
+        </g>
+    </g>
+</svg>

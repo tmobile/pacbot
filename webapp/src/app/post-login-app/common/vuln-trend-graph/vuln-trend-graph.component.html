@@ -1,0 +1,116 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div [class.zero-opacity]='graphResponse < 1' class='flex flex-col graph-container vulnReportGraphContainer relative'>
+    <svg #container height='200' class='vulnReportGraph' id='{{svgId}}'></svg>
+    <div *ngIf='graphResponse > 0' class='absolute left-label' [ngStyle]="{'color' : '#000000'}">Occurrences</div>
+    <div *ngIf='graphResponse > 0' class='absolute svg-wrapper flex flex-col'>
+        <div class='absolute y0-axis flex flex-col'>
+            <div class='each-tick flex flex-start' *ngFor="let y0 of axisValues['y0']">{{y0 | number}}</div>
+        </div>
+        <div class='each-grid' *ngFor="let y of axisValues['y0']">
+        </div>
+    </div>
+    <div *ngIf='graphResponse > 0 && notesData.length' [class.zero-opacity]='!infoActive' class='absolute svg-wrapper transition flex z-4'>
+        <div *ngFor='let point of notesData; let i = index; ' class='absolute point-wrapper' [ngStyle]="{'left': (graphX[point.dateStr] + 1) + 'px', 'top': (graphY[point.dateStr] - 1) + 'px'}">
+            <div *ngFor='let node of point.data' class='data-point' [class.ag-specific]="node.type=='AssetGroup'">{{node.label}}</div>
+        </div>
+    </div>
+    <div *ngIf='graphResponse > 0' class='absolute svg-wrapper flex z-5'>
+        <div *ngFor='let date of graphData; let i = index; ' class='each-date' (click)='graphClicked(date, i);' >
+            <div class='absolute date-display'>{{date.dateStr}}</div>
+        </div>
+    </div>
+    <div class='today-line absolute' *ngIf='graphResponse > 0'>
+        <div class='flex flex-col flex-align-center flex-center absolute today-flag'>
+            <div class='today-txt'>Dated:</div>
+            <div class='today-date'>{{graphData[graphData.length - 1].dateStr}}</div>
+        </div>
+    </div>
+</div>
+<div [class.active]='infoActive' class="notes-container" *ngIf='notesData.length && graphResponse > 0'>
+    <div class='relative notes-wrap flex flex-center flex-align-center flex-wrap'>
+        <ng-container *ngFor='let notes of notesData'>
+            <div *ngFor='let eachNote of notes.data; let i = index; ' (click)='noteClicked(eachNote); ' [class.vibration]='notes.vibrate' [class.no-event]='notesResponse < 1' [class.admin-access]='adminAccess' [class.ag-specific]="eachNote.type=='AssetGroup'" class='each-note flex'>
+                <div>
+                    <span class='label-txt'>{{eachNote.label}}.</span>
+                    <span class='label-desc'>{{eachNote.note}} </span>
+                </div>
+                <div class='edit-icon'>
+                    <img src='../assets/icons/Edit.svg'>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
+<div *ngIf='graphResponse > 0' class='flex flex-align-center flex-center legends-wrapper'>
+    <div class='flex flex-align-center'>
+        <div class="legends-value container flex flex-align-center">
+            <div class="container legend" style="background-color: #5d717e;"></div>
+            <div class="ilb container legend-txt">Open</div>
+        </div>
+        <div class="legends-value container flex flex-align-center">
+            <div class="container legend" style="background-color: #ed4463;"></div>
+            <div class="container legend-txt">New</div>
+        </div>
+        <div *ngIf='infoActive && notesData.length && graphResponse > 0' class="legends-value container flex flex-align-center">
+            <div class="container graph-point legend " style="border: 2px solid #79b2dd;"></div>
+            <div class="ilb container legend-txt">All Asset Groups</div>
+        </div>
+        <div *ngIf='infoActive && notesData.length && graphResponse > 0' class="legends-value container flex flex-align-center">
+            <div class="container graph-point legend" style="border: 2px solid #4c69a1;"></div>
+            <div class="container legend-txt">Specific to <span class='capitalize'>{{agName}}</span> </div>
+        </div>
+    </div>
+</div>
+<div *ngIf='openNotesModal' class='fixed flex flex-col notes-modal'>
+    <div class="popup-header flex flex-align-center flex-between">
+        <div class="header-title">Vulnerability Trend - <span *ngIf='!editMode'>Add</span><span *ngIf='editMode'>Edit</span> Note</div>
+        <div class="cross-img" (click)='openNotesModal=false;'>
+            <img height="27px;" src="../assets/png/delete.png" width="27px;">
+        </div>
+    </div>
+    <div class='flex flex-col flex-grow flex-between'>
+        <div class='flex flex-col scroll flex-grow'>
+            <div class='input-wrap'>
+                <div class='input-title'>Asset Group</div>
+                <div class='drop-options'>
+                    <app-searchable-dropdown [active]='activeScope' [firstDD]='true' (selection)='selectAg($event)' [placeholder]="'Select Asset Group'" [items]='agList'></app-searchable-dropdown>
+                </div>
+            </div>
+            <div class='input-wrap'>
+                <div class='input-title'>Date</div>
+                <div class='datepicker-wrap'>
+                    <app-date-dropdown [dateToday]='dateSelected' [options]='options' [dataForm]="'user'" (dataSent)='getDateData($event)'></app-date-dropdown>
+                </div>
+            </div>
+            <div class='input-wrap' *ngIf='recentData.length'>
+                <div class='input-title'>Data for Previous, Current and Following Dates</div>
+                <div class='data-text' [class.bold]='data.selectedDate' *ngFor='let data of recentData'><span>{{data.date}} - </span> <span> {{data.data | number}}</span> <span class='selected-txt' *ngIf='data.selectedDate'> : Selected Date</span></div>
+            </div>
+            <div class='input-wrap'>
+                <div class='input-title'>Incident</div>
+                <textarea [(ngModel)]='notesText' maxlength="60" class='text-area' placeholder='Max 60 characters'></textarea>
+            </div>
+        </div>
+        <div class='flex flex-end no-shrink admin-select-btn-wrap'>
+            <div (click)='deleteNote();' class='flex flex-align-center flex-center modal-button active' *ngIf='editMode'>DELETE</div>
+            <div (click)='updateNote();' class='flex flex-align-center flex-center modal-button' [class.active]='notesText'><span *ngIf='!editMode'>SAVE</span><span *ngIf='editMode'>UPDATE</span></div>
+        </div>
+    </div>
+    <div class='absolute update-loader' *ngIf='updateNoteState == 0'>
+        <div class="loader absolute"></div>
+    </div>
+</div>
+<div *ngIf='openNotesModal' class='fixed flex flex-col bg-overlay' (click)='openNotesModal=false;'></div>

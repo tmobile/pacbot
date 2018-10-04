@@ -1,0 +1,80 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <!-- <div>
+<app-vuln-report-workflow>
+</app-vuln-report-workflow>
+</div> -->
+<div class="vuln-distribution-wrapper relative flex flex-col">
+  <div *ngIf="responseReceived === 3" class='flex flex-row'>
+    <!-- donut content -->
+    <div class='flex flex-col each-donut donut-transition' *ngFor="let distribution of distributionArray | orderBy : { property: 'order', direction: 1 }; let i = index;" onshow="setWidthForDonutChart()">
+        <div class='flex flex-row flex-center relative'>
+          <div id="d3{{i}}">
+            <app-doughnut-chart *ngIf='distribution.data[2]' [chartContId]="'d3'+i" [graphData]="distribution.data[2]" [graphWidth]="widgetWidth"
+              [flexTrue]="false" [graphHeight]="widgetHeight" [MainTextcolor]='MainTextcolor' [innerRadious]='innerRadious'
+              [outerRadious]='outerRadious' [strokeColor]="strokeColor"></app-doughnut-chart>
+          </div>
+          <div class='info-text-wrapper'>
+            <div class='info-text-heading'>
+              {{distribution.data[2].centerText}}
+            </div>
+            <div class='info-text' *ngIf='distribution.data[0].category === "OS" || distribution.data[1].category === "OS"'>
+              Vulnerabilities in application software (e.g. “Java”) vs. infrastructure (e.g. “OS Kernel”)
+            </div>
+            <div class='info-text' *ngIf='distribution.data[0].category === "Cloud" || distribution.data[1].category === "Cloud"'>
+              Vulnerabilities in public cloud assets (i.e. AWS and Azure) vs. the datacenter.
+            </div>
+            <div class='info-text' *ngIf='distribution.data[0].category === "Prod" || distribution.data[1].category === "Prod"'>
+              Vulnerabilities in production systems vs. all other environments.
+            </div>
+          </div>
+        </div>
+        <div class='table-wrapper flex flex-row flex-center'>
+          <table>
+            <tr>
+              <th></th>
+              <th>{{distribution.data[0].category}}</th>
+              <th>{{distribution.data[1].category}}</th>
+            </tr>
+            <tr>
+              <td>
+                <img class='table-img' src='../assets/icons/Vulnerabilities-magenta.svg' />
+                <span class='first-table-data'>Vulnerabilities</span>
+              </td>
+              <td>{{distribution.data[0].uniqueVulnCount | number}}</td>
+              <td>{{distribution.data[1].uniqueVulnCount | number}}</td>
+            </tr>
+            <tr>
+              <td>
+                <img class='table-img' src='../assets/icons/Assets-context.svg' />
+                <span class='first-table-data'>Assets Affected</span>
+              </td>
+              <td>{{distribution.data[0].totalVulnerableAssets | number}}</td>
+              <td>{{distribution.data[1].totalVulnerableAssets | number}}</td>
+            </tr>
+            <tr>
+              <td>
+                <img class='table-img' src='../assets/icons/Occurrences.svg' />
+                <span class='first-table-data'>Occurrences</span>
+              </td>
+              <td>{{distribution.data[0].vulnerabilities | number}}</td>
+              <td>{{distribution.data[1].vulnerabilities | number}}</td>
+            </tr>
+          </table>
+        </div>
+    </div>
+  </div>
+  <div class='loader' *ngIf="responseReceived < 3"></div>
+</div>

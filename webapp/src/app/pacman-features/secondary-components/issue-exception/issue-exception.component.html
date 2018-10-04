@@ -1,0 +1,114 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="actions-wrapper back flex flex-col">
+	<header class="recommend-flip flex-between flex flex-align-center flex-between">
+		<div class="header-text">
+			<span *ngIf='showExceptionModal'>Add Exception</span>
+			<span *ngIf='showRevokeExceptionmodal'>Revoke Exception</span>
+		</div>
+		<img class='pointer cross-img' (click)='closeModal()' src='../../../../assets/png/delete.png'>
+	</header>
+	<section class="content-wrapper flex flex-col flex-grow">
+		<div class='empty-issuelist' *ngIf='(showExceptionModal || showRevokeExceptionmodal) && issueList.length === 0 && !showLoadComplete'>There are no selected issues found.</div>
+		<div *ngIf="(showExceptionModal || showRevokeExceptionmodal) && !showTransaction && !addExceptionDetails" class='first-screen flex flex-col'>
+			<div class='issues-text-wrapper flex flex-col'>
+				<div class="exception-text nowrap-ellipsis">
+					<span class='text-color'>Selected Issues: </span>
+					<span class='bold'>{{openIssueList.length}} Open, {{exemptedIssueList.length}} Exempted</span>
+				</div>
+			</div>
+			<div *ngIf="showExceptionModal" class='issues-text-wrapper flex flex-col'>
+				<div class="exception-text" *ngIf="exemptedIssueList.length">
+					<p class='text-color'>
+						<span>You are trying to add an exception for an already exempted issue.</span>
+						<span class=''>This will overwrite the exemption period used previously.</span>
+					</p>
+				</div>
+			</div>
+			<div *ngIf="showRevokeExceptionmodal" class='issues-text-wrapper flex flex-col'>
+				<div class="exception-text" *ngIf="openIssueList.length">
+					<p class='text-color'>
+						<span>Open issues can not be revoked.</span>
+						<span class='bold'> {{openIssueList.length}}</span>
+						<span>selected open issues will remain unchanged.</span>
+					</p>
+				</div>
+			</div>
+			<div class='bottom-section-first-screen'>
+				<div class="textarea-button-first-screen flex flex-row flex-between">
+					<div class='submit-btn' [class.disable-btn]="issueList.length > maxIssues || (showRevokeExceptionmodal && exemptedIssueList.length === 0)" (click)='$event.stopPropagation(); proceedWithException()'>
+						<app-button>NEXT</app-button>
+					</div>                       
+				</div>				
+				<div class='note-text err-msg' *ngIf='issueList.length > maxIssues'>Please select maximum <span>{{maxIssues}}</span> issues only.</div>
+				<div class='note-text err-msg' *ngIf='showRevokeExceptionmodal && exemptedIssueList.length === 0'>Please select atleast 1 exempted issue to revoke exception.</div>
+				<div class='note-text'>Note: Maximum <span>{{maxIssues}}</span> issues can be exempted or revoked at a time.</div>
+			</div>	
+
+		</div>
+		<form novalidate *ngIf="showExceptionModal && addExceptionDetails && !showTransaction" (ngSubmit)="$event.stopPropagation(); onExceptionSubmit(user)" [formGroup]="user">
+			<label>
+				<div class="text-wrapper-header">Reason</div>
+				<textarea id="textarea-id" class="textarea-container" formControlName="name"></textarea>
+			</label>
+			<div class="error-reason" *ngIf="user.get('name').hasError('required') && user.get('name').touched">
+				Reason is required
+			</div>
+			<div class="text-wrapper-header">End Date</div>
+			<app-date-dropdown [dataForm]="'user'" (dataSent)='getDateData($event)'></app-date-dropdown>
+			<div class="textarea-button flex flex-row flex-between">
+				<div class='submit-btn'>
+					<app-button type="submit" [disabled]="user.invalid">ADD</app-button>
+				</div>                      
+			</div>
+		</form>
+		<div class="circle-container" *ngIf="(showExceptionModal || showRevokeExceptionmodal) && showTransaction">
+			<div class="circle-loader" [class.load-complete-success]='showLoadComplete && actionComplete' [class.load-complete-failure]='showLoadComplete && !actionComplete'>
+				<div *ngIf='actionComplete' class="checkmark draw" [class.checkmark-show]='showLoadComplete'></div>
+				<div *ngIf='!actionComplete' class="crossmark draw" [class.crossmark-show]='showLoadComplete'></div>
+			</div>
+		</div>
+		<div class="error_msg_exception" *ngIf='showLoadComplete && !actionComplete'>
+			<div class="error_msg">
+				<app-error-message *ngIf='(showExceptionModal || showRevokeExceptionmodal) && failedIssueIds.length === 0' [selectedValue]="errorMessage"></app-error-message>
+			</div>
+			<div *ngIf="showExceptionModal && failedIssueIds.length > 0">Exception not added for below Issue IDs:</div>
+			<div *ngIf="showRevokeExceptionmodal && failedIssueIds.length > 0">Failed in Revoking Issue Exception for below Issue IDs:</div>
+			<div *ngIf="(showExceptionModal || showRevokeExceptionmodal) && failedIssueIds.length > 0" class="flex flex-col flex-grow failed-list-wrapper">					
+				<ul id='ids-list' class='issue-list ids-wrapper'>
+					<li *ngFor='let id of failedIssueIds'>{{id}}</li>
+				</ul>
+				<div class='copy-btn' (click)='$event.stopPropagation(); copytext()'>
+					<app-button>Copy IDs</app-button>
+				</div>										
+				<div class='margin'>Please contact us. We will investigate further.</div>
+				<div class='margin flex flex-col'>
+					<div class="flex flex-row flex-between contact-btn">
+						<a href="{{content.homePage.contactUs.email}}" *ngIf="content.homePage.contactUs.email">
+							<app-button>E-MAIL US</app-button>
+						</a>
+						<app-button-icon *ngIf="content.homePage.contactUs.slack" [iconSrc]="'/assets/icons/slack-icon.png'" (onClickInner)="goToSlackLink(content.homePage.contactUs.slack)">SLACK
+						</app-button-icon>
+					</div>
+				</div>
+			</div>		
+		</div>
+		<div class="success_msg_exception" *ngIf='showLoadComplete && actionComplete'>
+			<div *ngIf="showExceptionModal">Exception added successfully</div>
+			<div *ngIf="showRevokeExceptionmodal">Successfully Revoked Issue Exception!</div>
+		</div>
+	</section>
+</div>
+

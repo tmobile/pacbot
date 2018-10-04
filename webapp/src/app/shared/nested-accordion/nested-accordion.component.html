@@ -1,0 +1,42 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="nested-accordion-wrapper">
+    <ul *ngIf="nestedAccordionData.length > 0">
+        <li class="relative" *ngFor='let eachOuterLevel of nestedAccordionData; let k = index '>
+            <input id="selectBoxFirst{{k}}" class="absolute accordion-input" type="checkbox" name="tabs">
+            <label [class.no-accordion-arrow]="!eachOuterLevel.values" class="accordion-multiselect-type relative " for="selectBoxFirst{{k}}">
+                <span class="filter-dropDdown-arrow" *ngIf="eachOuterLevel.values"></span>
+                <span *ngIf="eachOuterLevel.labelName" class="label-name nowrap-ellipsis" title="{{eachOuterLevel.labelName}}">{{eachOuterLevel.labelName}}</span>
+                <span *ngIf="eachOuterLevel.labelCount" class="label-count nowrap-ellipsis" title="{{eachOuterLevel.labelCount}}">{{eachOuterLevel.labelCount}}</span>
+            </label>
+            <ul class="accordion-inner flex flex-col" *ngIf="eachOuterLevel.values">
+                <li class="sub-filter-each relative" *ngFor='let eachInnerLevel of eachOuterLevel.values; let m = index ' >
+                    <input id="selectBoxSecond{{m}}" class="absolute accordion-input" type="checkbox" name="tabs">
+                    <label class="accordion-multiselect-type " [class.no-accordion-arrow]="!eachOuterLevel.values" for="selectBoxSecond{{m}}">
+                        <span class="filter-dropDdown-arrow" *ngIf="eachInnerLevel.values"></span>
+                        <span class="accordion-inner-name" class="label-name nowrap-ellipsis" *ngIf="eachInnerLevel.labelName" title="{{eachInnerLevel.labelName}}">{{eachInnerLevel.labelName}}</span>
+                        <span class="accordion-inner-count" class="label-count nowrap-ellipsis" *ngIf="eachInnerLevel.labelCount" title="{{eachInnerLevel.labelCount}}">{{eachInnerLevel.labelCount}}</span>
+                    </label>
+                    <ul class="accordion-inner  flex flex-col" *ngIf="eachInnerLevel.values">
+                        <li class="sub-filter-each accordion-second-level  flex flex-between" *ngFor='let eachSecondInnerLevel of eachInnerLevel.values; let n = index '>
+                            <span class="accordion-inner-name nowrap-ellipsis" class="label-name" *ngIf="eachSecondInnerLevel.labelName" title="{{eachSecondInnerLevel.labelName}}">{{eachSecondInnerLevel.labelName}}</span>
+                            <span class="accordion-inner-count nowrap-ellipsis" class="label-count" *ngIf="eachSecondInnerLevel.labelCount" title="{{eachSecondInnerLevel.labelCount}}">{{eachSecondInnerLevel.labelCount}}</span>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 50.2 (55047) - http://www.bohemiancoding.com/sketch -->
+    <title>Compliance-magenta</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Main-Navigation" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="OmniSearch-1" transform="translate(-533.000000, -24.000000)" fill="#E20074" fill-rule="nonzero">
+            <g id="Group-55" transform="translate(514.000000, 24.000000)">
+                <g id="Group-54">
+                    <g id="Group-53">
+                        <g id="Group-19" transform="translate(19.000000, 0.000000)">
+                            <path d="M0.00218181818,14.5454545 L8.72945455,14.5454545 L8.72945455,16 L0.00218181818,16 L0.00218181818,14.5454545 Z M3.08945455,5.14181818 L5.14763636,3.08581818 L15.4312727,13.3709091 L13.3745455,15.4276364 L3.08945455,5.14181818 Z M8.23272727,0 L12.3469091,4.11345455 L10.2887273,6.17163636 L6.17672727,2.05527273 L8.23272727,0 Z M2.05672727,6.17090909 L6.17090909,10.2850909 L4.11418182,12.3418182 L0,8.22763636 L2.05672727,6.17090909 Z" id="Compliance-magenta"></path>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

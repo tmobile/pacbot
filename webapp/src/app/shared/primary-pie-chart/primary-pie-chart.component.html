@@ -1,0 +1,60 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <section class="parent-wrapper relative" [class.showFlex]='flexTrue == true'>
+  <!-- Show total number of count -->
+
+  <!-- plotting the pie chart -->
+  <div class="pie-chart-graph-content flex flex-col flex-align-center"  *ngIf="!zeroData">
+    <div class="total-count-section" *ngIf="graphData.totalCount >= 0">
+      {{'Total Applications: ' + graphData.totalCount}}
+    </div>
+    <div #pieContainer class="graph-outer-container" *ngIf="!zeroData">
+      <svg></svg>
+    </div>
+    <div class="pie-chart-desc" *ngIf="graphData.repowithoutApplication >= 0">
+      {{'* '+graphData.repowithoutApplication}} repositories not tagged with application tag
+    </div>
+
+
+  </div>
+
+  <!--Legend text for default pie charts-->
+  <div class="graph-legend-cont flex" *ngIf="graphData.legend" [ngStyle]="{'color': graphData.legendTextcolor}">
+    <div class="legend-each" [ngClass]="{'link-text': graphData.data[i] > 0 && graphData.link}" [ngStyle]="{'cursor': graphData.data[i] > 0 && graphData.styling.cursor }"
+      *ngFor="let eachGraphPath of graphData.legend;let i = index" [ngStyle]="{'color': graphData.legendTextcolor}" (click)="graphData.data[i] > 0 && instructParentToNavigate(eachGraphPath)">
+      <div class="legend-color" [ngStyle]="{'background-color': graphData.color[i]}"></div>
+      <span class="legend-text">{{eachGraphPath}} - {{graphData.data[i]}}</span>
+
+    </div>
+  </div>
+  <!--Legend text for the pie charts where percentage is shown next to count-->
+  <div class="graph-legend-cont flex" *ngIf="graphData.legendWithText" [ngStyle]="{'color': graphData.legendTextcolor}">
+    <div class="legend-each" [ngClass]="{'link-text': graphData.data[i] > 0 && graphData.link}" [ngStyle]="{'cursor': graphData.data[i] > 0 && graphData.styling.cursor }"
+      *ngFor="let eachGraphPath of graphData.legendWithText;let i = index" [ngStyle]="{'color': graphData.legendTextcolor}"
+      (click)="graphData.data[i] > 0 && instructParentToNavigate(eachGraphPath)">
+
+      <div class="legend-color" [ngStyle]="{'background-color': graphData.color[i]}"></div>
+      <span title="{{eachGraphPath}} - {{graphData.data[i]}} ({{(graphData.data[i]/graphData.totalCount) | percent:'1.0-0'}})"
+        class="legend-text capitalize">{{eachGraphPath}} -
+        <span class="legend-text-right" *ngIf="graphData.totalCount > 0"> {{(graphData.data[i]/graphData.totalCount) | percent:'1.0-0'}}</span>
+        <span class="legend-text-right" *ngIf="graphData.totalCount == 0">({{"0%"}})</span>
+      </span>
+    </div>
+    <div class="pie-chart-legend-desc" >
+      {{'Note : One application can follow multiple strategies'}}
+    </div>
+  </div>
+
+</section>

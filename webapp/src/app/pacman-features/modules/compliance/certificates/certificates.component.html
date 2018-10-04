@@ -1,0 +1,66 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+  <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+  <div class="floating-widgets-header flex flex-between">
+      <div>
+          <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+          <h1 class="title-text">{{pageTitle}}</h1>
+      </div>
+      <div class='flex relative z-index'>
+          <div class='drop-options'>
+              <app-searchable-dropdown *ngIf='filterTypeLabels.length' [firstDD]='true' (selection)='changeFilterType($event)' [placeholder]="'Select filter type'" [items]='filterTypeLabels'></app-searchable-dropdown>
+          </div>
+          <div class='drop-search-box'>
+              <app-searchable-dropdown (selection)='changeFilterTags($event)' [placeholder]="'Search filter tags'" [items]='filterTagLabels'></app-searchable-dropdown>
+          </div>
+      </div>
+  </div>
+  <div class='floating-widgets-filter-wrapper' *ngIf='filters.length'>
+      <app-filtered-selector (deleteAllFilters)="deleteFilters($event)" (deleteFilter)="deleteFilters($event)" [(filteredArray)]="filters"></app-filtered-selector>
+  </div>
+  <div class="floating-widgets-container">
+      <section>
+          <ul>
+              <li class="widget-wrapper relative">
+                  <div>
+                      <app-data-table [searchTextValues]=searchTxt 
+                      [showGenericMessage]='showGenericMessage' 
+                      [errorValue]='errorValue' 
+                      [parentName]="'certificateTableMessage'" 
+                      [showingArr]='showingArr' 
+                      [outerArr]='outerArr' 
+                      [searchableHeader]='true' 
+                      [allColumns]='allColumns' 
+                      [dataHead]="'All Certificates'"  
+                      [firstPaginator]='firstPaginator' 
+                      [lastPaginator]='lastPaginator' 
+                      [totalRows]='totalRows' 
+                      [currentPointer]='currentPointer' 
+                      (searchRowTxt)='searchCalled($event)' 
+                      (previousPageCalled)='prevPg()' 
+                      (nextPageCalled)='nextPg()' 
+                      (searchTriggerred)='callNewSearch()' 
+                      [popRows]='popRows' 
+                      (rowClickText)='handlePopClick($event)' 
+                      [headerColName]="'expiringIn'" 
+                      [direction]='1'>
+                      </app-data-table>
+                  </div>
+              </li>
+          </ul>
+      </section>
+  </div>
+</div>

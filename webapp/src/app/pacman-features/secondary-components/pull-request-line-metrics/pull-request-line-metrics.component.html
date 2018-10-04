@@ -1,0 +1,142 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class='onprem-graph-wrap multiline-brush-zoom-container flex flex-col' (window:resize)='onResize()'>
+    <div class="sub-head">
+        <app-title-burger-head [subHeadTitle]="'Total Created vs. Total Merged Pull Requests'"></app-title-burger-head>
+    </div>
+    <div class='outer-container flex relative'>
+        <section class='pull-request-matrix-line-chart relative flex flex-col'>
+            <div class='flex flex-end flex-align-start transition quarter-selector' *ngIf="dataState>0">
+                <div class="right text-right">
+                    <div class="quarter-desc clearfix relative" (click)='sidebarOpened=true; checkIfEmptyObj();'>
+                        <div class="pp-time left">{{currentYear - selectedYear}}
+                        </div>
+                        <div *ngIf='finalData[selectedYear]' class="pp-quarter left">Q{{finalData[selectedYear].quartersData[selectedQuarter].number}}
+                        </div>
+                        <div class="arrow-right absolute">
+                        </div>
+                    </div>
+                    <div *ngIf='finalData[selectedYear]' class="pp-view-quarter" (click)='selectedYear=0; selectedQuarter =finalData[selectedYear].quartersData.length - 1; yearPickedIndex = 0; yearPicked = currentYear; loadNewData(); '>
+                        View Current Quarter
+                    </div>
+                </div>
+            </div>
+            <div [class.hide-block]='dataState<1' class='flex transition flex-col graph-container relative' id='onpremContainer'>
+                <svg id='onpremGraph'>
+                </svg>
+                <div class='absolute left-label' [ngStyle]="{'color' : '#169eaf'}">Pull Requests</div>
+                <div *ngIf='finalData[selectedYear]' class="absolute x-axes-wrap">
+                    <div class="percent-wrap flex clearfix" *ngIf='finalData[selectedYear].quartersData[selectedQuarter].data.pullRequestStateByWeek'>
+                        <div [class.no-event]='tiles.futureWeek' (click)='selectedWeek=i;plotDonut(selectedWeek);' *ngFor='let tiles of finalData[selectedYear].quartersData[selectedQuarter].data.pullRequestStateByWeek; let i = index; ' [ngStyle]="{'width': 100/finalData[selectedYear].quartersData[selectedQuarter].data.pullRequestStateByWeek.length + '%'}" class="x-percent flex flex-align-center flex-center">
+                        </div>
+                    </div>
+                    <div class="labels-wrap flex clearfix" *ngIf='finalData[selectedYear].quartersData[selectedQuarter].data.pullRequestStateByWeek'>
+                        <div *ngFor='let weeks of finalData[selectedYear].quartersData[selectedQuarter].data.pullRequestStateByWeek; let i = index ' class="x-label" [ngStyle]="{'width': 100/finalData[selectedYear].quartersData[selectedQuarter].data.pullRequestStateByWeek.length + '%'}">W{{i + 1}}</div>
+                    </div>
+                </div>
+                <div class='absolute grid-container flex flex-col' *ngIf="axisValues['y0'].length">
+                    <div class='absolute y0-axis flex flex-col'>
+                        <div class='each-tick flex flex-start' *ngFor="let y0 of axisValues['y0']">{{y0 | number}}</div>
+                        <div class='absolute zero-tick'>0</div>
+                    </div>
+                    <div class='each-grid' *ngFor="let y of axisValues['y0']">
+                    </div>
+                </div>
+                <div class='absolute grid-container flex z-3' *ngIf="finalData[selectedYear] && axisValues['y0'].length">
+                    <div class='each-column' [class.no-event]='weeks.futureWeek' (click)='selectedWeek=i; plotDonut(selectedWeek);' *ngFor="let weeks of finalData[selectedYear].quartersData[selectedQuarter].data.pullRequestStateByWeek; let i = index ">
+                    </div>
+                </div>
+                <div class='absolute grid-container flex z-0' *ngIf="finalData[selectedYear] && axisValues['y0'].length">
+                    <div class='each-column' [class.active]='i==selectedWeek' *ngFor="let weeks of finalData[selectedYear].quartersData[selectedQuarter].data.pullRequestStateByWeek; let i = index ">
+                    </div>
+                </div>
+            </div>
+            <div [class.hide-block]='dataState<1' class="legends-wrap transition flex flex-align-center">
+                <div class="ilb container legend-outer">
+                    <div class="legends-value  container">
+                        <div class="ilb container legend patched weekly-patches" [ngStyle]="{'background-color': darkBlue}"></div>
+                        <div class="ilb container legend-txt">Total Created</div>
+                    </div>
+                    <div class="legends-value container">
+                        <div class="ilb container legend patched weekly-target" [ngStyle]="{'background-color': lightBlue}"></div>
+                        <div class="ilb container legend-txt">Total Merged</div>
+                    </div>
+                    <div class="legends-value container">
+                        <div class="ilb container legend patched weekly-target" [ngStyle]="{'background-color': lightGreen}"></div>
+                        <div class="ilb container legend-txt">Total Declined</div>
+                    </div>
+                    <div class="legends-value container">
+                        <div class="ilb container legend patched weekly-target" [ngStyle]="{'background-color': 'rgb(255,186,191)'}"></div>
+                        <div class="ilb container legend-txt">Open/Declined</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <section class='pull-request-matrix-donut-chart flex flex-col' *ngIf="dataState>0">
+            <div *ngIf='selectedWeek>=0' class='selected-week'>Week {{selectedWeek + 1}} Pull Request Breakdown</div>
+            <div class="graph-chart-cont relative show-links" id="pullReqBarChart" *ngIf='dataState > 0' #widget>
+                <app-bar-chart (graphTextClick)='redirectGraph($event);' [barChartHeight]="'250'" class="graph-chart-cont-component" *ngIf='graphData' [chartContId]="'pullReqBarChart'" [graphData]="graphData" [legend_text]="legend_text"></app-bar-chart>
+            </div>
+        </section>
+        <div *ngIf='dataState==0' class='loader'></div>
+        <div class="error_msg">
+            <app-error-message *ngIf='dataState==-1' [selectedValue]="errorMessage"></app-error-message>
+        </div>
+        <div (click)='sidebarOpened=false' class='pp-quarter-overlay-bg absolute' *ngIf='sidebarOpened == true && dataState>0'></div>
+        <div *ngIf="dataState>0" class='pp-quarter-overlay absolute' [class.active]='sidebarOpened'>
+            <ul class="patching-year-wrapper left">
+                <li class="patching-each-year" *ngFor='let years of finalData; let i=index; ' [class.active]='i==yearPickedIndex' (click)='yearPickedIndex = i; yearPicked=years.year; checkIfEmptyObj(); '>{{years.year}}</li>
+            </ul>
+            <ul class="patching-quarter-wrapper left flex flex-col">
+                <li class="patching-quarter-header flex flex-align-center flex-center clearfix relative">
+                    {{yearPicked}}
+                    <div (click)='sidebarOpened=false' class="mr-close absolute">close</div>
+                </li>
+                <li class='flex flex-col flex-grow scroll-on-hover outer-quarter-wrap'>
+                    <div class='each-quarter-row flex relative' [class.no-event]='!quarters.rawData.pullRequestStateByWeek' [class.active]='selectedQuarter==i && yearPickedIndex == currentYear - finalData[selectedYear].year' *ngFor='let quarters of finalData[yearPickedIndex].quartersData; let i = index; ' (click)='selectedQuarter=i; selectedYear = yearPickedIndex; sidebarOpened=false; loadNewData();'>
+                        <div class='svg-container relative flex flex-col flex-align-center flex-center no-shrink'>
+                            <svg width='85' height='99'></svg>
+                            <div class='quarterNumText absolute'>Q{{quarters.number}}</div>
+                        </div>
+                        <div class='each-quarter-detail-wrap flex-align-center flex-grow flex flex-evenly' *ngIf='quarters.rawData.pullRequestStateByWeek'>
+                            <div class='each-desc'>
+                                <div class='pp-stats-txt'>{{quarters.rawData.pullRequestStateByWeek[quarters.rawData.pullRequestStateByWeek.length - 1].totalCreated}}</div>
+                                <div class='pp-stats-desc'>Total Created</div>
+                            </div>
+                            <div class='each-desc'>
+                                <div class='pp-stats-txt'>{{quarters.rawData.pullRequestStateByWeek[quarters.rawData.pullRequestStateByWeek.length - 1].totalMerged}}</div>
+                                <div class='pp-stats-desc'>Total Merged</div>
+                            </div>
+                            <div class='each-desc'>
+                                <div class='pp-stats-txt'>{{quarters.rawData.pullRequestStateByWeek[quarters.rawData.pullRequestStateByWeek.length - 1].totalDeclined}}</div>
+                                <div class='pp-stats-desc'> Total Declined</div>
+                            </div>
+                            <div class='each-desc'>
+                                <div class='pp-stats-txt'>{{quarters.rawData.pullRequestStateByWeek[quarters.rawData.pullRequestStateByWeek.length - 1].totalOpen}}</div>
+                                <div class='pp-stats-desc'> Total Open</div>
+                            </div>
+                            <div class='btn-wrap'>
+                                <div class="view-btn" *ngIf='!(selectedQuarter==i && yearPickedIndex == currentYear - finalData[selectedYear].year)'>View</div>
+                                <div class="view-btn" *ngIf='selectedQuarter==i && yearPickedIndex == currentYear - finalData[selectedYear].year'>Selected</div>
+                            </div>
+                        </div>
+                        <div *ngIf='(!quarters.rawData.pullRequestStateByWeek && !quarters.errorOccured) || quarters.loading ' class='loader absolute'></div>
+                        <div *ngIf='quarters.errorOccured && !quarters.loading' class='absolute err-occurred'>{{quarters.errorOccured}}</div>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

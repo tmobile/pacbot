@@ -1,0 +1,114 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div id="stats-overlay-page" class="overlay-vertical-center">
+	<div id="stats-overlay-screenshot" class="overlay-innerwrap">
+		<div class="event-container relative">
+			<header class="header flex flex-align-center flex-between">
+				<div id="stats-overlay-back" class="goBack flex flex-align-center" (click)='closeStatsModal()'>
+					<img class="back-arrow" src="../assets/icons/BackArrow.svg"> Back
+				</div>
+				<div class="header-text">
+					<span *ngIf="this.config && this.config.required && this.config.required.APP_NAME">{{this.config.required.APP_NAME}} </span>
+					<span> Statistics</span>
+				</div>
+				<div id="stats-overlay-download" class="download" (click)="takeScreenshot()">
+					<img class="download-icon" src="../assets/icons/Download.svg">
+				</div>
+			</header>
+			<main>
+				<article id="article" class="topSection flex flex-align-center " *ngIf='dataComing && !showLoader'>
+					<div class="events topsection-each">
+						<div class="events-text">Policies Enforced</div>
+						<div class="events-image-wrapper policies-enforced">
+							<img class="events-icon" src="../assets/icons/Enforce.svg">
+						</div>
+						<div class="events-count flex flex-center">{{numberOfPoliciesEnforced | number}}
+						</div>						
+					</div>
+					<div class="events topsection-each">
+						<div class="events-text">Policy Evaluations</div>
+						<div class="sub-text">EVERYDAY</div>
+						<div class="events-image-wrapper policy-evalutions">
+							<img class="events-icon" src="../assets/icons/Shield.svg">
+						</div>
+						<div class="events-count flex flex-center">{{numberOfPolicyEvaluations | number}}
+						</div>
+					</div>
+					<div class="events topsection-each">
+						<div class="events-text">Available Auto Fixes</div>
+						<div class="events-image-wrapper policy-evalutions">
+							<img class="events-icon" src="../assets/icons/policies-star-badge.svg">
+						</div>
+						<div class="events-count flex flex-center">{{numberOfPolicyWithAutoFixes | number}}
+						</div>
+					</div>
+					<div class="events topsection-each" >
+						<div class="events-text">Auto Fixes Applied</div>
+						<div class="events-image-wrapper">
+							<img class="events-icon" src="../assets/icons/Rocket.svg">
+						</div>
+						<div class="events-count flex flex-center">{{totalAutoFixesApplied | number}}</div>
+					</div>
+				</article>
+				<article class="bottomSection flex flex-align-center" [ngClass]="{'bg-wrapper' : dataComing == true}">
+					
+					<div class="events bottomsection-each" *ngIf='dataComing && !showLoader'>
+						<div class="events-text">Aws Accounts Scanned</div>
+						<div class="events-image-wrapper aws-account">
+							<img class="events-icon" src="../assets/icons/AWS.svg">
+						</div>
+						<div class="events-count flex flex-center">{{numberOfAwsAccounts | number}}
+						</div>
+					</div>
+					<div class="events bottomsection-each" *ngIf='dataComing && !showLoader'>
+						<div class="events-text">Events Processed</div>
+						<div class="sub-text">EVERYDAY</div>
+						<div class="events-image-wrapper events-processed">
+							<img class="events-icon" src="../assets/icons/Processed.svg">
+						</div>
+						<div class="events-count flex flex-center">{{numberOfEventsProcessed | number}}
+						</div>
+					</div>
+					<div class="events bottomsection-each" *ngIf='dataComing && !showLoader'>
+						<div class="events-text">Assets Scanned</div>
+						<div class="events-image-wrapper asset-scanned">
+							<img class="events-icon" src="../assets/icons/Barcode.svg">
+						</div>
+						<div class="events-count flex flex-center">{{totalNumberOfAssets | number}}
+						</div>
+					</div>
+					<div class='total-violations'>
+						<div class="events-text opacity-0 uppercase" [ngClass]="{'hide-this' : dataComing == true}">Total Violations</div>
+						<div class="graph-chart-cont relative" id="statsDoughnut">
+							<app-doughnut-chart *ngIf = "dataComing && doughNutData" (error)="getErrorValues($event)" [chartContId] = "'statsDoughnut'" [graphData] = "doughNutData" [graphWidth]="widgetWidth" [graphHeight]="widgetHeight" [MainTextcolor] = 'MainTextcolor' [innerRadious] = 'innerRadious' [outerRadious] ='outerRadious' [strokeColor]= "strokeColor"></app-doughnut-chart>
+						</div>
+					</div>
+				</article>
+			</main>
+			<div class="absolute year-wrapper flex" *ngIf='dataComing && !showLoader'[ngClass]="{'show-year-wrapper' : dataComing == true}">
+				<div class="year-inner-wrapper">
+					<span class="month uppercase">{{currentMonth}}</span>
+					<span class="year">{{currentYear}}</span>
+				</div>		
+			</div>
+			<article class='center error_handling' *ngIf="!datacoming">
+				<div class="error_msg">
+					<app-error-message *ngIf='seekdata == true' [selectedValue]="errorMessage"></app-error-message>
+				</div>
+			</article>
+			<div *ngIf='showLoader' class="loader"></div>
+		</div>
+	</div>
+</div>

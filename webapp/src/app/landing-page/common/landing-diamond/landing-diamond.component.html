@@ -1,0 +1,60 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="container-centered">
+    <div class="mr-diamond">
+        <svg width="100%" height="100%" version="1.1" xmlns="http://www.w3.org/2000/svg">
+            <!--upper-left-->
+            <line x1="0" y1="0" x2="0" y2="42em" class="diamond-line"></line>
+            <!--lower-left-->
+            <line x1="42em" y1="42em" x2="0em" y2="42em" class="diamond-line"></line>
+            <!--upper-right-->
+            <line x1="0" y1="0" x2="42em" y2="0" class="diamond-line"></line>
+            <!--lower-right-->
+            <line x1="42em" y1="42em" x2="42em" y2="0em" class="diamond-line"></line>
+            <line x1="42em" y1="42em" x2="14.45em" y2="14.45em" class="diamond-line-secondary"></line>
+            <line x1="43.5em" y1="0em" x2="14.45em" y2="14.45em" class="diamond-line-secondary"></line>
+            <line x1="0" y1="43.5em" x2="14.45em" y2="14.45em" class="diamond-line-secondary"></line>
+        </svg>
+        <app-pulse-ball class="pulse-ball pulse-ball-left" [animationState]="sequence[0].pulseState()">
+        </app-pulse-ball>
+        <app-pulse-ball class="pulse-ball pulse-ball-center" [animationState]="sequence[1].pulseState()">
+        </app-pulse-ball>
+        <app-pulse-ball class="pulse-ball pulse-ball-right" [animationState]="sequence[2].pulseState()">
+        </app-pulse-ball>
+        <app-glow-traveller class="glow-traveller glow-traveller-right" [animationState]="sequence[1].glowTravellerState" [classInner]="'vertical'" [orientationVertical]="true">
+        </app-glow-traveller>
+        <app-glow-traveller class="glow-traveller glow-traveller-left" [animationState]="sequence[0].glowTravellerState" [orientationVertical]="false" [classInner]="'horizontal'">
+        </app-glow-traveller>
+    </div>
+</div>
+<div class="container-centered">
+    <div [@fadeInOutDiamond]="showText" class="mr-diamond-text">
+        <p>{{centerText}}</p>
+    </div>
+</div>
+<div class="container-centered">
+    <div class="mr-diamond-titles">
+        <div class="pulse-ball-title-left">
+            <p [@diamondTitleActive]="sequence[0].active" class="pulse-ball-title">{{sequence[0].title}}</p>
+        </div>
+        <div class="pulse-ball-title-center">
+            <p [@diamondTitleActive]="sequence[1].active" class="pulse-ball-title">{{sequence[1].title}}</p>
+        </div>
+        <div class="pulse-ball-title-right">
+            <p [@diamondTitleActive]="sequence[2].active" class="pulse-ball-title">{{sequence[2].title}}</p>
+        </div>
+    </div>
+</div>
+<app-top-glow-traveller *ngIf="topGlowTraveller"></app-top-glow-traveller>

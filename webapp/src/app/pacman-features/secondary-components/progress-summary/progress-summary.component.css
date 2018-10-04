@@ -1,0 +1,70 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.sub-head{
+    background-color: #dce3e9;
+}
+.progress-tile-wrapper{
+    text-align: center;
+    /* padding: .5em; */
+}
+.progress-num{
+    font-size: 2.1em;
+    margin-bottom: .2em;
+    display: inline-block;
+}
+.app-type{
+    max-width: 100%;
+    font-size: 1em;
+    margin-bottom: 1em;
+    /* cursor: pointer; */
+    padding-bottom: 2px;
+}
+.progress-bar-left{
+    min-width: 5%;
+    height: 0.5em;
+    display: inline-block;
+    margin-right: 4px;
+    background: #e60127;
+    border-top-left-radius: 1em;
+    border-bottom-left-radius: 1em;
+    border: 1px solid #cecece4f;
+}
+.progress-bar-right{
+    min-width: 5%;
+    background-color: #F89257;
+    height: 0.5em;
+    display: inline-block;
+    border-top-right-radius: 1em;
+    border-bottom-right-radius: 1em;
+    border: 1px solid #cecece4f;
+}
+.progress-barleft-value{
+    left: 0;
+    bottom: 0;
+    transform: translateY(150%);
+    position: absolute;
+    color: #f2425f;
+    font-size: 1em;
+    font-family: ex2-bold;
+}
+.progress-barright-value{
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    transform: translateY(150%);
+    color: #f2425f;
+    font-size: 1em;
+    font-family: ex2-bold;
+}

@@ -1,0 +1,104 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.sub-head {
+    padding: 0.6em 0.5em 0.7em 1em;
+    background-color: #dce3e9;
+    font-size: 1em;
+    color: #3f4a59;
+}
+.vulnerability-across-app-outer-wrapper{
+    min-height: 50%;
+    /*overflow-x: auto; overflow-x: overlay;*/
+
+    /* added for height adjustment by trinanjan on 9th jan,2017.
+        Once it is verified by puneet,it will be added to other table page also
+    */
+
+    height: calc(100% - 20em);
+    overflow: hidden;
+    /* *********** */
+}
+
+.vulnerability-across-app-outer-wrapper:hover {
+    overflow: auto; overflow: overlay;
+}
+
+.vul-across-app-wrapper{
+    padding: 1px;
+    min-height: 30vh;
+    font-size: 1em;
+     /* added for height adjustment by trinanjan on 9th jan,2017.
+        Once it is verified by puneet,it will be added to other table page also
+    */
+    height: 95%;
+    /* ********** */
+}
+
+.vul-app-wrapper{
+    width: 100%;
+    /* max-height: 25vh; */
+    overflow-y: auto; overflow-y: overlay;
+    margin: 2em 0 0 0;
+    /* added for height adjustment by trinanjan on 9th jan,2017.
+        Once it is verified by puneet,it will be added to other table page also
+    */
+    height: 88%;
+    /* *********** */
+}
+
+.search-wrapper{
+    border-radius: 3px;
+    background-color: rgba(255, 255, 255, 0.6);
+    border: solid 1px #c3cbd7;
+    width: 90%;
+    margin: 2em auto 0 auto;
+}
+:host ::ng-deep app-list-table .list-table-divider {
+    left : 25%;
+}
+:host ::ng-deep app-list-table .list-table-header-values{
+    flex: 1;
+}
+:host ::ng-deep app-list-table .list-table-elem-name{
+    flex: 1.5;
+}
+:host ::ng-deep app-list-table .list-table-header-values:first-child{
+    flex: 2;
+}
+:host ::ng-deep app-list-table .list-table-header-values{
+    flex: 2;
+    word-break: break-word;
+}
+/* 
+    *added by trinanjan for quick prod deployment on 11/02/2018
+    *To overwrite css hover property in the policy across application compliant column as it is not clickable
+    *This should be removed and one condition should be added from js to disable any particular column click in the list table
+ */
+:host ::ng-deep app-list-table .list-table-value .list-table-value-each:last-child:hover{
+    cursor: text;
+    color: #000 !important;
+    transform: scaleX(1) !important;
+}
+ /* added for height adjustment by trinanjan on 9th jan,2017.
+        Once it is verified by puneet,it will be added to other table page also
+ */
+.appblock{
+    height: 100%;
+    overflow: hidden;
+}
+.vul-across-app-inner-wrapper{
+    height: 96%;
+}
+/* ********* */

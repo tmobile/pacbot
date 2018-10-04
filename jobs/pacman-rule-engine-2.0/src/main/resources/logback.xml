@@ -1,0 +1,20 @@
+<configuration>
+
+<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+		<layout class="ch.qos.logback.classic.PatternLayout">
+			<Pattern>
+				%d{yyyy-MM-dd HH:mm:ss} %X{executionId} [%thread] %-5level %logger{36} - %msg%n
+			</Pattern>
+		</layout>
+	</appender>
+	
+    <root level="ERROR">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+    <logger name="com.tmobile" level="DEBUG" additivity="false">
+        <!-- <appender-ref ref="ELASTIC"/> -->
+        <appender-ref ref="STDOUT"/>
+    </logger>
+    
+   </configuration> 

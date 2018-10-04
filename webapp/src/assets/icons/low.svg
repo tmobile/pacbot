@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="16px" height="16px" viewBox="0 0 16 16" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Medium</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="6-Compliance-Dashboard-(Updated)" transform="translate(-245.000000, -484.000000)" fill-rule="nonzero" fill="#289CF7">
+            <g id="Group-49" transform="translate(207.000000, 147.000000)">
+                <path d="M46,337 C41.584,337 38,340.584 38,345 C38,349.416 41.584,353 46,353 C50.416,353 54,349.416 54,345 C54,340.584 50.416,337 46,337 Z M46.8,349 L45.2,349 L45.2,344.2 L46.8,344.2 L46.8,349 Z M46.8,342.6 L45.2,342.6 L45.2,341 L46.8,341 L46.8,342.6 Z" id="Medium" transform="translate(46.000000, 345.000000) scale(1, -1) translate(-46.000000, -345.000000) "></path>
+            </g>
+        </g>
+    </g>
+</svg>

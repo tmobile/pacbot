@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="83px" height="108px" viewBox="0 0 83 108" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 47.1 (45422) - http://www.bohemiancoding.com/sketch -->
+    <title>Processed</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M55,18.3333333 L55,4.58333333 L36.6666667,22.9166667 L55,41.25 L55,27.5 C70.1708333,27.5 82.5,39.8291667 82.5,55 C82.5,59.6291667 81.3541667,64.0291667 79.2916667,67.8333333 L85.9833333,74.525 C89.5583333,68.8875 91.6666667,62.1958333 91.6666667,55 C91.6666667,34.7416667 75.2583333,18.3333333 55,18.3333333 Z M55,82.5 C39.8291667,82.5 27.5,70.1708333 27.5,55 C27.5,50.3708333 28.6458333,45.9708333 30.7083333,42.1666667 L24.0166667,35.475 C20.4416667,41.1125 18.3333333,47.8041667 18.3333333,55 C18.3333333,75.2583333 34.7416667,91.6666667 55,91.6666667 L55,105.416667 L73.3333333,87.0833333 L55,68.75 L55,82.5 Z" id="path-1"></path>
+        <filter x="-9.5%" y="-5.0%" width="119.1%" height="113.9%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="2" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="2" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.316802536 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Prototype" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Statistics-Dashboard-v3.3" transform="translate(-242.000000, -505.000000)">
+            <g id="Group-8-Copy-6" transform="translate(205.500000, 502.000000)">
+                <g id="ic/sync/grey600" transform="translate(23.000000, 0.161970)">
+                    <g id="ic_sync_24px">
+                        <g id="Shape" fill-rule="nonzero">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                            <use fill="#8ACC50" fill-rule="evenodd" xlink:href="#path-1"></use>
+                        </g>
+                        <polygon id="Shape" points="0 0 110 0 110 110 0 110"></polygon>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
