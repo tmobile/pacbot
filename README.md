@@ -58,45 +58,44 @@ Asset groups are not for just setting the scope of the data shown in the UI. It 
 * AWS RDS - For admin CRUD functionalities
 * AWS S3 - For storing inventory files and persistent storage of historical data
 * AWS Lambda - For gluing few components of PacBot
-* Docker for containers
 
 PacBot installer automatically launches all of these services configure them. For detailed instruction on installation look at the installation documentation. 
 
 ## PacBot UI Dashboards & Widgets 
 
 * ##### Asset Group Selection Widget
-    <img src=./images/asset-group-applications.png>
+    <img src=./wiki/images/asset-group-applications.png>
 
 * ##### Compliance Dashboard
-    <img src=./images/compliance.png>
-    <img src=./images/compliance2.png>
+    <img src=./wiki/images/compliance.png>
+    <img src=./wiki/images/compliance2.png>
 
 * ##### Policy Compliance Page - S3 buckets public read access   
-    <img src=./images/policy-compliance.png>
+    <img src=./wiki/images/policy-compliance.png>
 
 * ##### Policy Compliance Trend Over Time
-    <img src=./images/compliance-trend.png>
+    <img src=./wiki/images/compliance-trend.png>
 
 * ##### Asset Dashboard
-    <img src=./images/assets.png>
+    <img src=./wiki/images/assets.png>
 
 * ##### Asset Dashboard - With Recommendations
-    <img src=./images/asset-recommendation.png>
+    <img src=./wiki/images/asset-recommendation.png>
 
 * ##### Asset 360 / Asset Details Page
-<img src=./images/asset-details.png>
+<img src=./wiki/images/asset-details.png>
 
 * ##### Linux Server Quaterly Patch Compliance
-    <img src=./images/linux-patch-compliance.png>
+    <img src=./wiki/images/linux-patch-compliance.png>
 
 * ##### Omni-Search Page   
-    <img src=./images/omni-search.png>
+    <img src=./wiki/images/omni-search.png>
 
 * ##### Search Results Page With Results filtering
-    <img src=./images/search-results.png>
+    <img src=./wiki/images/search-results.png>
 
 * ##### Tagging Compliance Summary Widget
-    <img src=./images/tagging-summary.png> 
+    <img src=./wiki/images/tagging-summary.png> 
 
 
 ## Installation
