@@ -1,6 +1,26 @@
 #! /usr/bin/env python
-import boto3
 
+# =========================================================================
+# Copyright 2018 T-Mobile, US
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#    http://www.apache.org/licenses/LICENSE-2.0
+#
+# or in the "license" file accompanying this file. This file is distributed on
+# an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+# implied. See the License for the specific language governing permissions and
+# limitations under the License.
+# ==========================================================================
+
+###############################################################################
+# Author Kamesh Raja
+# Maintainers Sajeer Noohukannu, Sukesh Sugunan, Abhijith & Akash John
+###############################################################################
+
+import boto3
 import jsonRead
 import awsterraformbuild
 import time
@@ -13,7 +33,6 @@ from progressbar import ProgressBar
 from termcolor import cprint
 
 pbar = ProgressBar()
-
 user_name = ''
 user_arn = ''
 policylist = []
@@ -147,27 +166,26 @@ def _access_validation(assignedList, user_name, user_arn):
     assignedPerm = jsonRead._get_aws_resource_name(assignedList)
     expectedResource = jsonRead._get_resources()
     expectedKeys = jsonRead._get_keys()
-    isAccess = None
-    NoAccess = None
-    for resource in pbar(expectedKeys):
-        print ""
-        cprint("Checking " + str(resource) + " Permissions", 'green')
-        time.sleep(1)
-        if resource in assignedPerm:
-            cprint("Yes neccsaary permissions are avaiable", 'green')
-            isAccess = True
-        else:
-            user_contnue = raw_input("It seems no full access policy attached. If you have added custom policy with all permissions, please type Yes or No: ")
-            if user_contnue != "Yes":
-                cprint("Not having enough permissions", 'red')
-                NoAccess = True
-                sys.exit()
-            else:
-                isAccess = True
+    isAccess = True
+    print ""
+    cprint("Checking necessary Permissions for the IAM User/Group to create AWS resources: ", "green")
 
-    if isAccess and NoAccess is None:
-        print "Access is provided"
-        print " Creating AWS resources"
+    for resource in pbar(expectedKeys):
+        time.sleep(1)
+        if resource not in assignedPerm:
+            isAccess = False
+
+    if isAccess is False:
+        cprint("Nececssary permissions are NOT avaiable!!!", "red")
+        user_contnue = raw_input("If you have added custom policies with all permissions, please type Yes or No: ")
+        if user_contnue != "Yes":
+            cprint("System is exiting as required permissions are not available.", "red")
+            sys.exit()
+        else:
+            isAccess = True
+
+    if isAccess:
+        print("\n%100s \n%s %22s %s\n%s\n" % ("*" * 100, "*" * 35, "Pacman Installation Started!", "*" * 35, "*" * 100))
         time.sleep(1)
         awsterraformbuild._create_aws_resources(accessKey, secretKey, region)
         print "All the resources are created"
@@ -185,8 +203,6 @@ if __name__ == '__main__':
         iam = boto3.client('iam', aws_access_key_id=accessKey, aws_secret_access_key=secretKey)
         _get_user_managed_policies(iam, user_name)
         _get_user_inline_policies(iam, user_name)
-        # Erase existing contents
-        open('pacman_installation.log', 'w').close()
         # Get Group policies
         _get_policy_details(iam, user_name)
         jsonRead._write_json("base_account_id", _get_account_id(accessKey, secretKey))

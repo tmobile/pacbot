@@ -117,6 +117,22 @@
       {
         "name": "ROLE_ARN",
         "value": "${ROLE_ARN}"
+      },
+      {
+        "name": "JOB_FUNCTION_NAME",
+        "value": "${JOB_FUNCTION_NAME}"
+      },
+      {
+        "name": "JOB_FUNCTION_ARN",
+        "value": "${JOB_FUNCTION_ARN}"
+      },
+      {
+        "name": "RULE_FUNCTION_NAME",
+        "value": "${RULE_FUNCTION_NAME}"
+      },
+      {
+        "name": "RULE_FUNCTION_ARN",
+        "value": "${RULE_FUNCTION_ARN}"
       }
     ]
   }

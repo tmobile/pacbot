@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 import jsonRead
 import re
+import os
+import sys
 
 
 def file_replace(accountid):
@@ -43,3 +45,24 @@ def _create_tfvars_file():
                 if "ruleParams" in line:
                     line = line.replace("role/pacman_ro", "role/" + jsonRead._get_client_account_role_name())
                 output_file.write(line)
+
+
+def get_logfile_path():
+    log_dir = "/var/log/pacman"
+    try:
+        log_filename = "pacman-" + sys.argv[1].strip().lower() + ".log"
+    except:
+        log_filename = "pacman-test.log"
+
+    if not os.path.exists(log_dir):
+        os.mkdir(log_dir)
+
+    return os.path.join(log_dir, log_filename)
+
+
+def create_pacman_log_file_handler():
+    return open(get_logfile_path(), "a+")
+
+
+def flush_logfile():
+    open(get_logfile_path(), "w").close()

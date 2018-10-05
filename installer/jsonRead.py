@@ -263,6 +263,12 @@ def _get_lambda_backup():
 def _get_lambda_rules_keys():
     return resources['Lambda']['rules_keys']
 
+def _get_lambda_fn_arn():
+    return "arn:aws:lambda:" + getRegion() + ":" + _get_base_accountid() + ":function:" + _get_lambda_fn_name()
+
+def _get_lambda_rule_fn_arn():
+    return "arn:aws:lambda:" + getRegion() + ":" + _get_base_accountid() + ":function:" + _get_lambda_rule_fn_name()
+
 def get_ValueByKey(resourcekey):
     return resourcevalues[resourcekey]
 
@@ -409,7 +415,6 @@ def _get_api_ecs_cluster():
 def _get_ecs_execution_role_arn():
     return "arn:aws:iam::" + _get_base_accountid() + ":role/" + _get_pacecs_role_name()
 
-
 #def _get_alb_sg():
 #    return resources['OSS-API']['alb_sg']
 
@@ -539,6 +544,9 @@ def _get_SECURITY_PASSWORD():
 def _get_ADMIN_SERVER():
     return resources['OSS-API']['ADMIN_SERVER']
 
+def _get_OAUTH2_CLIENT_ID():
+    return resources['OSS-API']['OAUTH2_CLIENT_ID']
+
 def _get_ui_ecs_cluster():
     return resources['OSS-UI']['api-ecs-cluster']
 
@@ -580,7 +588,7 @@ def _build_ui_apps(aws_access_key,aws_secret_key,region):
     BA.BuildPacman(
         _get_dns_name(),
         upload_dir,
-        pacman_cwd + "/pacman_installation.log",
+        "/var/log/pacman/pacman-install.log",
     ).build_api_and_ui_apps(
         aws_access_key,
         aws_secret_key,
@@ -594,6 +602,7 @@ def _get_tf_vars():
     filecreator._create_tfvars_file()
     shutil.move("terraform.tfvars","terraform/lambda-rule/terraform.tfvars")
     return "Lambda"
+
 
 def update_sql_file_with_values_for_varaiables():
     '''
@@ -620,4 +629,12 @@ def update_sql_file_with_values_for_varaiables():
     with open(sql_file_with_values, 'w') as f:
         f.writelines(lines)
 
-update_sql_file_with_values_for_varaiables()
+
+def get_value_from_output_json(key):
+    with open(outputfilename, 'r') as data_file:
+        data = json.load(data_file)
+    return data[key] if key in data else None
+
+
+def get_app_auth_credentials():
+    return resources['AppAuth']

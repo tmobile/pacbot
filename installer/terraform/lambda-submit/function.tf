@@ -91,6 +91,11 @@ resource "aws_cloudwatch_event_target" "target_for_cloudwatch" {
       "encrypt": false,
       "value": "/home/ec2-user/data",
       "key": "file-path"
+    },
+    {
+      "encrypt": false,
+      "value": "${var.region}",
+      "key": "base-region"
     }
   ],
   "jobType": "jar",

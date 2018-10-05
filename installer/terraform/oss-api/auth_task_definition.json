@@ -134,6 +134,10 @@
       {
         "name": "LDAP_HOSTLIST",
         "value": "${LDAP_HOSTLIST}"
+      },
+      {
+        "name": "OAUTH2_CLIENT_ID",
+        "value": "${OAUTH2_CLIENT_ID}"
       }
     ]
   }

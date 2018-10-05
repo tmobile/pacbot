@@ -129,7 +129,12 @@
             "ACCESS_KEY": "_get_ACCESS_KEY", "SECRET_KEY": "_get_SECRET_KEY",
             "SECURITY_USERNAME": "_get_SECURITY_USERNAME", "SECURITY_PASSWORD": "_get_SECURITY_PASSWORD",
             "ADMIN_SERVER": "_get_ADMIN_SERVER",
-            "update_sql_file": "update_sql_file_with_values_for_varaiables"
+            "update_sql_file": "update_sql_file_with_values_for_varaiables",
+            "JOB_FUNCTION_NAME": "_get_lambda_fn_name",
+            "JOB_FUNCTION_ARN": "_get_lambda_fn_arn",
+            "RULE_FUNCTION_NAME": "_get_lambda_rule_fn_name",
+            "RULE_FUNCTION_ARN": "_get_lambda_rule_fn_arn",
+            "OAUTH2_CLIENT_ID": "_get_OAUTH2_CLIENT_ID"
         },
         "oss-ui" : {
             "ui-ecs-cluster": "_get_ui_ecs_cluster", "task_definition_name" : "_get_ui_task_definition_name",

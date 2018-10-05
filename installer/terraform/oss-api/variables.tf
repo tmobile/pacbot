@@ -259,3 +259,23 @@ variable "ROLE_ARN" {
 variable "ADMIN_SERVER" {
   default = ""
 }
+
+variable "JOB_FUNCTION_NAME" {
+  default = ""
+}
+
+variable "JOB_FUNCTION_ARN" {
+  default = ""
+}
+
+variable "RULE_FUNCTION_NAME" {
+  default = ""
+}
+
+variable "RULE_FUNCTION_ARN" {
+  default = ""
+}
+
+variable "OAUTH2_CLIENT_ID" {
+  default = ""
+}

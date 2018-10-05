@@ -181,7 +181,8 @@
         "SECRET_KEY" : "test_key_2",
         "SECURITY_USERNAME" : "admin",
         "SECURITY_PASSWORD" : "admin@123",
-        "ADMIN_SERVER" : "http://localhost/pacmonitor"
+        "ADMIN_SERVER" : "http://localhost/pacmonitor",
+        "OAUTH2_CLIENT_ID" : "22e14922-87d7-4ee4-a470-da0bb10d45d3"
     },
     "OSS-UI": {
         "api-ecs-cluster": "pacman-oss-ui",
@@ -198,13 +199,16 @@
         "oss-ui" : "pacman-ui"
     },
     "Network": {
-      "vpcID": "vpc-43250428",
+      "vpcID": "vpc-2255008",
       "CIDR": ["10.0.0.0/16"],
-      "Subnet": ["subnet-04a1e679","subnet-0a1b1361"]
+      "Subnet": ["subnet-9446173","subnet-9645220"]
+    },
+    "AppAuth": {
+      "admin": "admin@pacbot.org / pacman",
+      "user": "user@pacbot.org / user"
     }
   },
   "General": {
     "error_message": "Enter valid input"
     }
 }
-

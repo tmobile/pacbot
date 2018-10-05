@@ -336,6 +336,10 @@ data "template_file" "admin_task" {
     DOMAIN_URL = "http://${aws_lb.alb_apijobs.dns_name}/api/admin"
     ADMIN_SERVER = "${var.ADMIN_SERVER}"
     ROLE_ARN = "${var.ROLE_ARN}"
+    JOB_FUNCTION_NAME = "${var.JOB_FUNCTION_NAME}"
+    JOB_FUNCTION_ARN = "${var.JOB_FUNCTION_ARN}"
+    RULE_FUNCTION_NAME = "${var.RULE_FUNCTION_NAME}"
+    RULE_FUNCTION_ARN = "${var.RULE_FUNCTION_ARN}"
   }
   depends_on = ["aws_cloudwatch_log_group.apijobs", "aws_lb.alb_apijobs"]
 }
@@ -372,7 +376,7 @@ data "template_file" "compliance_task" {
   	LDAP_DOMAIN="${var.LDAP_DOMAIN}"
   	LDAP_BASEDN="${var.LDAP_BASEDN}"
   	LDAP_PORT="${var.LDAP_PORT}"
-  	LDAP_RESPONSETIMEOUT="${var.LDAP_RESPONSETIMEOUT}" 
+  	LDAP_RESPONSETIMEOUT="${var.LDAP_RESPONSETIMEOUT}"
   	LDAP_CONNECTIONTIMEOUT="${var.LDAP_CONNECTIONTIMEOUT}"
   	LDAP_HOSTLIST="${var.LDAP_HOSTLIST}"
   	CERTIFICATE_FEATURE_ENABLED="${var.CERTIFICATE_FEATURE_ENABLED}"
@@ -414,7 +418,7 @@ data "template_file" "notifications_task" {
   	LDAP_DOMAIN="${var.LDAP_DOMAIN}"
   	LDAP_BASEDN="${var.LDAP_BASEDN}"
   	LDAP_PORT="${var.LDAP_PORT}"
-  	LDAP_RESPONSETIMEOUT="${var.LDAP_RESPONSETIMEOUT}" 
+  	LDAP_RESPONSETIMEOUT="${var.LDAP_RESPONSETIMEOUT}"
   	LDAP_CONNECTIONTIMEOUT="${var.LDAP_CONNECTIONTIMEOUT}"
   	LDAP_HOSTLIST="${var.LDAP_HOSTLIST}"
     }
@@ -453,7 +457,7 @@ data "template_file" "statistics_task" {
   	LDAP_DOMAIN="${var.LDAP_DOMAIN}"
   	LDAP_BASEDN="${var.LDAP_BASEDN}"
   	LDAP_PORT="${var.LDAP_PORT}"
-  	LDAP_RESPONSETIMEOUT="${var.LDAP_RESPONSETIMEOUT}" 
+  	LDAP_RESPONSETIMEOUT="${var.LDAP_RESPONSETIMEOUT}"
   	LDAP_CONNECTIONTIMEOUT="${var.LDAP_CONNECTIONTIMEOUT}"
   	LDAP_HOSTLIST="${var.LDAP_HOSTLIST}"
     }
@@ -493,7 +497,7 @@ data "template_file" "asset_task" {
   	LDAP_DOMAIN="${var.LDAP_DOMAIN}"
   	LDAP_BASEDN="${var.LDAP_BASEDN}"
   	LDAP_PORT="${var.LDAP_PORT}"
-  	LDAP_RESPONSETIMEOUT="${var.LDAP_RESPONSETIMEOUT}" 
+  	LDAP_RESPONSETIMEOUT="${var.LDAP_RESPONSETIMEOUT}"
   	LDAP_CONNECTIONTIMEOUT="${var.LDAP_CONNECTIONTIMEOUT}"
   	LDAP_HOSTLIST="${var.LDAP_HOSTLIST}"
   	CLOUD_INSIGHTS_COST_URL="${var.CLOUD_INSIGHTS_COST_URL}"
@@ -538,9 +542,10 @@ data "template_file" "auth_task" {
   	LDAP_DOMAIN="${var.LDAP_DOMAIN}"
   	LDAP_BASEDN="${var.LDAP_BASEDN}"
   	LDAP_PORT="${var.LDAP_PORT}"
-  	LDAP_RESPONSETIMEOUT="${var.LDAP_RESPONSETIMEOUT}" 
+  	LDAP_RESPONSETIMEOUT="${var.LDAP_RESPONSETIMEOUT}"
   	LDAP_CONNECTIONTIMEOUT="${var.LDAP_CONNECTIONTIMEOUT}"
   	LDAP_HOSTLIST="${var.LDAP_HOSTLIST}"
+    OAUTH2_CLIENT_ID="${var.OAUTH2_CLIENT_ID}"
     }
     depends_on = ["aws_cloudwatch_log_group.apijobs", "aws_lb.alb_apijobs"]
   }
