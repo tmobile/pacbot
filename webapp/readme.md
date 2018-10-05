@@ -1,4 +1,4 @@
-# PacmanSpa
+# webapp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.4.4.
 
@@ -33,7 +33,7 @@ Application can be configured to suit your needs, These are the types of configu
  * _Auth type_: By default, if no values are set in auth configuration, a login screen will ask for username and password, if you have added PacMan to your azure ad, you can provide 'clientId' and 'tenant' values in configuration to enable SSO
  * _Feature modules visibility_: Each feature module can be configured to be displayed or hidden on need basis.
  * _Cloud domains_: Production, staging and dev environment domains can be configured here
- * _PacMan Issues_: This configuration is required if you want your users to create jira ticket for the issues reported by PacMan and send those issues to respective teams
+ * _PacMan Issues_: This configuration is required if you want your users to create jira ticket for the issues reported by PacBot and send those issues to respective teams
 
 All the configurations can be done at this [file](src/config/configuration.ts).
 Check the details about each configuration value [here](https://github.com/tmobile/pacman/wiki/Webapp-configurations)
