@@ -1,6 +1,6 @@
+[![Latest release](https://img.shields.io/github/release/tmobile/pacbot.svg)](https://github.com/tmobile/pacbot/releases/latest)
 [![Build Status](https://travis-ci.com/tmobile/pacbot.svg?token=k3NCeDUn4HM7urPbq4oz&branch=master)](https://travis-ci.com/tmobile/pacbot)
 [![GitHub license](https://github.com/tmobile/pacbot/blob/master/wiki/license_apache.svg)](https://github.com/tmobile/pacbot/blob/master/LICENSE)
-[![Javadocs](https://github.com/tmobile/pacbot/blob/master/wiki/javadoc.svg)](https://github.com/tmobile/pacbot/blob/master/wiki/docs/rule-engine/index.html)
 [![Gitter](https://github.com/tmobile/pacbot/blob/master/wiki/images/chat.svg)](https://gitter.im/TMO-OSS/PacBot)
 
 
