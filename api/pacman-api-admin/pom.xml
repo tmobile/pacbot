@@ -12,7 +12,7 @@
 
 	<groupId>com.tmobile.cloud</groupId>
 	<artifactId>admin-service</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<name>admin-service</name>
@@ -42,7 +42,7 @@
 	<dependency>
 			<groupId>com.tmobile.cloud</groupId>
 			<artifactId>api-commons</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 
       	<dependency>

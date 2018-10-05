@@ -5,7 +5,7 @@
 
 	<groupId>com.tmobile.cloud</groupId>
 	<artifactId>rule-engine</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<version>1.0</version>
 	<packaging>jar</packaging>
 
 	<name>pacman-rule-engine</name>
@@ -53,7 +53,7 @@
 		<dependency>
 			<groupId>com.tmobile.cloud</groupId>
 			<artifactId>batch-commons</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0</version>
 		</dependency>
 
 		<dependency>

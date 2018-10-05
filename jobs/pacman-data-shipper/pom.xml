@@ -2,7 +2,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.tmobile.cloud</groupId>
   <artifactId>data-shipper</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.0</version>
 
   <properties>
 		<java.version>1.8</java.version>
@@ -37,7 +37,7 @@
  	 <dependency>
             <groupId>com.tmobile.cloud</groupId>
             <artifactId>batch-commons</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0</version>
             <scope>provided</scope>
             <exclusions>
             	<exclusion>
