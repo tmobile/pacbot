@@ -45,7 +45,7 @@ Asset groups are not for just setting the scope of the data shown in the UI. It 
 
 
 ## Technology Stack
-* Front End - AngularJS 5
+* Front End - AngularJS
 * Backend End APIs, Jobs, Rules - Java
 * Installer - Python and Terraform
   
