@@ -1,7 +1,9 @@
 package com.tmobile.cso.pacman.datashipper.entity;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -16,19 +18,21 @@ import com.tmobile.cso.pacman.datashipper.config.ConfigManager;
 import com.tmobile.cso.pacman.datashipper.dao.DBManager;
 import com.tmobile.cso.pacman.datashipper.dao.RDSDBManager;
 import com.tmobile.cso.pacman.datashipper.es.ESManager;
+import com.tmobile.cso.pacman.datashipper.util.Constants;
 import com.tmobile.cso.pacman.datashipper.util.Util;
 
 
 /**
  * The Class EntityManager.
  */
-public class EntityManager {
+public class EntityManager implements Constants {
 
     /** The Constant log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityManager.class);
     private static final String FIRST_DISCOVERED = "firstdiscoveredon";
     private static final String DISCOVERY_DATE = "discoverydate";
     private static final String PAC_OVERRIDE = "pac_override_";
+  
     
     /**
      * Upload entity data.
@@ -36,8 +40,8 @@ public class EntityManager {
      * @param datasource
      *            the datasource
      */
-    public void uploadEntityData(String datasource) {
-
+    public List<Map<String, String>> uploadEntityData(String datasource) {
+        List<Map<String,String>> errorList = new ArrayList<>();
         Set<String> types = ConfigManager.getTypes(datasource);
         Iterator<String> itr = types.iterator();
         String type = "";
@@ -88,10 +92,16 @@ public class EntityManager {
                 ESManager.invokeAPI("POST", "/datashipper/stats", statsJson);
             } catch (Exception e) {
                 LOGGER.error("Exception in collecting/uploading data for {}" ,type,e);
+                Map<String,String> errorMap = new HashMap<>();
+                errorMap.put(ERROR, "Exception in collecting/uploading data for "+type);
+                errorMap.put(ERROR_TYPE, WARN);
+                errorMap.put(EXCEPTION, e.getMessage());
+                errorList.add(errorMap);
             }
-
+           
         }
         LOGGER.info("*** End Colleting Entity Info ***");
+        return errorList;
     }
     private  void prepareDocs(Map<String, Map<String, String>> currentInfo, List<Map<String, String>> entities,
             List<Map<String, String>> tags, List<Map<String, String>> overridableInfo,

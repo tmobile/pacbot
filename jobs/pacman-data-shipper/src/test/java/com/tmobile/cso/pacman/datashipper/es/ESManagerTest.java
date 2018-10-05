@@ -123,7 +123,7 @@ public class ESManagerTest {
         when(sl.getStatusCode()).thenReturn(100);
         when(response.getStatusLine()).thenReturn(sl);
         
-        esManager.configureIndexAndTypes("index");
+        esManager.configureIndexAndTypes("index",new ArrayList<>());
     }
     
     @SuppressWarnings({ "unchecked", "static-access" })
@@ -217,17 +217,17 @@ public class ESManagerTest {
         when(sl.getStatusCode()).thenReturn(100);
         when(response.getStatusLine()).thenReturn(sl);
         
-        esManager.createType("index", "type");
+        esManager.createType("index", "type", new ArrayList<>());
         
         when(sl.getStatusCode()).thenReturn(200);
         when(response.getStatusLine()).thenReturn(sl);
         
-        esManager.createType("index", "type");
+        esManager.createType("index", "type", new ArrayList<>());
         
         when(restClient.performRequest(anyString(), anyString(), anyMap(), any(HttpEntity.class),
         Matchers.<Header>anyVararg())).thenThrow(new IOException());
         ReflectionTestUtils.setField(esManager, "restClient", restClient);
-        esManager.createType("index", "type");
+        esManager.createType("index", "type", new ArrayList<>());
     }
     
     @SuppressWarnings({ "unchecked", "static-access" })
@@ -267,16 +267,16 @@ public class ESManagerTest {
         when(sl.getStatusCode()).thenReturn(100);
         when(response.getStatusLine()).thenReturn(sl);
         
-        esManager.createIndex("index");
+        esManager.createIndex("index", new ArrayList<>());
         
         when(sl.getStatusCode()).thenReturn(200);
         when(response.getStatusLine()).thenReturn(sl);
         
-        esManager.createIndex("index");
+        esManager.createIndex("index", new ArrayList<>());
         
         when(restClient.performRequest(anyString(), anyString(), anyMap(), any(HttpEntity.class),
         Matchers.<Header>anyVararg())).thenThrow(new IOException());
         ReflectionTestUtils.setField(esManager, "restClient", restClient);
-        esManager.createIndex("index");
+        esManager.createIndex("index", new ArrayList<>());
     }
 }

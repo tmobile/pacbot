@@ -1,6 +1,8 @@
 package com.tmobile.cso.pacman.datashipper.entity;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.tmobile.cso.pacman.datashipper.config.ConfigManager;
 import com.tmobile.cso.pacman.datashipper.dao.DBManager;
 import com.tmobile.cso.pacman.datashipper.es.ESManager;
+import com.tmobile.cso.pacman.datashipper.util.Constants;
 
 
 
@@ -19,7 +22,7 @@ import com.tmobile.cso.pacman.datashipper.es.ESManager;
 /**
  * The Class ChildTableDataCollector.
  */
-public class EntityAssociationManager {
+public class EntityAssociationManager implements Constants {
 
     /** The Constant LOGGER. */
     private static final Logger LOGGER = LoggerFactory.getLogger(EntityAssociationManager.class);
@@ -28,9 +31,11 @@ public class EntityAssociationManager {
      * Execute.
      *
      * @param dataSource the data source
+     * @return 
      */
-    public void uploadAssociationInfo(String dataSource) {
+    public List<Map<String, String>> uploadAssociationInfo(String dataSource) {
         LOGGER.info("Started EntityAssociationDataCollector");
+        List<Map<String,String>> errorList = new ArrayList<>();
         Set<String> types = ConfigManager.getTypes(dataSource);
         Iterator<String> itr = types.iterator();
         String type = "";
@@ -61,8 +66,14 @@ public class EntityAssociationManager {
                 }
             } catch (Exception e) {
                 LOGGER.error("Error in populating child tables", e);
+                Map<String,String> errorMap = new HashMap<>();
+                errorMap.put(ERROR, "Error in populating child tables");
+                errorMap.put(ERROR_TYPE, WARN);
+                errorMap.put(EXCEPTION, e.getMessage());
+                errorList.add(errorMap);
             }
         }
         LOGGER.info("Completed ChildTableDataCollector");
+        return errorList;
     }
 }

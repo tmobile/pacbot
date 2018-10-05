@@ -17,7 +17,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ HttpUtil.class,AuthUtil.class })
+@PrepareForTest({ HttpUtil.class })
 public class AssetGroupUtilTest {
 
     @Before

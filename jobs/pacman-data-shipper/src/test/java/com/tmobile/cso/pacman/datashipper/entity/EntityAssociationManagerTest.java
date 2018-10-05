@@ -43,7 +43,7 @@ public class EntityAssociationManagerTest {
         
         PowerMockito.mockStatic(ESManager.class);
         doNothing().when(ESManager.class);
-        ESManager.createType(anyString(), anyString());
+        ESManager.createType(anyString(), anyString(),anyList());
         
         List<Map<String, String>> entities = new ArrayList<>();
         entities.add(new HashMap<>());

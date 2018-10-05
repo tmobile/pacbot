@@ -23,17 +23,17 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.tmobile.cso.pacman.datashipper.es.ESManager;
 import com.tmobile.cso.pacman.datashipper.util.AssetGroupUtil;
-import com.tmobile.cso.pacman.datashipper.util.AuthUtil;
+import com.tmobile.cso.pacman.datashipper.util.AuthManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ AssetGroupUtil.class, ESManager.class,AuthUtil.class})
+@PrepareForTest({ AssetGroupUtil.class, ESManager.class,AuthManager.class})
 public class AssetGroupStatsCollectorTest {
     
     AssetGroupStatsCollector assetGroupStatsCollector = new AssetGroupStatsCollector();
     @Before
     public void setup() throws Exception{
-        PowerMockito.mockStatic(AuthUtil.class);
-        when(AuthUtil.authorise(anyString(), anyString())).thenReturn("");
+        PowerMockito.mockStatic(AuthManager.class);
+        when(AuthManager.getToken()).thenReturn("");
     }
     
     @Test
@@ -252,8 +252,8 @@ public class AssetGroupStatsCollectorTest {
         
         PowerMockito.mockStatic(ESManager.class);
         doNothing().when(ESManager.class);
-        ESManager.createIndex(anyString());
-        ESManager.createType(anyString(),anyString());
+        ESManager.createIndex(anyString(),anyList());
+        ESManager.createType(anyString(),anyString(),anyList());
         
         assetGroupStatsCollector = PowerMockito.spy(assetGroupStatsCollector);
       

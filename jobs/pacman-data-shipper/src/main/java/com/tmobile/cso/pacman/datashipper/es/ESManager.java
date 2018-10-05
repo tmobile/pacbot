@@ -29,12 +29,13 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.tmobile.cso.pacman.datashipper.config.ConfigManager;
+import com.tmobile.cso.pacman.datashipper.util.Constants;
 import com.tmobile.cso.pacman.datashipper.util.Util;
 
 /**
  * The Class ESManager.
  */
-public class ESManager {
+public class ESManager implements Constants {
 
     /** The es host key name. */
     private static final String ES_HOST_KEY_NAME = System.getenv("ES_HOST");
@@ -365,7 +366,7 @@ public class ESManager {
      * @param ds
      *            the ds
      */
-    public static void configureIndexAndTypes(String ds) {
+    public static void configureIndexAndTypes(String ds, List<Map<String, String>> errorList) {
 
         String _payLoad = "{\"settings\" : { \"number_of_shards\" : 3,\"number_of_replicas\" : 1 },\"mappings\": {";
 
@@ -387,6 +388,11 @@ public class ESManager {
                     invokeAPI("PUT", "/" + indexName + "/_alias/" + ds, null);
                 } catch (IOException e) {
                     LOGGER.error("Error in configureIndexAndTypes",e);
+                    Map<String,String> errorMap = new HashMap<>();
+                    errorMap.put(ERROR, "Error in configureIndexAndTypes");
+                    errorMap.put(ERROR_TYPE, WARN);
+                    errorMap.put(EXCEPTION, e.getMessage());
+                    errorList.add(errorMap);
                 }
             }
         }
@@ -525,13 +531,18 @@ public class ESManager {
      * @param indexName
      *            the index name
      */
-    public static void createIndex(String indexName) {
+    public static void createIndex(String indexName, List<Map<String, String>> errorList) {
         if (!indexExists(indexName)) {
             String payLoad = "{\"settings\": { \"index.mapping.ignore_malformed\": true }}";
             try {
                 invokeAPI("PUT", indexName, payLoad);
             } catch (IOException e) {
                 LOGGER.error("Error in createIndex" ,e );
+                Map<String,String> errorMap = new HashMap<>();
+                errorMap.put(ERROR, "Error in createIndex "+indexName);
+                errorMap.put(ERROR_TYPE, WARN);
+                errorMap.put(EXCEPTION, e.getMessage());
+                errorList.add(errorMap);
             }
         }
     }
@@ -544,13 +555,18 @@ public class ESManager {
      * @param typename
      *            the typename
      */
-    public static void createType(String indexName, String typename) {
+    public static void createType(String indexName, String typename, List<Map<String, String>> errorList) {
         if (!typeExists(indexName, typename)) {
             String endPoint = indexName + "/_mapping/" + typename;
             try {
                 invokeAPI("PUT", endPoint, "{ \"properties\":{}}");
             } catch (IOException e) {
                 LOGGER.error("Error in createType",e);
+                Map<String,String> errorMap = new HashMap<>();
+                errorMap.put(ERROR, "Error in createType "+typename);
+                errorMap.put(ERROR_TYPE, WARN);
+                errorMap.put(EXCEPTION, e.getMessage());
+                errorList.add(errorMap);
             }
         }
     }

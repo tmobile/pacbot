@@ -41,4 +41,21 @@ public interface Constants {
     
     String CONFIG_QUERY = "configquery";
 
+    /** The failed. */
+    String FAILED = "failed";
+    
+    /** The error. */
+    String ERROR = "error";
+    
+    /** The exception. */
+    String EXCEPTION = "exception";
+    
+    /** The error type. */
+    String ERROR_TYPE = "type";
+    
+    /** The warn. */
+    String WARN = "warn";
+    
+    /** The fatal. */
+    String FATAL = "fatal";
 }
