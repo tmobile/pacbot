@@ -24,8 +24,6 @@ This is a multi module project. These are the modules available:
 
 All feature modules are configurable to be shown or hidden on need basis.
 
-Refer this [Guide](https://github.com/tmobile/pacman/wiki/PacMan-UI-walkthrough) to go though each module and what it contains.
-
 ## Configurations
 
 Application can be configured to suit your needs, These are the types of configurations available here:
@@ -36,7 +34,7 @@ Application can be configured to suit your needs, These are the types of configu
  * _PacMan Issues_: This configuration is required if you want your users to create jira ticket for the issues reported by PacBot and send those issues to respective teams
 
 All the configurations can be done at this [file](src/config/configuration.ts).
-Check the details about each configuration value [here](https://github.com/tmobile/pacman/wiki/Webapp-configurations)
+Check the details about each configuration value [here](https://github.com/tmobile/pacbot/wiki/UI-Configuration)
 
 ## Development & Build
 
@@ -74,7 +72,7 @@ Yay! you are good to start the application.
 
 Before we proceed to running the application, one last check, look at the application [configuration](src/config/configurations.ts) and ensure required configurations have values, optional configuration can be skipped for now.
 
-Check the details about each configuration value [here](https://github.com/tmobile/pacman/wiki/Webapp-configurations)
+Check the details about each configuration value [here](https://github.com/tmobile/pacbot/wiki/UI-Configuration)
 
 *Let's start the application!*
 
