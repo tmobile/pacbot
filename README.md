@@ -15,9 +15,10 @@ PacBot's plugin-based data ingestion architecture allows ingesting data from mul
 
 ## How Does It Work?
 **Assess -> Report -> Remediate -> Repeat**
-```
+
 Assess -> Report -> Remediate -> Repeat is PacBot's philosophy. PacBot discovers resources and assesses these resources against the policies implemented as code. All policy violations are recorded as an issue. Whenever an Auto-Fix hook is available with the policies, those auto-fixes are executed when the resources fail the evaluation. Policy violations cannot be closed manually, the issue has to be fixed at the source and PacBot will mark it closed in the next scan. Exceptions can be added to policy violations. Sticky exceptions (Exception based on resource attribute matching criteria)can be added to exempt the similar resources that may be created in future.
-```
+
+
 PacBot's Asset Groups are a powerful way to visualize compliance. Asset Groups are created by defining one or more target resource's attribute matching criteria. For example, you could create an Asset Group of all running asset by defining criteria to match all EC2 instances with attribute instancestate.name=running. Any new EC2 instance launched after the creation of the Asset Group will be automatically included in the group. In PacBot UI you can select the scope of the portal to a specific asset group. All the data points shown in the PacBot portal will be confined to the selected Asset Group. Team's using cloud can set the scope of the portal to their application or org and focus only on their policy violations. This reduces noise and provides a clear picture to our cloud users. In T-Mobile, we create Asset Group per stakeholder, per application, per AWS account, per Environment etc.
 
 Asset groups are not for just setting the scope of the data shown in the UI. It can be used to scope the rule executions as well. PacBot policies are implemented as one or more rules. These rules can be configured to run against all resources or a specific Asset Group. The rules will evaluate all resources in the asset group configured as the scope for the rule. This provides an opportunity to write policies which are very specific to an application or Org. A good example is, some of the teams would like to enforce additional tagging standards apart from the global ones set for all of the cloud. They implement this policy with their custom rules and configure that to run only on their assets.
