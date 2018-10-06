@@ -54,7 +54,7 @@ Asset groups are not for just setting the scope of the data shown in the UI. It 
 * AWS ECS & ECR - For hosting UI and APIs
 * AWS Batch - For rules and resource collection jobs
 * AWS CloudWatch Rules - For rule trigger, scheduler
-* AWS Redshit - Data warehouse for all the inventory collected from multiple sources
+* AWS Redshift - Data warehouse for all the inventory collected from multiple sources
 * AWS Elastic Search - Primary data store used by the web application
 * AWS RDS - For admin CRUD functionalities
 * AWS S3 - For storing inventory files and persistent storage of historical data
