@@ -7,7 +7,7 @@ from os import walk
 import boto3
 
 class BuildPacman(object):
-    git_repo_url = "git@github.com:tmobile/pacman.git"  # This should be changed based on the Repo
+    git_repo_url = "git@github.com:tmobile/pacbot.git"  # This should be changed based on the Repo
     pacman_clone_path = "pacman_cloned_dir_"  # This should be changed based on the system
 
     mvn_build_command = "mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
