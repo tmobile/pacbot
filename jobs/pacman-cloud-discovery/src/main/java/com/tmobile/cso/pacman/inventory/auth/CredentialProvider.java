@@ -37,7 +37,7 @@ public class CredentialProvider {
 	@Value("${base-account}")
 	private String baseAccount;
 	
-	@Value("${base-region")
+	@Value("${base-region}")
     private String baseRegion;
 
 	/** The dev mode. */
