@@ -13,6 +13,12 @@ Policy as Code Bot (PacBot) is a platform for continuous compliance monitoring, 
 ## More Than Cloud Compliance Assessment
 PacBot's plugin-based data ingestion architecture allows ingesting data from multiple sources. We have built plugins to pull data from Qualys Vulnerability Assessment Platform, Bitbucket, TrendMicro Deep Security, Tripwire, Venafi Certificate Management, Redhat Satellite, Spacewalk, Active Directory and few other custom built internal solutions. We are working to open source these plugins and other tools as well. You could write rules based on data collected by these plugins to get a complete picture of your ecosystem and not just cloud misconfigurations. For example, within T-Mobile, we have implemented a policy to mark all EC2 instances with one or more severity 5 (CVSS score > 7) vulnerabilities as non-complaint.
 
+## Quick Demo
+
+[![](http://img.youtube.com/vi/_WnuSU5tfcs/0.jpg)](http://www.youtube.com/watch?v=_WnuSU5tfcs "")
+
+
+
 ## How Does It Work?
 **Assess -> Report -> Remediate -> Repeat**
 
