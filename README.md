@@ -15,7 +15,7 @@ PacBot's plugin-based data ingestion architecture allows ingesting data from mul
 
 ## Quick Demo
 
-[![](http://img.youtube.com/vi/_WnuSU5tfcs/0.jpg)](https://www.youtube.com/embed/_WnuSU5tfcs?list=PL0mz2nejZ-DgH0XsbYDrKPbeMiEJYWqUg "")
+[![](http://img.youtube.com/vi/_WnuSU5tfcs/0.jpg)](https://www.youtube.com/embed/_WnuSU5tfcs "")
 
 
 
