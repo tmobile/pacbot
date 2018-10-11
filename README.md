@@ -32,7 +32,7 @@ Asset groups are not for just setting the scope of the data shown in the UI. It 
 
 ## PacBot Key Capabilities
 
-* Continous compliance assessment.
+* Continuous compliance assessment.
 * Detailed compliance reporting.
 * Auto-Fix for policy violations.
 * Omni Search - Ability to search all discovered resources.
@@ -93,7 +93,7 @@ PacBot installer automatically launches all of these services configure them. Fo
 * ##### Asset 360 / Asset Details Page
 <img src=./wiki/images/asset-details.png>
 
-* ##### Linux Server Quaterly Patch Compliance
+* ##### Linux Server Quarterly Patch Compliance
     <img src=./wiki/images/linux-patch-compliance.png>
 
 * ##### Omni-Search Page   
