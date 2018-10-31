@@ -178,6 +178,9 @@
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
                             <finalName>data-shipper</finalName>
+                            <target>
+								<copy file="target/data-shipper-jar-with-dependencies.jar" tofile="../../dist/jobs/data-shipper-jar-with-dependencies.jar"/>
+							</target>
                         </configuration>
                         <phase>package</phase>
                         <goals>
@@ -186,24 +189,6 @@
                     </execution>
                 </executions>
             </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
-				<executions>
-					<execution>
-						<phase>install</phase>
-						<configuration>
-							<target>
-								<copy file="target/data-shipper-jar-with-dependencies.jar" tofile="../../dist/jobs/data-shipper-jar-with-dependencies.jar"/>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
         </plugins>
    </build>
 </project>
