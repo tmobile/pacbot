@@ -69,8 +69,7 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
+import org.apache.commons.codec.binary.Base64;
 
 import com.amazonaws.util.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -843,10 +842,9 @@ public class CommonUtils {
      * @return the string
      */
     public static String encryptB64(String plainText) {
-        BASE64Encoder encoder = new BASE64Encoder();
         byte[] salt = new byte[8];
         random.nextBytes(salt);
-        return encoder.encode(salt) + encoder.encode(plainText.getBytes());
+        return new Base64().encodeToString(salt) + new Base64().encodeToString(plainText.getBytes());
     }
 
     /**
@@ -863,8 +861,8 @@ public class CommonUtils {
         // bytes (i.e., a total of 24 bits) can therefore be represented by four
         // 6-bit base64 digits.
         String cipher = text.substring(12);
-        BASE64Decoder decoder = new BASE64Decoder();
-        return new String(decoder.decodeBuffer(cipher));
+        Base64 decoder = new Base64();
+        return new String(decoder.decode(cipher));
     }
 
     /**
@@ -909,7 +907,7 @@ public class CommonUtils {
      * @throws UnsupportedEncodingException the unsupported encoding exception
      */
     private static SecretKeySpec getSecretKey(final String baseKey) throws UnsupportedEncodingException {
-        String secretKeyValue = new BASE64Encoder().encode(baseKey.substring(0, 16).getBytes()).substring(0, 16);
+        String secretKeyValue = new Base64().encode(baseKey.substring(0, 16).getBytes()).toString().substring(0, 16);
         return new SecretKeySpec(secretKeyValue.getBytes(StandardCharsets.UTF_8), "AES");
     }
 
