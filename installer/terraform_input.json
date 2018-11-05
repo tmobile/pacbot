@@ -1,9 +1,9 @@
 {
     "execution_order": ["baserole", "refresh", "baserole","security","s3",
-                            "es", "rds", "redshift","batch", "oss-api", "lambda-submit",
+                            "es", "rds", "redshift", "oss-api", "batch", "lambda-submit",
                             "build-ui", "s3-upload", "oss-ui", "lambda-rule" ],
-    "execution_order_test": ["baserole", "refresh", "baserole","security","s3","batch","lambda-rule",
-        "oss-api","lambda-submit"],
+    "execution_order_test": ["baserole", "refresh", "baserole","security","s3","lambda-rule",
+        "oss-api","batch","lambda-submit"],
     "resources" :{
         "baserole" : {
             "client_accountid":"_get_client_accountid","check":1,"baseaccountrole":"_get_base_account_role_name",
