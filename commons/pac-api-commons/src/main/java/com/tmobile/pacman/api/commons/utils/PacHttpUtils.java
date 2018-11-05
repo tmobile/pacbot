@@ -81,9 +81,9 @@ public class PacHttpUtils {
 			if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
 				return EntityUtils.toString(httpresponse.getEntity());
 			} else {
-				LOGGER.error(requestBody);
+				LOGGER.error("URL: " + url + " Body: " + requestBody);
 				throw new Exception(
-						"unable to execute post request because " + httpresponse.getStatusLine().getReasonPhrase());
+						"unable to execute post request to " + url + " because " + httpresponse.getStatusLine().getReasonPhrase());
 			}
 		} catch (ParseException parseException) {
 			LOGGER.error("error closing issue" + parseException);
