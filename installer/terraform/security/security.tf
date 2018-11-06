@@ -7,6 +7,7 @@ resource "aws_security_group" "pacman-sg" {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
+    description = "Inbound access from VPC CIDR"
     cidr_blocks = ["${var.cidr_block-ip}"]
   }
   ingress {
