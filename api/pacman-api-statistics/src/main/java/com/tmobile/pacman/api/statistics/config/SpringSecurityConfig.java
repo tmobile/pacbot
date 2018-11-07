@@ -28,6 +28,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
@@ -76,6 +77,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		http.anonymous().and().antMatcher("/user").authorizeRequests()
 		.requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll().
          antMatchers(AUTH_WHITELIST).permitAll().
-         antMatchers("/**").authenticated();
+         anyRequest().authenticated()
+		.and()
+        .csrf()
+        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 	}
 }
