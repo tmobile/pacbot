@@ -15,15 +15,20 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.notification.config;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
@@ -32,17 +37,21 @@ import feign.RequestTemplate;
  * @author kkumar
  *
  */
+@Order(1)
 @Configuration("WebSecurityConfig")
-@EnableGlobalMethodSecurity(prePostEnabled = true)
+@EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class AuthConfig extends WebSecurityConfigurerAdapter {
-
+    
+	@Value("${swagger.auth.whitelist:}")
+	private String[] AUTH_WHITELIST;
 	/**
 	 * Constructor disables the default security settings
 	 **/
 	public AuthConfig() {
 		super(true);
 	}
-
+	
 	@Bean
 	public RequestInterceptor requestTokenBearerInterceptor() {
 	    return new RequestInterceptor() {
@@ -53,23 +62,21 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
 	        }
 	    };
 	}
-
+    
 	@Override
 	public void configure(WebSecurity web) throws Exception {
-		web.ignoring().antMatchers("/public/**", "/swagger-ui.html", "/api.html", "/css/styles.js", "/js/swagger.js", "/js/swagger-ui.js", "/js/swagger-oauth.js", "/images/pacman_logo.svg", "/images/favicon-32x32.png", "/images/favicon-16x16.png", "/images/favicon.ico", "/docs/v1/api.html", "/swagger-resources/**", "/v2/api-docs/**", "/v2/swagger.json");
-		web.ignoring().antMatchers(
-				"/cache/**");
-		web.ignoring().antMatchers("/imgs/**");
-		web.ignoring().antMatchers("/css/**");
-		web.ignoring().antMatchers("/css/font/**");
+		web.ignoring().antMatchers(AUTH_WHITELIST);
+		web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
 	}
 
 	@Override
 	public void configure(HttpSecurity http) throws Exception {
-		http
-        .anonymous().and()
-        .antMatcher("/user").authorizeRequests()
-        .antMatchers("/public/**").permitAll()
-        .antMatchers("/secure/**").authenticated();
+		http.anonymous().and().antMatcher("/user").authorizeRequests()
+		.requestMatchers(EndpointRequest.toAnyEndpoint()).permitAll().
+         antMatchers(AUTH_WHITELIST).permitAll().
+         anyRequest().authenticated()
+		.and()
+        .csrf()
+        .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse());
 	}
 }
