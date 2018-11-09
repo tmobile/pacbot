@@ -843,7 +843,7 @@ CREATE TABLE `oauth_user_roles` (
 
 /*Insert Data Source to necessary tables*/
 
-INSERT  INTO `cf_Datasource`(`dataSourceId`,`dataSourceName`,`dataSourceDesc`,`config`,`createdDate`,`modifiedDate`) VALUES (1,'aws','Amazon WebService','N/A','2017-08-01','2018-03-09')
+INSERT  INTO `cf_Datasource`(`dataSourceId`,`dataSourceName`,`dataSourceDesc`,`config`,`createdDate`,`modifiedDate`) VALUES (1,'aws','Amazon WebService','N/A','2017-08-01','2018-03-09');
 
 /*Insert Data Asset Group to necessary tables*/
 
