@@ -77,3 +77,7 @@ vulnerability:
   types: ec2,onpremserver
   summary:
     severity: 5
+    
+swagger:
+  auth:
+    whitelist: /configuration/security,/swagger-ui.html,/api.html,/webjars/**,/user,/public/**,/api.html,/css/styles.js,/js/swagger.js,/js/swagger-ui.js,/js/swagger-oauth.js,/images/pacman_logo.svg,/images/favicon-32x32.png,/images/favicon-16x16.png,/images/favicon.ico,/docs/v1/api.html,/v2/api-docs/**,/v2/swagger.json,/webjars/springfox-swagger-ui/css/**,/webjars/springfox-swagger-ui/js/**,/configuration/ui,/swagger-resources/**,/configuration/**,/imgs/**,/css/**,/css/font/**,/proxy*/**,/hystrix/monitor/**,/hystrix/**/images/pacman_logo.svg,/images/favicon-32x32.png,/images/favicon-16x16.png,/images/favicon.ico,/docs/v1/api.html,/v2/api-docs/**,/v2/swagger.json,/webjars/springfox-swagger-ui/css/**,/webjars/springfox-swagger-ui/js/**,/configuration/ui,/swagger-resources/**,/configuration/**,/imgs/**,/css/**,/css/font/**,/proxy*/**,/hystrix/monitor/**,/hystrix/**,/refresh
