@@ -13,41 +13,19 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package com.tmobile.pacman.api.auth.domain;
+package com.tmobile.pacman.api.auth.repository;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.tmobile.pacman.api.auth.model.User;
 
 /**
  * @author 	NidhishKrishnan
- * @purpose UserClientCredentials DTO
+ * @purpose UserRepository Repository
  * @since	November 10, 2018
  * @version	1.0 
 **/
-public class UserClientCredentials {
+public interface UserRepository extends JpaRepository<User, Long> {
 
-	private String clientId;
-	private String username;
-	private String password;
-
-	public String getClientId() {
-		return clientId;
-	}
-
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
+	public User findByUserId(String userId);
 }

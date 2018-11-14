@@ -13,41 +13,18 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package com.tmobile.pacman.api.auth.domain;
+package com.tmobile.pacman.api.auth.common;
 
 /**
  * @author 	NidhishKrishnan
- * @purpose UserClientCredentials DTO
+ * @purpose Constants
  * @since	November 10, 2018
  * @version	1.0 
 **/
-public class UserClientCredentials {
+public interface Constants {
 
-	private String clientId;
-	private String username;
-	private String password;
-
-	public String getClientId() {
-		return clientId;
-	}
-
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
+	String AUTH_SERVICE 	= 	"auth-service";
+	String DOMAIN_URL		= 	"DOMAIN_URL";
+	String API				= 	"/api";
+	String AZURE_READ		= 	"azuread";
 }

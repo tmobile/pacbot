@@ -13,41 +13,27 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package com.tmobile.pacman.api.auth.domain;
+package com.tmobile.pacman.api.auth;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
 
 /**
  * @author 	NidhishKrishnan
- * @purpose UserClientCredentials DTO
  * @since	November 10, 2018
  * @version	1.0 
 **/
-public class UserClientCredentials {
-
-	private String clientId;
-	private String username;
-	private String password;
-
-	public String getClientId() {
-		return clientId;
-	}
-
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
+@SpringBootApplication
+@Configuration
+@EnableAutoConfiguration
+@ComponentScan(basePackages="com.tmobile.pacman")
+public class AuthServerApplication {
+	
+	public static void main(String[] args) {
+		SpringApplication.run(AuthServerApplication.class, args);
 	}
 }
+

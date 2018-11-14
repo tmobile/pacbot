@@ -1,8 +1,8 @@
 spring:
-  application:
+  application: 
     name: auth-service
-    title: Pacman Service
-    description: Pacman Admin API provides auth capabilities
+    title: Pacman Auth Service
+    description: Pacman Auth API provides auth capabilities
   cloud:
     config:
       uri: ${CONFIG_SERVER_URL:http://localhost:8888/api/config/}
@@ -12,15 +12,15 @@ spring:
       password: ${CONFIG_PASSWORD}
       username: user
       label: latest
+  profiles:
+     active: ${ENVIRONMENT:prd}
   jpa: 
     hibernate:
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      
-  profiles:
-    active: ${ENVIRONMENT:prd}
 
-logging:
+logging: 
    level:
      com.tmobile: DEBUG
      com.unboundid.ldap.sdk: DEBUG
+pacman.api.oauth2.client-secret: csrWpc5p7JFF4vEZBkwGCAh67kGQGwXv46qug7v5ZwtKg

@@ -13,41 +13,21 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package com.tmobile.pacman.api.auth.domain;
+package com.tmobile.pacman.api.auth.repository;
+
+import java.util.Set;
+
+import org.springframework.stereotype.Repository;
 
 /**
  * @author 	NidhishKrishnan
- * @purpose UserClientCredentials DTO
+ * @purpose AuthRepository Repository Definition
  * @since	November 10, 2018
  * @version	1.0 
 **/
-public class UserClientCredentials {
-
-	private String clientId;
-	private String username;
-	private String password;
-
-	public String getClientId() {
-		return clientId;
-	}
-
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
+@Repository
+public interface AuthRepository {
+	
+	public Set<String> getUserRoleDetails(final String userId, final String clientId);
+	public String getUserDefaultAssetGroup(final String userId);
 }

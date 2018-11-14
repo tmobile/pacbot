@@ -13,34 +13,40 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package com.tmobile.pacman.api.auth.domain;
+package com.tmobile.pacman.api.auth.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  * @author 	NidhishKrishnan
- * @purpose UserClientCredentials DTO
+ * @purpose UserCredentials Domain
  * @since	November 10, 2018
  * @version	1.0 
 **/
-public class UserClientCredentials {
+@Entity
+@Table(name = "oauth_user_credentials", uniqueConstraints = @UniqueConstraint(columnNames = "id"))
+public class UserCredentials {
 
-	private String clientId;
-	private String username;
+	@Id
+	@Column(name = "id")
+	private Long id;
+
+	@Column(name = "password")
 	private String password;
 
-	public String getClientId() {
-		return clientId;
+	@Column(name = "type")
+	private String type;
+
+	public Long getId() {
+		return id;
 	}
 
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public String getPassword() {
@@ -49,5 +55,13 @@ public class UserClientCredentials {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

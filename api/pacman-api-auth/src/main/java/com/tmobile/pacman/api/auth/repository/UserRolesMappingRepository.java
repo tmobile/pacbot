@@ -13,41 +13,26 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  ******************************************************************************/
-package com.tmobile.pacman.api.auth.domain;
+package com.tmobile.pacman.api.auth.repository;
+
+import java.util.List;
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import com.tmobile.pacman.api.auth.model.UserRolesMapping;
 
 /**
  * @author 	NidhishKrishnan
- * @purpose UserClientCredentials DTO
+ * @purpose UserRolesMappingRepository Repository
  * @since	November 10, 2018
  * @version	1.0 
 **/
-public class UserClientCredentials {
+@Repository
+public interface UserRolesMappingRepository extends JpaRepository<UserRolesMapping, String> {
 
-	private String clientId;
-	private String username;
-	private String password;
-
-	public String getClientId() {
-		return clientId;
-	}
-
-	public void setClientId(String clientId) {
-		this.clientId = clientId;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
-
-	public String getPassword() {
-		return password;
-	}
-
-	public void setPassword(String password) {
-		this.password = password;
-	}
+	@Query("SELECT roles.roleName AS roleName FROM UserRolesMapping userRoles INNER JOIN userRoles.userRoles roles WHERE userRoles.roleId = roles.roleId AND userRoles.userId=:userId GROUP BY userRoles.userRoleId")		
+	public List<String[]> findAllUserRoleDetailsByUserIdIgnoreCase(@Param("userId") final String userId);
 }
