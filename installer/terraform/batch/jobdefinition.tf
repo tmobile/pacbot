@@ -1,4 +1,4 @@
-resource "aws_batch_job_definition" "pacman_job_definition" {
+resource "aws_batch_job_definition" "pacbot_job_definition" {
     name = "${var.batch_job_definition_name}"
     type = "container"
     container_properties = <<CONTAINER_PROPERTIES
@@ -22,10 +22,10 @@ CONTAINER_PROPERTIES
     attempts = "${var.attempts_number}"
 }
 }
-output "pacmanrevision" {
-   value = "${aws_batch_job_definition.pacman_job_definition.revision}"
+output "pacbotrevision" {
+   value = "${aws_batch_job_definition.pacbot_job_definition.revision}"
 }
-output "pacman" {
-   value = "${aws_batch_job_definition.pacman_job_definition.revision}"
+output "pacbot" {
+   value = "${aws_batch_job_definition.pacbot_job_definition.revision}"
 }
 

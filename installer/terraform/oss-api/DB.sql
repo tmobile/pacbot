@@ -840,11 +840,6 @@ CREATE TABLE `oauth_user_roles` (
   `modifiedDate` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
-/*Insert Data Source to necessary tables*/
-
-INSERT  INTO `cf_Datasource`(`dataSourceId`,`dataSourceName`,`dataSourceDesc`,`config`,`createdDate`,`modifiedDate`) VALUES (1,'aws','Amazon WebService','N/A','2017-08-01','2018-03-09');
-
 /*Insert Data Asset Group to necessary tables*/
 
 INSERT INTO cf_AssetGroupDetails (groupId,groupName,dataSource,displayName,groupType,createdBy,createdUser,createdDate,modifiedUser,modifiedDate,description,aliasQuery,isVisible) VALUES ('201','aws','aws','aws all','admin','Cloud Security','','','pacman','03/26/2018 23:00','Asset Group to segregate all data related to aws.','',true);

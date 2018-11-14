@@ -1,13 +1,12 @@
-resource "aws_security_group" "pacman-sg" {
-  name        = "pacman"
-  description = "This resource is created as part of PacMan installation. Do not delete - It may break application"
+resource "aws_security_group" "pacbot-sg" {
+  name        = "pacbot"
+  description = "DO-NOT-DELETE-This resource is created as part of PacBot installation"
   vpc_id      = "${var.vpc-id}"
 
   ingress {
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    description = "Inbound access from VPC CIDR"
     cidr_blocks = ["${var.cidr_block-ip}"]
   }
   ingress {
@@ -30,13 +29,13 @@ resource "aws_security_group" "pacman-sg" {
     cidr_blocks     = ["0.0.0.0/0"]
   }
   tags {
-    Name = "pacman"
+    Name = "pacbot"
   }
 }
 
-output "pacman_sgid" {
-    value = "${aws_security_group.pacman-sg.id}"
+output "pacbot_sgid" {
+    value = "${aws_security_group.pacbot-sg.id}"
 }
-output "pacman" {
-    value = "${aws_security_group.pacman-sg.id}"
+output "pacbot" {
+    value = "${aws_security_group.pacbot-sg.id}"
 }

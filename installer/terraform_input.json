@@ -1,9 +1,9 @@
 {
     "execution_order": ["baserole", "refresh", "baserole","security","s3",
                             "es", "rds", "redshift", "oss-api", "batch", "lambda-submit",
-                            "build-ui", "s3-upload", "oss-ui", "lambda-rule" ],
-    "execution_order_test": ["baserole", "refresh", "baserole","security","s3","lambda-rule",
-        "oss-api","batch","lambda-submit"],
+                            "build-ui", "s3-upload", "lambda-rule" ],
+    "execution_order_test": ["baserole", "refresh", "baserole","security","s3","batch","lambda-rule",
+        "oss-api","lambda-submit"],
     "resources" :{
         "baserole" : {
             "client_accountid":"_get_client_accountid","check":1,"baseaccountrole":"_get_base_account_role_name",
@@ -37,12 +37,12 @@
             "vpc-id" : "_get_vpcid", "subnet_list" : "_get_subnet","option_group_name" : "_get_rds_subnet_name",
             "parameter_group_name" : "_get_rds_param_name", "subnet_group_name" : "_get_rds_subnet_name",
             "engine_name" : "_get_rds_engine_name", "engine_version":"_get_rds_engine_version",
-            "family_name": "_get_rds_family_name", "identifier" : "_get_rds_identifier", "pacman_sgid" : "_get_security_id"
+            "family_name": "_get_rds_family_name", "identifier" : "_get_rds_identifier", "pacbot_sgid" : "_get_security_id"
         },
         "es" : {
             "domain_name" : "_get_es_domain_name","es_version": "_get_es_version", "instance_type": "_get_es_instance_type",
             "instance_count" : "_get_es_instance_count","ebs_volume_size": "_get_es_volume_size",
-            "espolicyname" : "_get_es_policy_name", "pacman_sgid" : "_get_security_id",
+            "espolicyname" : "_get_es_policy_name", "pacbot_sgid" : "_get_security_id",
             "subnetid" : "_get_es_subnet", "accountid" : "_get_base_accountid"
         },
         "redshift": {
@@ -52,7 +52,7 @@
             "cluster_node_type":"_get_node_type","cluster_type":"_get_cluster_type",
             "cluster_number_of_nodes":"_get_node_count","subnet_list":"_get_subnet",
             "subnet_group_name":"_get_subnet_name","parameter_group_name":"_get_param_name",
-            "pacman_sgid":"_get_security_id"
+            "pacbot_sgid":"_get_security_id"
         },
         "batch": {
             "subnetid": "_get_subnet", "cidr_block-ip" : "_get_cidr", "vpc-id": "_get_vpcid",
@@ -64,7 +64,7 @@
             "memory_size" : "_get_memory_size", "job_definition_vcpu" : "_get_job_def_vcpu",
             "attempts_number" : "_get_attempts_number", "resourcetype" : "_get_resource_type",
             "keyname" : "_get_key_name", "accountid" : "_get_base_accountid",
-            "client_accountid": "_get_client_accountid", "pacman_sgid" : "_get_security_id",
+            "client_accountid": "_get_client_accountid", "pacbot_sgid" : "_get_security_id",
             "instance_profile" : "_get_pacecs_role_name","batchrole" : "_get_pacrunbatch_role_name",
             "ES_HOST" : "_get_es_url", "BASE_AWS_ACCOUNT" : "_get_base_accountid", "ES_URI" : "_get_es_url",
             "HEIMDALL_URI" : "_get_es_url", "PACMAN_API_URI" : "_get_dns_name"
@@ -114,8 +114,8 @@
             "compliance_jar_file_name": "_get_compliance_jar_file_name",
             "notifications_jar_file_name" : "_get_notifications_jar_file_name",
             "statistics_jar_file_name":"_get_statistics_jar_file_name",
-            "PACMAN_URL":"_get_pacman_url","PACMAN_SERVICE_USER":"_get_pacman_service_user",
-            "PACMAN_SERVICE_PASSWORD":"_get_pacman_service_password",
+            "PACMAN_URL":"_get_pacbot_url","PACMAN_SERVICE_USER":"_get_pacbot_service_user",
+            "PACMAN_SERVICE_PASSWORD":"_get_pacbot_service_password",
             "CLOUD_INSIGHTS_TOKEN_URL":"_get_cloud_insights_token_url",
             "CLOUD_INSIGHTS_COST_URL": "_get_cloud_insights_cost_url",
             "SVC_CORP_USER_ID":"_get_svc_corp_user_id","SVC_CORP_PASSWORD":"_get_svc_corp_password",
@@ -134,7 +134,10 @@
             "JOB_FUNCTION_ARN": "_get_lambda_fn_arn",
             "RULE_FUNCTION_NAME": "_get_lambda_rule_fn_name",
             "RULE_FUNCTION_ARN": "_get_lambda_rule_fn_arn",
-            "OAUTH2_CLIENT_ID": "_get_OAUTH2_CLIENT_ID"
+            "OAUTH2_CLIENT_ID": "_get_OAUTH2_CLIENT_ID",
+            "task_definition_name" : "_get_ui_task_definition_name",
+            "ui_image" :"_get_ui_image",
+            "ui_container_name" : "_get_ui_container_name"
         },
         "oss-ui" : {
             "ui-ecs-cluster": "_get_ui_ecs_cluster", "task_definition_name" : "_get_ui_task_definition_name",

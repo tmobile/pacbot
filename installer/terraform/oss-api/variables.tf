@@ -2,7 +2,11 @@ variable "aws_access_key" {type = "string" default = ""}
 variable "aws_secret_key" {type = "string" default = ""}
 
 variable "api-ecs-cluster" {
-  default = "pacman-oss-api"
+  default = "pacbot"
+}
+
+variable "ui_cloudwatch_group" {
+  default = "pacbot_oss_ui"
 }
 
 variable "region" {
@@ -10,7 +14,7 @@ variable "region" {
 }
 
 variable "apis_cloudwatch_group" {
-  default = "pacman_oss_apis"
+  default = "pacbot_oss_apis"
 }
 
 variable "vpc-id" {
@@ -32,6 +36,18 @@ variable "alb_name" {
 
 variable "api_image" {
   default = ""
+}
+
+variable "ui_image" {
+  default = ""
+}
+
+variable "task_definition_name" {
+  default = "nginx"
+}
+
+variable "ui_container_name" {
+  default = "nginx"
 }
 
 variable "config_task_definition_name" {

@@ -3,7 +3,7 @@ variable "aws_secret_key" {}
 variable "region" {}
 variable "user_name" { type = "string" default = "" }
 variable "user_pwd" { type = "string" default = "" }
-variable "snapshotname" { type = "string" default = "pacmansnapshot" }
+variable "snapshotname" { type = "string" default = "pacbotsnapshot" }
 variable "rdsdatabase" {}
 variable "rdsdbversion" {}
 variable "rdsinstance" {}
@@ -16,6 +16,6 @@ variable "parameter_group_name" {}
 variable "subnet_group_name" {}
 variable "engine_name" {}
 variable "engine_version" {}
-variable "pacman_sgid" {}
+variable "pacbot_sgid" {}
 variable "family_name" {}
 variable "identifier" {}

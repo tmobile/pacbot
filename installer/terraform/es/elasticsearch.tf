@@ -1,4 +1,4 @@
-resource "aws_elasticsearch_domain" "pacmanes" {
+resource "aws_elasticsearch_domain" "pacbotes" {
   domain_name           = "${var.domain_name}"
   elasticsearch_version = "${var.es_version}"
 
@@ -17,7 +17,7 @@ resource "aws_elasticsearch_domain" "pacmanes" {
     Domain = "${var.domain_name}"
   }
   vpc_options {
-    security_group_ids = ["${var.pacman_sgid}"]
+    security_group_ids = ["${var.pacbot_sgid}"]
     subnet_ids         = ["${var.subnetid}"]
   }
   snapshot_options {
@@ -34,20 +34,20 @@ resource "aws_elasticsearch_domain_policy" "domainpolicy" {
       "Effect": "Allow",
       "Principal":"*",
       "Action":  "es:*",
-       "Resource": "${aws_elasticsearch_domain.pacmanes.arn}/*"
+       "Resource": "${aws_elasticsearch_domain.pacbotes.arn}/*"
     }
   ]
 }
 EOF
-  depends_on = ["aws_elasticsearch_domain.pacmanes"]
+  depends_on = ["aws_elasticsearch_domain.pacbotes"]
 }
 output "es_endpoint" {
-   value = "${aws_elasticsearch_domain.pacmanes.endpoint}"
+   value = "${aws_elasticsearch_domain.pacbotes.endpoint}"
 }
-output "pacman" {
-   value = "${aws_elasticsearch_domain.pacmanes.endpoint}"
+output "pacbot" {
+   value = "${aws_elasticsearch_domain.pacbotes.endpoint}"
 }
 output "es_kibana" {
-   value = "${aws_elasticsearch_domain.pacmanes.kibana_endpoint}"
+   value = "${aws_elasticsearch_domain.pacbotes.kibana_endpoint}"
 }
 
