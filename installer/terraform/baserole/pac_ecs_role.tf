@@ -1,6 +1,7 @@
 resource "aws_iam_role" "pacecsrole" {
     name = "${var.pacecsrole}"
 assume_role_policy="${var.check ? data.aws_iam_policy_document.pacecspolicy.json : data.aws_iam_policy_document.pacecsassumepolicy.json}"
+    description = "DO-NOT-DELETE-This resource is created as part of PacBot installation"
 }
 data "aws_iam_policy_document" "pacecspolicy" {
     statement
@@ -9,7 +10,7 @@ data "aws_iam_policy_document" "pacecspolicy" {
         principals {
             type="Service",
             identifiers = [
-                "ec2.amazonaws.com","ecs-tasks.amazonaws.com" 
+                "ec2.amazonaws.com","ecs-tasks.amazonaws.com"
             ]
         }
         effect = "Allow"

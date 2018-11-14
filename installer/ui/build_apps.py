@@ -6,11 +6,11 @@ import time
 from os import walk
 import boto3
 
-class BuildPacman(object):
-    git_repo_url = "https://github.com/tmobile/pacbot.git"  # This should be changed based on the Repo
-    pacman_clone_path = "pacman_cloned_dir_"  # This should be changed based on the system
 
+class Buildpacbot(object):
+    git_repo_url = "git@github.com:tmobile/pacbot.git"  # This should be changed based on the Repo
     mvn_build_command = "mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
+    mvn_clean_command = "mvn clean"
     npm_install = "npm install"
     bower_install = "bower install --allow-root"
     type_script_install = "npm install typescript@'>=2.1.0 <2.4.0'"
@@ -21,31 +21,30 @@ class BuildPacman(object):
     def __init__(self, api_domain_url, upload_dir, log_file):
         self.api_domain_url = api_domain_url
         self.cwd = os.getcwd()
+        self.codebase_root_dir = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
 
-        self.pacman_clone_path = "/tmp/" + self.pacman_clone_path + str(time.time())
         self.log_file = log_file
         self.upload_dir = upload_dir
 
     def _clean_up_all(self):
-        shutil.rmtree(self.pacman_clone_path, ignore_errors=True)
         os.chdir(self.cwd)
 
     def build_api_and_ui_apps(self, aws_access_key, aws_secret_key, region, bucket):
         print("Execution started...............\n")
-        cloned_repo = self.clone_pacman_code()
-        self.upload_ui_files_to_s3(cloned_repo, aws_access_key, aws_secret_key, region, bucket)
 
-        self.build_jar_and_ui_from_code(cloned_repo)
+        self.upload_ui_files_to_s3(aws_access_key, aws_secret_key, region, bucket)
 
-        self.archive_ui_app_build(cloned_repo.working_dir)
+        self.build_jar_and_ui_from_code()
+
+        self.archive_ui_app_build()
 
         self._clean_up_all()
 
-    def upload_ui_files_to_s3(self, cloned_repo, aws_access_key, aws_secret_key, region, bucket):
+    def upload_ui_files_to_s3(self, aws_access_key, aws_secret_key, region, bucket):
         print("Uploading Email templates to S3...............\n")
 
         folder_to_upload = "pacman-v2-email-template"
-        local_folder_path = os.path.join(cloned_repo.working_dir , 'emailTemplates', folder_to_upload)
+        local_folder_path = os.path.join(self.codebase_root_dir, 'emailTemplates', folder_to_upload)
 
         for (dirpath, dirnames, file_names) in walk(local_folder_path):
             files_to_upload = file_names
@@ -57,8 +56,8 @@ class BuildPacman(object):
             key = folder_to_upload + '/' + file_name
 
             if file_name == 'html.handlebars':
-                 extra_args = {'ACL':'public-read'}  # To make this public
-                 self.html_handlebars_uri = '%s/%s/%s' % (s3_client.meta.endpoint_url, bucket, key)  # To be added in config.ts
+                extra_args = {'ACL': 'public-read'}  # To make this public
+                self.html_handlebars_uri = '%s/%s/%s' % (s3_client.meta.endpoint_url, bucket, key)  # To be added in config.ts
 
             s3_client.upload_file(file_path, bucket, key, ExtraArgs=extra_args)
 
@@ -70,37 +69,22 @@ class BuildPacman(object):
         '''
         command = command + ' &>>' + self.log_file
         os.chdir(exec_dir)
-        p = subprocess.Popen(command, shell=True, stdout = subprocess.PIPE)
+        p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
         time.sleep(5)
         stdout, stderr = p.communicate()
 
         return stdout, stderr
 
-    def clone_pacman_code(self):
-        '''
-        Clone pacman code from the repository
-        '''
-        print("Cloning the repository...............\n")
-        shutil.rmtree(self.pacman_clone_path, ignore_errors=True)  # Remove the directory if already exists for fresh build
-        time.sleep(10)
-        cloned_repo = Repo.clone_from(
-            self.git_repo_url,
-            self.pacman_clone_path,
-            env={'GIT_SSH_COMMAND': "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"}
-        )
-        print("Cloned repository to path: " + cloned_repo.working_dir + "\n")
-        return cloned_repo
-
-    def build_jar_and_ui_from_code(self, cloned_repo):
+    def build_jar_and_ui_from_code(self):
         print("Started building the jar...............\n")
-        working_dir = cloned_repo.working_dir
-        webapp_dir = self._get_web_app_directory(cloned_repo)
+        webapp_dir = self._get_web_app_directory()
 
         self._update_variables_in_ui_config(webapp_dir)
-        self.build_api_job_jars(working_dir)
-        self.copy_jars_to_upload_dir(working_dir)
+        self.build_api_job_jars(self.codebase_root_dir)
+        self.copy_jars_to_upload_dir(self.codebase_root_dir)
 
     def build_api_job_jars(self, working_dir):
+        stdout, stderr = self.run_bash_command(self.mvn_clean_command, working_dir)
         stdout, stderr = self.run_bash_command(self.mvn_build_command, working_dir)
 
     def copy_jars_to_upload_dir(self, working_dir):
@@ -128,8 +112,8 @@ class BuildPacman(object):
             copy_file_from = working_dir + "/dist/jobs/" + jarfile
             shutil.copy2(copy_file_from, self.upload_dir)
 
-    def _get_web_app_directory(self, cloned_repo):
-        return os.path.join(cloned_repo.working_dir, "webapp")
+    def _get_web_app_directory(self):
+        return os.path.join(self.codebase_root_dir, "webapp")
 
     def _update_variables_in_ui_config(self, webapp_dir):
         config_file = os.path.join(webapp_dir, 'src/config/configurations.ts')
@@ -149,10 +133,10 @@ class BuildPacman(object):
         with open(config_file, 'w') as f:
             f.writelines(lines)
 
-    def archive_ui_app_build(self, working_dir):
+    def archive_ui_app_build(self):
         time.sleep(5)
         zip_file_name = self.upload_dir + "/dist"
         print("Started creating zip file...")
-        dir_to_archive = os.path.join(working_dir, "dist/pacmanspa")
+        dir_to_archive = os.path.join(self.codebase_root_dir, "dist/pacmanspa")
         shutil.make_archive(zip_file_name, self.archive_type, dir_to_archive)
         time.sleep(5)

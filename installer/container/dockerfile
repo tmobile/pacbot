@@ -1,5 +1,5 @@
 FROM anapsix/alpine-java
-MAINTAINER pacman-rule-execution-engine
+MAINTAINER pacbot-rule-execution-engine
 RUN \
     mkdir -p /aws && \
     apk -Uuv add groff less python py-pip && \

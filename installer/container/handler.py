@@ -49,16 +49,16 @@ def _create_image_manifest():
     }
 
 
-def _create_docker_image(dockerfilepath, repository, pacman_installation):
+def _create_docker_image(dockerfilepath, repository, pacbot_installation):
     docker_client = Client(base_url='unix://var/run/docker.sock')
     for info in docker_client.build(path=dockerfilepath, tag=repository, rm=True, stream=True):
-        _logs_display(info, pacman_installation)
+        _logs_display(info, pacbot_installation)
     return docker_client
 
 
-def _create_ecr_image_push(region, accessKey, secretKey, dockerfilepath, repository, pacman_installation):
+def _create_ecr_image_push(region, accessKey, secretKey, dockerfilepath, repository, pacbot_installation):
     ecr = boto3.client('ecr', region_name=region, aws_access_key_id=accessKey, aws_secret_access_key=secretKey)
-    pacman_installation.write("docker image building for " + repository + "\n")
+    pacbot_installation.write("docker image building for " + repository + "\n")
     try:
         response = ecr.create_repository(repositoryName=repository)
     except Exception as rae:
@@ -72,20 +72,20 @@ def _create_ecr_image_push(region, accessKey, secretKey, dockerfilepath, reposit
     repo = repo+"/"+repository
     version_tag = repo
     local_tag = repository
-    docker_client = _create_docker_image(dockerfilepath, repository, pacman_installation)
+    docker_client = _create_docker_image(dockerfilepath, repository, pacbot_installation)
     print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
     docker_client = Client(base_url='unix://var/run/docker.sock')
 
     docker_client.tag(local_tag, version_tag)
     for info in docker_client.push(version_tag, stream=True, auth_config=auth_config_payload):
-        _logs_display(info, pacman_installation)
+        _logs_display(info, pacbot_installation)
     print "conatiner pushed into repository [", repo, "]"
     print ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>"
-    pacman_installation.write("image creation completed")
+    pacbot_installation.write("image creation completed")
     return repo
 
 
-def _logs_display(logdetail, pacman_installation):
+def _logs_display(logdetail, pacbot_installation):
     for output in logdetail.split('\n'):
         output = output.strip()
         json_output = ""
@@ -101,18 +101,6 @@ def _logs_display(logdetail, pacman_installation):
                     print "error...............................", error
                     raise RuntimeError("Error on build - code " + str(error))
                 elif "stream" in json_output:
-                    pacman_installation.write(json_output["stream"])
+                    pacbot_installation.write(json_output["stream"])
                 elif "status" in json_output:
                     sys.stdout.write(json_output["status"]+" ")
-
-
-def delete_repo(region, accessKey, secretKey, repository, log_handler):
-    '''
-    Delete ECR repository from AWS.
-    '''
-    ecr = boto3.client('ecr', region_name=region, aws_access_key_id=accessKey, aws_secret_access_key=secretKey)
-    log_handler.write("Deleting ECR Repository: " + repository + "\n")
-    try:
-        response = ecr.delete_repository(repositoryName=repository, force=True)
-    except Exception as rae:
-        print("Error:=> " + str(rae))

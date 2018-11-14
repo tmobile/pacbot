@@ -11,5 +11,5 @@ variable "cluster_number_of_nodes" {}
 variable "subnet_list" { type = "list" default =[]}
 variable "subnet_group_name" {}
 variable "parameter_group_name" {}
-variable "pacman_sgid" {}
+variable "pacbot_sgid" {}
 

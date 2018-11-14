@@ -7,6 +7,6 @@ variable "instance_type" {}
 variable "instance_count" {}
 variable "ebs_volume_size" {}
 variable "espolicyname" {}
-variable "pacman_sgid" {}
+variable "pacbot_sgid" {}
 variable "subnetid" {}
 variable "accountid" {}

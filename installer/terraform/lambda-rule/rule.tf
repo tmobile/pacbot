@@ -1,6 +1,6 @@
-resource "aws_lambda_function" "pacman-SubmitRuleExecutionJob" {
+resource "aws_lambda_function" "pacbot-SubmitRuleExecutionJob" {
   function_name = "${var.functionname}"
-  description   = "This resource is created as part of PacMan installation. Do not delete - It may break application"
+  description   = "DO-NOT-DELETE-This resource is created as part of PacBot installation"
   role          = "arn:aws:iam::${var.accountid}:role/${var.lambda_role}"
   handler       = "${var.handler_name}"
   runtime       = "${var.runtime_name}"
@@ -15,11 +15,12 @@ resource "aws_lambda_function" "pacman-SubmitRuleExecutionJob" {
 
 }
 
-resource "aws_cloudwatch_event_rule" "pacman-cloudwatch-event" {
+resource "aws_cloudwatch_event_rule" "pacbot-cloudwatch-event" {
     count="${length(var.rules)}"
     name = "${lookup(var.rules[count.index],"ruleUUID")}"
+    description   = "DO-NOT-DELETE-This resource is created as part of PacBot installation"
     schedule_expression = "cron(0 * * * ? *)"
-    depends_on = ["aws_lambda_function.pacman-SubmitRuleExecutionJob" ]
+    depends_on = ["aws_lambda_function.pacbot-SubmitRuleExecutionJob" ]
 }
 
 data "template_file" "data_json" {
@@ -51,10 +52,10 @@ resource "aws_cloudwatch_event_target" "target_for_cloudwatch" {
       count="${length(var.rules)}"
       target_id = "${var.targetid}"
       rule = "${lookup(var.rules[count.index],"ruleUUID")}"
-      arn = "${aws_lambda_function.pacman-SubmitRuleExecutionJob.arn}"
+      arn = "${aws_lambda_function.pacbot-SubmitRuleExecutionJob.arn}"
       input = "${lookup(var.rules[count.index], "ruleParams")}"
-      depends_on = [ "aws_cloudwatch_event_rule.pacman-cloudwatch-event",
-                "aws_lambda_function.pacman-SubmitRuleExecutionJob"]
+      depends_on = [ "aws_cloudwatch_event_rule.pacbot-cloudwatch-event",
+                "aws_lambda_function.pacbot-SubmitRuleExecutionJob"]
 }
 
 
@@ -63,10 +64,10 @@ resource "aws_lambda_permission" "lambda_function_invoke" {
     action         = "lambda:InvokeFunction"
     function_name  = "${var.functionname}"
     principal      = "events.amazonaws.com"
-    depends_on = [ "aws_lambda_function.pacman-SubmitRuleExecutionJob",
+    depends_on = [ "aws_lambda_function.pacbot-SubmitRuleExecutionJob",
                 "aws_cloudwatch_event_target.target_for_cloudwatch"]
 }
 
-output "pacman" {
-  value ="${aws_lambda_function.pacman-SubmitRuleExecutionJob.arn}"
+output "pacbot" {
+  value ="${aws_lambda_function.pacbot-SubmitRuleExecutionJob.arn}"
 }

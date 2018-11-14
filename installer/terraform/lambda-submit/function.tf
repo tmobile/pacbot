@@ -1,6 +1,6 @@
-resource "aws_lambda_function" "pacman-submitBatchjob" {
+resource "aws_lambda_function" "pacbot-submitBatchjob" {
   function_name = "${var.functionname}"
-  description   = "This resource is created as part of PacMan installation. Do not delete - It may break application"
+  description   = "DO-NOT-DELETE-This resource is created as part of PacBot installation"
   role          = "arn:aws:iam::${var.accountid}:role/${var.lambda_role}"
   handler       = "${var.handler_name}"
   runtime       = "${var.runtime_name}"
@@ -15,18 +15,18 @@ resource "aws_lambda_function" "pacman-submitBatchjob" {
 
 }
 
-resource "aws_cloudwatch_event_rule" "pacman-cloudwatch-event" {
+resource "aws_cloudwatch_event_rule" "pacbot-cloudwatch-event" {
   name = "${var.event_name1}"
   depends_on = [
-    "aws_lambda_function.pacman-submitBatchjob"
+    "aws_lambda_function.pacbot-submitBatchjob"
   ]
   schedule_expression = "cron(0 * * * ? *)"
 }
 
 resource "aws_cloudwatch_event_target" "target_for_cloudwatch" {
   target_id = "${var.targetid}"
-  rule = "${aws_cloudwatch_event_rule.pacman-cloudwatch-event.name}"
-  arn = "${aws_lambda_function.pacman-submitBatchjob.arn}"
+  rule = "${aws_cloudwatch_event_rule.pacbot-cloudwatch-event.name}"
+  arn = "${aws_lambda_function.pacbot-submitBatchjob.arn}"
   input = <<EOF
   {
   "jobName": "AWS-Data-Collector",
@@ -104,18 +104,18 @@ resource "aws_cloudwatch_event_target" "target_for_cloudwatch" {
 EOF
 }
 
-resource "aws_cloudwatch_event_rule" "pacman-redshfit-event" {
+resource "aws_cloudwatch_event_rule" "pacbot-redshfit-event" {
   name = "${var.event_name2}"
   depends_on = [
-    "aws_lambda_function.pacman-submitBatchjob"
+    "aws_lambda_function.pacbot-submitBatchjob"
   ]
   schedule_expression = "cron(0 * * * ? *)"
 }
 
-resource "aws_cloudwatch_event_target" "pacman_redshift_for_cloudwatch" {
+resource "aws_cloudwatch_event_target" "pacbot_redshift_for_cloudwatch" {
   target_id = "${var.targetid}"
-  rule = "${aws_cloudwatch_event_rule.pacman-redshfit-event.name}"
-  arn = "${aws_lambda_function.pacman-submitBatchjob.arn}"
+  rule = "${aws_cloudwatch_event_rule.pacbot-redshfit-event.name}"
+  arn = "${aws_lambda_function.pacbot-submitBatchjob.arn}"
   input = <<EOF
   {
   "jobName": "aws-redshift-es-data-shipper",
@@ -196,8 +196,8 @@ resource "aws_lambda_permission" "lambda_invoke1" {
   action         = "lambda:InvokeFunction"
   function_name  = "${var.functionname}"
   principal      = "events.amazonaws.com"
-  source_arn     = "arn:aws:events:${var.region}:${var.accountid}:rule/${aws_cloudwatch_event_rule.pacman-cloudwatch-event.name}"
-  depends_on = ["aws_lambda_function.pacman-submitBatchjob"  ]
+  source_arn     = "arn:aws:events:${var.region}:${var.accountid}:rule/${aws_cloudwatch_event_rule.pacbot-cloudwatch-event.name}"
+  depends_on = ["aws_lambda_function.pacbot-submitBatchjob"  ]
 }
 
 resource "aws_lambda_permission" "lambda_invoke2" {
@@ -205,9 +205,9 @@ resource "aws_lambda_permission" "lambda_invoke2" {
   action         = "lambda:InvokeFunction"
   function_name  = "${var.functionname}"
   principal      = "events.amazonaws.com"
-  source_arn     = "arn:aws:events:${var.region}:${var.accountid}:rule/${aws_cloudwatch_event_rule.pacman-redshfit-event.name}"
-  depends_on = [ "aws_lambda_function.pacman-submitBatchjob" ]
+  source_arn     = "arn:aws:events:${var.region}:${var.accountid}:rule/${aws_cloudwatch_event_rule.pacbot-redshfit-event.name}"
+  depends_on = [ "aws_lambda_function.pacbot-submitBatchjob" ]
 }
-output "pacman" {
-  value ="${aws_lambda_function.pacman-submitBatchjob.arn}"
+output "pacbot" {
+  value ="${aws_lambda_function.pacbot-submitBatchjob.arn}"
 }

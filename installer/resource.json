@@ -41,15 +41,15 @@
         "arn:aws:iam::aws:policy/AmazonS3FullAccess"
         ],
     "IAMRoles": {
-      "baseaccountrole": "pacman_ro",
-      "clientaccountrole": "pacman_ro",
-      "lambda_role": "pacman_lambda_basic_execution",
-      "pacecsrole": "pacman_ecs_role",
-      "pacrunbatch": "pacman_run_batch",
+      "baseaccountrole": "pacbot_ro",
+      "clientaccountrole": "pacbot_ro",
+      "lambda_role": "pacbot_lambda_basic_execution",
+      "pacecsrole": "pacbot_ecs_role",
+      "pacrunbatch": "pacbot_run_batch",
       "ecstaskexecution_role":"ecsTaskExecutionRole"
     },
     "S3Buckets": {
-      "bucketname": "pacman-data",
+      "bucketname": "pacbot-data",
       "foldernames" : ["artifacts","backup","inventory"]
     },
     "S3Upload": {
@@ -62,33 +62,33 @@
     },
     "RDSInstances": {
       "rdsname": "pacmandata",
-      "identifier": "pacmandbinstance",
+      "identifier": "pacbotdbinstance",
       "rdsdatabase": "mysql",
       "rdsinstance": "db.t2.medium",
       "rdsdbversion": "5.6.40",
-      "dbusername":"pacmanuser",
-      "dbpassword":"pacman123",
+      "dbusername":"pacbotuser",
+      "dbpassword":"pacbot123",
       "engine_name": "mysql",
       "engine_version": "5.6",
       "family_name": "mysql5.6",
-      "option_group_name": "pacman",
-      "parameter_group_name": "pacman",
-      "subnet_group_name" : "pacman",
-      "snapshotname" : "pacmansnapshot"
+      "option_group_name": "pacbot",
+      "parameter_group_name": "pacbot",
+      "subnet_group_name" : "pacbot",
+      "snapshotname" : "pacbotsnapshot"
     },
     "Redshift": {
-      "redshiftname": "pacman-data",
+      "redshiftname": "pacbot-data",
       "redshiftdatabasename": "pacman_data",
       "nodetype": "dc2.large",
       "clustertype": "single node",
       "nodecount": "1",
-      "redshiftmasterusername": "pacman",
-      "redshiftmasterpassword": "pacman-DATA123",
-      "parameter_group_name" : "pacman",
-      "subnet_group_name" : "pacman"
+      "redshiftmasterusername": "pacbot",
+      "redshiftmasterpassword": "pacbot-DATA123",
+      "parameter_group_name" : "pacbot",
+      "subnet_group_name" : "pacbot"
     },
     "ES": {
-      "domain_name": "pacman-esdomain",
+      "domain_name": "pacbot-esdomain",
       "es_version": "5.5",
       "instance_type": "m4.large.elasticsearch",
       "instance_count": "1",
@@ -97,16 +97,16 @@
       "es_port" : "80"
     },
     "Batch": {
-      "compute_environment": "pacman-rule-engine-env",
+      "compute_environment": "pacbot-rule-engine-env",
       "computeinstance_type": [
         "optimal"
       ],
       "maxvcpu": "256",
       "minvcpu": "0",
       "desiredvcpu": "0",
-      "job_queue_name": ["pacman-batch-jobs","pacman-rule-engine"],
+      "job_queue_name": ["pacbot-batch-jobs","pacbot-rule-engine"],
       "priority_value": ["5","6"],
-      "batch_job_definition_name": "pacman-rule-engine-job",
+      "batch_job_definition_name": "pacbot-rule-engine-job",
       "docker_parameters": ["~/fetch_and_run.sh","Ref::executableName","Ref::params","Ref::jvmMemParams",
       "Ref::ruleEngineExecutableName","Ref::entryPoint"],
       "image_name": "latest",
@@ -115,23 +115,23 @@
       "job_definition_vcpu": "1",
       "attempts_number": "2",
       "resourcetype": "EC2",
-      "keyname": "pacman",
-      "filename": "pacman.ppk"
+      "keyname": "pacbot",
+      "filename": "pacbot.ppk"
     },
     "Lambda": {
-      "lambdafunctionname": "pacman-submitBatchjob",
-      "lambdahandlername": "pacman-submitBatchjob.lambda_handler",
+      "lambdafunctionname": "pacbot-submitBatchjob",
+      "lambdahandlername": "pacbot-submitBatchjob.lambda_handler",
       "lambdaruntimename": "python2.7",
       "submiteventname": ["AWS-Data-Collector","aws-redshift-es-data-shipper"],
-      "submitfilename": "pacman-submitBatchjob.zip",
-      "rulefilename": "pacman-SubmitRuleExecutionJob.zip",
-      "lambdarulefunctioname": "pacman-SubmitRuleExecutionJob",
-      "ruleeventname": "pacman-submitrule-cloudwatch-event",
-      "lambdarulehandlername": "pacman-SubmitRuleExecutionJob.lambda_handler",
+      "submitfilename": "pacbot-submitBatchjob.zip",
+      "rulefilename": "pacbot-SubmitRuleExecutionJob.zip",
+      "lambdarulefunctioname": "pacbot-SubmitRuleExecutionJob",
+      "ruleeventname": "pacbot-submitrule-cloudwatch-event",
+      "lambdarulehandlername": "pacbot-SubmitRuleExecutionJob.lambda_handler",
       "inventory": "inventory",
       "backup": "backup",
       "uploadfilenames": [
-        "pacman-submitBatchjob.zip","pacman-SubmitRuleExecutionJob.zip"
+        "pacbot-submitBatchjob.zip","pacbot-SubmitRuleExecutionJob.zip"
       ],
       "rules_keys" : ["ruleId","ruleUUID","policyId","ruleName","targetType","assetGroup","alexaKeyword",
             "ruleParams","ruleFrequency","ruleExecutable","ruleRestUrl","ruleType",
@@ -142,11 +142,11 @@
       "STAT_API_URL":""
     },
     "OSS-API": {
-        "api-ecs-cluster": "pacman-oss-api",
+        "api-ecs-cluster": "pacbot",
         "config_task_definition_name" : "config",
         "jar_file_name" : "config.jar",
         "alb_sg" : "sg-1ef17e6c",
-        "alb_name" : "pacman-alb-apijobs",
+        "alb_name" : "pacbot",
         "api_image" : "latest",
         "api_container_name" : "config",
         "admin_task_definition_name" : "admin",
@@ -169,7 +169,7 @@
         "PACMAN_SERVICE_PASSWORD" : "some_password",
         "SVC_CORP_USER_ID" : "testid",
         "SVC_CORP_PASSWORD" : "password",
-        "apis_cloudwatch_group" : "pacman_oss_apis",
+        "apis_cloudwatch_group" : "pacbot_oss_apis",
         "CONFIG_PASSWORD" : "pacman",
         "LDAP_DOMAIN" : "http://localhost", "LDAP_BASEDN":"http://localhost",
         "LDAP_PORT" : "389", "LDAP_RESPONSETIMEOUT" : "60",
@@ -185,18 +185,18 @@
         "OAUTH2_CLIENT_ID" : "22e14922-87d7-4ee4-a470-da0bb10d45d3"
     },
     "OSS-UI": {
-        "api-ecs-cluster": "pacman-oss-ui",
+        "api-ecs-cluster": "pacbot-oss-ui",
         "task_definition_name" : "ngnix",
-        "alb_name" : "pacman-alb-uijobs",
+        "alb_name" : "pacbot-alb-uijobs",
         "ui_image" : "latest",
         "ui_container_name" : "nginx",
-        "api-ecs-cluster" : "pacman-oss-ui"
+        "api-ecs-cluster" : "pacbot-oss-ui"
 
     },
     "Repository": {
-        "batch" : "pacman-job",
-        "oss-api": "pacman-api",
-        "oss-ui" : "pacman-ui"
+        "batch" : "pacbot-job",
+        "oss-api": "pacbot-api",
+        "oss-ui" : "pacbot-ui"
     },
     "Network": {
       "vpcID": "vpc-2255008",
