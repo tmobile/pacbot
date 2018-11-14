@@ -21,7 +21,7 @@ variable "resourcetype" {}
 variable "keyname" {}
 variable "accountid" {}
 variable "client_accountid" {}
-variable "pacman_sgid" {}
+variable "pacbot_sgid" {}
 variable "instance_profile" {}
 variable "batchrole" {}
 variable "ES_HOST" {}

@@ -4,6 +4,6 @@ provider "aws" {
   region     = "${var.region}"
   assume_role{
     role_arn="arn:aws:iam::${var.client_accountid}:role/${var.client_assumerole}"
-    session_name="Pacman_Session_Role"
+    session_name="pacbot_Session_Role"
   }
 }

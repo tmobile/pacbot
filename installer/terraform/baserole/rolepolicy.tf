@@ -1,25 +1,26 @@
 resource "aws_iam_role" "role" {
     name = "${var.baseaccountrole}"
     assume_role_policy = "${var.check ? data.aws_iam_policy_document.policy.json : data.aws_iam_policy_document.assumepolicy.json}"
+    description = "DO-NOT-DELETE-This resource is created as part of PacBot installation"
 }
-resource "aws_iam_role_policy_attachment" "pacman-attach1" {
+resource "aws_iam_role_policy_attachment" "pacbot-attach1" {
     role       = "${aws_iam_role.role.name}"
     policy_arn = "arn:aws:iam::aws:policy/ReadOnlyAccess"
 }
-resource "aws_iam_role_policy_attachment" "pacman-attach2" {
+resource "aws_iam_role_policy_attachment" "pacbot-attach2" {
     role       = "${aws_iam_role.role.name}"
      policy_arn = "arn:aws:iam::aws:policy/AmazonGuardDutyReadOnlyAccess"
 }
-resource "aws_iam_role_policy_attachment" "pacman-attach3" {
+resource "aws_iam_role_policy_attachment" "pacbot-attach3" {
     role       = "${aws_iam_role.role.name}"
     policy_arn = "arn:aws:iam::aws:policy/AWSSupportAccess"
 }
-resource "aws_iam_role_policy_attachment" "pacman-attach4" {
+resource "aws_iam_role_policy_attachment" "pacbot-attach4" {
     role       = "${aws_iam_role.role.name}"
     policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
 }
 
-resource "aws_iam_role_policy_attachment" "pacman-attach5" {
+resource "aws_iam_role_policy_attachment" "pacbot-attach5" {
     role       = "${aws_iam_role.role.name}"
     policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
 }
@@ -28,6 +29,7 @@ resource "aws_iam_role_policy_attachment" "pacman-attach5" {
 resource "aws_iam_role" "lambda_role" {
     name="${var.lambda_role}"
     assume_role_policy="${data.aws_iam_policy_document.policy.json}"
+    description = "DO-NOT-DELETE-This resource is created as part of PacBot installation"
 }
 
 resource "aws_iam_role_policy_attachment" "lambda_attach1" {

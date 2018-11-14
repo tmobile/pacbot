@@ -1,6 +1,7 @@
 resource "aws_iam_role" "pac_run_batch" {
     name = "${var.pacrunbatch}"
     assume_role_policy="${var.check ? data.aws_iam_policy_document.batchpolicy.json : data.aws_iam_policy_document.batchassumepolicy.json}"
+    description = "DO-NOT-DELETE-This resource is created as part of PacBot installation"
 }
 data "aws_iam_policy_document" "batchpolicy" {
     statement

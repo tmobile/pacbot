@@ -1,4 +1,4 @@
-resource "aws_redshift_cluster" "pacman-redshift-cluster" {
+resource "aws_redshift_cluster" "pacbot-redshift-cluster" {
   cluster_identifier = "${var.cluster_identifier}"
   database_name      = "${var.cluster_database_name}"
   master_username    = "${var.cluster_master_username}"
@@ -8,21 +8,22 @@ resource "aws_redshift_cluster" "pacman-redshift-cluster" {
   number_of_nodes    = "${var.cluster_number_of_nodes}"
   skip_final_snapshot = true
   publicly_accessible = false
-  vpc_security_group_ids = ["${var.pacman_sgid}"]
+  vpc_security_group_ids = ["${var.pacbot_sgid}"]
   cluster_parameter_group_name = "${var.parameter_group_name}"
-  cluster_subnet_group_name = "${var.subnet_group_name}" 
-  depends_on = ["aws_redshift_parameter_group.pacman_redshift_parameter_group",
-                "aws_redshift_subnet_group.pacman_redshift_subnet_group"]
+  cluster_subnet_group_name = "${var.subnet_group_name}"
+  depends_on = ["aws_redshift_parameter_group.pacbot_redshift_parameter_group",
+                "aws_redshift_subnet_group.pacbot_redshift_subnet_group"]
 }
 output "redshift_endpoint" {
-  value = "${aws_redshift_cluster.pacman-redshift-cluster.endpoint}"
+  value = "${aws_redshift_cluster.pacbot-redshift-cluster.endpoint}"
 }
-output "pacman"
+output "pacbot"
 {
-    value = "${aws_redshift_cluster.pacman-redshift-cluster.endpoint}"
+    value = "${aws_redshift_cluster.pacbot-redshift-cluster.endpoint}"
 }
-resource "aws_redshift_parameter_group" "pacman_redshift_parameter_group" {
+resource "aws_redshift_parameter_group" "pacbot_redshift_parameter_group" {
   name   = "${var.parameter_group_name}"
+  description = "DO-NOT-DELETE-This resource is created as part of PacBot installation"
   family = "redshift-1.0"
   parameter {
     name  = "require_ssl"
@@ -30,10 +31,11 @@ resource "aws_redshift_parameter_group" "pacman_redshift_parameter_group" {
   }
 }
 
-resource "aws_redshift_subnet_group" "pacman_redshift_subnet_group" {
+resource "aws_redshift_subnet_group" "pacbot_redshift_subnet_group" {
   name       = "${var.subnet_group_name}"
+  description = "DO-NOT-DELETE-This resource is created as part of PacBot installation"
   subnet_ids = ["${var.subnet_list}"]
   tags {
-    environment = "pacman-redshift"
+    environment = "pacbot-redshift"
   }
 }

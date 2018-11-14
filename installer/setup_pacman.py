@@ -64,25 +64,25 @@ subnet_input = jsonRead._get_subnet()
 '''
 if cidr_input not in cidr_list:
    print "Please add correct CIDR in resource.json"
-   pacman_exit(err_msg)
+   pacbot_exit(err_msg)
 
 if subnet_input not in subnet_list:
    print "please add correct subnet in resource.json"
-   pacman_exit(err_msg)
+   pacbot_exit(err_msg)
 '''
 
 
-def pacman_exit(err_msg):
+def pacbot_exit(err_msg):
     print err_msg
     sys.exit()
 
 if set(cidr_input).intersection(cidr_list) is None:
     print "Please add correct CIDR in resource.json"
-    pacman_exit(err_msg)
+    pacbot_exit(err_msg)
 
 if set(subnet_input).intersection(subnet_list) is None:
     print "please add correct subnet in resource.json"
-    pacman_exit(err_msg)
+    pacbot_exit(err_msg)
 
 
 def config_line(header, name, detail, data):
@@ -185,13 +185,13 @@ def _access_validation(assignedList, user_name, user_arn):
             isAccess = True
 
     if isAccess:
-        print("\n%100s \n%s %22s %s\n%s\n" % ("*" * 100, "*" * 35, "Pacman Installation Started!", "*" * 35, "*" * 100))
+        print("\n%100s \n%s %22s %s\n%s\n" % ("*" * 100, "*" * 35, "pacbot Installation Started!", "*" * 35, "*" * 100))
         time.sleep(1)
         awsterraformbuild._create_aws_resources(accessKey, secretKey, region)
         print "All the resources are created"
 
 
-def _destroy_pacman_resources(accessKey, secretKey, region):
+def _destroy_pacbot_resources(accessKey, secretKey, region):
     awsterraformbuild._destroy_aws_resources(accessKey, secretKey, region)
 
 
@@ -207,15 +207,15 @@ if __name__ == '__main__':
         _get_policy_details(iam, user_name)
         jsonRead._write_json("base_account_id", _get_account_id(accessKey, secretKey))
         jsonRead._write_json("region", region)
-        pacman_input = sys.argv[1].strip().lower()
-        if pacman_input == "install":
-            awsterraformbuild.pacman_installation.write("Starting pacman installation \n")
+        pacbot_input = sys.argv[1].strip().lower()
+        if pacbot_input == "install":
+            awsterraformbuild.pacbot_installation.write("Starting pacbot installation \n")
             _access_validation(assignedpolicieslist, user_name, user_arn)
 
-        elif pacman_input == "destroy":
-            awsterraformbuild.pacman_installation.write("Deleting pacman installation \n")
-            _destroy_pacman_resources(accessKey, secretKey, region)
+        elif pacbot_input == "destroy":
+            awsterraformbuild.pacbot_installation.write("Deleting pacbot installation \n")
+            _destroy_pacbot_resources(accessKey, secretKey, region)
     except IndexError as ie:
         print "Give valid option"
 
-    awsterraformbuild.pacman_installation.close()
+    awsterraformbuild.pacbot_installation.close()
