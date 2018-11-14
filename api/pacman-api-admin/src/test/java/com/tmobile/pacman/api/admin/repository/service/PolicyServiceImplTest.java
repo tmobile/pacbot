@@ -23,6 +23,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
@@ -77,7 +78,7 @@ public class PolicyServiceImplTest {
 	public void createPoliciesTest() throws Exception {
 		CreatePolicyDetails policyDetails = getCreatePolicyDetails();
 		Policy newPolicy = getPolicy();
-		when(policyRepository.exists(policyDetails.getPolicyId())).thenReturn(false);
+		when(policyRepository.existsById(policyDetails.getPolicyId())).thenReturn(false);
 		when(policyRepository.save(newPolicy)).thenReturn(newPolicy);
 		assertThat(policyService.createPolicies(policyDetails), is("Created Successfully"));
 	}
@@ -85,24 +86,24 @@ public class PolicyServiceImplTest {
 	@Test
 	public void createPoliciesNotFoundTest() throws Exception {
 		CreatePolicyDetails policyDetails = getCreatePolicyDetails();
-		when(policyRepository.exists(policyDetails.getPolicyId())).thenReturn(true);
+		when(policyRepository.existsById(policyDetails.getPolicyId())).thenReturn(true);
 		assertThat(policyService.createPolicies(policyDetails), is("Policy already exits!!"));
 	}
 
 	@Test
 	public void updatePoliciesTest() throws Exception {
 		UpdatePolicyDetails policiesDetails = getUpdatePolicyDetails();
-		Policy policyToUpdate = getPolicy();	
-		when(policyRepository.exists(policiesDetails.getPolicyId())).thenReturn(true);
-		when(policyRepository.findOne(policiesDetails.getPolicyId())).thenReturn(policyToUpdate);
-		when(policyRepository.save(policyToUpdate)).thenReturn(policyToUpdate);
+		Optional<Policy> policyToUpdate = Optional.of(getPolicy());
+		when(policyRepository.existsById(policiesDetails.getPolicyId())).thenReturn(true);
+		when(policyRepository.findById(policiesDetails.getPolicyId())).thenReturn(policyToUpdate);
+		when(policyRepository.save(policyToUpdate.get())).thenReturn(policyToUpdate.get());
 		assertThat(policyService.updatePolicies(policiesDetails), is("Updated Successfully"));
 	}
 	
 	@Test
 	public void updatePoliciesNotFoundTest() throws Exception {
 		UpdatePolicyDetails policiesDetails = getUpdatePolicyDetails();
-		when(policyRepository.exists(policiesDetails.getPolicyId())).thenReturn(false);
+		when(policyRepository.existsById(policiesDetails.getPolicyId())).thenReturn(false);
 		assertThat(policyService.updatePolicies(policiesDetails), is("Policy does not exits!!"));
 	}
 

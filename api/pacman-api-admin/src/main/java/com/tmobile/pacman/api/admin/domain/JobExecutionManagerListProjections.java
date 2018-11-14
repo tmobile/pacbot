@@ -37,4 +37,6 @@ public interface JobExecutionManagerListProjections {
 	public Date getCreatedDate();
 	
 	public Date getModifiedDate();
+	
+	public String getStatus();
 }

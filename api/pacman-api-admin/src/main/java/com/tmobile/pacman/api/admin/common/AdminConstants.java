@@ -37,13 +37,16 @@ public final class AdminConstants {
 	public static final String RULE_DISABLE_ENABLE_SUCCESS			=	"Rule has been successfully %s !!";
 	public static final String RULE_ID_EXITS 						= 	"Rule id %s already exists!!";
 	public static final String RULE_ID_NOT_EXITS 					= 	"Rule id %s does not exists!!";
-	
+	public static final String JOB_DISABLE_ENABLE_SUCCESS           =   "Job has been successfully %s !!";
+
 	public static final String JOB_CREATION_SUCCESS					=	"Job has been successfully created";
 	public static final String JOB_UPDATION_SUCCESS					=	"Job has been successfully updated";
 	public static final String JOB_ID_ALREADY_EXITS					=	"Job %s already exists!!";
 	public static final String JOB_ID_NOT_EXITS						=	"Job %s does not exists!!";
 	public static final String INVALID_JOB_FREQUENCY				=	"Invalid Job Frequency or Cron Expression!";
 	public static final String UNEXPECTED_ERROR_OCCURRED 			= 	"Unexpected error occurred!!";
+	public static final String LAMBDA_LINKING_EXCEPTION             =   "Failed in linking the lambda function to the rule";
+	public static final String CLOUDWATCH_RULE_DELETION_FAILURE     =   "Failed in deleting the cloudwatch rule while disabling the rule";
 
 	public static final String DOMAIN_CREATION_SUCCESS				=	"Domain has been successfully created";
 	public static final String DOMAIN_NAME_EXITS					=	"Domain name already exits!!!";
@@ -75,11 +78,10 @@ public final class AdminConstants {
 	public static final String USER_ROLE_ALREADY_EXITS				=	"User Role already exits!!!";
 	public static final String USER_ROLE_ALLOCATION_FAILURE 		=	"Failed in user role allocation";
 	public static final String USER_ROLE_ALLOCATION_SUCCESS 		=	"User Roles has been successfully allocated";
-	public static final String ASGC									= 	"ASGC";
 	
 	public static final String QUERY								= 	"query";
 	
-		public static final String PLUGIN_DETAILS                       =   "pluginDetails";
+	public static final String PLUGIN_DETAILS                       =   "pluginDetails";
 	
 	public static final String ACCOUNT_CREATION_SUCCESS             =   "Account has been successfully created";
 	public static final String ACCOUNT_ID_EXITS                     =   "Account Id already exits!!!";
@@ -87,7 +89,11 @@ public final class AdminConstants {
 	public static final String ACCOUNT_UPDATION_SUCCESS             =   "Account has been successfully updated";
 	public static final String ACCOUNT_DELETION_SUCCESS             =   "Account has been successfully deleted";
 	public static final String ACCOUNT_DELETE_FAILED                =   "Failed in deleting the Account";
-	public static final Integer TEMPORARY_CREDS_VALID_SECONDS 	=   3600;
-	public static final String DEFAULT_SESSION_NAME 		=   "PAC_GET_ADMIN_DATA_SESSION";
+	public static final Integer TEMPORARY_CREDS_VALID_SECONDS 		=   3600;
+	public static final String DEFAULT_SESSION_NAME 				=   "PAC_GET_ADMIN_DATA_SESSION";
+	
+	public static final String JOBID_OR_RULEID_NOT_EMPTY            =   "Both Job Id or Rule Id cannot be blank";
+    public static final String DELETE_RULE_TARGET_FAILED            =   "Failed in deleting the lambda target from rule";
+    
 }
 

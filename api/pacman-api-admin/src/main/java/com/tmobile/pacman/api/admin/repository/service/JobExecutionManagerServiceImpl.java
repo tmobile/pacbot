@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.admin.repository.service;
 
+import static com.tmobile.pacman.api.admin.common.AdminConstants.CLOUDWATCH_RULE_DELETION_FAILURE;
+import static com.tmobile.pacman.api.admin.common.AdminConstants.DELETE_RULE_TARGET_FAILED;
 import static com.tmobile.pacman.api.admin.common.AdminConstants.ENABLED_CAPS;
 import static com.tmobile.pacman.api.admin.common.AdminConstants.INVALID_JOB_FREQUENCY;
 import static com.tmobile.pacman.api.admin.common.AdminConstants.JAR_FILE_MISSING;
@@ -25,6 +27,7 @@ import static com.tmobile.pacman.api.admin.common.AdminConstants.JOB_UPDATION_SU
 import static com.tmobile.pacman.api.admin.common.AdminConstants.UNEXPECTED_ERROR_OCCURRED;
 
 import java.nio.ByteBuffer;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
@@ -37,10 +40,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.cloudwatchevents.model.DeleteRuleRequest;
+import com.amazonaws.services.cloudwatchevents.model.DeleteRuleResult;
 import com.amazonaws.services.cloudwatchevents.model.PutRuleRequest;
 import com.amazonaws.services.cloudwatchevents.model.PutRuleResult;
 import com.amazonaws.services.cloudwatchevents.model.PutTargetsRequest;
 import com.amazonaws.services.cloudwatchevents.model.PutTargetsResult;
+import com.amazonaws.services.cloudwatchevents.model.RemoveTargetsRequest;
+import com.amazonaws.services.cloudwatchevents.model.RemoveTargetsResult;
 import com.amazonaws.services.cloudwatchevents.model.RuleState;
 import com.amazonaws.services.cloudwatchevents.model.Target;
 import com.amazonaws.services.lambda.AWSLambda;
@@ -52,6 +59,7 @@ import com.amazonaws.services.lambda.model.InvokeResult;
 import com.amazonaws.services.lambda.model.ResourceNotFoundException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tmobile.pacman.api.admin.common.AdminConstants;
 import com.tmobile.pacman.api.admin.config.PacmanConfiguration;
 import com.tmobile.pacman.api.admin.domain.JobDetails;
 import com.tmobile.pacman.api.admin.domain.JobExecutionManagerListProjections;
@@ -86,21 +94,108 @@ public class JobExecutionManagerServiceImpl implements JobExecutionManagerServic
 	
 	@Override
 	public Page<JobExecutionManagerListProjections> getAllJobExecutionManagers(final Integer page, final Integer size, final String searchTerm) {
-		return jobExecutionManagerRepository.findAllJobExecutionManagers(searchTerm.toLowerCase(), new PageRequest(page, size));
+		return jobExecutionManagerRepository.findAllJobExecutionManagers(searchTerm.toLowerCase(), PageRequest.of(page, size));
 	}
 
 	@Override
-	public String createJob(final MultipartFile fileToUpload, final JobDetails jobDetails) throws PacManException {
-		return addJobExecutionManager(fileToUpload, jobDetails);
+	public String createJob(final MultipartFile fileToUpload, final JobDetails jobDetails, final String userId) throws PacManException {
+		return addJobExecutionManager(fileToUpload, jobDetails, userId);
 	}
 	
 	@Override
-	public String updateJob(final MultipartFile fileToUpload, final JobDetails jobDetails) throws PacManException {
-		return updateJobExecutionManager(fileToUpload, jobDetails);
+	public String updateJob(final MultipartFile fileToUpload, final JobDetails jobDetails, final String userId) throws PacManException {
+		return updateJobExecutionManager(fileToUpload, jobDetails, userId);
 	}
 
-	private String addJobExecutionManager(final MultipartFile fileToUpload, final JobDetails jobDetails) throws PacManException {
-		boolean isJobExits = jobExecutionManagerRepository.exists(jobDetails.getJobName());
+	@Override
+	public Collection<String> getAllJobIds() {
+		return jobExecutionManagerRepository.getAllJobIds();
+	}
+	
+	@Override
+	public JobExecutionManager getByJobId(final String jobId) throws PacManException {
+		boolean isJobExits = jobExecutionManagerRepository.existsById(jobId);
+		if(isJobExits) {
+			return jobExecutionManagerRepository.findById(jobId).get();	
+		} else {
+			throw new PacManException(String.format(JOB_ID_ALREADY_EXITS, jobId));
+		}
+	}
+	
+	@Override
+	public String enableDisableJob(final String jobId, final String action, final String userId) throws PacManException {
+		if(jobExecutionManagerRepository.existsById(jobId)) {
+			JobExecutionManager existingJob = jobExecutionManagerRepository.findById(jobId).get();
+			if(action.equalsIgnoreCase("enable")) {
+				return enableAndCreateCloudWatchRule(existingJob, userId, RuleState.ENABLED);
+			} else {
+				return disableAndCreateCloudWatchRule(existingJob, userId, RuleState.DISABLED);
+			}
+		} else {
+			throw new PacManException(String.format(AdminConstants.JOB_ID_NOT_EXITS, jobId));
+		}
+	}
+	
+	private String disableAndCreateCloudWatchRule(JobExecutionManager existingJob, String userId, RuleState ruleState) throws PacManException {
+		boolean isRemoveTargetSuccess = removeTargetWithRule(config.getJob().getLambda().getTargetId(), existingJob.getJobUUID());
+		if(isRemoveTargetSuccess) {
+			DeleteRuleRequest deleteRuleRequest = new DeleteRuleRequest()
+	    	.withName(existingJob.getJobUUID());
+			DeleteRuleResult deleteRuleResult = amazonClient.getRuleAmazonCloudWatchEvents().deleteRule(deleteRuleRequest);
+			if (deleteRuleResult.getSdkHttpMetadata() != null) {
+				if(deleteRuleResult.getSdkHttpMetadata().getHttpStatusCode() == 200) {
+					existingJob.setUserId(userId);
+					existingJob.setModifiedDate(new Date());
+					existingJob.setStatus(ruleState.name());
+					jobExecutionManagerRepository.save(existingJob);
+					return String.format(AdminConstants.JOB_DISABLE_ENABLE_SUCCESS, ruleState.name().toLowerCase());
+				} else {
+					linkTargetWithRule(config.getJob().getLambda().getTargetId(), config.getJob().getLambda().getFunctionArn(), existingJob.getJobParams(), existingJob.getJobUUID());
+					throw new PacManException(DELETE_RULE_TARGET_FAILED);
+				}
+			} else {
+				throw new PacManException(CLOUDWATCH_RULE_DELETION_FAILURE);
+			}
+		} else {
+			linkTargetWithRule(config.getJob().getLambda().getTargetId(), config.getJob().getLambda().getFunctionArn(), existingJob.getJobParams(), existingJob.getJobUUID());
+			throw new PacManException(DELETE_RULE_TARGET_FAILED);
+		}
+	}
+
+	private String enableAndCreateCloudWatchRule(JobExecutionManager existingJob, String userId, RuleState ruleState) throws PacManException {
+		AWSLambda awsLambdaClient = amazonClient.getRuleAWSLambdaClient();
+		if (!checkIfPolicyAvailableForLambda(config.getRule().getLambda().getFunctionName(), awsLambdaClient)) {
+			createPolicyForLambda(config.getRule().getLambda().getFunctionName(), awsLambdaClient);
+		}
+		
+		PutRuleRequest ruleRequest = new PutRuleRequest()
+    	.withName(existingJob.getJobUUID())
+    	.withDescription(existingJob.getJobId())
+    	.withState(ruleState);
+		ruleRequest.setState(ruleState);
+		ruleRequest.setScheduleExpression("cron(".concat(existingJob.getJobFrequency()).concat(")"));
+		PutRuleResult ruleResult = amazonClient.getRuleAmazonCloudWatchEvents().putRule(ruleRequest);
+		
+		existingJob.setUserId(userId);
+		existingJob.setModifiedDate(new Date());
+		existingJob.setStatus(ruleState.name());
+
+		if (ruleResult.getRuleArn() != null) {
+			existingJob.setJobArn(ruleResult.getRuleArn());
+			boolean isLambdaFunctionLinked = linkTargetWithRule(config.getJob().getLambda().getTargetId(), config.getJob().getLambda().getFunctionArn(), existingJob.getJobParams(), existingJob.getJobUUID());
+			if(!isLambdaFunctionLinked) { 
+				throw new PacManException(String.format(AdminConstants.LAMBDA_LINKING_EXCEPTION, existingJob.getJobId()));
+			} else {
+				jobExecutionManagerRepository.save(existingJob);
+			}
+		} else {
+			throw new PacManException(String.format(AdminConstants.UNEXPECTED_ERROR_OCCURRED, existingJob.getJobId()));
+		}
+		return String.format(AdminConstants.JOB_DISABLE_ENABLE_SUCCESS, ruleState.name().toLowerCase());
+	}
+
+	private String addJobExecutionManager(final MultipartFile fileToUpload, final JobDetails jobDetails, final String userId) throws PacManException {
+		boolean isJobExits = jobExecutionManagerRepository.existsById(jobDetails.getJobName());
 		Date currentDate = new Date();
 		if(!isJobExits) {
 			JobExecutionManager newJobDetails = new JobExecutionManager();
@@ -113,7 +208,7 @@ public class JobExecutionManagerServiceImpl implements JobExecutionManagerServic
 			newJobDetails.setJobFrequency(jobDetails.getJobFrequency());
 			newJobDetails.setJobParams(buildAndGetJobParams(jobDetails.getJobParams(), jobDetails, jobUUID));
 			newJobDetails.setStatus(ENABLED_CAPS);
-			newJobDetails.setUserId(1234);
+			newJobDetails.setUserId(userId);
 			newJobDetails.setModifiedDate(currentDate);
 			newJobDetails.setCreatedDate(currentDate);
 			if(fileToUpload.isEmpty()) {
@@ -128,15 +223,15 @@ public class JobExecutionManagerServiceImpl implements JobExecutionManagerServic
 		}
 	}
 
-	private String updateJobExecutionManager(final MultipartFile fileToUpload, final JobDetails jobDetails) throws PacManException {
-		boolean isJobExits = jobExecutionManagerRepository.exists(jobDetails.getJobName());
+	private String updateJobExecutionManager(final MultipartFile fileToUpload, final JobDetails jobDetails, final String userId) throws PacManException {
+		boolean isJobExits = jobExecutionManagerRepository.existsById(jobDetails.getJobName());
 		Date currentDate = new Date();
 		if(isJobExits) {
-			JobExecutionManager newJobDetails = jobExecutionManagerRepository.findOne(jobDetails.getJobName());
+			JobExecutionManager newJobDetails = jobExecutionManagerRepository.findById(jobDetails.getJobName()).get();
 			newJobDetails.setJobType(jobDetails.getJobType());
 			newJobDetails.setJobFrequency(jobDetails.getJobFrequency());
 			newJobDetails.setJobParams(buildAndGetJobParams(jobDetails.getJobParams(), jobDetails, newJobDetails.getJobUUID()));
-			newJobDetails.setUserId(1234);
+			newJobDetails.setUserId(userId);
 			newJobDetails.setModifiedDate(currentDate);
 			if(jobDetails.getIsFileChanged()) {
 				if(fileToUpload.isEmpty()) {
@@ -224,6 +319,19 @@ public class JobExecutionManagerServiceImpl implements JobExecutionManagerServic
 			PutTargetsResult targetsResult = amazonClient.getRuleAmazonCloudWatchEvents().putTargets(targetsRequest);
 			return (targetsResult.getFailedEntryCount() == 0);
 		} catch (Exception exception) {
+			return false;
+		}
+	}
+	
+	private boolean removeTargetWithRule(final String targetId, String jobUuid) {
+		RemoveTargetsRequest removeTargetsRequest = new RemoveTargetsRequest()
+		.withIds(targetId)
+	    .withRule(jobUuid);
+		try {
+			RemoveTargetsResult targetsResult = amazonClient.getRuleAmazonCloudWatchEvents().removeTargets(removeTargetsRequest);
+			return (targetsResult.getFailedEntryCount()==0);
+		} catch(Exception exception) {
+			exception.printStackTrace();
 			return false;
 		}
 	}

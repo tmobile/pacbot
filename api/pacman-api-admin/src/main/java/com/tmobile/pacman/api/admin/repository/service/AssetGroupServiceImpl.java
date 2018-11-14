@@ -93,7 +93,7 @@ public class AssetGroupServiceImpl implements AssetGroupService {
 
 	@Override
 	public Page<AssetGroupView> getAllAssetGroupDetails(final String searchTerm, final int page, final int size) {
-		return assetGroupRepository.findAll(searchTerm.toLowerCase(), new PageRequest(page, size));
+		return assetGroupRepository.findAll(searchTerm.toLowerCase(), PageRequest.of(page, size));
 	}
 
 	@Override
@@ -149,8 +149,8 @@ public class AssetGroupServiceImpl implements AssetGroupService {
 
 	@Override
 	public UpdateAssetGroupDetails getAssetGroupDetailsByIdAndDataSource(final String assetGroupId, final String dataSource) throws PacManException {
-		if(assetGroupRepository.exists(assetGroupId)) {
-			AssetGroupDetails existingAssetGroupDetails = assetGroupRepository.findOne(assetGroupId);	
+		if(assetGroupRepository.existsById(assetGroupId)) {
+			AssetGroupDetails existingAssetGroupDetails = assetGroupRepository.findById(assetGroupId).get();	
 			return buildAssetGroupDetails(existingAssetGroupDetails);
 		} else {
 			throw new PacManException(ASSET_GROUP_NOT_EXITS);
@@ -460,23 +460,27 @@ public class AssetGroupServiceImpl implements AssetGroupService {
 	}
 
 	private String deleteAssetGroupDetails(final DeleteAssetGroupRequest deleteAssetGroupRequest) throws PacManException {
-		AssetGroupDetails assetGroupDetails = assetGroupRepository.findOne(deleteAssetGroupRequest.getGroupId());
-		Response response = deleteAssetGroupAlias(assetGroupDetails);
-		if(response != null) {
-			if(response.getStatusLine().getStatusCode() == 200) {
-				try {
-					assetGroupRepository.delete(assetGroupDetails);
-					return ASSET_GROUP_DELETE_SUCCESS;
-				} catch(Exception exception) {
-					log.error(UNEXPECTED_ERROR_OCCURRED, exception);
-					commonService.invokeAPI("POST", ALIASES, assetGroupDetails.getAliasQuery());
-					throw new PacManException(UNEXPECTED_ERROR_OCCURRED.concat(": ").concat(exception.getMessage()));
+		if(assetGroupRepository.existsById(deleteAssetGroupRequest.getGroupId())) {
+			AssetGroupDetails assetGroupDetails = assetGroupRepository.findById(deleteAssetGroupRequest.getGroupId()).get();
+			Response response = deleteAssetGroupAlias(assetGroupDetails);
+			if(response != null) {
+				if(response.getStatusLine().getStatusCode() == 200) {
+					try {
+						assetGroupRepository.delete(assetGroupDetails);
+						return ASSET_GROUP_DELETE_SUCCESS;
+					} catch(Exception exception) {
+						log.error(UNEXPECTED_ERROR_OCCURRED, exception);
+						commonService.invokeAPI("POST", ALIASES, assetGroupDetails.getAliasQuery());
+						throw new PacManException(UNEXPECTED_ERROR_OCCURRED.concat(": ").concat(exception.getMessage()));
+					}
+				} else {
+					return ASSET_GROUP_DELETE_FAILED;
 				}
 			} else {
 				return ASSET_GROUP_DELETE_FAILED;
 			}
 		} else {
-			return ASSET_GROUP_DELETE_FAILED;
+			throw new PacManException(ASSET_GROUP_NOT_EXITS);
 		}
 	}
 }

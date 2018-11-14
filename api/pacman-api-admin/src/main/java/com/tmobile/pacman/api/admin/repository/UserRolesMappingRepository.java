@@ -34,8 +34,8 @@ import com.tmobile.pacman.api.admin.repository.model.UserRolesMapping;
 @Repository
 public interface UserRolesMappingRepository extends JpaRepository<UserRolesMapping, String> {
 
-	@Query(value = "SELECT userRole FROM UserRolesMapping userRole WHERE LOWER(userRole.userId) LIKE %:searchTerm% GROUP BY userRole.userId ORDER BY ?#{#pageable}", 		
-			countQuery = "SELECT COUNT(*) FROM UserRolesMapping userRole WHERE LOWER(userRole.userId) LIKE %:searchTerm% GROUP BY userRole.userId ORDER BY ?#{#pageable}")
+	@Query(value = "SELECT userRole FROM UserRolesMapping userRole WHERE LOWER(userRole.userId) LIKE %:searchTerm% GROUP BY userRole.userId", 		
+			countQuery = "SELECT COUNT(*) FROM UserRolesMapping userRole WHERE LOWER(userRole.userId) LIKE %:searchTerm% GROUP BY userRole.userId")
 	public Page<UserRolesMapping> findAllUserRolesMappingDetails(@Param("searchTerm") String searchTerm, Pageable pageable);
 		
 	@Query("SELECT roles.roleName AS roleName FROM UserRolesMapping userRoles INNER JOIN userRoles.userRoles roles WHERE userRoles.roleId = roles.roleId AND userRoles.userId=:userId GROUP BY userRoles.userRoleId")		

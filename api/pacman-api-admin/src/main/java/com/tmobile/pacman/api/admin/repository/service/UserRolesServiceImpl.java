@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.admin.repository.service;
 
-import static com.tmobile.pacman.api.admin.common.AdminConstants.ASGC;
 import static com.tmobile.pacman.api.admin.common.AdminConstants.UNEXPECTED_ERROR_OCCURRED;
 import static com.tmobile.pacman.api.admin.common.AdminConstants.USER_ROLE_ALREADY_EXITS;
 import static com.tmobile.pacman.api.admin.common.AdminConstants.USER_ROLE_CREATION_SUCCESS;
@@ -57,7 +56,7 @@ public class UserRolesServiceImpl implements UserRolesService {
 
 	@Override
 	public Page<UserRolesResponse> getAllUserRoles(String searchTerm, int page, int size) {
-		Page<UserRoles> userRoles = userRolesRepository.findAllUserRolesDetails(searchTerm, new PageRequest(page, size));
+		Page<UserRoles> userRoles = userRolesRepository.findAllUserRolesDetails(searchTerm, PageRequest.of(page, size));
 		List<UserRolesResponse> allUserRolesList = Lists.newCopyOnWriteArrayList();
 		userRoles.getContent().forEach(userRoleDetail -> {
 			UserRolesResponse userRolesResponse = new UserRolesResponse();
@@ -72,7 +71,7 @@ public class UserRolesServiceImpl implements UserRolesService {
 				allUserRolesList.add(userRolesResponse);
 			} 
 		 });
-		Page<UserRolesResponse> allUserRoles = new PageImpl<UserRolesResponse>(allUserRolesList, new PageRequest(page, size), userRoles.getTotalElements());
+		Page<UserRolesResponse> allUserRoles = new PageImpl<UserRolesResponse>(allUserRolesList, PageRequest.of(page, size), userRoles.getTotalElements());
 		return allUserRoles;
 	}
 
@@ -88,7 +87,7 @@ public class UserRolesServiceImpl implements UserRolesService {
 				userRole.setRoleDesc(roleDetailsRequest.getDescription());
 				userRole.setCreatedDate(currentDate);
 				userRole.setModifiedDate(currentDate);
-				userRole.setOwner(ASGC);
+				userRole.setOwner(userId);
 				userRole.setRoleName(roleDetailsRequest.getRoleName());
 				userRole.setWritePermission(roleDetailsRequest.getWritePermission());
 				userRolesRepository.save(userRole);
@@ -104,13 +103,13 @@ public class UserRolesServiceImpl implements UserRolesService {
 	
 	@Override
 	public String updateUserRole(final UpdateRoleDetailsRequest roleDetailsRequest, final String userId) throws PacManException {
-		boolean isRoleNameExits = userRolesRepository.exists(roleDetailsRequest.getRoleId());
+		boolean isRoleNameExits = userRolesRepository.existsById(roleDetailsRequest.getRoleId());
 		if (isRoleNameExits) {
 			try {
 				Date currentDate = new Date();
-				UserRoles userRole = userRolesRepository.findOne(roleDetailsRequest.getRoleId());
+				UserRoles userRole = userRolesRepository.findById(roleDetailsRequest.getRoleId()).get();
 				userRole.setModifiedDate(currentDate);
-				userRole.setOwner(ASGC);
+				userRole.setOwner(userId);
 				userRole.setRoleDesc(roleDetailsRequest.getDescription());
 				userRole.setRoleName(roleDetailsRequest.getRoleName());
 				userRole.setWritePermission(roleDetailsRequest.getWritePermission());
@@ -127,10 +126,9 @@ public class UserRolesServiceImpl implements UserRolesService {
 
 	@Override
 	public UserRoles getUserRoleById(final String roleId) throws PacManException {
-		boolean isRoleIdExits = userRolesRepository.exists(roleId);
+		boolean isRoleIdExits = userRolesRepository.existsById(roleId);
 		if(isRoleIdExits) {
-			
-			return userRolesRepository.findOne(roleId);
+			return userRolesRepository.findById(roleId).get();
 		} else {
 			throw new PacManException(USER_ROLE_NOT_EXITS);
 		}

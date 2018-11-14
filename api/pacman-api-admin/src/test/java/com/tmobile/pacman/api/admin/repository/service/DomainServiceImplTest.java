@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
@@ -60,8 +61,9 @@ public class DomainServiceImplTest {
 	}
 
 	@Test
-	public void getDomainByNameTest() {
-		when(domainRepository.findOne(anyString())).thenReturn(getDomainDetails());
+	public void getDomainByNameTest() throws PacManException {
+		when(domainRepository.existsById(anyString())).thenReturn(true);
+		when(domainRepository.findById(anyString())).thenReturn(getDomainDetails());
 		assertThat(domainService.getDomainByName(anyString()).getConfig(), is("config123"));
 	}
 
@@ -77,28 +79,28 @@ public class DomainServiceImplTest {
 
 	@Test
 	public void createDomainTest() throws PacManException {
-		when(domainRepository.exists(anyString())).thenReturn(false);
-		assertThat(domainService.createDomain(getDomainDetailsRequest()), is(DOMAIN_CREATION_SUCCESS));
+		when(domainRepository.existsById(anyString())).thenReturn(false);
+		assertThat(domainService.createDomain(getDomainDetailsRequest(), "user123"), is(DOMAIN_CREATION_SUCCESS));
 	}
 
 	@Test
 	public void createDomainExceptionTest() throws PacManException {
-		when(domainRepository.exists(anyString())).thenReturn(true);
-		assertThatThrownBy(() -> domainService.createDomain(getDomainDetailsRequest()))
+		when(domainRepository.existsById(anyString())).thenReturn(true);
+		assertThatThrownBy(() -> domainService.createDomain(getDomainDetailsRequest(), "user123"))
 				.isInstanceOf(PacManException.class);
 	}
 
 	@Test
 	public void updateDomainTest() throws PacManException {
-		when(domainRepository.exists(anyString())).thenReturn(true);
-		when(domainRepository.findOne(anyString())).thenReturn(getDomainDetails());
-		assertThat(domainService.updateDomain(getDomainDetailsRequest()), is(DOMAIN_UPDATION_SUCCESS));
+		when(domainRepository.existsById(anyString())).thenReturn(true);
+		when(domainRepository.findById(anyString())).thenReturn(getDomainDetails());
+		assertThat(domainService.updateDomain(getDomainDetailsRequest(), "user123"), is(DOMAIN_UPDATION_SUCCESS));
 	}
 
 	@Test
 	public void updateDomainExceptionTest() throws PacManException {
-		when(domainRepository.exists(anyString())).thenReturn(false);
-		assertThatThrownBy(() -> domainService.updateDomain(getDomainDetailsRequest()))
+		when(domainRepository.existsById(anyString())).thenReturn(false);
+		assertThatThrownBy(() -> domainService.updateDomain(getDomainDetailsRequest(), "user123"))
 				.isInstanceOf(PacManException.class);
 	}
 
@@ -112,12 +114,12 @@ public class DomainServiceImplTest {
 
 	private List<Domain> getAllDomainRespone() {
 		List<Domain> allDomains = Lists.newArrayList();
-		Domain domain = getDomainDetails();
+		Domain domain = getDomainDetails().get();
 		allDomains.add(domain);
 		return allDomains;
 	}
 
-	private Domain getDomainDetails() {
+	private Optional<Domain> getDomainDetails() {
 		Domain domain = new Domain();
 		domain.setConfig("config123");
 		domain.setCreatedDate(new Date());
@@ -125,6 +127,6 @@ public class DomainServiceImplTest {
 		domain.setDomainName("domainName123");
 		domain.setModifiedDate(new Date());
 		domain.setUserId("userId123");
-		return domain;
+		return Optional.of(domain);
 	}
 }

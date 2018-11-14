@@ -32,7 +32,7 @@ public interface DomainService {
 	/**
      * Service to get all domains
      *
-     * @author Nidhish
+     * @author NidhishKrishnan
      * @return All Domains in List
      */
 	public List<Domain> getAllDomains();
@@ -40,7 +40,7 @@ public interface DomainService {
 	/**
      * Service to get all domains details
      *
-     * @author Nidhish
+     * @author NidhishKrishnan
      * @param searchTerm - searchTerm to be searched.
      * @param page - zero-based page index.
      * @param size - the size of the page to be returned.
@@ -50,37 +50,40 @@ public interface DomainService {
 
 	/**
      * Service to create new domain
-     *
-     * @author Nidhish
+     * 
+     * @author NidhishKrishnan
      * @param createUpdateDomain - details for creating new domain
+	 * @param userId - valid user id
      * @return Success or Failure response
      * @throws PacManException
      */
-	public String createDomain(final CreateUpdateDomain createUpdateDomain) throws PacManException;
-
+	public String createDomain(final CreateUpdateDomain createUpdateDomain, String userId) throws PacManException;
+	
 	/**
      * Service to update domain
-     *
-     * @author Nidhish
+     * 
+     * @author NidhishKrishnan
      * @param createUpdateDomain - details for updating existing domain
+	 * @param userId - valid user id
      * @return Success or Failure response
      * @throws PacManException
      */
-	public String updateDomain(final CreateUpdateDomain createUpdateDomain) throws PacManException;
+	public String updateDomain(final CreateUpdateDomain createUpdateDomain, String userId) throws PacManException;
 
 	/**
      * Service to get domain details by name
      *
-     * @author Nidhish
+     * @author NidhishKrishnan
      * @param domainName - name of the domain
      * @return Domains Details
+	 * @throws PacManException 
      */
-	public Domain getDomainByName(final String domainName);
+	public Domain getDomainByName(final String domainName) throws PacManException;
 
 	/**
      * Service to get all domain names
      *
-     * @author Nidhish
+     * @author NidhishKrishnan
      * @return List of Domain Names
      */
 	public Collection<String> getAllDomainNames();

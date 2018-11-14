@@ -25,6 +25,7 @@ public class TargetTypeAttribute {
 	private List<Object> attributes;
 	private String targetName;
 	private List<String> allAttributesName;
+	private String index;
 	private boolean includeAll;
 
 	public List<Object> getAttributes() {
@@ -57,5 +58,13 @@ public class TargetTypeAttribute {
 
 	public void setIncludeAll(boolean includeAll) {
 		this.includeAll = includeAll;
+	}
+
+	public String getIndex() {
+		return index;
+	}
+
+	public void setIndex(String index) {
+		this.index = index;
 	}
 }
