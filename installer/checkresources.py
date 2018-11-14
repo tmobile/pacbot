@@ -219,6 +219,7 @@ def _check_es(accessKey, secretKey, region, resource, terraform):
 def _check_redshift(accessKey, secretKey, region, resource, terraform):
     redshift = boto3.client('redshift', region_name=region, aws_access_key_id=accessKey, aws_secret_access_key=secretKey)
     redshift_name = jsonRead._get_redshift_name()
+    is_deleted = False
     try:
         response = redshift.describe_clusters(ClusterIdentifier=redshift_name)
         if _check_in_terraform(response['Clusters'][0]['Endpoint']['Address'], terraform) is True:
