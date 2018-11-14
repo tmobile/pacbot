@@ -1,6 +1,6 @@
 server:
-  context-path: /api/auth
-  
+  servlet:
+    context-path: /api/auth
 pacman:
   api:
     oauth2:

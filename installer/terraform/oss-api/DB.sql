@@ -227,7 +227,7 @@ CREATE TABLE `cf_JobScheduler` (
   `jobExecutable` varchar(75) COLLATE utf8_bin DEFAULT NULL,
   `jobArn` varchar(200) COLLATE utf8_bin DEFAULT NULL,
   `status` varchar(75) COLLATE utf8_bin DEFAULT NULL,
-  `userId` bigint(20) DEFAULT NULL,
+  `userId` varchar(75) COLLATE utf8_bin DEFAULT NULL,
   `createdDate` datetime DEFAULT NULL,
   `modifiedDate` datetime DEFAULT NULL,
   PRIMARY KEY (`jobId`)
@@ -387,7 +387,7 @@ CREATE TABLE `cf_Target` (
   `dataSourceName` varchar(75) COLLATE utf8_bin DEFAULT NULL,
   `targetConfig` text COLLATE utf8_bin,
   `status` varchar(75) COLLATE utf8_bin DEFAULT NULL,
-  `userId` bigint(20) DEFAULT NULL,
+  `userId` varchar(75) COLLATE utf8_bin DEFAULT NULL,
   `endpoint` text COLLATE utf8_bin,
   `createdDate` date DEFAULT NULL,
   `modifiedDate` date DEFAULT NULL,
@@ -895,7 +895,7 @@ INSERT INTO cf_AssetGroupTargetDetails (id_,groupId,targetType,attributeName,att
 
 /*Insert Domain in required table*/
 
-INSERT INTO cf_Domain (domainName,domainDesc,config,createdDate,modifiedDate,userId) VALUES ('Infra & Platforms','Domain for Infra & Platforms','{}',{d '2018-04-09'},{d '2018-08-03'},'123');
+INSERT INTO cf_Domain (domainName,domainDesc,config,createdDate,modifiedDate,userId) VALUES ('Infra & Platforms','Domain for Infra & Platforms','{}',{d '2018-04-09'},{d '2018-08-03'},'user123');
 
 /*Insert Target data in required table*/
 INSERT INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('account','Aws Accounts','Other','aws','{"key":"accountid","id":"accountid"}','enabled',null,concat(@eshost,':',@esport,'/aws_account/account'),{d '2017-09-07'},{d '2017-09-07'},'Infra & Platforms');
@@ -952,7 +952,7 @@ INSERT INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfi
 
 
 /* Auth Related data */
-insert into `oauth_client_details`(`client_id`,`resource_ids`,`client_secret`,`scope`,`authorized_grant_types`,`web_server_redirect_uri`,`authorities`,`access_token_validity`,`refresh_token_validity`,`additional_information`,`autoapprove`) values ('22e14922-87d7-4ee4-a470-da0bb10d45d3',NULL,'csrWpc5p7JFF4vEZBkwGCAh67kGQGwXv46qug7v5ZwtKg','resource-access','implicit,authorization_code,refresh_token,password,client_credentials',NULL,'ROLE_CLIENT,ROLE_USER',NULL,NULL,NULL,'');
+insert into `oauth_client_details`(`client_id`,`resource_ids`,`client_secret`,`scope`,`authorized_grant_types`,`web_server_redirect_uri`,`authorities`,`access_token_validity`,`refresh_token_validity`,`additional_information`,`autoapprove`) values ('22e14922-87d7-4ee4-a470-da0bb10d45d3',NULL,'$2a$10$Is6r80wW65hKHUq6Wa8B6O3BLKqGOb5McDGbJUwVwfVvyeJBCf7ta','resource-access','implicit,authorization_code,refresh_token,password,client_credentials',NULL,'ROLE_CLIENT,ROLE_USER',NULL,NULL,NULL,'');
 insert into `oauth_user`(`id`,`user_id`,`user_name`,`first_name`,`last_name`,`email`,`created_date`,`modified_date`) values (1,'user@pacbot.org','user','user','','user@pacbot.org','2018-06-26 18:21:56','2018-06-26 18:21:56'),(2,'admin@pacbot.org','admin','admin','','admin@pacbot.org','2018-06-26 18:21:56','2018-06-26 18:21:56');
 insert into `oauth_user_credentials` (`id`, `password`, `type`) values('1','$2a$10$IKXbqqHbMBMa/1Cs3VhjGeye4EKVBen4dPwhTYB24cHgDouravEMa','db');
 insert into `oauth_user_credentials` (`id`, `password`, `type`) values('2','$2a$10$G02s.dXgFAV7oKvYzvL5luq9FaBuzwNHeBLdbpncBazk5APkiVjUq','db');

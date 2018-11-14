@@ -1,6 +1,6 @@
 server:
-  context-path: /api/admin
-
+  servlet:
+    context-path: /api/admin
 aws:
   access-key: ''
   secret-key: ''

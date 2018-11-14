@@ -1,6 +1,6 @@
 server:
-  contextPath: /api/notifications
-
+  servlet:
+    context-path: /api/notifications
 remind:
   cron: 0 0 0 * * *
   email:

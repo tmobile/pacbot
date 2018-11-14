@@ -1,6 +1,6 @@
 server:
-  contextPath: /api/compliance
-  
+  servlet:
+    context-path: /api/compliance
 rule-engine:
   invoke:
     url: submitRuleExecutionJob
