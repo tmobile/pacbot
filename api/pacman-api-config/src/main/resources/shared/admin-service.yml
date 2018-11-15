@@ -49,3 +49,7 @@ elastic-search:
 target-types: 
   categories: Compute,Developer Tools,Analytics,Application Services,Storage,Management Tools,Messaging,Artificial Intelligence,Database,Business Productivity,Security,Identity & Compliance,Networking & Content Delivery,Contact Center,Internet Of Things,Desktop & App Streaming,Desktop & App Streaming,Migration,Mobile Services,Game Development,Contact Center,Application Integration
     
+pacman:
+  api:
+    oauth2:
+      client-id: 22e14922-87d7-4ee4-a470-da0bb10d45d3
