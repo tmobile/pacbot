@@ -58,38 +58,6 @@ CREATE TABLE `Pacman_Asset_Config` (
   PRIMARY KEY (`resourceId`,`configType`,`createdDate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-/*Table structure for table `Roles` */
-
-DROP TABLE IF EXISTS `Roles`;
-
-CREATE TABLE `Roles` (
-  `roleId` bigint(25) NOT NULL,
-  `roleName` varchar(75) COLLATE utf8_bin DEFAULT NULL,
-  `roleDesc` varchar(75) COLLATE utf8_bin DEFAULT NULL,
-  `writePermission` int(15) DEFAULT '0',
-  `owner` varchar(75) COLLATE utf8_bin DEFAULT NULL,
-  `client` varchar(75) COLLATE utf8_bin DEFAULT NULL,
-  `createdDate` datetime DEFAULT NULL,
-  `modifiedDate` datetime DEFAULT NULL,
-  PRIMARY KEY (`roleId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-/*Table structure for table `UserRoleMapping` */
-
-DROP TABLE IF EXISTS `UserRoleMapping`;
-
-CREATE TABLE `UserRoleMapping` (
-  `userRoleId` varchar(75) COLLATE utf8_bin NOT NULL,
-  `userId` varchar(75) COLLATE utf8_bin NOT NULL,
-  `roleId` int(75) NOT NULL,
-  `clientId` varchar(100) COLLATE utf8_bin DEFAULT NULL,
-  `allocator` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `createdDate` datetime DEFAULT NULL,
-  `modifiedDate` datetime DEFAULT NULL,
-  PRIMARY KEY (`userRoleId`,`userId`,`roleId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-
 /*Table structure for table `cf_AssetGroupDetails` */
 
 DROP TABLE IF EXISTS `cf_AssetGroupDetails`;
