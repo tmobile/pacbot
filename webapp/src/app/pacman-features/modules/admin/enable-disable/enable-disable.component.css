@@ -48,6 +48,31 @@
     text-transform: capitalize;
 }
 
+.issue-listing-wrapper /deep/ .data-table-content {
+    min-height: calc( 100vh - 32em);
+}
+
+.issue-listing-wrapper /deep/ .data-table-inner-wrap {
+    max-height: calc(100vh - 35em)
+}
+
+.issue-listing-wrapper /deep/ .data-table-wrap.loading {
+    min-height: calc( 100vh - 24em);
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-wrap {
+    max-height: calc( 100vh - 21em) !important;
+    min-height: calc( 100vh - 21em) !important;
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-content {
+    min-height: calc( 100vh - 28em);
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
+    max-height: calc(100vh - 31em)
+}
+
 .details-bar[_ngcontent-c14] {
     width: 50em !important;
 }
@@ -133,6 +158,22 @@ input.inputarea-container {
     display: inline-block;
     border: none;
 }
+
+
+/*
+:host ::ng-deep ng-select .ui-select-placeholder .text-muted {
+    color: dimgrey !important;
+    border: 1px solid #aaa !important;
+    padding-bottom: 5px;
+    border-radius: 0.3em !important;
+    height: 2.7em !important;
+    padding: 0 0.5em;
+    display: inline-block;
+    border: none;
+    width: 100%;
+    padding-left: 0.2em !important;
+}
+*/
 
 :host ::ng-deep ng-select .form-control .ui-select-search {
     border: 1px solid #aaa !important;
@@ -220,6 +261,7 @@ input.inputarea-container {
 
 :host ::ng-deep app-searchable-dropdown input.form-control.ui-select-search {
     padding: 0.6em !important;
+    /*height: -webkit-fill-available !important;*/
 }
 
 :host ::ng-deep app-searchable-dropdown span.ui-select-match-text.pull-left.ui-select-allow-clear {
@@ -268,6 +310,7 @@ ul.input-wrapper {
 }
 
 li.list-inputs {
+    /*display: inline-block;*/
     border: 1px solid #d9d9d9;
     border-radius: 2em;
     margin-top: 0.1em;
@@ -280,6 +323,9 @@ li.list-inputs {
 li.list-inputs:hover {
     border: 1px solid #ed0295;
 }
+
+
+/*    /////////////////////////////////                 */
 
 .sub-head {
     padding: 0.6em 0.8em;
@@ -295,8 +341,7 @@ li.list-inputs:hover {
     box-shadow: 0 1px 7px -1px #0000001e, 0 2px 4px 0 #00000023;
     font-size: 1em;
     overflow: hidden;
-    max-height: calc( 100vh - 21em) !important;
-    min-height: calc( 100vh - 21em) !important;
+    border: solid 1px #dce1e8;
 }
 
 .data-table-wrap.loading {
@@ -316,10 +361,21 @@ li.list-inputs:hover {
 }
 
 .data-table-content {
+    padding: 0.83em 0 0;
     position: relative;
     overflow-y: hidden;
     overflow-x: hidden;
     min-height: 7em;
+}
+
+.data-table-inner-wrap:hover {
+    overflow-y: auto;
+    overflow-y: overlay;
+}
+
+.data-table-content:hover {
+    overflow-x: auto;
+    overflow-x: overlay;
 }
 
 .data-table-head-outer {
@@ -332,34 +388,37 @@ li.list-inputs:hover {
 }
 
 .data-table-wrap a {
+    transition: 0.2s ease;
     line-height: 1.3;
 }
 
 .data-table-wrap a:hover {
     color: #e20074;
+    /*font-family: ex2-medium;*/
+    letter-spacing: 0.2px;
+    text-shadow: 0.66px 0;
 }
 
 .data-table-head {
-    border-bottom: solid 2px #d3d3d3;
+    margin: 0 0.83em;
+    border-bottom: 2px solid #dce3e9;
     padding: 0.45em 0px;
     font-size: 0.83em;
     position: relative;
-    min-width: calc(100%);
+    min-width: calc(100% - 1.66em);
     left: 0;
     background-color: #fff;
     z-index: 1;
     bottom: 0;
-    width: -webkit-fit-content;
-    width: -moz-fit-content;
     width: fit-content;
-    font: menu;
 }
 
 .data-table-rows {
-    padding: 0px;
+    padding: 0px 0.83em;
     width: calc(100% - 1px);
     margin: auto;
     min-height: 2.66em;
+    transition: 0.3s ease;
 }
 
 .data-table-rows:nth-child(even) {
@@ -377,29 +436,36 @@ li.list-inputs:hover {
 .row-cells {
     font-size: 1em;
     min-height: 0.66em;
-    overflow: unset;
+    overflow: hidden;
     white-space: nowrap;
-    text-overflow: nowrap;
+    text-overflow: ellipsis;
     padding: 3px 0;
     margin: 0 3px;
-    word-break: break-all;
 }
 
 .row-cells div {
     padding-bottom: 2px;
-    text-overflow: nowrap;
-    overflow: unset;
-    white-space: normal;
+    transition: 0.35s ease;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
     display: inline-block;
     vertical-align: middle;
-    font: menu;
+}
+
+.row-cells div:first-letter {
+    text-transform: uppercase;
 }
 
 .row-cells a {
-    text-overflow: nowrap;
-    overflow: unset;
+    text-overflow: ellipsis;
+    overflow: hidden;
     white-space: nowrap;
     padding-bottom: 2px;
+}
+
+.row-cells div:hover {
+    letter-spacing: 0.3px;
 }
 
 .head-cells {
@@ -409,17 +475,25 @@ li.list-inputs:hover {
 }
 
 .table-cells {
+    transition: 0.5s ease;
     cursor: pointer;
-    overflow: unset;
-    text-overflow: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     white-space: nowrap;
     width: 140px;
+    padding-left: 30px;
 }
 
-.table-cells:hover {}
+.table-cells:hover {
+    letter-spacing: 0.2px;
+}
+
+.table-cells:first-letter {
+    text-transform: uppercase;
+}
 
 .data-table-inner-content {
-    overflow-y: unset;
+    overflow-y: hidden;
     min-width: 100%;
     position: relative;
     margin-bottom: 0.3em;
@@ -484,6 +558,7 @@ li.list-inputs:hover {
     height: 9px;
     border-radius: 5px;
     cursor: pointer;
+    /*border: 1px solid #f0f0f0;*/
     margin-right: 6px;
 }
 
@@ -581,6 +656,7 @@ li.list-inputs:hover {
     flex-grow: 1;
     min-width: 50%;
     padding: 1em 1em 1em 0.4em;
+    /*text-transform: capitalize;*/
 }
 
 .details-cell-head {
@@ -653,7 +729,7 @@ li.list-inputs:hover {
 }
 
 .data-content {
-    max-height: calc(100vh - 30em);
+    max-height: calc(100vh - 26em);
     overflow: auto;
 }
 
@@ -681,6 +757,7 @@ li.list-inputs:hover {
     min-width: 5em;
     text-align: center;
     transition: all 0.5s ease;
+    font-size: 1.1em;
     box-shadow: 0px 0px 6px 0 rgba(0, 0, 0, 0.5);
     font-family: ex2-light;
 }
@@ -711,6 +788,15 @@ li.list-inputs:hover {
     margin-top: 25px;
     height: auto;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif
+}
+
+.formcontainerwrapper div.formctn {
+    width: 100%;
+    margin-bottom: 10px;
+    height: auto;
+    float: left;
+    padding: 0 20px;
+    margin-right: 0!important;
 }
 
 .formcontainerwrapper div.formctnleft {
@@ -793,8 +879,11 @@ select.selectmax {
 [type="checkbox"]:not(:checked)+label,
 [type="checkbox"]:checked+label {
     position: relative;
+    /* permet de positionner les pseudo-éléments */
     padding-left: 30px;
+    /* fait un peu d'espace pour notre case à venir */
     cursor: pointer;
+    /* affiche un curseur adapté */
     font-size: 13px;
     color: #232323;
 }
@@ -807,6 +896,7 @@ select.selectmax {
     top: 2px;
     width: 17px;
     height: 17px;
+    /* dim. of the box */
     border: 1px solid #aaa;
     background: #f8f8f8;
     border-radius: 3px;
@@ -843,7 +933,9 @@ select.selectmax {
 
 [type="checkbox"]:checked+label:after {
     opacity: 1;
+    /* visible */
     transform: scale(1);
+    /* scaled up to normal */
 }
 
 .db {
@@ -981,7 +1073,7 @@ button.tmbutton {
     border: solid 2px #ed027d;
     font-size: 13px;
     font-weight: 600;
-    color: #ed027d;
+    color: #232323;
     text-align: center;
     letter-spacing: 0.3px;
     cursor: pointer;
@@ -1032,19 +1124,13 @@ button.tmbutton:disabled:hover {
 }
 
 .valueaddctn {
-    width: 100%;
-    min-height: 8.4em;
+    width: 98%;
+    min-height: calc(100vh - 40em);
     max-height: 8em;
-    overflow-y: hidden;
+    overflow-y: auto;
     overflow-x: hidden;
-}
-
-.params-attributes {
-    border: solid 2px #d3d3d3;
-    width: 100%;
-    overflow-y: hidden;
-    overflow-x: hidden;
-    margin-bottom: 20px;
+    border: solid 1px #aeadad;
+    display: inline-block;
 }
 
 .input-form .label {
@@ -1052,7 +1138,7 @@ button.tmbutton:disabled:hover {
 }
 
 .no-parameters {
-    padding-top: 2.8em;
+    padding-top: 4.8em;
     text-align: center;
     font-size: 1.3em;
     color: #e20074;
@@ -1064,7 +1150,7 @@ button.tmbutton:disabled:hover {
 
 .valueaddctn div.valuerow {
     width: 100%;
-    height: 25px;
+    display: inline-block;
     padding: 10px 10px;
     padding-top: 5px;
     padding-bottom: 5px;
@@ -1088,6 +1174,7 @@ button.tmbutton:disabled:hover {
 .data-table-rows:nth-child(even) {
     border-radius: 0.3em;
     padding-bottom: 5px;
+    height: 2.7em;
 }
 
 
@@ -1099,6 +1186,7 @@ button.tmbutton:disabled:hover {
     white-space: normal!important;
     border-bottom: 1px solid #f8f8f8;
     word-break: break-all;
+    /*text-transform: capitalize;*/
 }
 
 :host ::ng-deep ng-select .ui-select-choices-row>a:first-letter {
@@ -1294,6 +1382,20 @@ button.tmbutton:disabled:hover {
 }
 
 
+/*********Disable Input**************/
+
+.read-only-text {
+    width: 100%;
+    height: auto;
+    display: inline-block;
+    padding-top: 8px !important;
+    padding-bottom: 9px !important;
+    background: #f7f7f7 !important;
+    color: black !important;
+    font-size: 13px;
+}
+
+
 /**********ERROR MESSAGES**********/
 
 .pacman-alert {
@@ -1399,7 +1501,7 @@ button.tmbutton:disabled:hover {
 .pacman-progress .image {
     padding-bottom: 10px;
     background: url('../../../../../assets/images/pacman.gif') no-repeat;
-    height: 3em;
+    height: 4em;
     background-position: center;
 }
 
@@ -1409,8 +1511,8 @@ button.tmbutton:disabled:hover {
     font-size: 17px;
 }
 
-.pacman-progress .content .highlight {
-    color: #ed0295;
+.highlight-pink {
+    color: #e20074 !important;
     background-color: transparent;
 }
 
@@ -1419,7 +1521,7 @@ button.tmbutton:disabled:hover {
 
 .pacman-alert-title {
     position: relative;
-    font-size: 20px;
+    font-size: 22px;
     color: black;
     padding-bottom: 10px;
     padding-top: 0px;
@@ -1676,6 +1778,40 @@ button.tmbutton:disabled:hover {
     transform: rotate(-45deg);
 }
 
+.pacman-alert .sa-icon.sa-info {
+    border-color: #46b8da;
+}
+
+.pacman-alert .sa-icon.sa-info::before {
+    content: "";
+    position: absolute;
+    width: 5px;
+    height: 29px;
+    left: 50%;
+    bottom: 17px;
+    border-radius: 2px;
+    margin-left: -2px;
+    background-color: #5bc0de;
+}
+
+.pacman-alert .sa-icon.sa-info::after {
+    content: "";
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    margin-left: -3px;
+    top: 19px;
+    background-color: #5bc0de;
+}
+
+.pacman-alert .btn-info:focus {
+    border-color: #46b8da;
+    outline: 0;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(70, 184, 218, 0.6);
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075), 0 0 8px rgba(70, 184, 218, 0.6);
+}
+
 @-webkit-keyframes rotatePlaceholder {
     0% {
         transform: rotate(-45deg);
@@ -1714,53 +1850,36 @@ button.tmbutton:disabled:hover {
     }
 }
 
-.highlight-pink {
-    color: #ed0295 !important;
-    background-color: transparent;
+.rule-loader {
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: white;
+    z-index: 2;
+    cursor: pointer;
 }
 
-.params-attributes .data-table-content {
-    min-height: calc( 100vh - 73em) !important;
-    max-height: calc( 100vh - 31em) !important;
-    border-color: #c8c8c8;
+.rule-loader-text {
+    top: 40%;
+    position: relative;
+    text-align: center;
+    font-size: large;
 }
 
-.row-cells1 {
-    width: calc(100% - 30em);
-}
-
-.row-cells2 {
-    width: calc(100% - 17em);
-}
-
-.row-cells3 {
-    width: calc(100% - 37em);
-}
-
-.no-params-box {
-    border: solid 2px #d3d3d3;
-    min-height: 11.132em;
+.invoke-title {
+    font-weight: 500;
     margin-bottom: 20px;
 }
 
-.floating-widgets-section /deep/ .data-table-wrap.loading {
-    max-height: calc( 100vh - 21em) !important;
-    min-height: calc( 100vh - 21em) !important;
+.invocationId {
+    font-weight: bold;
 }
 
-.floating-widgets-section /deep/ .data-table-inner-wrap {
-    height: auto;
-}
-
-.floating-widgets-section /deep/ .data-table-content {
-    max-height: calc( 100vh - 30em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-content {
-    max-height: calc( 100vh - 30em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
-    max-height: 8em;
-    overflow-y: auto;
+.lowercase {
+    text-transform: lowercase;
 }

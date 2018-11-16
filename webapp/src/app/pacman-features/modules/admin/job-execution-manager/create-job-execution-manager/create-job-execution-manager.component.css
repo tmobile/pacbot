@@ -32,6 +32,7 @@
 
 .widget-wrapper {
     min-height: 17em;
+    padding-bottom: 4px;
 }
 
 .data-table-desc {
@@ -53,7 +54,7 @@
 }
 
 .issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 32em);
+    max-height: calc( 100vh - 30em);
 }
 
 .issue-listing-wrapper /deep/ .data-table-inner-wrap {
@@ -65,15 +66,16 @@
 }
 
 .filter-absent.issue-listing-wrapper /deep/ .data-table-wrap {
-    min-height: calc(100vh - 20em);
+    min-height: calc(100vh - 21em);
 }
 
 .filter-absent.issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 28em);
+    max-height: calc( 100vh - 30em);
 }
 
 .filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
-    max-height: calc(100vh - 31em)
+    max-height: 8em;
+    overflow-y: auto;
 }
 
 .details-bar[_ngcontent-c14] {
@@ -700,8 +702,7 @@ li.list-inputs:hover {
 }
 
 .data-content {
-    max-height: calc(100vh - 26em);
-    min-height: calc(100vh - 26em) !important;
+    max-height: calc(100vh - 29em);
     overflow: auto;
 }
 
@@ -762,7 +763,7 @@ li.list-inputs:hover {
 }
 
 .formcontainerwrapper div.formctnleft {
-    width: 45%;
+    width: 50%;
     margin-bottom: 10px;
     height: auto;
     float: left;
@@ -1035,7 +1036,7 @@ button.tmbutton {
     border: solid 2px #ed027d;
     font-size: 13px;
     font-weight: 600;
-    color: #232323;
+    color: #ed027d;
     text-align: center;
     letter-spacing: 0.3px;
     cursor: pointer;
@@ -1089,7 +1090,7 @@ button.tmbutton:disabled:hover {
     width: 100%;
     min-height: 8.4em;
     max-height: 8em;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
 }
 
@@ -1354,7 +1355,7 @@ button.tmbutton:disabled:hover {
 .pacman-alert {
     margin-left: 25%;
     margin-right: 25%;
-    margin-top: 7%;
+    margin-top: 5%;
     text-align: center;
 }
 
@@ -1472,12 +1473,22 @@ button.tmbutton:disabled:hover {
 
 /*************SUCCESS MESSAGES************/
 
-.pacman-alert-message {
+.pacman-alert-title {
     position: relative;
-    font-size: 22px;
+    font-size: 20px;
     color: black;
     padding-bottom: 10px;
     padding-top: 10px;
+    line-height: 25px;
+}
+
+.pacman-alert-message {
+    position: relative;
+    font-size: 14px;
+    color: black;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    line-height: 25px;
 }
 
 .pacman-alert-button {
@@ -1758,15 +1769,6 @@ button.tmbutton:disabled:hover {
         transform: rotate(-405deg);
         -webkit-transform: rotate(-405deg);
     }
-}
-
-.pacman-alert-title {
-    position: relative;
-    font-size: 14px;
-    color: black;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    line-height: 25px;
 }
 
 .highlight-pink {

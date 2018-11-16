@@ -494,6 +494,26 @@ export const environment = {
         method: 'GET'
     },
 
+    enableDisableRuleOrJob: {
+        url: '{{baseUrl}}/admin/enable-disable',
+        method: 'POST'
+    },
+    listUsers: {
+        url: '{{baseUrl}}/admin/users/list-users',
+        method: 'GET'
+    },
+    jobDetailsById: {
+        url: '{{baseUrl}}/admin/job-execution-manager/details-by-id',
+         method: 'GET'
+    },
+    allJobIdList: {
+        url: '{{baseUrl}}/admin/job-execution-manager/job-ids',
+        method: 'GET'
+    },
+    updateJob: {
+        url: '{{baseUrl}}/admin/job-execution-manager/update',
+        method: 'POST'
+    },
     createRule: {
         url: '{{baseUrl}}/admin/rule/create',
         method: 'POST'

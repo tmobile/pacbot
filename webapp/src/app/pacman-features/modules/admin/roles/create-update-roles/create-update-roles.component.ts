@@ -1,39 +1,31 @@
 /*
  *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * Licensed under the Apache License, Version 2.0 (the 'License'); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * or in the "license" file accompanying this file. This file is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ *
+ * or in the 'license' file accompanying this file. This file is distributed on
+ * an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from "@angular/core";
-import { environment } from "./../../../../../../environments/environment";
-
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs/Subscription";
-import * as _ from "lodash";
-import { UtilsService } from "../../../../../shared/services/utils.service";
-import { LoggerService } from "../../../../../shared/services/logger.service";
-import { ErrorHandlingService } from "../../../../../shared/services/error-handling.service";
-import { NavigationStart } from "@angular/router";
-import { Event, NavigationEnd } from "@angular/router";
-import "rxjs/add/operator/filter";
-import "rxjs/add/operator/pairwise";
-import { RoutesRecognized } from "@angular/router";
-import { RefactorFieldsService } from "./../../../../../shared/services/refactor-fields.service";
-import { WorkflowService } from "../../../../../core/services/workflow.service";
-import { RouterUtilityService } from "../../../../../shared/services/router-utility.service";
-import { AdminService } from "../../../../services/all-admin.service";
-import { NgForm } from "@angular/forms";
-import { SelectComponent } from "ng2-select";
-import { UploadFileService } from "../../../../services/upload-file-service";
-import { CommonResponseService } from "../../../../../shared/services/common-response.service";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { environment } from './../../../../../../environments/environment';
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+import { UtilsService } from '../../../../../shared/services/utils.service';
+import { LoggerService } from '../../../../../shared/services/logger.service';
+import { ErrorHandlingService } from '../../../../../shared/services/error-handling.service';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/pairwise';
+import { WorkflowService } from '../../../../../core/services/workflow.service';
+import { RouterUtilityService } from '../../../../../shared/services/router-utility.service';
+import { AdminService } from '../../../../services/all-admin.service';
+import { UploadFileService } from '../../../../services/upload-file-service';
+import { CommonResponseService } from '../../../../../shared/services/common-response.service';
 
 @Component({
   selector: 'app-admin-create-update-roles',
@@ -47,13 +39,13 @@ import { CommonResponseService } from "../../../../../shared/services/common-res
     CommonResponseService
   ]
 })
-export class CreateUpdateRolesComponent implements OnInit {
-  pageTitle: String = "";
-  breadcrumbArray: any = ["Admin", "Roles"];
-  breadcrumbLinks: any = ["policies", "roles"];
-  breadcrumbPresent: any;
-  outerArr: any = [];
-  filters: any = [];
+export class CreateUpdateRolesComponent implements OnInit, OnDestroy {
+  pageTitle = '';
+  breadcrumbArray = ['Admin', 'Roles'];
+  breadcrumbLinks = ['policies', 'roles'];
+  breadcrumbPresent;
+  outerArr = [];
+  filters = [];
 
   public queryValue = '';
   public filteredList = [];
@@ -63,6 +55,74 @@ export class CreateUpdateRolesComponent implements OnInit {
   private getUserSubscription: Subscription;
   invalid = true;
   arrowkeyLocation = 0;
+
+  roles = {
+    roleName: '',
+    description: '',
+    writePermission: false
+  };
+  selectedRoleName = '';
+
+  isCreate = false;
+  successTitle = '';
+  failedTitle = '';
+  highlightName = '';
+  allRDetails = [];
+  allCategoryDetails = [];
+  successSubTitle = '';
+  isRoleCreationUpdationFailed = false;
+  isRoleCreationUpdationSuccess = false;
+  loadingContent = '';
+  roleLoader = false;
+
+  roleId = '';
+  paginatorSize = 25;
+  isLastPage;
+  isFirstPage;
+  totalPages;
+  pageNumber = 0;
+  showLoader = true;
+  errorMessage;
+
+  hideContent = false;
+
+  filterText = {};
+  errorValue= 0;
+
+  FullQueryParams;
+  queryParamsWithoutFilter;
+  urlToRedirect = '';
+  mandatory;
+
+  public labels;
+  private previousUrl = '';
+  private pageLevel = 0;
+  public backButtonRequired;
+  private routeSubscription: Subscription;
+  private getKeywords: Subscription;
+  private previousUrlSubscription: Subscription;
+
+  constructor(
+    private router: Router,
+    private utils: UtilsService,
+    private logger: LoggerService,
+    private errorHandling: ErrorHandlingService,
+    private workflowService: WorkflowService,
+    private routerUtilityService: RouterUtilityService,
+    private adminService: AdminService,
+    private commonResponseService: CommonResponseService,
+  ) {
+
+    this.routerParam();
+    this.updateComponent();
+  }
+
+  ngOnInit() {
+    this.urlToRedirect = this.router.routerState.snapshot.url;
+    this.backButtonRequired = this.workflowService.checkIfFlowExistsCurrently(
+      this.pageLevel
+    );
+  }
 
   filter() {
     try {
@@ -180,85 +240,17 @@ export class CreateUpdateRolesComponent implements OnInit {
     }
   }
 
-  roles: any = {
-    roleName: '',
-    description: '',
-    writePermission: false
-  };
 
-  isCreate: boolean = false;
-  successTitle: String = '';
-  failedTitle: string = '';
-  successSubTitle: String = '';
-  isRoleCreationUpdationFailed: boolean = false;
-  isRoleCreationUpdationSuccess: boolean = false;
-  loadingContent: string = '';
-  roleLoader: boolean = false;
-
-  roleId: string = '';
-
-  paginatorSize: number = 25;
-  isLastPage: boolean;
-  isFirstPage: boolean;
-  totalPages: number;
-  pageNumber: number = 0;
-  showLoader: boolean = true;
-  errorMessage: any;
-
-  hideContent: boolean = false;
-
-  filterText: any = {};
-  errorValue: number = 0;
-
-  FullQueryParams: any;
-  queryParamsWithoutFilter: any;
-  urlToRedirect: any = "";
-  mandatory: any;
-
-  public labels: any;
-  private previousUrl: any = "";
-  private pageLevel = 0;
-  public backButtonRequired;
-  private routeSubscription: Subscription;
-  private getKeywords: Subscription;
-  private previousUrlSubscription: Subscription;
-
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private router: Router,
-    private utils: UtilsService,
-    private logger: LoggerService,
-    private errorHandling: ErrorHandlingService,
-    private uploadService: UploadFileService,
-    private ref: ChangeDetectorRef,
-    private refactorFieldsService: RefactorFieldsService,
-    private workflowService: WorkflowService,
-    private routerUtilityService: RouterUtilityService,
-    private adminService: AdminService,
-    private commonResponseService: CommonResponseService,
-  ) {
-
-    this.routerParam();
-    this.updateComponent();
-  }
-
-  ngOnInit() {
-    this.urlToRedirect = this.router.routerState.snapshot.url;
-    this.backButtonRequired = this.workflowService.checkIfFlowExistsCurrently(
-      this.pageLevel
-    );
-  }
 
   nextPage() {
     try {
       if (!this.isLastPage) {
         this.pageNumber++;
         this.showLoader = true;
-        //this.getPolicyDetails();
       }
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
@@ -267,16 +259,16 @@ export class CreateUpdateRolesComponent implements OnInit {
       if (!this.isFirstPage) {
         this.pageNumber--;
         this.showLoader = true;
-        //this.getPolicyDetails();
+        // this.getPolicyDetails();
       }
 
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
-  selectedRoleName: string = '';
+
   createRole(roleDetails) {
     this.loadingContent = 'creation';
     this.hideContent = true;
@@ -285,8 +277,8 @@ export class CreateUpdateRolesComponent implements OnInit {
     this.isRoleCreationUpdationSuccess = false;
     this.selectedRoleName = roleDetails.roleName;
     this.highlightName = roleDetails.roleName;
-    let url = environment.createRole.url;
-    let method = environment.createRole.method;
+    const url = environment.createRole.url;
+    const method = environment.createRole.method;
     this.adminService.executeHttpAction(url, method, roleDetails, {}).subscribe(reponse => {
       this.successTitle = 'Role Created';
       this.isRoleCreationUpdationSuccess = true;
@@ -301,7 +293,7 @@ export class CreateUpdateRolesComponent implements OnInit {
         this.failedTitle = 'Creation Failed';
         this.roleLoader = false;
         this.isRoleCreationUpdationFailed = true;
-      })
+      });
   }
 
   updateRole(roleDetails) {
@@ -312,8 +304,8 @@ export class CreateUpdateRolesComponent implements OnInit {
     this.isRoleCreationUpdationSuccess = false;
     this.selectedRoleName = roleDetails.roleName;
     this.highlightName = roleDetails.roleName;
-    let url = environment.updateRole.url;
-    let method = environment.updateRole.method;
+    const url = environment.updateRole.url;
+    const method = environment.updateRole.method;
     roleDetails.roleId = this.roleId;
     this.adminService.executeHttpAction(url, method, roleDetails, {}).subscribe(reponse => {
       this.successTitle = 'Role Updated';
@@ -329,7 +321,7 @@ export class CreateUpdateRolesComponent implements OnInit {
         this.failedTitle = 'Updation Failed';
         this.roleLoader = false;
         this.isRoleCreationUpdationFailed = true;
-      })
+      });
   }
 
   closeErrorMessage() {
@@ -343,33 +335,34 @@ export class CreateUpdateRolesComponent implements OnInit {
   }
 
   getData() {
-    //this.getAllPolicyIds();
+    // this.getAllPolicyIds();
   }
 
   /*
-    * This function gets the urlparameter and queryObj 
+    * This function gets the urlparameter and queryObj
     *based on that different apis are being hit with different queryparams
-    */
+  */
+
   routerParam() {
     try {
       // this.filterText saves the queryparam
-      let currentQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(this.router.routerState.snapshot.root);
+      const currentQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(this.router.routerState.snapshot.root);
       if (currentQueryParams) {
 
         this.FullQueryParams = currentQueryParams;
         this.queryParamsWithoutFilter = JSON.parse(JSON.stringify(this.FullQueryParams));
         this.roleId = this.queryParamsWithoutFilter.roleId;
-        let selectedRoleName = this.queryParamsWithoutFilter.roleName;
+        const selectedRoleName = this.queryParamsWithoutFilter.roleName;
         delete this.queryParamsWithoutFilter['filter'];
         if (this.roleId) {
-          this.pageTitle = "Edit Role";
-          this.breadcrumbPresent = "Edit Role";
+          this.pageTitle = 'Edit Role';
+          this.breadcrumbPresent = 'Edit Role';
           this.isCreate = false;
           this.highlightName = selectedRoleName;
           this.getRoleDetails();
         } else {
-          this.pageTitle = "Create New Role";
-          this.breadcrumbPresent = "Create Role";
+          this.pageTitle = 'Create New Role';
+          this.breadcrumbPresent = 'Create Role';
           this.isCreate = true;
         }
 
@@ -382,7 +375,7 @@ export class CreateUpdateRolesComponent implements OnInit {
           this.FullQueryParams
         );
 
-        //check for mandatory filters.
+        // check for mandatory filters.
         if (this.FullQueryParams.mandatory) {
           this.mandatory = this.FullQueryParams.mandatory;
         }
@@ -390,21 +383,18 @@ export class CreateUpdateRolesComponent implements OnInit {
       }
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
-  highlightName: string = '';
-  allRDetails: any = [];
-  allCategoryDetails: any = [];
   getRoleDetails() {
     this.hideContent = true;
     this.roleLoader = true;
     this.loadingContent = 'loading';
     this.isRoleCreationUpdationFailed = false;
     this.isRoleCreationUpdationSuccess = false;
-    let url = environment.getRoleById.url;
-    let method = environment.getRoleById.method;
+    const url = environment.getRoleById.url;
+    const method = environment.getRoleById.method;
     this.adminService.executeHttpAction(url, method, {}, {roleId: this.roleId}).subscribe(userRoleReponse => {
       if (!this.isCreate) {
         this.hideContent = false;
@@ -417,14 +407,14 @@ export class CreateUpdateRolesComponent implements OnInit {
       error => {
         this.errorValue = -1;
         this.outerArr = [];
-        this.errorMessage = "apiResponseError";
+        this.errorMessage = 'apiResponseError';
         this.showLoader = false;
-        this.failedTitle = 'Loading Failed'
+        this.failedTitle = 'Loading Failed';
         this.loadingContent = 'Loading';
-        this.highlightName = 'Domain and Category'
+        this.highlightName = 'Domain and Category';
         this.isRoleCreationUpdationFailed = true;
         this.roleLoader = false;
-      })
+      });
   }
   /**
    * This function get calls the keyword service before initializing
@@ -444,7 +434,7 @@ export class CreateUpdateRolesComponent implements OnInit {
     try {
       this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root);
     } catch (error) {
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
@@ -457,7 +447,7 @@ export class CreateUpdateRolesComponent implements OnInit {
         this.previousUrlSubscription.unsubscribe();
       }
     } catch (error) {
-      this.logger.log("error", "--- Error while unsubscribing ---");
+      this.logger.log('error', '--- Error while unsubscribing ---');
     }
   }
 }

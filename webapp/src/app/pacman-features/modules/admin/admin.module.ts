@@ -43,7 +43,7 @@ import { DeleteStickyExceptionsComponent } from './sticky-exceptions/delete-stic
 import { DeleteAssetGroupsComponent } from './asset-groups/delete-asset-groups/delete-asset-groups.component';
 import { ConfigUsersComponent } from './roles/config-users/config-users.component';
 import { UpdateJobExecutionManagerComponent } from './job-execution-manager/update-job-execution-manager/update-job-execution-manager.component';
-import { PacmanLoadingComponent } from './commons/pacman-loader/pacman-loader.component';
+import { PacmanLoaderComponent } from './commons/pacman-loader/pacman-loader.component';
 import { AccountManagementComponent } from './account-management/account-management.component';
 import { AccountManagementDetailsComponent } from './account-management-details/account-management-details.component';
 import { PluginManagementDetailsComponent } from './plugin-management-details/plugin-management-details.component';
@@ -79,7 +79,7 @@ import { PluginManagementComponent } from './plugin-management/plugin-management
     DeleteAssetGroupsComponent,
     ConfigUsersComponent,
     UpdateJobExecutionManagerComponent,
-    PacmanLoadingComponent,
+    PacmanLoaderComponent,
     AccountManagementComponent,
     AccountManagementDetailsComponent,
     PluginManagementDetailsComponent,

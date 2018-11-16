@@ -34,13 +34,13 @@
                             </div>
 
                             <div class="pacman-alert-title">
-                                {{pageTitle}}
+                                {{pageTitle}} !
                             </div>
                             <div class="pacman-alert-message">
-                                Are you sure to <span class="lowercase">{{pageTitle}}</span> - <span class="highlight-pink">{{ruleId}}</span>
+                                Are you sure to <span class="lowercase">{{pageTitle}}</span> - <span class="highlight-pink">{{ruleOrJobId}}</span>
                             </div>
                             <div class="pacman-alert-button">
-                                <button class="submit-btn uppercase" type="button" (click)="enableDisableRule()"><i class="fa fa-check"></i> {{action}}</button>
+                                <button class="submit-btn uppercase" type="button" (click)="enableDisableRuleOrJob()"><i class="fa fa-check"></i> {{action}}</button>
                                 <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CLOSE</button>
                             </div>
                         </div>
@@ -55,10 +55,10 @@
 
                             <div class="pacman-alert-title">
                                 <span *ngIf="action=='enable'; else elseBlock">
-                                    Enabling Rule Failed
+                                    Enabling <span *ngIf="isRule">Rule</span><span *ngIf="!isRule">Job</span> Failed
                                 </span>
                                 <ng-template #elseBlock>
-                                    Disabling Rule Failed
+                                    Disabling <span *ngIf="isRule">Rule</span><span *ngIf="!isRule">Job</span> Failed
                                 </ng-template>
                             </div>
                             <div class="pacman-alert-message">
@@ -69,7 +69,7 @@
                                 <ng-template #elseBlock>
                                     disabling
                                 </ng-template>
-                                rule - <span class="highlight-pink">{{ruleId}}</span>
+                                <span *ngIf="isRule">rule</span><span *ngIf="!isRule">job</span> - <span class="highlight-pink">{{ruleOrJobId}}</span>
                             </div>
                             <div class="pacman-alert-button">
                                 <button class="submit-btn uppercase" type="button" (click)="closeErrorMessage()"><i class="fa fa-arrow-left"></i>  BACK</button>
@@ -84,14 +84,14 @@
                             </div>
                             <div class="pacman-alert-title">
                                 <span *ngIf="action=='enable'; else elseBlock">
-                                    Rule Enabled
+                                    <span *ngIf="isRule">Rule</span><span *ngIf="!isRule">Job</span> Enabled
                                 </span>
                                 <ng-template #elseBlock>
-                                    Rule Disabled
+                                    <span *ngIf="isRule">Rule</span><span *ngIf="!isRule">Job</span> Disabled
                                 </ng-template>
                             </div>
                             <div class="pacman-alert-message">
-                                Rule <span class="highlight-pink">{{ruleId}}</span> has been successfully
+                                <span *ngIf="isRule">Rule</span><span *ngIf="!isRule">Job</span> <span class="highlight-pink">{{ruleOrJobId}}</span> has been successfully
                                 <span *ngIf="action=='enable'; else elseBlock1">
                                     enabled
                                 </span>
@@ -114,7 +114,7 @@
                                 </span>
                                 <ng-template #elseBlock>
                                     Disabling
-                                </ng-template> rule - <span class="highlight-pink">{{ruleId}}</span> is under progress ...
+                                </ng-template> <span *ngIf="isRule">rule</span><span *ngIf="!isRule">job</span> - <span class="highlight-pink">{{ruleOrJobId}}</span> is under progress ...
                             </div>
                         </div>
                     </div>
