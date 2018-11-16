@@ -49,6 +49,8 @@ security:
 elastic-search:
   dev-ingest-host: ${ES_UPDATE_HOST}
   dev-ingest-port: ${ES_UPDATE_PORT}
+  port: ${ES_UPDATE_PORT}
+  host: ${ES_UPDATE_HOST}
 
 target-types: 
   categories: Compute,Developer Tools,Analytics,Application Services,Storage,Management Tools,Messaging,Artificial Intelligence,Database,Business Productivity,Security,Identity & Compliance,Networking & Content Delivery,Contact Center,Internet Of Things,Desktop & App Streaming,Desktop & App Streaming,Migration,Mobile Services,Game Development,Contact Center,Application Integration

@@ -95,5 +95,7 @@ public final class AdminConstants {
 	public static final String JOBID_OR_RULEID_NOT_EMPTY            =   "Both Job Id or Rule Id cannot be blank";
     public static final String DELETE_RULE_TARGET_FAILED            =   "Failed in deleting the lambda target from rule";
     
+	public static final String ES_EXCEPTION_INDEX					= 	"/exceptions";
+	public static final String INIT_ES_CREATE_INDEX					= 	"INIT_ES_CREATE_INDEX";
 }
 

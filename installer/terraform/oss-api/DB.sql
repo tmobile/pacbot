@@ -840,6 +840,17 @@ CREATE TABLE `oauth_user_roles` (
   `modifiedDate` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+DROP TABLE IF EXISTS `task`;
+CREATE TABLE `task` (
+	`id` BIGINT (20),
+	`type` VARCHAR (300),
+	`details` TEXT 
+); 
+
+/*Insert task to necessary tables*/
+
+INSERT INTO `task` (`id`, `type`, `details`) VALUES('1','INIT_ES_CREATE_INDEX','{\"mappings\":{\"sticky_exceptions\":{\"properties\":{\"assetGroup\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"dataSource\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"exceptionName\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"exceptionReason\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"expiryDate\":{\"type\":\"date\"},\"targetTypes\":{\"properties\":{\"name\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"rules\":{\"properties\":{\"ruleId\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"ruleName\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}}}}}}}}}');
+
 
 /*Insert Data Source to necessary tables*/
 

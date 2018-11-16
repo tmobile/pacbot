@@ -41,16 +41,17 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.ParseException;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.google.common.base.Strings;
 
@@ -216,6 +217,53 @@ public class PacHttpUtils {
             }).orElse(StringUtils.EMPTY);
         return base64AuthorizationHeader;
     }
+	
+	
+	/**
+	 * 
+	 * @param url for PUT method
+	 * @param requestBody for PUT method
+	 * @return String
+	 * @throws Exception
+	 */
+	public static String doHttpPut(final String url, final String requestBody) throws Exception {
+		try {
+
+			HttpClient client = HttpClientBuilder.create().build();
+			HttpPut httpput = new HttpPut(url);
+			httpput.setHeader(CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
+			StringEntity jsonEntity = new StringEntity(requestBody);
+			httpput.setEntity(jsonEntity);
+			HttpResponse httpresponse = client.execute(httpput);
+			int statusCode = httpresponse.getStatusLine().getStatusCode();
+			if (statusCode == HttpStatus.SC_OK) {
+				return EntityUtils.toString(httpresponse.getEntity());
+			} else {
+				LOGGER.error(requestBody);
+				throw new Exception("unable to execute post request because " + httpresponse.getStatusLine().getReasonPhrase());
+			}
+		} catch (ParseException parseException) {
+			LOGGER.error("error closing issue" + parseException);
+			throw parseException;
+		} catch (Exception exception) {
+			LOGGER.error("error closing issue" + exception.getMessage());
+			throw exception;
+		}
+	}
+	
+	/**
+	 * 
+	 * @param url for HTTP HEAD method
+	 * @return StatusCode of the service
+	 * @throws ClientProtocolException 
+	 * @throws IOException
+	 */
+	public static int getHttpHead(final String url) throws ClientProtocolException, IOException {
+		HttpClient client = HttpClientBuilder.create().build();
+		HttpHead httpHead = new HttpHead(url);
+		HttpResponse httpresponse = client.execute(httpHead);
+		return httpresponse.getStatusLine().getStatusCode();
+	}
 	
 	private static StringBuilder getResponse(final String serviceEndpoint, final String urlParameters,Map<String, Object> headers) throws Exception {
         byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
