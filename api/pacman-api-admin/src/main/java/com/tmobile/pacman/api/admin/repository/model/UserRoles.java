@@ -36,7 +36,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
  * UserRoles Model Class
  */
 @Entity
-@Table(name = "Roles", uniqueConstraints = @UniqueConstraint(columnNames = "roleId"))
+@Table(name = "oauth_user_roles", uniqueConstraints = @UniqueConstraint(columnNames = "roleId"))
 public class UserRoles {
 
 	@Id

@@ -46,7 +46,7 @@ import io.swagger.annotations.ApiParam;
  */
 @Api(value = "/users-roles", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
-@PreAuthorize("@securityService.hasPermission(authentication, 'ROLE_SUPER_ADMIN')")
+@PreAuthorize("@securityService.hasPermission(authentication, 'ROLE_ADMIN')")
 @RequestMapping("/users-roles")
 public class UserRolesMappingController {
 	
