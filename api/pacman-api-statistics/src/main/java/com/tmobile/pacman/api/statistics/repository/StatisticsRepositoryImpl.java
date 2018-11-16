@@ -136,7 +136,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             return rdsepository.getDataFromPacman(ruleIdWithTargetTypeQuery);
         } catch (Exception e) {
             LOGGER.error("Error @ StatisticsRepositoryImpl/getRuleIdWithTargetTypeQuery ", e);
-            throw new DataException(e);
+            return new ArrayList<>();
         }
     }
 
@@ -156,7 +156,8 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             JsonObject aggsJson = (JsonObject) parser.parse(paramObj.get(AGGS).toString());
             return aggsJson.getAsJsonObject("accounts").getAsJsonArray(BUCKETS);
         } catch (Exception e) {
-            throw new DataException(e);
+        	LOGGER.error("Error while processing the aws accounts",e.getMessage());
+        	return new JsonArray();
         }
 
     }
@@ -178,7 +179,8 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             JsonObject totalEvals = (JsonObject) aggregations.get("total_evals");
             return totalEvals.get("value").toString();
         } catch (Exception e) {
-            throw new DataException(e);
+        	LOGGER.error("Error while processing the number of policies evaluated",e.getMessage());
+        	return "0";
         }
 
     }
@@ -211,7 +213,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             return rdsepository.getDataFromPacman(query);
         } catch (Exception e) {
             LOGGER.error("Error @ StatisticsRepositoryImpl/ getAutofixRulesFromDb ", e);
-            throw new DataException(e);
+            return new ArrayList<>();
         }
     }
     
@@ -228,7 +230,8 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
                     mustFilter, mustNotFilter, shouldFilter, null, mustTermsFilter);
 
         } catch (Exception e) {
-            throw new DataException("" + e);
+        	LOGGER.error("Error while processing the fre auto fix",e.getMessage());
+            return 0l;
         }
         return totalAutoFixActionCount;
     }
@@ -251,7 +254,8 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             Gson googleJson = new Gson();
            return googleJson.fromJson(outerBuckets, ArrayList.class); 
         } catch (Exception e) {
-            throw new DataException(e);
+        	LOGGER.error("Error while processing the fre auto fix",e.getMessage());
+        	return new ArrayList<>();
         }
     }
 
