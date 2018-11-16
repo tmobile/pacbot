@@ -11,7 +11,7 @@ admin:
 job:
   s3:
     bucket-region: ${JOB_BUCKET_REGION}
-    bucket-name: pacman-aws-rule-executables 
+    bucket-name: ${RULE_JOB_BUCKET_NAME}
   lambda:
     region: ${JOB_LAMBDA_REGION}
     target-id: jobTargetId
@@ -25,7 +25,7 @@ job:
 rule:
   s3:
     bucket-region: ${RULE_BUCKET_REGION}
-    bucket-name: pacman-aws-rule-executables
+    bucket-name: ${RULE_JOB_BUCKET_NAME}
   lambda:
     region: ${RULE_LAMBDA_REGION}
     target-id: ruleTargetId

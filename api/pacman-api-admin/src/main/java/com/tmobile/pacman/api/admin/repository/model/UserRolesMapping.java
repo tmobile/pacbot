@@ -33,7 +33,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
  * UserRolesMapping Model Class
  */
 @Entity
-@Table(name = "UserRoleMapping", uniqueConstraints = @UniqueConstraint(columnNames = "userRoleId"))
+@Table(name = "oauth_user_role_mapping", uniqueConstraints = @UniqueConstraint(columnNames = "userRoleId"))
 public class UserRolesMapping {
 
 	@Id
