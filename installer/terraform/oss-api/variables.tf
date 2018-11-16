@@ -295,3 +295,19 @@ variable "RULE_FUNCTION_ARN" {
 variable "OAUTH2_CLIENT_ID" {
   default = ""
 }
+
+variable "RULE_BUCKET_REGION" {
+  default = ""
+}
+
+variable "JOB_LAMBDA_REGION" {
+  default = ""
+}
+
+variable "JOB_BUCKET_REGION" {
+  default = ""
+}
+
+variable "RULE_LAMBDA_REGION" {
+  default = ""
+}

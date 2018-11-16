@@ -133,6 +133,22 @@
       {
         "name": "RULE_FUNCTION_ARN",
         "value": "${RULE_FUNCTION_ARN}"
+      },
+      {
+        "name": "RULE_BUCKET_REGION",
+        "value": "${RULE_BUCKET_REGION}"
+      },
+      {
+        "name": "JOB_LAMBDA_REGION",
+        "value": "${JOB_LAMBDA_REGION}"
+      },
+      {
+        "name": "JOB_BUCKET_REGION",
+        "value": "${JOB_BUCKET_REGION}"
+      },
+      {
+        "name": "RULE_LAMBDA_REGION",
+        "value": "${RULE_LAMBDA_REGION}"
       }
     ]
   }

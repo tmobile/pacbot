@@ -137,7 +137,11 @@
             "OAUTH2_CLIENT_ID": "_get_OAUTH2_CLIENT_ID",
             "task_definition_name" : "_get_ui_task_definition_name",
             "ui_image" :"_get_ui_image",
-            "ui_container_name" : "_get_ui_container_name"
+            "ui_container_name" : "_get_ui_container_name",
+            "RULE_BUCKET_REGION" : "getRegion",
+            "JOB_LAMBDA_REGION" : "getRegion",
+            "JOB_BUCKET_REGION" : "getRegion",
+            "RULE_LAMBDA_REGION" : "getRegion"
         },
         "oss-ui" : {
             "ui-ecs-cluster": "_get_ui_ecs_cluster", "task_definition_name" : "_get_ui_task_definition_name",
