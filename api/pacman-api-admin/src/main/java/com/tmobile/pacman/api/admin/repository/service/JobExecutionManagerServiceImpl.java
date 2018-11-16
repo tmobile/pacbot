@@ -141,7 +141,7 @@ public class JobExecutionManagerServiceImpl implements JobExecutionManagerServic
 		if(isRemoveTargetSuccess) {
 			DeleteRuleRequest deleteRuleRequest = new DeleteRuleRequest()
 	    	.withName(existingJob.getJobUUID());
-			DeleteRuleResult deleteRuleResult = amazonClient.getRuleAmazonCloudWatchEvents().deleteRule(deleteRuleRequest);
+			DeleteRuleResult deleteRuleResult = amazonClient.getAmazonCloudWatchEvents(config.getJob().getLambda().getRegion()).deleteRule(deleteRuleRequest);
 			if (deleteRuleResult.getSdkHttpMetadata() != null) {
 				if(deleteRuleResult.getSdkHttpMetadata().getHttpStatusCode() == 200) {
 					existingJob.setUserId(userId);
@@ -163,7 +163,7 @@ public class JobExecutionManagerServiceImpl implements JobExecutionManagerServic
 	}
 
 	private String enableAndCreateCloudWatchRule(JobExecutionManager existingJob, String userId, RuleState ruleState) throws PacManException {
-		AWSLambda awsLambdaClient = amazonClient.getRuleAWSLambdaClient();
+		AWSLambda awsLambdaClient = amazonClient.getAWSLambdaClient(config.getJob().getLambda().getRegion());
 		if (!checkIfPolicyAvailableForLambda(config.getRule().getLambda().getFunctionName(), awsLambdaClient)) {
 			createPolicyForLambda(config.getRule().getLambda().getFunctionName(), awsLambdaClient);
 		}
@@ -174,7 +174,7 @@ public class JobExecutionManagerServiceImpl implements JobExecutionManagerServic
     	.withState(ruleState);
 		ruleRequest.setState(ruleState);
 		ruleRequest.setScheduleExpression("cron(".concat(existingJob.getJobFrequency()).concat(")"));
-		PutRuleResult ruleResult = amazonClient.getRuleAmazonCloudWatchEvents().putRule(ruleRequest);
+		PutRuleResult ruleResult = amazonClient.getAmazonCloudWatchEvents(config.getJob().getLambda().getRegion()).putRule(ruleRequest);
 		
 		existingJob.setUserId(userId);
 		existingJob.setModifiedDate(new Date());
@@ -256,8 +256,8 @@ public class JobExecutionManagerServiceImpl implements JobExecutionManagerServic
 		    	.withDescription(jobDetails.getJobId());
 				 ruleRequest.withScheduleExpression("cron(".concat(jobDetails.getJobFrequency()).concat(")"))
 		    	.withState(RuleState.ENABLED);
-			PutRuleResult ruleResult = amazonClient.getRuleAmazonCloudWatchEvents().putRule(ruleRequest);
-			AWSLambda awsLambdaClient = amazonClient.getRuleAWSLambdaClient();
+			PutRuleResult ruleResult = amazonClient.getAmazonCloudWatchEvents(config.getJob().getLambda().getRegion()).putRule(ruleRequest);
+			AWSLambda awsLambdaClient = amazonClient.getAWSLambdaClient(config.getJob().getLambda().getRegion());
 			
 			if (!checkIfPolicyAvailableForLambda(config.getJob().getLambda().getFunctionName(), awsLambdaClient)) {
 				createPolicyForLambda(config.getJob().getLambda().getFunctionName(), awsLambdaClient);
@@ -285,7 +285,7 @@ public class JobExecutionManagerServiceImpl implements JobExecutionManagerServic
 	}
 	
 	private boolean createUpdateJobJartoS3Bucket(String jobUUID, MultipartFile fileToUpload) {
-		return awsS3BucketService.uploadFile(amazonClient.getRuleAmazonS3(), fileToUpload, config.getJob().getS3().getBucketName(), jobUUID.concat(".jar"));
+		return awsS3BucketService.uploadFile(amazonClient.getAmazonS3(config.getJob().getS3().getBucketRegion()), fileToUpload, config.getJob().getS3().getBucketName(), jobUUID.concat(".jar"));
 	}
 	
 	private void createPolicyForLambda(final String lambdaFunctionName, final AWSLambda lambdaClient) {
@@ -316,7 +316,7 @@ public class JobExecutionManagerServiceImpl implements JobExecutionManagerServic
 		Target target = new Target().withId(targetId).withArn(targetLambdaFunctionArn).withInput(params);
 		PutTargetsRequest targetsRequest = new PutTargetsRequest().withTargets(target).withRule(uuid);
 		try {
-			PutTargetsResult targetsResult = amazonClient.getRuleAmazonCloudWatchEvents().putTargets(targetsRequest);
+			PutTargetsResult targetsResult = amazonClient.getAmazonCloudWatchEvents(config.getJob().getLambda().getRegion()).putTargets(targetsRequest);
 			return (targetsResult.getFailedEntryCount() == 0);
 		} catch (Exception exception) {
 			return false;
@@ -328,7 +328,7 @@ public class JobExecutionManagerServiceImpl implements JobExecutionManagerServic
 		.withIds(targetId)
 	    .withRule(jobUuid);
 		try {
-			RemoveTargetsResult targetsResult = amazonClient.getRuleAmazonCloudWatchEvents().removeTargets(removeTargetsRequest);
+			RemoveTargetsResult targetsResult = amazonClient.getAmazonCloudWatchEvents(config.getJob().getLambda().getRegion()).removeTargets(removeTargetsRequest);
 			return (targetsResult.getFailedEntryCount()==0);
 		} catch(Exception exception) {
 			exception.printStackTrace();

@@ -20,6 +20,8 @@ package com.tmobile.pacman.api.admin.domain;
  */
 public class LambdaProperty {
 
+	private String region;
+	
 	private String targetId;
 
 	private String functionName;
@@ -78,5 +80,13 @@ public class LambdaProperty {
 
 	public void setActionDisabled(String actionDisabled) {
 		this.actionDisabled = actionDisabled;
+	}
+
+	public String getRegion() {
+		return region;
+	}
+
+	public void setRegion(String region) {
+		this.region = region;
 	}
 }

@@ -141,8 +141,8 @@ public class RuleServiceImplTest {
         AWSCredentials awsCredentialsProperty = buildAWSCredentials();
 		when(config.getAws()).thenReturn(awsCredentialsProperty);
         PowerMockito.whenNew(AWSLambdaClient.class).withAnyArguments().thenReturn(awsLambdaClient);  
-        when(amazonClient.getRuleAWSLambdaClient()).thenReturn(awsLambdaClient);
-		when(amazonClient.getRuleAmazonCloudWatchEvents()).thenReturn(amazonCloudWatchEvents);
+        when(amazonClient.getAWSLambdaClient(anyString())).thenReturn(awsLambdaClient);
+		when(amazonClient.getAmazonCloudWatchEvents(anyString())).thenReturn(amazonCloudWatchEvents);
     }
 	 
 	@Test
@@ -263,7 +263,7 @@ public class RuleServiceImplTest {
 		mockStatic(RuleState.class);
 		when(ruleRepository.findById(anyString())).thenReturn(rule);
 		when(putRuleRequest.withName(anyString()).withDescription(anyString()).withState(anyString())).thenReturn(putRuleRequest);
-		when(amazonClient.getRuleAWSLambdaClient()).thenThrow(Exception.class);
+		when(amazonClient.getAWSLambdaClient(anyString())).thenThrow(Exception.class);
 	    RuleProperty ruleProperty = buildRuleProperty();
         when(config.getRule()).thenReturn(ruleProperty);
 	    when(ruleRepository.save(rule.get())).thenReturn(rule.get()); 
@@ -282,7 +282,7 @@ public class RuleServiceImplTest {
 		mockStatic(RuleState.class);
 		when(ruleRepository.findById(anyString())).thenReturn(rule);
 		when(putRuleRequest.withName(anyString()).withDescription(anyString()).withState(anyString())).thenReturn(putRuleRequest);
-		when(amazonClient.getRuleAWSLambdaClient()).thenThrow(Exception.class);
+		when(amazonClient.getAWSLambdaClient(anyString())).thenThrow(Exception.class);
 	    RuleProperty ruleProperty = buildRuleProperty();
         when(config.getRule()).thenReturn(ruleProperty);
 	    when(ruleRepository.save(rule.get())).thenReturn(rule.get());

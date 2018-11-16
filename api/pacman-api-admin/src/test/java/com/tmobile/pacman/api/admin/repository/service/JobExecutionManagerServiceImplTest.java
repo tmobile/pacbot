@@ -137,8 +137,8 @@ public class JobExecutionManagerServiceImplTest {
         AWSCredentials awsCredentialsProperty = buildAWSCredentials();
 		when(config.getAws()).thenReturn(awsCredentialsProperty);
         PowerMockito.whenNew(AWSLambdaClient.class).withAnyArguments().thenReturn(awsLambdaClient);  
-        when(amazonClient.getRuleAWSLambdaClient()).thenReturn(awsLambdaClient);
-		when(amazonClient.getRuleAmazonCloudWatchEvents()).thenReturn(amazonCloudWatchEvents);
+        when(amazonClient.getAWSLambdaClient(anyString())).thenReturn(awsLambdaClient);
+		when(amazonClient.getAmazonCloudWatchEvents(anyString())).thenReturn(amazonCloudWatchEvents);
     }
 
 	@Test
