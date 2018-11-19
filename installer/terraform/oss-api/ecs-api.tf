@@ -398,6 +398,7 @@ data "template_file" "admin_task" {
     JOB_LAMBDA_REGION = "${var.JOB_LAMBDA_REGION}"
     JOB_BUCKET_REGION = "${var.JOB_BUCKET_REGION}"
     RULE_LAMBDA_REGION = "${var.RULE_LAMBDA_REGION}"
+    RULE_JOB_BUCKET_NAME = "${var.RULE_JOB_BUCKET_NAME}"
   }
   depends_on = ["aws_cloudwatch_log_group.apijobs", "aws_lb.alb_apijobs"]
 }

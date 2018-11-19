@@ -149,6 +149,10 @@
       {
         "name": "RULE_LAMBDA_REGION",
         "value": "${RULE_LAMBDA_REGION}"
+      },
+      {
+        "name": "RULE_JOB_BUCKET_NAME",
+        "value": "${RULE_JOB_BUCKET_NAME}"
       }
     ]
   }

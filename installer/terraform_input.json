@@ -141,7 +141,8 @@
             "RULE_BUCKET_REGION" : "getRegion",
             "JOB_LAMBDA_REGION" : "getRegion",
             "JOB_BUCKET_REGION" : "getRegion",
-            "RULE_LAMBDA_REGION" : "getRegion"
+            "RULE_LAMBDA_REGION" : "getRegion",
+            "RULE_JOB_BUCKET_NAME" : "_get_s3_bucket_name"
         },
         "oss-ui" : {
             "ui-ecs-cluster": "_get_ui_ecs_cluster", "task_definition_name" : "_get_ui_task_definition_name",

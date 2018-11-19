@@ -311,3 +311,7 @@ variable "JOB_BUCKET_REGION" {
 variable "RULE_LAMBDA_REGION" {
   default = ""
 }
+
+variable "RULE_JOB_BUCKET_NAME" {
+  default = ""
+}
