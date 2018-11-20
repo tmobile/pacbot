@@ -5,16 +5,16 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.stereotype.Component;
 
-import com.tmobile.pacman.api.admin.repository.service.ExceptionInitializerService;
+import com.tmobile.pacman.api.admin.repository.service.EsIndexInitializerService;
 
 @Component
 public class EsIndexInitializer implements ApplicationListener<ContextRefreshedEvent> {
 
 	@Autowired
-	private ExceptionInitializerService exceptionInitializerService;
+	private EsIndexInitializerService esIndexInitializerService;
 	
 	@Override
 	public void onApplicationEvent(final ContextRefreshedEvent event) {
-		exceptionInitializerService.executeExceptionIndexInitializer();
+		esIndexInitializerService.executeEsIndexInitializer();
 	}
 }
