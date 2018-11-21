@@ -21,6 +21,7 @@ package com.tmobile.pacman.api.admin.domain;
 public class S3Property {
 
 	private String bucketName;
+	private String bucketRegion;
 
 	public String getBucketName() {
 		return bucketName;
@@ -28,5 +29,13 @@ public class S3Property {
 
 	public void setBucketName(String bucketName) {
 		this.bucketName = bucketName;
+	}
+
+	public String getBucketRegion() {
+		return bucketRegion;
+	}
+
+	public void setBucketRegion(String bucketRegion) {
+		this.bucketRegion = bucketRegion;
 	}
 }

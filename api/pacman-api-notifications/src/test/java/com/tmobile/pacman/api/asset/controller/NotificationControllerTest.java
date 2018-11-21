@@ -136,23 +136,6 @@ public class NotificationControllerTest {
 				.andExpect(status().isOk());
 	}
 	
-	@Test
-	public void userTest() throws Exception {
-		mockMvc.perform(get("/public/user-access-check"))
-				.andExpect(status().isOk());
-	}
-	
-	@Test
-	public void secureTest() throws Exception {
-		mockMvc.perform(get("/secure/user-access-check"))
-				.andExpect(status().isOk());
-	}
-
-	@Test
-	public void test() throws Exception {
-		mockMvc.perform(get("/public/test"))
-				.andExpect(status().isOk());
-	}
 	
 	@Test
 	public void sendTextMailFallBack() throws Exception {

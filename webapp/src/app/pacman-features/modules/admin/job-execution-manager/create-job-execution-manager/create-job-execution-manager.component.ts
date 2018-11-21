@@ -1,38 +1,34 @@
 /*
  *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * Licensed under the Apache License, Version 2.0 (the 'License'); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * or in the "license" file accompanying this file. This file is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ *
+ * or in the 'license' file accompanying this file. This file is distributed on
+ * an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from "@angular/core";
-import { environment } from "./../../../../../../environments/environment";
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { environment } from './../../../../../../environments/environment';
 
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs/Subscription";
-import * as _ from "lodash";
-import { UtilsService } from "../../../../../shared/services/utils.service";
-import { LoggerService } from "../../../../../shared/services/logger.service";
-import { NavigationStart } from "@angular/router";
-import { Event, NavigationEnd } from "@angular/router";
-import "rxjs/add/operator/filter";
-import "rxjs/add/operator/pairwise";
-import { RoutesRecognized } from "@angular/router";
-import { RefactorFieldsService } from "./../../../../../shared/services/refactor-fields.service";
-import { WorkflowService } from "../../../../../core/services/workflow.service";
-import { RouterUtilityService } from "../../../../../shared/services/router-utility.service";
-import { AdminService } from "../../../../services/all-admin.service";
-import { NgForm } from "@angular/forms";
-import { SelectComponent } from "ng2-select";
-import { UploadFileService } from "../../../../services/upload-file-service";
-import { ErrorHandlingService } from "../../../../../shared/services/error-handling.service";
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+import { UtilsService } from '../../../../../shared/services/utils.service';
+import { LoggerService } from '../../../../../shared/services/logger.service';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/pairwise';
+import { FilterManagementService } from '../../../../../shared/services/filter-management.service';
+import { WorkflowService } from '../../../../../core/services/workflow.service';
+import { RouterUtilityService } from '../../../../../shared/services/router-utility.service';
+import { AdminService } from '../../../../services/all-admin.service';
+import { NgForm } from '@angular/forms';
+import { SelectComponent } from 'ng2-select';
+import { UploadFileService } from '../../../../services/upload-file-service';
+import { ErrorHandlingService } from '../../../../../shared/services/error-handling.service';
 
 @Component({
   selector: 'app-admin-create-job-execution-manager',
@@ -45,60 +41,68 @@ import { ErrorHandlingService } from "../../../../../shared/services/error-handl
     AdminService
   ]
 })
-export class CreateJobExecutionManagerComponent implements OnInit {
+export class CreateJobExecutionManagerComponent implements OnInit, OnDestroy {
   @ViewChild('targetType') targetTypeSelectComponent: SelectComponent;
   @ViewChild('jobFrequencyMonthDay') jobFrequencyMonthDayComponent: SelectComponent;
 
-  pageTitle: String = "Create Job Execution Manager";
-  allJobNames: any = [];
-  breadcrumbArray: any = ["Admin", "Job Execution Manager"];
-  breadcrumbLinks: any = ["policies", "job-execution-manager"];
-  breadcrumbPresent: any;
-  outerArr: any = [];
-  dataLoaded: boolean = false;
-  errorMessage: any;
-  showingArr: any = ["policyName", "policyId", "policyDesc"];
-  allColumns: any = [];
-  totalRows: number = 0;
-  currentBucket: any = [];
-  bucketNumber: number = 0;
-  firstPaginator: number = 1;
-  lastPaginator: number;
-  currentPointer: number = 0;
-  seekdata: boolean = false;
-  showLoader: boolean = true;
-  hideContent: boolean = false;
-  allMonthDays: any = [];
-  allEnvironments: any = [];
-  allJobParams: any = [];
+  pageTitle = 'Create Job Execution Manager';
+  allJobNames = [];
+  breadcrumbArray = ['Admin', 'Job Execution Manager'];
+  breadcrumbLinks = ['policies', 'job-execution-manager'];
+  breadcrumbPresent;
+  outerArr = [];
+  dataLoaded = false;
+  errorMessage;
+  isCreate;
+  showingArr = ['policyName', 'policyId', 'policyDesc'];
+  allColumns = [];
+  totalRows = 0;
+  currentBucket = [];
+  bucketNumber = 0;
+  firstPaginator = 1;
+  lastPaginator;
+  currentPointer = 0;
+  seekdata = false;
+  showLoader = true;
+  jobDetailsLoader = true;
+  hideContent = false;
+  contentHidden = false;
+  allMonthDays = [];
+  allEnvironments = [];
+  allJobParams = [];
+  loadingContent = '';
+  isJobCreationUpdationFailed = false;
+  isJobCreationUpdationSuccess = false;
+  jobLoaderFailure = false;
 
-  paginatorSize: number = 25;
-  isLastPage: boolean;
-  isFirstPage: boolean;
-  totalPages: number;
-  pageNumber: number = 0;
+  paginatorSize = 25;
+  isLastPage;
+  isFirstPage;
+  totalPages;
+  pageNumber = 0;
 
-  allJobParamKeys: any = [];
-  allEnvParamKeys: any = [];
-  searchTxt: String = "";
-  dataTableData: any = [];
-  initVals: any = [];
-  tableDataLoaded: boolean = false;
-  filters: any = [];
-  searchCriteria: any;
-  filterText: any = {};
-  errorValue: number = 0;
-  showGenericMessage: boolean = false;
-  dataTableDesc: String = "";
-  urlID: String = "";
+  allJobParamKeys = [];
+  allEnvParamKeys = [];
+  searchTxt = '';
+  dataTableData = [];
+  initVals = [];
+  tableDataLoaded = false;
+  filters = [];
+  searchCriteria;
+  jobName;
+  filterText = {};
+  errorValue = 0;
+  showGenericMessage = false;
+  dataTableDesc = '';
+  urlID = '';
 
-  FullQueryParams: any;
-  queryParamsWithoutFilter: any;
-  urlToRedirect: any = "";
-  mandatory: any;
-  parametersInput: any = { jobKey: '', jobValue: '', envKey: '', envValue: '' };
-  allFrequencies: any = ["Daily", "Hourly", "Minutes", "Monthly", "Weekly", "Yearly"];
-  allMonths: any = [
+  FullQueryParams;
+  queryParamsWithoutFilter;
+  urlToRedirect = '';
+  mandatory;
+  parametersInput = { jobKey: '', jobValue: '', envKey: '', envValue: '' };
+  allFrequencies = ['Daily', 'Hourly', 'Minutes', 'Monthly', 'Weekly', 'Yearly'];
+  allMonths = [
     { text: 'January', id: 0 },
     { text: 'February', id: 1 },
     { text: 'March', id: 2 },
@@ -112,20 +116,29 @@ export class CreateJobExecutionManagerComponent implements OnInit {
     { text: 'November', id: 10 },
     { text: 'December', id: 11 }
   ];
-  isAlexaKeywordValid: any = -1;
-  jobJarFile: any;
+  isAlexaKeywordValid = -1;
+  jobJarFile;
   currentFileUpload: File;
   selectedFiles: FileList;
-  jobLoader: boolean = false;
-  isJobSuccess: boolean = false;
-  isJobFailed: boolean = false;
+  jobLoader = false;
+  isJobSuccess = false;
+  isJobFailed = false;
+  isJobNameValid = -1;
+  jobNames = [];
 
-  jobType: any = "jar";
-  selectedFrequency: any = "";
-  jobJarFileName: any = "";
+  jobType = 'jar';
+  selectedFrequency = '';
+  jobJarFileName = '';
 
-  public labels: any;
-  private previousUrl: any = "";
+  isFilterRquiredOnPage = false;
+  appliedFilters = {
+    queryParamsWithoutFilter: {}, /* Stores the query parameter ibject without filter */
+    pageLevelAppliedFilters: {} /* Stores the query parameter ibject without filter */
+  };
+  filterArray = []; /* Stores the page applied filter array */
+
+  public labels;
+  private previousUrl = '';
   private pageLevel = 0;
   public backButtonRequired;
   private routeSubscription: Subscription;
@@ -140,20 +153,22 @@ export class CreateJobExecutionManagerComponent implements OnInit {
     private logger: LoggerService,
     private errorHandling: ErrorHandlingService,
     private uploadService: UploadFileService,
-    private ref: ChangeDetectorRef,
-    private refactorFieldsService: RefactorFieldsService,
+    private filterManagementService: FilterManagementService,
     private workflowService: WorkflowService,
     private routerUtilityService: RouterUtilityService,
     private adminService: AdminService
   ) {
-
+    /* Check route parameter */
+    this.routeSubscription = this.activatedRoute.params.subscribe(params => {
+    // Fetch the required params from this object.
+    });
     this.routerParam();
     this.updateComponent();
   }
 
   ngOnInit() {
     this.urlToRedirect = this.router.routerState.snapshot.url;
-    this.breadcrumbPresent = "Create Job Execution Manager";
+    this.breadcrumbPresent = 'Create Job Execution Manager';
     this.backButtonRequired = this.workflowService.checkIfFlowExistsCurrently(
       this.pageLevel
     );
@@ -164,11 +179,11 @@ export class CreateJobExecutionManagerComponent implements OnInit {
       if (!this.isLastPage) {
         this.pageNumber++;
         this.showLoader = true;
-        //this.getPolicyDetails();
+        // this.getPolicyDetails();
       }
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
@@ -177,24 +192,22 @@ export class CreateJobExecutionManagerComponent implements OnInit {
       if (!this.isFirstPage) {
         this.pageNumber--;
         this.showLoader = true;
-        //this.getPolicyDetails();
+        // this.getPolicyDetails();
       }
 
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
   createNewJob(form: NgForm) {
     this.hideContent = true;
     this.jobLoader = true;
-    let newRuleModel = this.buildCreateJobModel(form.value);
+    const newRuleModel = this.buildCreateJobModel(form.value);
   }
-
-  jobName: string;
   private buildCreateJobModel(jobForm) {
-    let newJobModel = Object();
+    const newJobModel = Object();
     this.jobName = jobForm.jobName;
     newJobModel.jobName = jobForm.jobName;
     newJobModel.jobDesc = jobForm.jobDesc;
@@ -204,8 +217,8 @@ export class CreateJobExecutionManagerComponent implements OnInit {
     newJobModel.jobExecutable = this.jobJarFileName;
     newJobModel.isFileChanged = true;
 
-    var url = environment.createJob.url;
-    var method = environment.createJob.method;
+    const url = environment.createJob.url;
+    const method = environment.createJob.method;
     this.currentFileUpload = this.selectedFiles.item(0);
     this.uploadService.pushFileToStorage(url, method, this.currentFileUpload, newJobModel).subscribe(event => {
       this.jobLoader = false;
@@ -218,22 +231,22 @@ export class CreateJobExecutionManagerComponent implements OnInit {
       this.outerArr = [];
       this.dataLoaded = true;
       this.seekdata = true;
-      this.errorMessage = "apiResponseError";
+      this.errorMessage = 'apiResponseError';
       this.showLoader = false;
       this.jobLoader = false;
-    })
-    //this.selectedFiles = undefined
+    });
+    // this.selectedFiles = undefined
   }
 
   private buildJobParams() {
-    let jobParms = Object();
+    const jobParms = Object();
     jobParms.params = this.allJobParams;
     jobParms.environmentVariables = this.allEnvironments;
     return JSON.stringify(jobParms);
   }
 
   private getRuleRestUrl(jobForm) {
-    let jobType = jobForm.jobType;
+    const jobType = jobForm.jobType;
     if (jobType === 'Serverless') {
       return jobForm.jobRestUrl;
     } else {
@@ -242,19 +255,19 @@ export class CreateJobExecutionManagerComponent implements OnInit {
   }
 
   private buildRuleFrequencyCronJob(jobForm) {
-    let selectedFrequencyType = jobForm.jobFrequency[0].text;
-    let cronDetails = Object();
+    const selectedFrequencyType = jobForm.jobFrequency[0].text;
+    const cronDetails = Object();
     cronDetails.interval = selectedFrequencyType;
     if (selectedFrequencyType === 'Yearly') {
       cronDetails.day = jobForm.jobFrequencyMonth[0].id;
       cronDetails.month = (jobForm.jobFrequencyMonth[0].id + 1);
     } else if (selectedFrequencyType === 'Monthly') {
-      cronDetails.duration = parseInt(jobForm.jobFrequencyMonths);
-      cronDetails.day = parseInt(jobForm.jobFrequencyDays);
+      cronDetails.duration = parseInt(jobForm.jobFrequencyMonths, 10);
+      cronDetails.day = parseInt(jobForm.jobFrequencyDays, 10);
     } else if (selectedFrequencyType === 'Weekly') {
       cronDetails.week = jobForm.weekName;
     } else {
-      cronDetails.duration = parseInt(jobForm.jobFrequencyModeValue);
+      cronDetails.duration = parseInt(jobForm.jobFrequencyModeValue, 10);
     }
 
     return this.generateExpression(cronDetails);
@@ -262,20 +275,20 @@ export class CreateJobExecutionManagerComponent implements OnInit {
 
   private generateExpression(cronDetails) {
 
-    let getCronExpression = function (cronObj) {
-      if (cronObj === undefined || cronObj === null) {
+    const getCronExpression = function (cronObjIns) {
+      if (cronObjIns === undefined || cronObjIns === null) {
         return undefined;
       } else {
-        let cronObjFields = ['minutes', 'hours', 'dayOfMonth', 'month', 'dayOfWeek', 'year'];
-        let cronExpression = cronObj.minutes;
+        const cronObjFields = ['minutes', 'hours', 'dayOfMonth', 'month', 'dayOfWeek', 'year'];
+        let cronExpression = cronObjIns.minutes;
         for (let index = 1; index < cronObjFields.length; index++) {
-          cronExpression = cronExpression + ' ' + cronObj[cronObjFields[index]];
+          cronExpression = cronExpression + ' ' + cronObjIns[cronObjFields[index]];
         }
         return cronExpression;
       }
     };
 
-    let isValid = function (cronValidity) {
+    const isValid = function (cronValidity) {
       if (cronValidity.minutes && cronValidity.hours && cronValidity.dayOfMonth && cronValidity.month && cronValidity.dayOfWeek && cronValidity.year) {
         return true;
       }
@@ -283,7 +296,7 @@ export class CreateJobExecutionManagerComponent implements OnInit {
     };
 
     let cronObj = {};
-    if (cronDetails.interval == 'Minutes') {
+    if (cronDetails.interval === 'Minutes') {
       cronObj = {
         minutes: '0/' + cronDetails.duration,
         hours: '*',
@@ -292,7 +305,7 @@ export class CreateJobExecutionManagerComponent implements OnInit {
         dayOfWeek: '?',
         year: '*'
       };
-    } else if (cronDetails.interval == 'Hourly') {
+    } else if (cronDetails.interval === 'Hourly') {
       cronObj = {
         minutes: '0',
         hours: '0/' + cronDetails.duration,
@@ -301,7 +314,7 @@ export class CreateJobExecutionManagerComponent implements OnInit {
         dayOfWeek: '?',
         year: '*'
       };
-    } else if (cronDetails.interval == 'Daily') {
+    } else if (cronDetails.interval === 'Daily') {
       cronObj = {
         minutes: '0',
         hours: '0',
@@ -310,7 +323,7 @@ export class CreateJobExecutionManagerComponent implements OnInit {
         dayOfWeek: '?',
         year: '*'
       };
-    } else if (cronDetails.interval == 'Weekly') {
+    } else if (cronDetails.interval === 'Weekly') {
       cronObj = {
         minutes: '0',
         hours: '0',
@@ -319,7 +332,7 @@ export class CreateJobExecutionManagerComponent implements OnInit {
         dayOfWeek: cronDetails.week,
         year: '*'
       };
-    } else if (cronDetails.interval == 'Monthly') {
+    } else if (cronDetails.interval === 'Monthly') {
       cronObj = {
         minutes: '0',
         hours: '0',
@@ -328,7 +341,7 @@ export class CreateJobExecutionManagerComponent implements OnInit {
         dayOfWeek: '?',
         year: '*'
       };
-    } else if (cronDetails.interval == 'Yearly') {
+    } else if (cronDetails.interval === 'Yearly') {
       cronObj = {
         minutes: '0',
         hours: '0',
@@ -339,20 +352,20 @@ export class CreateJobExecutionManagerComponent implements OnInit {
       };
     }
     return getCronExpression(cronObj);
-  };
+  }
 
   onJarFileChange(event) {
     this.selectedFiles = event.target.files;
     this.jobJarFileName = this.selectedFiles[0].name;
-    let extension = this.jobJarFileName.substring(this.jobJarFileName.lastIndexOf(".")+1);
-    if(extension!=='jar') {
+    const extension = this.jobJarFileName.substring(this.jobJarFileName.lastIndexOf('.') + 1);
+    if (extension !== 'jar') {
       this.removeJarFileName();
     }
   }
 
   removeJarFileName() {
-    this.jobJarFileName = "";
-    this.jobJarFile = "";
+    this.jobJarFileName = '';
+    this.jobJarFile = '';
   }
 
   closeErrorMessage() {
@@ -361,13 +374,27 @@ export class CreateJobExecutionManagerComponent implements OnInit {
   }
 
   openJarFileBrowser(event) {
-    let element: HTMLElement = document.getElementById('selectJarFile') as HTMLElement;
+    const element: HTMLElement = document.getElementById('selectJarFile') as HTMLElement;
     element.click();
+  }
+
+
+  isJobNameAvailable(jobNameKeyword) {
+    if (jobNameKeyword.trim().length === 0) {
+      this.isJobNameValid = -1;
+    } else {
+      const isKeywordExits = this.jobNames.findIndex(item => jobNameKeyword.trim().toLowerCase() === item.trim().toLowerCase());
+        if (isKeywordExits === -1) {
+          this.isJobNameValid = 1;
+        } else {
+          this.isJobNameValid = 0;
+        }
+    }
   }
 
   addEnvironmentParameters(parametersInput: any, isEncrypted: any) {
     if (parametersInput.envKey.trim() !== '' && parametersInput.envValue.trim() !== '') {
-      this.allEnvironments.push({ name: parametersInput.envKey.trim(), value: parametersInput.envValue.trim(), encrypt: isEncrypted.checked });
+      this.allEnvironments.push({ key: parametersInput.envKey.trim(), value: parametersInput.envValue.trim(), encrypt: isEncrypted.checked });
       this.allEnvParamKeys.push(parametersInput.envKey.trim());
       parametersInput.envKey = '';
       parametersInput.envValue = '';
@@ -395,17 +422,25 @@ export class CreateJobExecutionManagerComponent implements OnInit {
     this.allEnvironments.splice(index, 1);
   }
 
-  isAlexaKeywordAvailable(alexaKeyword) {
-    if (alexaKeyword.length == 0) {
-      this.isAlexaKeywordValid = -1;
-    } else {
-      if (alexaKeyword === 'manu') {
-        this.isAlexaKeywordValid = 0;
-
-      } else {
-        this.isAlexaKeywordValid = 1;
-      }
-    }
+  getAllJobNames() {
+    this.contentHidden = true;
+    this.jobLoader = false;
+    this.jobDetailsLoader = true;
+    this.loadingContent = 'loading';
+    this.isJobCreationUpdationFailed = false;
+    this.isJobCreationUpdationSuccess = false;
+    const url = environment.allJobIdList.url;
+    const method = environment.allJobIdList.method;
+    this.adminService.executeHttpAction(url, method, {}, {jobName: this.jobName}).subscribe(reponse => {
+      this.jobDetailsLoader = false;
+      this.contentHidden = false;
+      this.jobNames =  reponse[0];
+    },
+      error => {
+        this.jobDetailsLoader = false;
+        this.jobLoaderFailure = true;
+        this.loadingContent = 'loading';
+      });
   }
 
   onSelectFrequency(frequencyType) {
@@ -417,8 +452,8 @@ export class CreateJobExecutionManagerComponent implements OnInit {
     if (this.jobFrequencyMonthDayComponent.active) {
       this.jobFrequencyMonthDayComponent.active.length = 0;
     }
-    let monthDays: any = [];
-    let daysCount = this.getNumberOfDays(selectedMonth.id);
+    const monthDays: any = [];
+    const daysCount = this.getNumberOfDays(selectedMonth.id);
     for (let dayNo = 1; dayNo <= daysCount; dayNo++) {
       monthDays.push({ id: dayNo, text: dayNo.toString() });
     }
@@ -428,46 +463,63 @@ export class CreateJobExecutionManagerComponent implements OnInit {
 
 
   private getNumberOfDays = function (month) {
-    var year = new Date().getFullYear();
-    var isLeap = ((year % 4) == 0 && ((year % 100) != 0 || (year % 400) == 0));
+    const year = new Date().getFullYear();
+    const isLeap = ((year % 4) === 0 && ((year % 100) !== 0 || (year % 400) === 0));
     return [31, (isLeap ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
-  }
+  };
 
   /*
-    * This function gets the urlparameter and queryObj 
+    * This function gets the urlparameter and queryObj
     *based on that different apis are being hit with different queryparams
     */
-  routerParam() {
+   routerParam() {
     try {
-      // this.filterText saves the queryparam
-      let currentQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(this.router.routerState.snapshot.root);
+
+      const currentQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(this.router.routerState.snapshot.root);
+
       if (currentQueryParams) {
 
-        this.FullQueryParams = currentQueryParams;
+        this.appliedFilters.queryParamsWithoutFilter = JSON.parse(JSON.stringify(currentQueryParams));
+        delete this.appliedFilters.queryParamsWithoutFilter['filter'];
 
-        this.queryParamsWithoutFilter = JSON.parse(JSON.stringify(this.FullQueryParams));
-        delete this.queryParamsWithoutFilter['filter'];
+        this.appliedFilters.pageLevelAppliedFilters = this.utils.processFilterObj(currentQueryParams);
 
-        /**
-         * The below code is added to get URLparameter and queryparameter
-         * when the page loads ,only then this function runs and hits the api with the
-         * filterText obj processed through processFilterObj function
-         */
-        this.filterText = this.utils.processFilterObj(
-          this.FullQueryParams
-        );
-
-        this.urlID = this.FullQueryParams.TypeAsset;
-        //check for mandatory filters.
-        if (this.FullQueryParams.mandatory) {
-          this.mandatory = this.FullQueryParams.mandatory;
-        }
-
+        this.filterArray = this.filterManagementService.getFilterArray(this.appliedFilters.pageLevelAppliedFilters);
       }
     } catch (error) {
-      this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.errorMessage = 'jsError';
+      this.logger.log('error', error);
     }
+  }
+
+  updateUrlWithNewFilters(filterArr) {
+    this.appliedFilters.pageLevelAppliedFilters = this.utils.arrayToObject(
+        this.filterArray,
+        'filterkey',
+        'value'
+    ); // <-- TO update the queryparam which is passed in the filter of the api
+    this.appliedFilters.pageLevelAppliedFilters = this.utils.makeFilterObj(this.appliedFilters.pageLevelAppliedFilters);
+
+    /**
+     * To change the url
+     * with the deleted filter value along with the other existing paramter(ex-->tv:true)
+     */
+
+    const updatedFilters = Object.assign(
+        this.appliedFilters.pageLevelAppliedFilters,
+        this.appliedFilters.queryParamsWithoutFilter
+    );
+
+    /*
+     Update url with new filters
+     */
+
+    this.router.navigate([], {
+      relativeTo: this.activatedRoute,
+      queryParams: updatedFilters
+    }).then(success => {
+      this.routerParam();
+    });
   }
 
   /**
@@ -477,11 +529,12 @@ export class CreateJobExecutionManagerComponent implements OnInit {
 
   updateComponent() {
     this.outerArr = [];
-    this.searchTxt = "";
+    this.searchTxt = '';
     this.currentBucket = [];
     this.bucketNumber = 0;
     this.firstPaginator = 1;
     this.showLoader = true;
+    this.jobDetailsLoader = true;
     this.currentPointer = 0;
     this.dataTableData = [];
     this.tableDataLoaded = false;
@@ -489,21 +542,22 @@ export class CreateJobExecutionManagerComponent implements OnInit {
     this.seekdata = false;
     this.errorValue = 0;
     this.showGenericMessage = false;
-    // this.getData();
+    this.getAllJobNames();
   }
 
   navigateBack() {
-    try {
-      this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root);
-    } catch (error) {
-      this.logger.log("error", error);
-    }
+    this.router.navigate(['../job-execution-manager'], {
+      relativeTo: this.activatedRoute,
+      queryParamsHandling: 'merge',
+      queryParams: {
+      }
+    });
   }
 
   goToCreatePolicy() {
     try {
       this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
-      this.router.navigate(["../create-edit-policy"], {
+      this.router.navigate(['../create-edit-policy'], {
         relativeTo: this.activatedRoute,
         queryParamsHandling: 'merge',
         queryParams: {
@@ -511,7 +565,7 @@ export class CreateJobExecutionManagerComponent implements OnInit {
       });
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
@@ -524,7 +578,7 @@ export class CreateJobExecutionManagerComponent implements OnInit {
         this.previousUrlSubscription.unsubscribe();
       }
     } catch (error) {
-      this.logger.log("error", "--- Error while unsubscribing ---");
+      this.logger.log('error', '--- Error while unsubscribing ---');
     }
   }
 }

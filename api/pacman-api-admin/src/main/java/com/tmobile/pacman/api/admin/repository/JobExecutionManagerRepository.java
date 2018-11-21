@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.admin.repository;
 
+import java.util.Collection;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -45,7 +47,7 @@ public interface JobExecutionManagerRepository extends JpaRepository<JobExecutio
 			+ "LOWER(job.jobType) LIKE %:searchTerm% OR "
 			+ "LOWER(job.jobParams) LIKE %:searchTerm% OR "
 			+ "LOWER(job.jobFrequency) LIKE %:searchTerm% OR "
-			+ "LOWER(job.jobExecutable) LIKE %:searchTerm% GROUP BY job.jobId ORDER BY ?#{#pageable}",
+			+ "LOWER(job.jobExecutable) LIKE %:searchTerm% GROUP BY job.jobId",
 
 			countQuery = "SELECT COUNT(*) FROM JobExecutionManager job WHERE "
 					+ "LOWER(job.jobId) LIKE %:searchTerm% OR "
@@ -53,7 +55,9 @@ public interface JobExecutionManagerRepository extends JpaRepository<JobExecutio
 					+ "LOWER(job.jobType) LIKE %:searchTerm% OR "
 					+ "LOWER(job.jobParams) LIKE %:searchTerm% OR "
 					+ "LOWER(job.jobFrequency) LIKE %:searchTerm% OR "
-					+ "LOWER(job.jobExecutable) LIKE %:searchTerm% GROUP BY job.jobId ORDER BY ?#{#pageable}")
+					+ "LOWER(job.jobExecutable) LIKE %:searchTerm% GROUP BY job.jobId")
 	public Page<JobExecutionManagerListProjections> findAllJobExecutionManagers(@Param("searchTerm") String searchTerm, Pageable pageable);
 
+	@Query("SELECT job.jobId FROM JobExecutionManager job WHERE job.jobId != '' AND job.jobId != null GROUP BY job.jobId")
+	public Collection<String> getAllJobIds();
 }

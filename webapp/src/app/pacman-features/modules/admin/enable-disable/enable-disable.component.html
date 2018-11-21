@@ -1,0 +1,125 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+<div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+    <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+    <div class="floating-widgets-header flex flex-between">
+        <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text">{{pageTitle}}</h1>
+        </div>
+    </div>
+    <div class="floating-widgets-container ">
+        <section>
+            <ul>
+                <li class="widget-wrapper relative">
+                    <div class="data-table-wrap relative">
+                        <div class="pacman-alert" [hidden]="hideContent">
+                            <div class="sa-icon sa-info animate">
+                                <span class="sa-line sa-tip animateSuccessTip"></span>
+                                <span class="sa-line sa-long animateSuccessLong"></span>
+                                <div class="sa-placeholder"></div>
+                                <div class="sa-fix"></div>
+                            </div>
+
+                            <div class="pacman-alert-title">
+                                {{pageTitle}} !
+                            </div>
+                            <div class="pacman-alert-message">
+                                Are you sure to <span class="lowercase">{{pageTitle}}</span> - <span class="highlight-pink">{{ruleOrJobId}}</span>
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="enableDisableRuleOrJob()"><i class="fa fa-check"></i> {{action}}</button>
+                                <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+
+                        <div class="pacman-alert" *ngIf="isEnableDisableInvokeFailed">
+                            <div class="sa-icon sa-error animateErrorIcon" style="display: block;">
+                                <span class="sa-x-mark animateXMark">
+                                    <span class="sa-line sa-left"></span>
+                                <span class="sa-line sa-right"></span>
+                                </span>
+                            </div>
+
+                            <div class="pacman-alert-title">
+                                <span *ngIf="action=='enable'; else elseBlock">
+                                    Enabling <span *ngIf="isRule">Rule</span><span *ngIf="!isRule">Job</span> Failed
+                                </span>
+                                <ng-template #elseBlock>
+                                    Disabling <span *ngIf="isRule">Rule</span><span *ngIf="!isRule">Job</span> Failed
+                                </ng-template>
+                            </div>
+                            <div class="pacman-alert-message">
+                                Unexpected error occurred while
+                                <span *ngIf="action=='enable'; else elseBlock">
+                                    enabling 
+                                </span>
+                                <ng-template #elseBlock>
+                                    disabling
+                                </ng-template>
+                                <span *ngIf="isRule">rule</span><span *ngIf="!isRule">job</span> - <span class="highlight-pink">{{ruleOrJobId}}</span>
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="closeErrorMessage()"><i class="fa fa-arrow-left"></i>  BACK</button>
+                            </div>
+                        </div>
+                        <div class="pacman-alert" *ngIf="isEnableDisableInvokeSuccess">
+                            <div class="sa-icon sa-success animate">
+                                <span class="sa-line sa-tip animateSuccessTip"></span>
+                                <span class="sa-line sa-long animateSuccessLong"></span>
+                                <div class="sa-placeholder"></div>
+                                <div class="sa-fix"></div>
+                            </div>
+                            <div class="pacman-alert-title">
+                                <span *ngIf="action=='enable'; else elseBlock">
+                                    <span *ngIf="isRule">Rule</span><span *ngIf="!isRule">Job</span> Enabled
+                                </span>
+                                <ng-template #elseBlock>
+                                    <span *ngIf="isRule">Rule</span><span *ngIf="!isRule">Job</span> Disabled
+                                </ng-template>
+                            </div>
+                            <div class="pacman-alert-message">
+                                <span *ngIf="isRule">Rule</span><span *ngIf="!isRule">Job</span> <span class="highlight-pink">{{ruleOrJobId}}</span> has been successfully
+                                <span *ngIf="action=='enable'; else elseBlock1">
+                                    enabled
+                                </span>
+                                <ng-template #elseBlock1>
+                                    disabled
+                                </ng-template> !!!
+                            </div>
+                            <div class="pacman-alert-button">
+                                <button class="submit-btn uppercase" type="button" (click)="navigateBack()"><i class="fa fa-remove"></i> CLOSE</button>
+                            </div>
+                        </div>
+                        <div class="pacman-progress" *ngIf="ruleLoader">
+                            <app-pacman-loader></app-pacman-loader>
+                            <div class="pacman-alert-title">
+                                Please Wait...
+                            </div>
+                            <div class="pacman-alert-message">
+                                <span *ngIf="action=='enable'; else elseBlock">
+                                    Enabling
+                                </span>
+                                <ng-template #elseBlock>
+                                    Disabling
+                                </ng-template> <span *ngIf="isRule">rule</span><span *ngIf="!isRule">job</span> - <span class="highlight-pink">{{ruleOrJobId}}</span> is under progress ...
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>

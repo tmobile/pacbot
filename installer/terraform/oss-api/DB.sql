@@ -58,38 +58,6 @@ CREATE TABLE `Pacman_Asset_Config` (
   PRIMARY KEY (`resourceId`,`configType`,`createdDate`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
-/*Table structure for table `Roles` */
-
-DROP TABLE IF EXISTS `Roles`;
-
-CREATE TABLE `Roles` (
-  `roleId` bigint(25) NOT NULL,
-  `roleName` varchar(75) COLLATE utf8_bin DEFAULT NULL,
-  `roleDesc` varchar(75) COLLATE utf8_bin DEFAULT NULL,
-  `writePermission` int(15) DEFAULT '0',
-  `owner` varchar(75) COLLATE utf8_bin DEFAULT NULL,
-  `client` varchar(75) COLLATE utf8_bin DEFAULT NULL,
-  `createdDate` datetime DEFAULT NULL,
-  `modifiedDate` datetime DEFAULT NULL,
-  PRIMARY KEY (`roleId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-/*Table structure for table `UserRoleMapping` */
-
-DROP TABLE IF EXISTS `UserRoleMapping`;
-
-CREATE TABLE `UserRoleMapping` (
-  `userRoleId` varchar(75) COLLATE utf8_bin NOT NULL,
-  `userId` varchar(75) COLLATE utf8_bin NOT NULL,
-  `roleId` int(75) NOT NULL,
-  `clientId` varchar(100) COLLATE utf8_bin DEFAULT NULL,
-  `allocator` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `createdDate` datetime DEFAULT NULL,
-  `modifiedDate` datetime DEFAULT NULL,
-  PRIMARY KEY (`userRoleId`,`userId`,`roleId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-
 /*Table structure for table `cf_AssetGroupDetails` */
 
 DROP TABLE IF EXISTS `cf_AssetGroupDetails`;
@@ -227,7 +195,7 @@ CREATE TABLE `cf_JobScheduler` (
   `jobExecutable` varchar(75) COLLATE utf8_bin DEFAULT NULL,
   `jobArn` varchar(200) COLLATE utf8_bin DEFAULT NULL,
   `status` varchar(75) COLLATE utf8_bin DEFAULT NULL,
-  `userId` bigint(20) DEFAULT NULL,
+  `userId` varchar(75) COLLATE utf8_bin DEFAULT NULL,
   `createdDate` datetime DEFAULT NULL,
   `modifiedDate` datetime DEFAULT NULL,
   PRIMARY KEY (`jobId`)
@@ -387,7 +355,7 @@ CREATE TABLE `cf_Target` (
   `dataSourceName` varchar(75) COLLATE utf8_bin DEFAULT NULL,
   `targetConfig` text COLLATE utf8_bin,
   `status` varchar(75) COLLATE utf8_bin DEFAULT NULL,
-  `userId` bigint(20) DEFAULT NULL,
+  `userId` varchar(75) COLLATE utf8_bin DEFAULT NULL,
   `endpoint` text COLLATE utf8_bin,
   `createdDate` date DEFAULT NULL,
   `modifiedDate` date DEFAULT NULL,
@@ -840,6 +808,26 @@ CREATE TABLE `oauth_user_roles` (
   `modifiedDate` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+
+DROP TABLE IF EXISTS `task`;
+
+CREATE TABLE `task` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `index` varchar(100) DEFAULT NULL,
+  `mappings` longtext,
+  `data` longtext,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+
+/*Insert task to necessary tables*/
+
+insert  into `task`(`id`,`index`,`mappings`,`data`) values (1,'exceptions','{\"mappings\":{\"sticky_exceptions\":{\"properties\":{\"assetGroup\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"dataSource\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"exceptionName\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"exceptionReason\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"expiryDate\":{\"type\":\"date\"},\"targetTypes\":{\"properties\":{\"name\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"rules\":{\"properties\":{\"ruleId\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"ruleName\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}}}}}}}}}',NULL),(2,'faqs','{\"mappings\":{\"widgetinfo\":{\"properties\":{\"widgetid\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"widgetname\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}}},\"faqinfo\":{\"properties\":{\"answer\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"faqid\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"faqname\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"tag\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"widgetid\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}}}}}','{\"index\": {\"_index\": \"faqs\", \"_type\": \"widgetinfo\", \"_id\": \"w1\"}}\\n{\"widgetid\":\"w1\",\"widgetname\":\"compliance overview\"}\\n{\"index\": {\"_index\": \"faqs\", \"_type\": \"widgetinfo\", \"_id\": \"w2\"}}\\n{\"widgetid\":\"w2\",\"widgetname\":\"patching\"}\\n{\"index\": {\"_index\": \"faqs\", \"_type\": \"widgetinfo\", \"_id\": \"w3\"}}\\n{\"widgetid\":\"w3\",\"widgetname\":\"tagging\"}\\n{\"index\": {\"_index\": \"faqs\", \"_type\": \"widgetinfo\", \"_id\": \"w4\"}}\\n{\"widgetid\":\"w4\",\"widgetname\":\"vulnerabilities\"}\\n{\"index\": {\"_index\": \"faqs\", \"_type\": \"widgetinfo\", \"_id\": \"w5\"}}\\n{\"widgetid\":\"w5\",\"widgetname\":\"certificates\"}\\n{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w2q7\"}}\\n{\"faqid\":\"q7\",\"faqname\":\"How is unpatched count calculated ?\",\"answer\":\"Total assets which does not have updated kernel version.\",\"widgetid\":\"w2\",\"tag\":\"patching\"}\\n{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w3q4\"}}\\n{\"faqid\":\"q4\",\"faqname\":\"How is tagging compliance % calculated ?\",\"answer\":\"Tagging compliance is calculated by dividing total taggable assets by total tagged assets.\",\"widgetid\":\"w3\",\"tag\":\"tagging\"}\\n{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w1q1\"}}\\n{\"faqid\":\"q1\",\"faqname\":\"What is shown in this graph?\",\"answer\":\"This multi ring donut represents the overall compliance percentage. Policies are grouped into categories like security, governance, cost optimization and tagging. Rings in the donut represents compliance percentage for each of those categories.  The rolled up percentage value for a given category is calculated by doing a weighted average of compliance percentage values of individual policies in that category. Weights are assigned based on the importance of the policy. Overall rolled up number in the middle of the donut represents uber compliance percentage for the selected asset group. This value is calculated by doing a simple average of compliance percentage values of the four categories.\",\"widgetid\":\"w1\",\"tag\":\"over-all\"}\\n{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w4q5\"}}\\n{\"faqid\":\"q5\",\"faqname\":\"How is vulnerabilities compliance % calculated ?\",\"answer\":\"Vulnerabilities compliance is calculated by dividing total vulnerable assets by total servers, if an asset is not scanned by qualys , then the asset is considered as vulnerable.\",\"widgetid\":\"w4\",\"tag\":\"vulnerabilities\"}\\n{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w5q3\"}}\\n{\"faqid\":\"q3\",\"faqname\":\"How is certificates compliance % calculated ?\",\"answer\":\"Total non-expired certificates divided by total certificates\",\"widgetid\":\"w5\",\"tag\":\"certificates\"}\\n{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w3q8\"}}\\n{\"faqid\":\"q8\",\"faqname\":\"How is untagged count calculated ?\",\"answer\":\"Total assets which is missing either application/environment tags or both tags.\",\"widgetid\":\"w3\",\"tag\":\"tagging\"}\\n{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w2q2\"}}\\n{\"faqid\":\"q2\",\"faqname\":\"How is patching compliance % calculated ?\",\"answer\":\"Total patched resources divided by total running resources\",\"widgetid\":\"w2\",\"tag\":\"patching\"}');
+
+
+/*Insert Data Source to necessary tables*/
+
+INSERT  INTO `cf_Datasource`(`dataSourceId`,`dataSourceName`,`dataSourceDesc`,`config`,`createdDate`,`modifiedDate`) VALUES (1,'aws','Amazon WebService','N/A','2017-08-01','2018-03-09');
+
 /*Insert Data Asset Group to necessary tables*/
 
 INSERT INTO cf_AssetGroupDetails (groupId,groupName,dataSource,displayName,groupType,createdBy,createdUser,createdDate,modifiedUser,modifiedDate,description,aliasQuery,isVisible) VALUES ('201','aws','aws','aws all','admin','Cloud Security','','','pacman','03/26/2018 23:00','Asset Group to segregate all data related to aws.','',true);
@@ -895,7 +883,7 @@ INSERT INTO cf_AssetGroupTargetDetails (id_,groupId,targetType,attributeName,att
 
 /*Insert Domain in required table*/
 
-INSERT INTO cf_Domain (domainName,domainDesc,config,createdDate,modifiedDate,userId) VALUES ('Infra & Platforms','Domain for Infra & Platforms','{}',{d '2018-04-09'},{d '2018-08-03'},'123');
+INSERT INTO cf_Domain (domainName,domainDesc,config,createdDate,modifiedDate,userId) VALUES ('Infra & Platforms','Domain for Infra & Platforms','{}',{d '2018-04-09'},{d '2018-08-03'},'user123');
 
 /*Insert Target data in required table*/
 INSERT INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('account','Aws Accounts','Other','aws','{"key":"accountid","id":"accountid"}','enabled',null,concat(@eshost,':',@esport,'/aws_account/account'),{d '2017-09-07'},{d '2017-09-07'},'Infra & Platforms');
@@ -952,7 +940,7 @@ INSERT INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfi
 
 
 /* Auth Related data */
-insert into `oauth_client_details`(`client_id`,`resource_ids`,`client_secret`,`scope`,`authorized_grant_types`,`web_server_redirect_uri`,`authorities`,`access_token_validity`,`refresh_token_validity`,`additional_information`,`autoapprove`) values ('22e14922-87d7-4ee4-a470-da0bb10d45d3',NULL,'csrWpc5p7JFF4vEZBkwGCAh67kGQGwXv46qug7v5ZwtKg','resource-access','implicit,authorization_code,refresh_token,password,client_credentials',NULL,'ROLE_CLIENT,ROLE_USER',NULL,NULL,NULL,'');
+insert into `oauth_client_details`(`client_id`,`resource_ids`,`client_secret`,`scope`,`authorized_grant_types`,`web_server_redirect_uri`,`authorities`,`access_token_validity`,`refresh_token_validity`,`additional_information`,`autoapprove`) values ('22e14922-87d7-4ee4-a470-da0bb10d45d3',NULL,'$2a$10$Is6r80wW65hKHUq6Wa8B6O3BLKqGOb5McDGbJUwVwfVvyeJBCf7ta','resource-access','implicit,authorization_code,refresh_token,password,client_credentials',NULL,'ROLE_CLIENT,ROLE_USER',NULL,NULL,NULL,'');
 insert into `oauth_user`(`id`,`user_id`,`user_name`,`first_name`,`last_name`,`email`,`created_date`,`modified_date`) values (1,'user@pacbot.org','user','user','','user@pacbot.org','2018-06-26 18:21:56','2018-06-26 18:21:56'),(2,'admin@pacbot.org','admin','admin','','admin@pacbot.org','2018-06-26 18:21:56','2018-06-26 18:21:56');
 insert into `oauth_user_credentials` (`id`, `password`, `type`) values('1','$2a$10$IKXbqqHbMBMa/1Cs3VhjGeye4EKVBen4dPwhTYB24cHgDouravEMa','db');
 insert into `oauth_user_credentials` (`id`, `password`, `type`) values('2','$2a$10$G02s.dXgFAV7oKvYzvL5luq9FaBuzwNHeBLdbpncBazk5APkiVjUq','db');

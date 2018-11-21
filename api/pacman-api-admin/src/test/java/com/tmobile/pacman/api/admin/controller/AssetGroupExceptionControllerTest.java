@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.security.Principal;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
@@ -35,6 +36,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
@@ -58,6 +60,8 @@ import com.tmobile.pacman.api.admin.repository.service.AssetGroupExceptionServic
 @RunWith(MockitoJUnitRunner.class)
 public class AssetGroupExceptionControllerTest
 {
+	private Principal principal;
+	
 	private MockMvc mockMvc;
     
 	@Mock
@@ -72,6 +76,7 @@ public class AssetGroupExceptionControllerTest
         mockMvc = MockMvcBuilders
                 .standaloneSetup(assetGroupExceptionController)
                 .build();
+        principal = Mockito.mock(Principal.class);
     }
 
 	@Test
@@ -129,7 +134,7 @@ public class AssetGroupExceptionControllerTest
 	public void createAssetGroupExceptionsTest() throws Exception {
 		byte[] assetGroupDetailsContent = toJson(getCreateAssetGroupExceptionDetailsRequest());
 		when(assetGroupExceptionService.createAssetGroupExceptions(any(), any())).thenReturn(AdminConstants.CONFIG_STICKY_EXCEPTION_SUCCESS);
-		mockMvc.perform(post("/asset-group-exception/configure")
+		mockMvc.perform(post("/asset-group-exception/configure").principal(principal)
 				.content(assetGroupDetailsContent)
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -142,7 +147,7 @@ public class AssetGroupExceptionControllerTest
 	public void createAssetGroupExceptionsExceptionTest() throws Exception {
 		byte[] assetGroupDetailsContent = toJson(getCreateAssetGroupExceptionDetailsRequest());
 		when(assetGroupExceptionService.createAssetGroupExceptions(any(), any())).thenThrow(Exception.class);
-		mockMvc.perform(post("/asset-group-exception/configure")
+		mockMvc.perform(post("/asset-group-exception/configure").principal(principal)
 				.content(assetGroupDetailsContent)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -154,7 +159,7 @@ public class AssetGroupExceptionControllerTest
 	public void deleteAssetGroupExceptionsTest() throws Exception {
 		byte[] assetGroupDetailsContent = toJson(getDeleteAssetGroupExceptionRequest());
 		when(assetGroupExceptionService.deleteAssetGroupExceptions(any(), any())).thenReturn(AdminConstants.CONFIG_STICKY_EXCEPTION_SUCCESS);
-		mockMvc.perform(post("/asset-group-exception/delete")
+		mockMvc.perform(post("/asset-group-exception/delete").principal(principal)
 				.content(assetGroupDetailsContent)
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -167,7 +172,7 @@ public class AssetGroupExceptionControllerTest
 	public void deleteAssetGroupExceptionsExceptionTest() throws Exception {
 		byte[] assetGroupDetailsContent = toJson(getDeleteAssetGroupExceptionRequest());
 		when(assetGroupExceptionService.deleteAssetGroupExceptions(any(), any())).thenThrow(Exception.class);
-		mockMvc.perform(post("/asset-group-exception/delete")
+		mockMvc.perform(post("/asset-group-exception/delete").principal(principal)
 				.content(assetGroupDetailsContent)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))

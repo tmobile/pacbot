@@ -20881,7 +20881,7 @@
             	var hostName = encodeURIComponent(realm);
             	url = hostName + '/api/auth/user/login';
             }
-            
+            url = decodeURIComponent(url);
         	if(this.authsCollectionView.collection.length > 0) {
         		this.authsCollectionView.collection.forEach(function(e) {
         			var authType = e.get("type");

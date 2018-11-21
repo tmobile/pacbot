@@ -100,6 +100,7 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
   filters: any = [];
   searchCriteria: any;
   filterText: any = {};
+  ruleId = '';
   errorValue: number = 0;
   showGenericMessage: boolean = false;
   dataTableDesc: String = '';
@@ -741,7 +742,7 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
       if (currentQueryParams) {
 
         this.FullQueryParams = currentQueryParams;
-
+        this.ruleId = this.FullQueryParams.ruleId;
         this.queryParamsWithoutFilter = JSON.parse(JSON.stringify(this.FullQueryParams));
         delete this.queryParamsWithoutFilter['filter'];
 

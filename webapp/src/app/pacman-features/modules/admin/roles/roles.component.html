@@ -24,16 +24,16 @@
             <button class="submit-btn uppercase" type="button" (click)='goToCreatRoles()'><i class="fa fa-plus"></i> Create Roles</button>
         </div>
     </div>
-    <div class="floating-widgets-container">
+    <div class="floating-widgets-container data-table-container">
         <section>
             <ul>
                 <li class="widget-wrapper relative">
-                    <div class="relative">
+                    <div class="relative table-head-wrapper">
                         <app-data-table [searchTextValues]=searchTxt [showGenericMessage]='showGenericMessage' [errorValue]='errorValue' [parentName]="'taggingTargetMessage'" [showingArr]='showingArr' [outerArr]='outerArr' [searchableHeader]='true' [allColumns]='allColumns'
                             [dataHead]="'All Roles'" (selectedRow)='goToDetails($event)' [firstPaginator]='firstPaginator' [lastPaginator]='lastPaginator' [totalRows]='totalRows' [currentPointer]='currentPointer' (searchRowTxt)='searchCalled($event)' (previousPageCalled)='prevPage()'
                             (nextPageCalled)='nextPage()' (searchTriggerred)='callNewSearch()'>
                         </app-data-table>
-                        <div class="data-table-desc">{{dataTableDesc}}</div>
+                        <div *ngIf='dataTableDesc' class="data-table-desc">{{dataTableDesc}}</div>
                     </div>
                 </li>
             </ul>

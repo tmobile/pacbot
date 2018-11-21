@@ -36,13 +36,13 @@ public interface UserRolesRepository extends JpaRepository<UserRoles, String> {
 			+ "LOWER(role.roleName) LIKE %:searchTerm% OR "
 			+ "LOWER(role.owner) LIKE %:searchTerm% OR "
 			+ "LOWER(role.createdDate) LIKE %:searchTerm% OR "
-			+ "LOWER(role.modifiedDate) LIKE %:searchTerm% GROUP BY role.roleName ORDER BY ?#{#pageable}", 
+			+ "LOWER(role.modifiedDate) LIKE %:searchTerm% GROUP BY role.roleName", 
 			
 			countQuery = "SELECT COUNT(*) FROM UserRoles role WHERE "
 					+ "LOWER(role.roleName) LIKE %:searchTerm% OR "
 					+ "LOWER(role.owner) LIKE %:searchTerm% OR "
 					+ "LOWER(role.createdDate) LIKE %:searchTerm% OR "
-					+ "LOWER(role.modifiedDate) LIKE %:searchTerm% GROUP BY role.roleName ORDER BY ?#{#pageable}")
+					+ "LOWER(role.modifiedDate) LIKE %:searchTerm% GROUP BY role.roleName")
 
 	public Page<UserRoles> findAllUserRolesDetails(@Param("searchTerm") String searchTerm, Pageable pageable);
 	

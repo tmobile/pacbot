@@ -49,10 +49,11 @@ public class AmazonClientBuilderService {
      * Service function to get RuleAmazonS3 Client
      *
      * @author Nidhish
+	 * @param region 
      * @return AmazonS3 Client
      */
-	public AmazonS3 getRuleAmazonS3() {
-		return AmazonS3ClientBuilder.standard().withCredentials(buildCredentials()).build();
+	public AmazonS3 getAmazonS3(final String region) {
+		return AmazonS3ClientBuilder.standard().withRegion(region).withCredentials(buildCredentials()).build();
 	}
 
 	/**
@@ -61,8 +62,8 @@ public class AmazonClientBuilderService {
      * @author Nidhish
      * @return AmazonCloudWatchEvents Client
      */
-	public AmazonCloudWatchEvents getRuleAmazonCloudWatchEvents() {
-		return AmazonCloudWatchEventsClientBuilder.standard().withCredentials(buildCredentials()).build();
+	public AmazonCloudWatchEvents getAmazonCloudWatchEvents(final String region) {
+		return AmazonCloudWatchEventsClientBuilder.standard().withRegion(region).withCredentials(buildCredentials()).build();
 	}
 
 	/**
@@ -71,8 +72,8 @@ public class AmazonClientBuilderService {
      * @author Nidhish
      * @return AWSLambda Client
      */
-	public AWSLambda getRuleAWSLambdaClient() {
-		return AWSLambdaClientBuilder.standard().withCredentials(buildCredentials()).build();
+	public AWSLambda getAWSLambdaClient(final String region) {
+		return AWSLambdaClientBuilder.standard().withRegion(region).withCredentials(buildCredentials()).build();
 	}
 
 	private AWSCredentialsProvider buildCredentials() {

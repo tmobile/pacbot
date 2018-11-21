@@ -21,6 +21,11 @@ import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.annotation.Configuration;
 
+/**
+ * @author 	NidhishKrishnan
+ * @since	November 10, 2018
+ * @version	1.0 
+**/
 @Configuration
 public class RefreshScopeConfig implements BeanFactoryPostProcessor {
 

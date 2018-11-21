@@ -64,7 +64,7 @@ public interface RuleRepository extends JpaRepository<Rule, String> {
 			+ "LOWER(r.status) LIKE %:searchTerm% OR "
 			+ "LOWER(r.displayName) LIKE %:searchTerm% OR "
 			+ "LOWER(r.createdDate) LIKE %:searchTerm% OR "
-			+ "LOWER(r.modifiedDate) LIKE %:searchTerm% GROUP BY r.ruleId ORDER BY ?#{#pageable}", 
+			+ "LOWER(r.modifiedDate) LIKE %:searchTerm% GROUP BY r.ruleId", 
 			
 			countQuery = "SELECT COUNT(*) FROM Rule r WHERE "
 					+ "LOWER(r.ruleId) LIKE %:searchTerm% OR "
@@ -83,8 +83,8 @@ public interface RuleRepository extends JpaRepository<Rule, String> {
 					+ "LOWER(r.status) LIKE %:searchTerm% OR "
 					+ "LOWER(r.displayName) LIKE %:searchTerm% OR "
 					+ "LOWER(r.createdDate) LIKE %:searchTerm% OR "
-					+ "LOWER(r.modifiedDate) LIKE %:searchTerm% GROUP BY r.ruleId ORDER BY ?#{#pageable}")
-	public Page<Rule> findAll(@Param("searchTerm") String searchTerm, Pageable pageRequest);
+					+ "LOWER(r.modifiedDate) LIKE %:searchTerm% GROUP BY r.ruleId")
+	public Page<Rule> findAll(@Param("searchTerm") String searchTerm, Pageable pageable);
 	
 	@Query("SELECT alexaKeyword FROM Rule WHERE alexaKeyword != '' AND alexaKeyword != null GROUP BY alexaKeyword")
 	public Collection<String> getAllAlexaKeywords();

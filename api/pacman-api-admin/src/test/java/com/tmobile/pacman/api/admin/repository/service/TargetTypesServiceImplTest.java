@@ -30,6 +30,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.Header;
@@ -139,16 +140,15 @@ public class TargetTypesServiceImplTest {
 	
 	@Test
 	public void getTargetTypesByNameTest() throws PacManException {
-		when(targetTypesRepository.exists("targetTypeName123")).thenReturn(true);
-		when(targetTypesService.getTargetTypesByName("targetTypeName123")).thenReturn(getTargetTypesValues());
-		assertThat(targetTypesRepository.findOne("targetTypeName123"), is(notNullValue()));
+		when(targetTypesRepository.existsById("targetTypeName123")).thenReturn(true);
+		when(targetTypesRepository.findById(anyString())).thenReturn(getTargetTypesValues());
+		assertThat(targetTypesService.getTargetTypesByName("targetTypeName123").getCategory(), is(getTargetTypesValues().get().getCategory()));
 	}
 	
 	@Test
 	public void getTargetTypesByNameExceptionTest() throws PacManException {
-		when(targetTypesRepository.exists("targetTypeName123")).thenReturn(false);
+		when(targetTypesRepository.existsById("targetTypeName123")).thenReturn(false);
 		assertThatThrownBy(() -> targetTypesService.getTargetTypesByName("targetTypeName123")).isInstanceOf(PacManException.class);
-		//assertThat(targetTypesService.getTargetTypesByName("targetTypeName123"), is(nullValue()));
 	}
 
 	@Test
@@ -163,16 +163,16 @@ public class TargetTypesServiceImplTest {
 
 	@Test
 	public void updateTargetTypeDetailsTest() throws PacManException {
-		when(targetTypesRepository.exists("targettypename123")).thenReturn(true);
-		when(targetTypesRepository.findOne("targettypename123")).thenReturn(getTargetTypesValues());
+		when(targetTypesRepository.existsById("targettypename123")).thenReturn(true);
+		when(targetTypesRepository.findById("targettypename123")).thenReturn(getTargetTypesValues());
 		when(config.getElasticSearch()).thenReturn(getElasticSearchProperty());
-		assertThat(targetTypesService.updateTargetTypeDetails(getTargetTypeDetailsRequest()), is(AdminConstants.TARGET_TYPE_UPDATION_SUCCESS));
+		assertThat(targetTypesService.updateTargetTypeDetails(getTargetTypeDetailsRequest(), "userId"), is(AdminConstants.TARGET_TYPE_UPDATION_SUCCESS));
 	}
 
 	@Test
 	public void updateTargetTypeDetailsExceptionTest() throws PacManException {
-		when(targetTypesRepository.exists("targetTypeName123")).thenReturn(false);
-		assertThatThrownBy(() -> targetTypesService.updateTargetTypeDetails(getTargetTypeDetailsRequest())).isInstanceOf(PacManException.class);
+		when(targetTypesRepository.existsById("targetTypeName123")).thenReturn(false);
+		assertThatThrownBy(() -> targetTypesService.updateTargetTypeDetails(getTargetTypeDetailsRequest(), "userId")).isInstanceOf(PacManException.class);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -183,7 +183,7 @@ public class TargetTypesServiceImplTest {
 		when(config.getElasticSearch()).thenReturn(getElasticSearchProperty());
 		
 		HttpEntity jsonEntity = new StringEntity("{}", ContentType.APPLICATION_JSON);
-		when(targetTypesRepository.exists(anyString())).thenReturn(false);
+		when(targetTypesRepository.existsById(anyString())).thenReturn(false);
         when(response.getEntity()).thenReturn(jsonEntity);
 
         when(restClient.performRequest(anyString(), anyString(), any(Map.class), any(HttpEntity.class),
@@ -224,7 +224,7 @@ public class TargetTypesServiceImplTest {
 		when(config.getElasticSearch()).thenReturn(getElasticSearchProperty());
 		
 		HttpEntity jsonEntity = new StringEntity("{}", ContentType.APPLICATION_JSON);
-		when(targetTypesRepository.exists(anyString())).thenReturn(false);
+		when(targetTypesRepository.existsById(anyString())).thenReturn(false);
         when(response.getEntity()).thenReturn(jsonEntity);
 
         when(restClient.performRequest(anyString(), anyString(), any(Map.class), any(HttpEntity.class),
@@ -245,7 +245,7 @@ public class TargetTypesServiceImplTest {
 		when(config.getElasticSearch()).thenReturn(getElasticSearchProperty());
 		
 		HttpEntity jsonEntity = new StringEntity("{}", ContentType.APPLICATION_JSON);
-		when(targetTypesRepository.exists(anyString())).thenReturn(false);
+		when(targetTypesRepository.existsById(anyString())).thenReturn(false);
         when(response.getEntity()).thenReturn(jsonEntity);
 
         when(restClient.performRequest(anyString(), anyString(), any(Map.class), any(HttpEntity.class),
@@ -265,15 +265,15 @@ public class TargetTypesServiceImplTest {
 	public void addTargetTypeDetailsTest() throws Exception {
 		TargetTypesServiceImpl mock = PowerMockito.spy(new TargetTypesServiceImpl());
 
-		when(targetTypesRepository.exists("targetTypeName123")).thenReturn(true);
-		when(targetTypesRepository.findOne("targetTypeName123")).thenReturn(getTargetTypesValues());
+		when(targetTypesRepository.existsById("targetTypeName123")).thenReturn(true);
+		when(targetTypesRepository.findById("targetTypeName123")).thenReturn(getTargetTypesValues());
 		when(config.getElasticSearch()).thenReturn(getElasticSearchProperty());
 
 		ElasticSearchProperty elasticSearchProperty = getElasticSearchProperty();
  
 		HttpEntity jsonEntity = new StringEntity("{}", ContentType.APPLICATION_JSON);
 
-		when(targetTypesRepository.exists(anyString())).thenReturn(false);
+		when(targetTypesRepository.existsById(anyString())).thenReturn(false);
         when(response.getEntity()).thenReturn(jsonEntity);
         when(config.getElasticSearch()).thenReturn(elasticSearchProperty);
         when(restClient.performRequest(anyString(), anyString(), any(Map.class), any(HttpEntity.class),
@@ -281,12 +281,12 @@ public class TargetTypesServiceImplTest {
         ReflectionTestUtils.setField(targetTypesServiceImpl, "restClient", restClient);
         when(sl.getStatusCode()).thenReturn(200);
  	    when(response.getStatusLine()).thenReturn(sl);
- 	    assertThatThrownBy(() -> targetTypesService.addTargetTypeDetails(getTargetTypeDetailsRequest())).isInstanceOf(PacManException.class);
+ 	    assertThatThrownBy(() -> targetTypesService.addTargetTypeDetails(getTargetTypeDetailsRequest(), "userId")).isInstanceOf(PacManException.class);
 	}
 	
 	private AttributeValuesRequest getAttributeValuesRequest() {
 		AttributeValuesRequest attributeValuesRequest = new AttributeValuesRequest();
-		attributeValuesRequest.setEndpoint("endpoint123");
+		attributeValuesRequest.setIndex("endpoint123");
 		attributeValuesRequest.setPayload("payload123");
 		return attributeValuesRequest;
 	}
@@ -329,12 +329,12 @@ public class TargetTypesServiceImplTest {
 
 	private ElasticSearchProperty getElasticSearchProperty() {
 		ElasticSearchProperty elasticSearchProperty = new ElasticSearchProperty();
-		elasticSearchProperty.setDevIngestHost("test.es.com");
+		elasticSearchProperty.setDevIngestHost("dev-ingest.pacman.corporate.t-mobile.com");
 		elasticSearchProperty.setDevIngestPort(9090);
-		elasticSearchProperty.setHost("test.es.com");
+		elasticSearchProperty.setHost("dev-ingest.pacman.corporate.t-mobile.com");
 		elasticSearchProperty.setPort(9090);
 		assertEquals(elasticSearchProperty.getPort(), 9090);
-		assertEquals(elasticSearchProperty.getHost(), "test.es.com");
+		assertEquals(elasticSearchProperty.getHost(), "dev-ingest.pacman.corporate.t-mobile.com");
 		return elasticSearchProperty;
 	}
 
@@ -351,11 +351,11 @@ public class TargetTypesServiceImplTest {
 
 	private List<TargetTypes> getTargetTypesDetailsList() {
 		List<TargetTypes> allTargetTypes = Lists.newArrayList();
-		allTargetTypes.add(getTargetTypesValues());
+		allTargetTypes.add(getTargetTypesValues().get());
 		return allTargetTypes;
 	}
 	
-	private TargetTypes getTargetTypesValues() {
+	private Optional<TargetTypes> getTargetTypesValues() {
 		TargetTypes targetTypes = new TargetTypes();
 		targetTypes.setCategory("targetTypeCategory123");
 		targetTypes.setTargetConfig("targetTypeConfig123");
@@ -371,7 +371,7 @@ public class TargetTypesServiceImplTest {
 		assertEquals(targetTypes.getDomain(), "targetTypeDomain123");
 		assertEquals(targetTypes.getTargetName(), "targetTypeName123");
 		
-		return targetTypes;
+		return Optional.of(targetTypes);
 	}
 	
 	@SuppressWarnings("unused")

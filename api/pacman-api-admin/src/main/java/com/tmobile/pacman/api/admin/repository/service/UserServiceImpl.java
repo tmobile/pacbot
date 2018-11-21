@@ -19,6 +19,7 @@ import static com.tmobile.pacman.api.admin.common.AdminConstants.UNEXPECTED_ERRO
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,6 +47,11 @@ public class UserServiceImpl implements UserService {
 	private UserRolesMappingRepository userRolesMappingRepository;
 
 	@Override
+	public List<User> getAllLoginUsers() throws PacManException {
+		return userRepository.findAll();
+	}
+	
+	@Override
 	public UserDetails getUserByEmailId(final String emailId) throws PacManException {
 		User user;
 		if (emailId != null) {
@@ -63,15 +69,15 @@ public class UserServiceImpl implements UserService {
 				List<String> roles = Lists.newArrayList();
 				roles.add("ROLE_USER");
 				userDetails.setUserRoles(roles);
-				userDetails.setUserName("");
-				userDetails.setUserId("");
+				userDetails.setUserName(StringUtils.EMPTY);
+				userDetails.setUserId(StringUtils.EMPTY);
 				if (emailId != null) {
 					userDetails.setEmail(emailId);
 				} else {
-					userDetails.setEmail("");
+					userDetails.setEmail(StringUtils.EMPTY);
 				}
-				userDetails.setLastName("");
-				userDetails.setFirstName("");
+				userDetails.setLastName(StringUtils.EMPTY);
+				userDetails.setFirstName(StringUtils.EMPTY);
 				userDetails.setDefaultAssetGroup("");
 			} else {
 				List<String[]> userRoles = userRolesMappingRepository.findAllUserRoleDetailsByUserIdIgnoreCase(user.getUserId());

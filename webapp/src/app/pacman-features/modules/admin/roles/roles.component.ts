@@ -1,13 +1,13 @@
 /*
  *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * Licensed under the Apache License, Version 2.0 (the 'License'); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * or in the "license" file accompanying this file. This file is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ *
+ * or in the 'license' file accompanying this file. This file is distributed on
+ * an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
@@ -39,49 +39,49 @@ import { AdminService } from '../../../services/all-admin.service';
   ]
 })
 export class RolesComponent implements OnInit, OnDestroy {
-  pageTitle: String = 'Roles';
-  allPolicies: any = [];
-  breadcrumbArray: any = ['Admin'];
-  breadcrumbLinks: any = ['policies'];
-  breadcrumbPresent: any;
-  outerArr: any = [];
-  dataLoaded: boolean = false;
-  errorMessage: any;
-  showingArr: any = ['policyName', 'policyId', 'policyDesc'];
-  allColumns: any = [];
-  totalRows: number = 0;
-  currentBucket: any = [];
-  bucketNumber: number = 0;
-  firstPaginator: number = 1;
-  lastPaginator: number;
-  currentPointer: number = 0;
-  seekdata: boolean = false;
-  showLoader: boolean = true;
+  pageTitle = 'Roles';
+  allPolicies = [];
+  breadcrumbArray = ['Admin'];
+  breadcrumbLinks = ['policies'];
+  breadcrumbPresent;
+  outerArr = [];
+  dataLoaded = false;
+  errorMessage;
+  showingArr = ['policyName', 'policyId', 'policyDesc'];
+  allColumns = [];
+  totalRows = 0;
+  currentBucket = [];
+  bucketNumber = 0;
+  firstPaginator = 1;
+  lastPaginator;
+  currentPointer = 0;
+  seekdata = false;
+  showLoader = true;
 
-  paginatorSize: number = 25;
-  isLastPage: boolean;
-  isFirstPage: boolean;
-  totalPages: number;
-  pageNumber: number = 0;
+  paginatorSize = 25;
+  isLastPage;
+  isFirstPage;
+  totalPages;
+  pageNumber = 0;
 
-  searchTxt: String = '';
-  dataTableData: any = [];
-  tableDataLoaded: boolean = false;
-  filters: any = [];
-  searchCriteria: any;
-  filterText: any = {};
-  errorValue: number = 0;
-  showGenericMessage: boolean = false;
-  dataTableDesc: String = '';
-  urlID: String = '';
-  public labels: any;
-  FullQueryParams: any;
-  queryParamsWithoutFilter: any;
-  private previousUrl: any = '';
-  urlToRedirect: any = '';
+  searchTxt = '';
+  dataTableData = [];
+  tableDataLoaded = false;
+  filters = [];
+  searchCriteria;
+  filterText = {};
+  errorValue = 0;
+  showGenericMessage = false;
+  dataTableDesc = '';
+  urlID = '';
+  public labels;
+  FullQueryParams;
+  queryParamsWithoutFilter;
+  private previousUrl = '';
+  urlToRedirect = '';
   private pageLevel = 0;
   public backButtonRequired;
-  mandatory: any;
+  mandatory;
   private routeSubscription: Subscription;
   private getKeywords: Subscription;
   private previousUrlSubscription: Subscription;
@@ -140,10 +140,10 @@ export class RolesComponent implements OnInit, OnDestroy {
   }
 
   getPolicyDetails() {
-    var url = environment.roles.url;
-    var method = environment.roles.method;
+    const url = environment.roles.url;
+    const method = environment.roles.method;
 
-    var queryParams = {
+    const queryParams = {
       page: this.pageNumber,
       size: this.paginatorSize
     };
@@ -158,11 +158,11 @@ export class RolesComponent implements OnInit, OnDestroy {
         this.allPolicies = reponse[0].content;
         this.errorValue = 1;
         this.searchCriteria = undefined;
-        var data = reponse[0];
+        const data = reponse[0];
         this.tableDataLoaded = true;
         this.dataTableData = reponse[0].content;
         this.dataLoaded = true;
-        if (reponse[0].content.length == 0) {
+        if (reponse[0].content.length === 0) {
           this.errorValue = -1;
           this.outerArr = [];
           this.allColumns = [];
@@ -186,7 +186,7 @@ export class RolesComponent implements OnInit, OnDestroy {
           if (this.lastPaginator > this.totalRows) {
             this.lastPaginator = this.totalRows;
           }
-          let updatedResponse = this.massageData(data.content);
+          const updatedResponse = this.massageData(data.content);
           this.processData(updatedResponse);
         }
       }
@@ -199,17 +199,17 @@ export class RolesComponent implements OnInit, OnDestroy {
         this.seekdata = true;
         this.errorMessage = 'apiResponseError';
         this.showLoader = false;
-      })
+      });
   }
 
   /*
-    * This function gets the urlparameter and queryObj 
+    * This function gets the urlparameter and queryObj
     *based on that different apis are being hit with different queryparams
     */
   routerParam() {
     try {
       // this.filterText saves the queryparam
-      let currentQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(this.router.routerState.snapshot.root);
+      const currentQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(this.router.routerState.snapshot.root);
       if (currentQueryParams) {
 
         this.FullQueryParams = currentQueryParams;
@@ -227,7 +227,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         );
 
         this.urlID = this.FullQueryParams.TypeAsset;
-        //check for mandatory filters.
+        // check for mandatory filters.
         if (this.FullQueryParams.mandatory) {
           this.mandatory = this.FullQueryParams.mandatory;
         }
@@ -270,17 +270,17 @@ export class RolesComponent implements OnInit, OnDestroy {
   }
 
   massageData(data) {
-    let refactoredService = this.refactorFieldsService;
-    let newData = [];
-    let formattedFilters = data.map(function (data) {
-      let keysTobeChanged = Object.keys(data);
+    const refactoredService = this.refactorFieldsService;
+    const newData = [];
+    const formattedFilters = data.map(function (datam) {
+      const keysTobeChanged = Object.keys(datam);
       let newObj = {};
       keysTobeChanged.forEach(element => {
-        var elementnew =
+        const elementnew =
           refactoredService.getDisplayNameForAKey(
             element
           ) || element;
-        newObj = Object.assign(newObj, { [elementnew]: data[element] });
+        newObj = Object.assign(newObj, { [elementnew]: datam[element] });
       });
       newObj['Actions'] = '';
       newObj['Allocations'] = '';
@@ -291,43 +291,38 @@ export class RolesComponent implements OnInit, OnDestroy {
 
   processData(data) {
     try {
-      var innerArr = {};
-      var totalVariablesObj = {};
-      var cellObj = {};
-      var magenta = '#e20074';
-      var green = '#26ba9d';
-      var red = '#f2425f';
-      var orange = '#ffb00d';
-      var yellow = 'yellow';
+      let innerArr = {};
+      const totalVariablesObj = {};
+      let cellObj = {};
       this.outerArr = [];
-      var getData = data;
-
+      const getData = data;
+      let getCols;
       if (getData.length) {
-        var getCols = Object.keys(getData[0]);
+        getCols = Object.keys(getData[0]);
       } else {
         this.seekdata = true;
       }
 
-      for (var row = 0; row < getData.length; row++) {
+      for (let row = 0; row < getData.length; row++) {
         innerArr = {};
-        for (var col = 0; col < getCols.length; col++) {
-          if (getCols[col].toLowerCase() == "actions") {
-            let dropDownItems: Array<String> = [ "Edit Role", "Config Users"];
+        for (let col = 0; col < getCols.length; col++) {
+          if (getCols[col].toLowerCase() === 'actions') {
+            const dropDownItems = [ 'Edit Role', 'Config Users'];
             cellObj = {
               properties: {
-                "text-shadow": "0.33px 0",
-                "color": "#ed0295"
+                'text-shadow': '0.33px 0',
+                'color': '#ed0295'
               },
               colName: getCols[col],
               hasPreImg: false,
-              imgLink: "",
+              imgLink: '',
               dropDownEnabled: true,
               dropDownItems: dropDownItems,
               statusProp: {
-                "color": "#ed0295"
+                'color': '#ed0295'
               }
             };
-          } else if (getCols[col].toLowerCase() == 'allocations') {
+          } else if (getCols[col].toLowerCase() === 'allocations') {
             cellObj = {
               link: '',
               properties: {
@@ -339,7 +334,7 @@ export class RolesComponent implements OnInit, OnDestroy {
               text: getData[row]['Users'].length,
               valText: getData[row]['Users'].length
             };
-          } else if (getCols[col].toLowerCase() == 'modified date' || getCols[col].toLowerCase() == 'created date') {
+          } else if (getCols[col].toLowerCase() === 'modified date' || getCols[col].toLowerCase() === 'created date') {
             cellObj = {
               link: '',
               properties: {
@@ -370,7 +365,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         this.outerArr.push(innerArr);
       }
       if (this.outerArr.length > getData.length) {
-        var halfLength = this.outerArr.length / 2;
+        const halfLength = this.outerArr.length / 2;
         this.outerArr = this.outerArr.splice(halfLength);
       }
       this.allColumns = Object.keys(totalVariablesObj);
@@ -426,7 +421,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         this.errorMessage = this.errorHandling.handleJavascriptError(error);
         this.logger.log('error', error);
       }
-    } 
+    }
 
     if (row.col === 'Config Users') {
       try {
@@ -443,7 +438,7 @@ export class RolesComponent implements OnInit, OnDestroy {
         this.errorMessage = this.errorHandling.handleJavascriptError(error);
         this.logger.log('error', error);
       }
-    } 
+    }
   }
 
   searchCalled(search) {

@@ -50,9 +50,9 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
-import com.tmobile.pacman.api.admin.domain.UserDetailsRequest;
 import com.tmobile.pacman.api.admin.domain.UserRoleConfigRequest;
 import com.tmobile.pacman.api.admin.domain.UserRolesMappingResponse;
+import com.tmobile.pacman.api.admin.repository.model.User;
 import com.tmobile.pacman.api.admin.repository.service.UserRolesMappingService;
 
 
@@ -131,12 +131,8 @@ public class UserRolesMappingControllerTest {
 	private UserRoleConfigRequest getRoleAllocateDetailsRequest() {
 		UserRoleConfigRequest userRoleConfigRequest = new UserRoleConfigRequest();
 		userRoleConfigRequest.setRoleId("roleId");
-		List<UserDetailsRequest> userDetails = Lists.newArrayList();
-		UserDetailsRequest userDetailsRequest = new UserDetailsRequest();
-		userDetailsRequest.setDisplayName("displayName");
-		userDetailsRequest.setGivenName("givenName");
-		userDetailsRequest.setUser("user");
-		userDetailsRequest.setUserEmail("userEmail");
+		List<User> userDetails = Lists.newArrayList();
+		User userDetailsRequest = new User();
 		userDetailsRequest.setUserId("userId");
 		userDetails.add(userDetailsRequest);
 		userRoleConfigRequest.setUserDetails(userDetails);

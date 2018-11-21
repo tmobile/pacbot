@@ -29,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -39,6 +40,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
@@ -65,6 +67,8 @@ import com.tmobile.pacman.api.admin.repository.service.TargetTypesService;
 public class TargetTypesControllerTest {
 
 	private MockMvc mockMvc;
+	
+	private Principal principal;
 
 	@Mock
 	private TargetTypesService targetTypesService;
@@ -80,6 +84,7 @@ public class TargetTypesControllerTest {
 		MockitoAnnotations.initMocks(this);
 		mockMvc = MockMvcBuilders.standaloneSetup(targetTypesController)
 				.build();
+		principal = Mockito.mock(Principal.class);
 	}
 
 	@Test
@@ -220,8 +225,8 @@ public class TargetTypesControllerTest {
 	@Test
 	public void addTargetTypeDetailsTest() throws Exception {
 		byte[] targetTypeDetailsContent = toJson(getCreateUpdateTargetTypeDetailsRequest());
-		when(targetTypesService.addTargetTypeDetails(any())).thenReturn(AdminConstants.TARGET_TYPE_CREATION_SUCCESS);
-		mockMvc.perform(post("/target-types/create")
+		when(targetTypesService.addTargetTypeDetails(any(), any())).thenReturn(AdminConstants.TARGET_TYPE_CREATION_SUCCESS);
+		mockMvc.perform(post("/target-types/create").principal(principal)
 				.content(targetTypeDetailsContent)
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -233,7 +238,7 @@ public class TargetTypesControllerTest {
 	@SuppressWarnings("unchecked")
 	public void addTargetTypeDetailsExceptionTest() throws Exception {
 		byte[] targetTypeDetailsContent = toJson(getCreateUpdateTargetTypeDetailsRequest());
-		when(targetTypesService.addTargetTypeDetails(any())).thenThrow(Exception.class);
+		when(targetTypesService.addTargetTypeDetails(any(), any())).thenThrow(Exception.class);
 		mockMvc.perform(post("/target-types/create")
 				.content(targetTypeDetailsContent)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -271,8 +276,8 @@ public class TargetTypesControllerTest {
 	@Test
 	public void updateTargetTypeDetailsTest() throws Exception {
 		byte[] targetTypeDetailsContent = toJson(getCreateUpdateTargetTypeDetailsRequest());
-		when(targetTypesService.updateTargetTypeDetails(any())).thenReturn(AdminConstants.TARGET_TYPE_UPDATION_SUCCESS);
-		mockMvc.perform(post("/target-types/update")
+		when(targetTypesService.updateTargetTypeDetails(any(), any())).thenReturn(AdminConstants.TARGET_TYPE_UPDATION_SUCCESS);
+		mockMvc.perform(post("/target-types/update").principal(principal)
 				.content(targetTypeDetailsContent)
 				.contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
@@ -285,7 +290,7 @@ public class TargetTypesControllerTest {
 	@SuppressWarnings("unchecked")
 	public void updateTargetTypeDetailsExceptionTest() throws Exception {
 		byte[] targetTypeDetailsContent = toJson(getCreateUpdateTargetTypeDetailsRequest());
-		when(targetTypesService.updateTargetTypeDetails(any())).thenThrow(Exception.class);
+		when(targetTypesService.updateTargetTypeDetails(any(), any())).thenThrow(Exception.class);
 		mockMvc.perform(post("/target-types/update")
 				.content(targetTypeDetailsContent)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -355,7 +360,7 @@ public class TargetTypesControllerTest {
 
 	private AttributeValuesRequest getAttributeValuesRequest() {
 		AttributeValuesRequest attributeValuesRequest = new AttributeValuesRequest();
-		attributeValuesRequest.setEndpoint("endpoint123");
+		attributeValuesRequest.setIndex("endpoint123");
 		attributeValuesRequest.setPayload("payload123");
 		return attributeValuesRequest;
 	}

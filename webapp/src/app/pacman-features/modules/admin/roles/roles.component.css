@@ -69,7 +69,7 @@
     color: rgb(85, 85, 85);
 }
 
-.issue-listing-wrapper /deep/ .data-table-wrap {
+/* .issue-listing-wrapper /deep/ .data-table-wrap {
     min-height: calc( 100vh - 24em);
 }
 
@@ -95,7 +95,7 @@
 
 .filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
     max-height: calc(100vh - 31em)
-}
+} */
 
 .details-bar[_ngcontent-c14] {
     width: 50em !important;
@@ -104,14 +104,14 @@
 :host ::ng-deep app-data-table .drop-options {
     width: 8.25em !important;
 }
-
+/* 
 .roles-wrapper /deep/ .data-table-wrap .table-cells:nth-child(1) {
     width: 20%;
 }
 
 .roles-wrapper /deep/ .data-table-wrap .table-cells:nth-child(2) {
     width: 14%;
-}
+} */
 
 .roles-wrapper /deep/ .data-table-wrap .table-cells:nth-child(3) {
     width: 100px;

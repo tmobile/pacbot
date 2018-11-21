@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -18,7 +18,7 @@
   Purpose:
   Author :kkumar
   Modified Date: Oct 19, 2017
-
+  
 **/
 package com.tmobile.pacman.api.commons.utils;
 
@@ -33,7 +33,7 @@ import com.tmobile.pacman.api.commons.Constants;
 public class ResponseUtils {
 
 	/**
-	 *
+	 * 
 	 * @param obj
 	 * @return
 	 */
@@ -45,7 +45,7 @@ public class ResponseUtils {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param obj
 	 * @return
 	 */
@@ -56,7 +56,7 @@ public class ResponseUtils {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param obj
 	 * @return
 	 */
@@ -66,5 +66,23 @@ public class ResponseUtils {
 		errorDetails.put(Constants.DATA_KEY, mockData);
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body((Object) errorDetails);
 	}
+	
+	
+	
+	/**
+     * 
+     * @param obj
+     * @return
+     */
+    public static ResponseEntity<Object> buildFailureResponse(Exception exception,Object errorInfo,HttpStatus status ) {
+        Map<String, Object> errorDetails = new HashMap();
+        errorDetails.put(Constants.STATUS, Constants.STATUS_FAILURE);
+        errorDetails.put(Constants.ERROR_MESSAGE, exception.getMessage());
+        if(errorInfo!=null)
+            errorDetails.put(Constants.ERROR_DETAILS, errorInfo);
+      
+        return ResponseEntity.status(status==null?HttpStatus.EXPECTATION_FAILED:status).body((Object) errorDetails);
+    }
+    
 
 }
