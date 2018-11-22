@@ -112,6 +112,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
 
         String ttypesTemp;
         String ttypes = null;
+        try{
         AssetApi assetApi = assetServiceClient.getTargetTypeList(assetGroup, domain);
         AssetApiData data = assetApi.getData();
         AssetApiName[] targetTypes = data.getTargettypes();
@@ -122,6 +123,10 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             } else {
                 ttypes = new StringBuilder(ttypes).append(",").append(ttypesTemp).toString();
             }
+        }
+        }catch(Exception e){
+        	LOGGER.error("error proccessing fiegnclien assetServiceClient",e.getMessage());
+        	return "";
         }
         return ttypes;
     }
@@ -201,7 +206,8 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             JsonObject aggsJson = (JsonObject) parser.parse(paramObj.get(AGGS).toString());
             return aggsJson.getAsJsonObject("severity").getAsJsonArray(BUCKETS);
         } catch (Exception e) {
-            throw new DataException(e);
+        	LOGGER.error("Error while processing the getTotalViolations",e.getMessage());
+        	return new JsonArray();
         }
     }
 
