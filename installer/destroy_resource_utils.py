@@ -40,6 +40,9 @@ class DestroyResource(object):
         repository = jsonRead._get_api_repo()
         cls.__delete_ecr_repository(aws_access_key, aws_secret_key, region, repository)
 
+        repository = jsonRead._get_ui_repo()
+        cls.__delete_ecr_repository(aws_access_key, aws_secret_key, region, repository)
+
     @classmethod
     def confirm_oss_ui_deletion(cls, aws_access_key, aws_secret_key, region):
         '''
