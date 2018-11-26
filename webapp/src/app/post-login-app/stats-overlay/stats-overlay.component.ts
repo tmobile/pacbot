@@ -52,7 +52,6 @@ export class StatsOverlayComponent implements OnInit, OnDestroy, AfterViewInit {
   public applicationValue: any;
   public errorMessage: any;
   public dataComing = false;
-  datacoming;
   public showLoader = true;
   public tableHeaderData: any;
   private dataSubscription: Subscription;
