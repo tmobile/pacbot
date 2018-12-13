@@ -212,9 +212,9 @@ public class DownloadController implements Constants {
 
     }
     
-    private Map<String,Object> getTokenHeader(HttpServletRequest servletRequest){
+    private Map<String,String> getTokenHeader(HttpServletRequest servletRequest){
         String token = PacHttpUtils.getBase64AuthorizationHeader(servletRequest);
-        Map<String,Object> authToken = new HashMap<>();
+        Map<String,String> authToken = new HashMap<>();
         authToken.put(AUTHORIZATION, "Bearer "+token);
         return authToken;
     }
