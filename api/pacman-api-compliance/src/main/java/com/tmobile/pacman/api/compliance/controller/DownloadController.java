@@ -176,7 +176,7 @@ public class DownloadController implements Constants {
                     downloadFileService.downloadData(servletResponse, responseArray, fileFormat, serviceName);
                     return new ResponseEntity<>(HttpStatus.OK);
                     }else{
-                    	 return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                    	return new ResponseEntity<>(HttpStatus.FORBIDDEN);
                     }
                 } else {
                     return ResponseUtils.buildFailureResponse(new Exception(
