@@ -41,6 +41,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.couchbase.client.deps.io.netty.util.internal.StringUtil;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -170,10 +171,13 @@ public class DownloadController implements Constants {
                 if (!StringUtils.isEmpty(serviceEndpoint) && !StringUtils.isEmpty(serviceDnsName) && !StringUtils.isEmpty(jsonString)) {
 
                     String serviceResponse = PacHttpUtils.doHttpsPost(serviceDnsName+serviceEndpoint, jsonString, getTokenHeader(servletRequest));
-
+                    if(!StringUtil.isNullOrEmpty(serviceResponse)){
                     responseArray = getServiceDetails(serviceResponse);
                     downloadFileService.downloadData(servletResponse, responseArray, fileFormat, serviceName);
                     return new ResponseEntity<>(HttpStatus.OK);
+                    }else{
+                    	return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+                    }
                 } else {
                     return ResponseUtils.buildFailureResponse(new Exception(
                             "Please configure the serviceEndpoint or urlParameters"));
@@ -212,9 +216,9 @@ public class DownloadController implements Constants {
 
     }
     
-    private Map<String,Object> getTokenHeader(HttpServletRequest servletRequest){
+    private Map<String,String> getTokenHeader(HttpServletRequest servletRequest){
         String token = PacHttpUtils.getBase64AuthorizationHeader(servletRequest);
-        Map<String,Object> authToken = new HashMap<>();
+        Map<String,String> authToken = new HashMap<>();
         authToken.put(AUTHORIZATION, "Bearer "+token);
         return authToken;
     }
