@@ -20,7 +20,7 @@ export const CONFIGURATIONS = {
     required: {
         APP_NAME: 'PacBot',
         domains: {
-            PROD_BASE_URL: '', // Expected values: domain where the API is deployed, ex: http://beta.pacbot.com/api
+            PROD_BASE_URL: 'http://internal-pacbot-1277915882.us-east-1.elb.amazonaws.com/api', // Expected values: domain where the API is deployed, ex: http://beta.pacbot.com/api
             STG_BASE_URL: '', // Expected values: domain where the API is deployed, ex: http://stgbeta.pacbot.com/api
             DEV_BASE_URL: '', // Expected values: domain where the API is deployed, ex: http://devbeta.pacbot.com/api
             CLOUD_BASE_URL: '', // Expected values: domain where the API is deployed
@@ -42,10 +42,10 @@ export const CONFIGURATIONS = {
             }
         },
         pacmanIssue: {
-            CREATE_JIRA_TICKET_FOR_PACMAN_ISSUE: true, // Expected values: true || false || ''
+            CREATE_JIRA_TICKET_FOR_PACMAN_ISSUE: false, // Expected values: true || false || ''
             emailPacManIssue: {
                 ISSUE_MAIL_TEMPLATE_URL: '',
-                ISSUE_EMAIL_FROM_ID: 'FromEmail@AddYourDomain.com',
+                ISSUE_EMAIL_FROM_ID: '',
             }
         },
         assetDetails: {
