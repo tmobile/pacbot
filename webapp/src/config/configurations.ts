@@ -42,10 +42,10 @@ export const CONFIGURATIONS = {
             }
         },
         pacmanIssue: {
-            CREATE_JIRA_TICKET_FOR_PACMAN_ISSUE: true, // Expected values: true || false || ''
+            CREATE_JIRA_TICKET_FOR_PACMAN_ISSUE: false, // Expected values: true || false || ''
             emailPacManIssue: {
                 ISSUE_MAIL_TEMPLATE_URL: '',
-                ISSUE_EMAIL_FROM_ID: 'FromEmail@AddYourDomain.com',
+                ISSUE_EMAIL_FROM_ID: '',
             }
         },
         assetDetails: {
