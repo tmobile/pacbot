@@ -153,12 +153,12 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
                 route: 'domain-overlay',
                 name: 'Compliance Summary',
                 overlay: true
-            },
-            {
-                route: 'vulnerability-report',
-                name: 'Vulnerability Report',
-                overlay: true
             }
+            // {
+            //     route: 'vulnerability-report',
+            //     name: 'Vulnerability Report',
+            //     overlay: true
+            // }
         ];
 
         let complianceLinksUpdated = JSON.parse(JSON.stringify(complianceLinks));
