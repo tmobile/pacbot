@@ -37,13 +37,14 @@ import org.apache.http.ParseException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.http.HttpHeaders;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.google.common.base.Strings;
 
@@ -57,6 +58,10 @@ public class PacHttpUtils {
 	 * 
 	 */
 	private static final String CONTENT_TYPE = "Content-Type";
+	
+	 /** The Constant APPLICATION_JSON. */
+    private static final String APPLICATION_JSON = "application/json";
+    
 	static final Log LOGGER = LogFactory.getLog(PacHttpUtils.class);
 
 	/**
@@ -100,8 +105,7 @@ public class PacHttpUtils {
      * @throws Exception
      */
     public static String doHttpsPost(final String serviceEndpoint, final String urlParameters) throws Exception {
-        StringBuilder response = getResponse(serviceEndpoint, urlParameters, null);
-        return response.toString();
+        return getResponse(serviceEndpoint, urlParameters, null);
     }
 
 	/**
@@ -192,9 +196,8 @@ public class PacHttpUtils {
      * @return
      * @throws Exception
      */
-    public static String doHttpsPost(final String serviceEndpoint, final String urlParameters,Map<String, Object> headers) throws Exception {
-        StringBuilder response = getResponse(serviceEndpoint, urlParameters, headers);
-        return response.toString();
+    public static String doHttpsPost(final String serviceEndpoint, final String urlParameters,Map<String, String> headers) throws Exception {
+        return getResponse(serviceEndpoint, urlParameters, headers);
     }
 	
 	public static String getBase64AuthorizationHeader(final HttpServletRequest request){
@@ -209,62 +212,50 @@ public class PacHttpUtils {
         return base64AuthorizationHeader;
     }
 	
-	private static StringBuilder getResponse(final String serviceEndpoint, final String urlParameters,Map<String, Object> headers) throws Exception {
-        byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
-        int postDataLength = postData.length;
-
-        if (Strings.isNullOrEmpty(serviceEndpoint)) {
-            throw new Exception("service endpoint cannot be blank");
+	
+    /**
+     * Do http post.
+     *
+     * @param url the url
+     * @param requestBody the request body
+     * @param headers the headers
+     * @return the string
+     */
+    public static String getResponse(final String url, final String requestBody, final Map<String, String> headers) {
+        CloseableHttpClient httpclient = null;
+        if(Strings.isNullOrEmpty(url)){
+            return "";
         }
         
-        URL url = getUrl(serviceEndpoint);
-        HttpsURLConnection.setDefaultSSLSocketFactory(CommonUtils.createNoSSLContext().getSocketFactory());
-        HttpsURLConnection con = null;
         try {
-            con = (HttpsURLConnection) url.openConnection();
-            con.setDoOutput(true);
-            con.setInstanceFollowRedirects(false);
-            con.setRequestMethod("POST");
-            con.setRequestProperty(CONTENT_TYPE, "application/json");
-            con.setRequestProperty("cache-control", "no-cache");
-            con.setRequestProperty("Content-Length", Integer.toString(postDataLength));
-            if (headers != null && !headers.isEmpty()) {
-                for (Map.Entry<String, Object> entry : headers.entrySet()) {
-                    con.setRequestProperty(entry.getKey(), entry.getValue().toString());
-                }
+            if (url.contains("https")) {
+
+                SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(CommonUtils.createNoSSLContext());
+                httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+            } else {
+                httpclient = HttpClients.custom().build();
             }
-            DataOutputStream wr = new DataOutputStream(con.getOutputStream());
-            wr.write(postData);
-        } catch (IOException e) {
-            LOGGER.error(e.getMessage(),e);
-            throw e;
-        }
-        StringBuilder response = new StringBuilder();
-        if (con != null) {
-            try {
-                BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-                String input;
-                while ((input = br.readLine()) != null) {
-                    response.append(input);
-                }
-                br.close();
-                con.disconnect();
-            } catch (IOException e) {
-                LOGGER.error(e.getMessage());
-                throw e;
+
+            HttpPost httppost = new HttpPost(url);
+            for (Map.Entry<String, String> entry : headers.entrySet()) {
+                httppost.addHeader(entry.getKey(), entry.getValue());
             }
+            httppost.setHeader(CONTENT_TYPE, APPLICATION_JSON);
+            StringEntity jsonEntity = new StringEntity(requestBody);
+            httppost.setEntity(jsonEntity);
+            HttpResponse httpresponse = httpclient.execute(httppost);
+           if(httpresponse.getStatusLine().getStatusCode()!=HttpStatus.SC_OK){
+               throw new IOException("non 200 code from rest call--->" + url);
+           }
+            String responseStr = EntityUtils.toString(httpresponse.getEntity());
+            LOGGER.debug(url + " service with input" + requestBody +" returned " + responseStr);
+            return responseStr;
+        } catch (org.apache.http.ParseException parseException) {
+            LOGGER.error("ParseException : " + parseException.getMessage());
+        } catch (IOException ioException) {
+            LOGGER.error("IOException : " + ioException.getMessage());
         }
-        return response;
+        return null;
     }
 	
-	private static URL getUrl(String serviceEndpoint) throws MalformedURLException{
-        URL url = null;
-        try {
-            url = new URL(serviceEndpoint);
-        } catch (MalformedURLException e) {
-            LOGGER.error(e.getMessage());
-            throw e;
-        }
-        return url;
-    }
 }
