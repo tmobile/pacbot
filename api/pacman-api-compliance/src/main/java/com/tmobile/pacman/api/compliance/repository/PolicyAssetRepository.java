@@ -18,6 +18,8 @@ package com.tmobile.pacman.api.compliance.repository;
 import java.util.List;
 import java.util.Map;
 
+import com.tmobile.pacman.api.commons.exception.DataException;
+
 /**
  * The Interface PolicyAssetRepository.
  */
@@ -40,7 +42,7 @@ public interface PolicyAssetRepository {
      * @return the list
      */
     public List<Map<String, Object>> fetchOpenIssues(String ag,
-            String resourceType, String resourceId, boolean includeExempted);
+            String resourceType, String resourceId, boolean includeExempted) throws DataException;;
 
     /**
      * Fetch doc id.
