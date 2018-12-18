@@ -61,12 +61,17 @@ public class EsIndexInitializerServiceImpl implements EsIndexInitializerService
 		allTasks.forEach(task -> {
 			LOG.info("triggering executeExceptionIndexInitializer");
 			String exceptionIndex = esUrl.concat("/").concat(task.getIndex());
-			String bulkIndex = esUrl.concat("/bulk");
+			String bulkIndex = esUrl.concat("/_bulk");
 			try {
 				int status = PacHttpUtils.getHttpHead(exceptionIndex);
 				if (status == 404) {
 					LOG.info("index cannot be found, intializing and creating exception index");
 					PacHttpUtils.doHttpPut(exceptionIndex, task.getMappings());
+					try {
+			            Thread.sleep(10000);
+			        } catch (InterruptedException e) {
+			        	LOG.info("exception in Thread.sleep for executeEsIndexInitializer");
+			        }
 					if(StringUtils.isNotBlank(task.getData())) {
 						PacHttpUtils.doHttpPut(bulkIndex, task.getData());	
 					}
