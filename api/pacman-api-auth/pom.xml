@@ -145,20 +145,7 @@
 			<artifactId>unboundid-ldapsdk</artifactId>
 		</dependency>
 	</dependencies>
-	<repositories>
-		<repository>
-			<id>sgc-maven-snapshot-local</id>
-			<name>Maven Repository Switchboard</name>
-			<layout>default</layout>
-			<url>https://artifactory.corporate.t-mobile.com/artifactory/sgc-maven-snapshot-local/</url>
-		</repository>
-		<repository>
-			<id>MavenCentral</id>
-			<name>Maven Repository Switchboard</name>
-			<layout>default</layout>
-			<url>https://artifactory.corporate.t-mobile.com/artifactory/MavenCentral/</url>
-		</repository>
-	</repositories>
+
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
