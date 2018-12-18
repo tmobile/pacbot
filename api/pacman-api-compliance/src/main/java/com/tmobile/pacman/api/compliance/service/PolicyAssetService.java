@@ -17,6 +17,7 @@ package com.tmobile.pacman.api.compliance.service;
 
 import java.util.List;
 
+import com.tmobile.pacman.api.commons.exception.ServiceException;
 import com.tmobile.pacman.api.compliance.domain.PolicyScanInfo;
 import com.tmobile.pacman.api.compliance.domain.PolicyVialationSummary;
 /**
@@ -33,7 +34,7 @@ public interface PolicyAssetService {
      * @return the policy execution details
      */
     public List<PolicyScanInfo> getPolicyExecutionDetails(String ag,
-            String resourceType, String resourceId);
+            String resourceType, String resourceId) throws ServiceException;
 
     /**
      * Gets the policy violation summary.
@@ -44,6 +45,6 @@ public interface PolicyAssetService {
      * @return the policy violation summary
      */
     public PolicyVialationSummary getPolicyViolationSummary(String ag,
-            String resourceType, String resourceId);
+            String resourceType, String resourceId) throws ServiceException;
 
 }

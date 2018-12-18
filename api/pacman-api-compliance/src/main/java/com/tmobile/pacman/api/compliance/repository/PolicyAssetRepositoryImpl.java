@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.tmobile.pacman.api.commons.Constants;
+import com.tmobile.pacman.api.commons.exception.DataException;
 import com.tmobile.pacman.api.commons.repo.ElasticSearchRepository;
 import com.tmobile.pacman.api.commons.repo.PacmanRdsRepository;
 
@@ -76,7 +77,7 @@ public class PolicyAssetRepositoryImpl implements PolicyAssetRepository,
      */
     @Override
     public List<Map<String, Object>> fetchOpenIssues(String ag,
-            String resourceType, String resourceId, boolean includeExempted) {
+            String resourceType, String resourceId, boolean includeExempted) throws DataException {
         Map<String, Object> mustFilter = new HashMap<>();
         mustFilter.put("type", "issue");
         mustFilter.put("targetType.keyword", resourceType);
@@ -100,7 +101,7 @@ public class PolicyAssetRepositoryImpl implements PolicyAssetRepository,
         } catch (Exception e) {
             LOGGER.error("Error fetching issue from ES for ", resourceId);
             LOGGER.error("Error fetching issue from ES", e);
-            return new ArrayList<>();
+            throw new DataException("Error fetching issue from ES for "+resourceId,e);
         }
     }
 
