@@ -257,25 +257,30 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
      *
      * @return the issue distribution
      */
-    private Map<String, Long> getIssueDistribution() {
-        Long totalViolations;
-        Map<String, Long> violationsMap = new HashMap<>();
-        JsonParser parser = new JsonParser();
-        String distributionStr = complianceClient.getDistributionAsJson(AWS, null);
-        if (!Strings.isNullOrEmpty(distributionStr)) {
-            JsonObject responseDetailsjson = parser.parse(distributionStr).getAsJsonObject();
-            JsonObject dataJson = responseDetailsjson.get("data").getAsJsonObject();
-            JsonObject distributionJson = dataJson.get("distribution").getAsJsonObject();
-            totalViolations = distributionJson.get("total_issues").getAsLong();
-            JsonObject severityJson = distributionJson.get("distribution_by_severity").getAsJsonObject();
-            violationsMap.put("critical", severityJson.get("critical").getAsLong());
-            violationsMap.put("high", severityJson.get("high").getAsLong());
-            violationsMap.put("low", severityJson.get("low").getAsLong());
-            violationsMap.put("medium", severityJson.get("medium").getAsLong());
-            violationsMap.put("totalViolations", totalViolations);
-        }
-        return violationsMap;
-    }
+	private Map<String, Long> getIssueDistribution() {
+		Long totalViolations;
+		Map<String, Long> violationsMap = new HashMap<>();
+		JsonParser parser = new JsonParser();
+		try {
+			String distributionStr = complianceClient.getDistributionAsJson(AWS, null);
+			if (!Strings.isNullOrEmpty(distributionStr)) {
+				JsonObject responseDetailsjson = parser.parse(distributionStr).getAsJsonObject();
+				JsonObject dataJson = responseDetailsjson.get("data").getAsJsonObject();
+				JsonObject distributionJson = dataJson.get("distribution").getAsJsonObject();
+				totalViolations = distributionJson.get("total_issues").getAsLong();
+				JsonObject severityJson = distributionJson.get("distribution_by_severity").getAsJsonObject();
+				violationsMap.put("critical", severityJson.get("critical").getAsLong());
+				violationsMap.put("high", severityJson.get("high").getAsLong());
+				violationsMap.put("low", severityJson.get("low").getAsLong());
+				violationsMap.put("medium", severityJson.get("medium").getAsLong());
+				violationsMap.put("totalViolations", totalViolations);
+			}
+		} catch (Exception e) {
+			LOGGER.error("error processing compliance fiegnclient", e);
+			return violationsMap;
+		}
+		return violationsMap;
+	}
 
     /**
      * Gets the total event processed.
@@ -295,6 +300,7 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         if(null==heimdallElasticSearchRepository) {
         	return eventsProcessed;
         }
+        try{
         JsonArray eventsBuckets = heimdallElasticSearchRepository.getEventsProcessed();
 
         // Get Total Events Processed
@@ -305,6 +311,10 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
                 eventsProcessed = eventsBuckets.get(i).getAsJsonObject().get("doc_count").getAsLong();
             }
         }
+	    }catch(Exception e){
+	    	LOGGER.error("error processing getTotalEventProcessed", e.getMessage());
+	    	return eventsProcessed;
+	    }
         return eventsProcessed;
     }
 
@@ -317,6 +327,7 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         Map<String,Long> totalAssetCountMap = new HashMap<>();
         totalAssetCountMap.put(TOTAL, 0l);
         JsonParser parser = new JsonParser();
+        try{
         Map<String, Object> assetCounts = assetClient.getTypeCounts(AWS, null, null);
         // Get Total Asset Count
         assetCounts.entrySet().stream().forEach(entry->{
@@ -333,9 +344,13 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         }
 
         });
-
-        return totalAssetCountMap.get(TOTAL);
-    }
+	    }catch(Exception e){
+	    	LOGGER.error("error processing fiegn assetClienr", e.getMessage());
+	    	return totalAssetCountMap.get(TOTAL);
+	    }
+	
+	        return totalAssetCountMap.get(TOTAL);
+	    }
 
     /*
      * (non-Javadoc)
