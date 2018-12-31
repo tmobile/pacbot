@@ -123,7 +123,7 @@ public class RuleExecutor {
             }
             logger.debug("rule Param String " + ruleParams);
             logger.debug("target Type :" + ruleParam.get(PacmanSdkConstants.TARGET_TYPE));
-            logger.debug("rule Key : " + ruleParam.get("ruleKey"));
+            logger.debug("rule Key : " + ruleParam.get(PacmanSdkConstants.RULE_KEY));
         } else {
             logger.debug(
                     "No arguments available for rule execution, unable to identify the rule due to missing arguments");
