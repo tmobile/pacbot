@@ -97,7 +97,6 @@ public class TargetTypesServiceImpl implements TargetTypesService {
 	public List<String> getAllTargetTypesCategories() {
 		return config.getTargetTypes().getCategories();
 	}
-	
 
 	@Override
 	public List<TargetTypesDetails> getAllTargetTypes(List<AssetGroupTargetTypes> selectedTargetTypes) {
@@ -145,6 +144,7 @@ public class TargetTypesServiceImpl implements TargetTypesService {
 			targetTypeAttribute.setTargetName(targetType.getTargetName().trim());
 			targetTypeAttribute.setAllAttributesName(getFieldNames(dataSourceName + "_" + targetName, targetName));
 			targetTypeAttribute.setIncludeAll(false);
+			targetTypeAttribute.setIndex("/"+dataSourceName + "_" + targetName);
 			attributes.add(targetTypeAttribute);
 		}
 		return attributes;
@@ -153,7 +153,7 @@ public class TargetTypesServiceImpl implements TargetTypesService {
 	@Override
 	public Map<String, Object> getAttributeValues(AttributeValuesRequest attributeValuesRequest) {
 		try {
-			Response response = invokeAPI("GET", attributeValuesRequest.getEndpoint(), attributeValuesRequest.getPayload());
+			Response response = invokeAPI("GET", attributeValuesRequest.getIndex(), attributeValuesRequest.getPayload());
 			if(response != null) {
 				String attributeValues = EntityUtils.toString(response.getEntity());
 				return mapper.readValue(attributeValues, new TypeReference<Map<String, Object>>(){});
@@ -167,27 +167,27 @@ public class TargetTypesServiceImpl implements TargetTypesService {
 
 	@Override
 	public TargetTypes getTargetTypesByName(String targetTypeName) throws PacManException {
-		boolean isTargetTypeExits = targetTypesRepository.exists(targetTypeName);
+		boolean isTargetTypeExits = targetTypesRepository.existsById(targetTypeName);
 		if (!isTargetTypeExits) {
 			throw new PacManException(AdminConstants.TARGET_TYPE_NAME_NOT_EXITS);
 		} else {
-			return targetTypesRepository.findOne(targetTypeName);
+			return targetTypesRepository.findById(targetTypeName).get();
 		}
 	}
 	
 
 	@Override
-	public String updateTargetTypeDetails(CreateUpdateTargetTypeDetailsRequest targetTypesDetails) throws PacManException {
+	public String updateTargetTypeDetails(CreateUpdateTargetTypeDetailsRequest targetTypesDetails, final String userId) throws PacManException {
 		targetTypesDetails.setName(targetTypesDetails.getName().toLowerCase().trim().replaceAll(" ", "-"));
-		boolean isTargetTypeExits = targetTypesRepository.exists(targetTypesDetails.getName());
+		boolean isTargetTypeExits = targetTypesRepository.existsById(targetTypesDetails.getName());
 		if (isTargetTypeExits) {
 			Date currentDate = new Date();
-			TargetTypes existingTargetType = targetTypesRepository.findOne(targetTypesDetails.getName().trim());
+			TargetTypes existingTargetType = targetTypesRepository.findById(targetTypesDetails.getName().trim()).get();
 			existingTargetType.setTargetDesc(targetTypesDetails.getDesc());
 			existingTargetType.setCategory(targetTypesDetails.getCategory());
 			existingTargetType.setDataSourceName(targetTypesDetails.getDataSource());
 			existingTargetType.setTargetConfig(targetTypesDetails.getConfig());
-			existingTargetType.setUserId(123);
+			existingTargetType.setUserId(userId);
 			String endpoint = config.getElasticSearch().getDevIngestHost() + ":" + config.getElasticSearch().getDevIngestPort() + "/" + targetTypesDetails.getDataSource() + "_"+ targetTypesDetails.getName() + "/" + targetTypesDetails.getName();
 			existingTargetType.setEndpoint(endpoint);
 			existingTargetType.setModifiedDate(currentDate);
@@ -200,7 +200,7 @@ public class TargetTypesServiceImpl implements TargetTypesService {
 	}
 	
 	@Override
-	public String addTargetTypeDetails(final CreateUpdateTargetTypeDetailsRequest targetTypeDetailsRequest) throws PacManException {
+	public String addTargetTypeDetails(final CreateUpdateTargetTypeDetailsRequest targetTypeDetailsRequest, final String userId) throws PacManException {
 		try { 
 			String dataSource = targetTypeDetailsRequest.getDataSource().toLowerCase().trim();
 			String type = targetTypeDetailsRequest.getName().toLowerCase().trim().replaceAll(" ", "-");
@@ -213,7 +213,7 @@ public class TargetTypesServiceImpl implements TargetTypesService {
 		        Response aliasResponse = invokeAPI("PUT", "/"+indexName+"/_alias/"+dataSource,null);
 				if ((aliasResponse != null) && (indexResponse != null)) {
 					if ((indexResponse.getStatusLine().getStatusCode() == 200) && (aliasResponse.getStatusLine().getStatusCode() == 200)) {
-						return processTargetTypeCreation(targetTypeDetailsRequest);
+						return processTargetTypeCreation(targetTypeDetailsRequest, userId);
 					} else {
 						throw new PacManException(AdminConstants.TARGET_TYPE_CREATION_FAILURE);
 					}
@@ -229,10 +229,10 @@ public class TargetTypesServiceImpl implements TargetTypesService {
 		}
 	}
 	
-	private String processTargetTypeCreation(final CreateUpdateTargetTypeDetailsRequest targetTypeRequest) throws PacManException {
+	private String processTargetTypeCreation(final CreateUpdateTargetTypeDetailsRequest targetTypeRequest, final String userId) throws PacManException {
 		String targetName = targetTypeRequest.getName().toLowerCase().trim().replaceAll(" ", "-");
 		targetTypeRequest.setName(targetName);
-		boolean isTargetTypeExits = targetTypesRepository.exists(targetName);
+		boolean isTargetTypeExits = targetTypesRepository.existsById(targetName);
 		if (!isTargetTypeExits) {
 			Date currentDate = new Date();
 			TargetTypes newTargetType = new TargetTypes();
@@ -242,7 +242,7 @@ public class TargetTypesServiceImpl implements TargetTypesService {
 			newTargetType.setDataSourceName(targetTypeRequest.getDataSource());
 			newTargetType.setTargetConfig(targetTypeRequest.getConfig());
 			newTargetType.setStatus("");
-			newTargetType.setUserId(123);
+			newTargetType.setUserId(userId);
 			String endpoint = config.getElasticSearch().getDevIngestHost() + ":" + config.getElasticSearch().getDevIngestPort() + "/" + targetTypeRequest.getDataSource() + "_"+ targetName + "/" + targetName;
 			newTargetType.setEndpoint(endpoint);
 			newTargetType.setCreatedDate(currentDate);
@@ -303,9 +303,6 @@ public class TargetTypesServiceImpl implements TargetTypesService {
         try {
             if (payLoad != null) {
                 entity = new NStringEntity(payLoad, ContentType.APPLICATION_JSON);
-            }
-            if(!endpoint.startsWith("/")) {
-            	endpoint = "/"+endpoint;
             }
             return getRestClient().performRequest(method, endpoint, Collections.<String, String>emptyMap(), entity);
         } catch (IOException exception) {

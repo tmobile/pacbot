@@ -1,38 +1,34 @@
 /*
  *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * Licensed under the Apache License, Version 2.0 (the 'License'); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * or in the "license" file accompanying this file. This file is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ *
+ * or in the 'license' file accompanying this file. This file is distributed on
+ * an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from "@angular/core";
-import { environment } from "./../../../../../environments/environment";
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { environment } from './../../../../../environments/environment';
 
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs/Subscription";
-import * as _ from "lodash";
-import { UtilsService } from "../../../../shared/services/utils.service";
-import { LoggerService } from "../../../../shared/services/logger.service";
-import { ErrorHandlingService } from "../../../../shared/services/error-handling.service";
-import { NavigationStart } from "@angular/router";
-import { Event, NavigationEnd } from "@angular/router";
-import "rxjs/add/operator/filter";
-import "rxjs/add/operator/pairwise";
-import { RoutesRecognized } from "@angular/router";
-import { RefactorFieldsService } from "./../../../../shared/services/refactor-fields.service";
-import { WorkflowService } from "../../../../core/services/workflow.service";
-import { RouterUtilityService } from "../../../../shared/services/router-utility.service";
-import { AdminService } from "../../../services/all-admin.service";
-import { NgForm } from "@angular/forms";
-import { SelectComponent } from "ng2-select";
-import { UploadFileService } from "../../../services/upload-file-service";
+import { ActivatedRoute, Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+import { UtilsService } from '../../../../shared/services/utils.service';
+import { LoggerService } from '../../../../shared/services/logger.service';
+import { ErrorHandlingService } from '../../../../shared/services/error-handling.service';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/pairwise';
+import { RefactorFieldsService } from './../../../../shared/services/refactor-fields.service';
+import { WorkflowService } from '../../../../core/services/workflow.service';
+import { RouterUtilityService } from '../../../../shared/services/router-utility.service';
+import { AdminService } from '../../../services/all-admin.service';
+import { NgForm } from '@angular/forms';
+import { SelectComponent } from 'ng2-select';
+import { UploadFileService } from '../../../services/upload-file-service';
 
 @Component({
   selector: 'app-admin-create-rule',
@@ -45,72 +41,74 @@ import { UploadFileService } from "../../../services/upload-file-service";
     AdminService
   ]
 })
-export class CreateRuleComponent implements OnInit {
+export class CreateRuleComponent implements OnInit, OnDestroy {
   @ViewChild('targetType') targetTypeSelectComponent: SelectComponent;
   @ViewChild('ruleFrequencyMonthDay') ruleFrequencyMonthDayComponent: SelectComponent;
-  ruleLoader: boolean = false;
-  pageTitle: String = "Create Rule";
-  isRuleIdValid: any = -1;
-  allPolicies: any = [];
-  breadcrumbArray: any = ["Admin", "Rules"];
-  breadcrumbLinks: any = ["policies", "rules"];
-  breadcrumbPresent: any;
-  outerArr: any = [];
-  dataLoaded: boolean = false;
-  errorMessage: any;
-  showingArr: any = ["policyName", "policyId", "policyDesc"];
-  allColumns: any = [];
-  totalRows: number = 0;
-  currentBucket: any = [];
-  bucketNumber: number = 0;
-  firstPaginator: number = 1;
-  lastPaginator: number;
-  currentPointer: number = 0;
-  seekdata: boolean = false;
-  showLoader: boolean = true;
-  allMonthDays: any = [];
-  allEnvironments: any = [];
-  allRuleParamKeys: any = [];
-  allEnvParamKeys: any = [];
-  allRuleParams: any = [];
-  hideContent: boolean = false;
-  isRuleCreationFailed: boolean = false;
-  isRuleCreationSuccess: boolean = false;
-  rulePolicyLoader: boolean = false;
-  rulePolicyLoaderFailure: boolean = false;
-  ruleDisplayName: String = '';
+  ruleLoader = false;
+  pageTitle = 'Create Rule';
+  isRuleIdValid = -1;
+  isCreate;
+  allPolicies = [];
+  breadcrumbArray = ['Admin', 'Rules'];
+  breadcrumbLinks = ['policies', 'rules'];
+  breadcrumbPresent;
+  outerArr = [];
+  dataLoaded = false;
+  errorMessage;
+  showingArr = ['policyName', 'policyId', 'policyDesc'];
+  allColumns = [];
+  totalRows = 0;
+  currentBucket = [];
+  bucketNumber= 0;
+  firstPaginator= 1;
+  lastPaginator;
+  currentPointer= 0;
+  seekdata = false;
+  showLoader = true;
+  allMonthDays = [];
+  ruleIds = [];
+  allEnvironments = [];
+  allRuleParamKeys = [];
+  allEnvParamKeys = [];
+  allRuleParams = [];
+  hideContent = false;
+  isRuleCreationFailed = false;
+  isRuleCreationSuccess = false;
+  rulePolicyLoader = false;
+  rulePolicyLoaderFailure = false;
+  ruleDisplayName = '';
 
-  paginatorSize: number = 25;
-  isLastPage: boolean;
-  isFirstPage: boolean;
+  paginatorSize = 25;
+  isLastPage;
+  isFirstPage;
   totalPages: number;
-  pageNumber: number = 0;
+  pageNumber= 0;
 
-  searchTxt: String = "";
-  dataTableData: any = [];
-  initVals: any = [];
-  tableDataLoaded: boolean = false;
-  filters: any = [];
-  searchCriteria: any;
-  filterText: any = {};
-  errorValue: number = 0;
-  showGenericMessage: boolean = false;
-  dataTableDesc: String = "";
-  urlID: String = "";
+  searchTxt = '';
+  dataTableData = [];
+  initVals = [];
+  tableDataLoaded = false;
+  filters = [];
+  searchCriteria;
+  filterText = {};
+  errorValue= 0;
+  showGenericMessage = false;
+  dataTableDesc = '';
+  urlID = '';
 
-  FullQueryParams: any;
-  queryParamsWithoutFilter: any;
-  urlToRedirect: any = "";
-  mandatory: any;
-  activePolicy: any = [];
-  parametersInput: any = { ruleKey: '', ruleValue: '', envKey: '', envValue: '' };
-  alexaKeywords: any = [];
-  assetGroupNames: any = [];
-  datasourceDetails: any = [];
-  targetTypesNames: any = [];
-  allPolicyIds: any = [];
-  allFrequencies: any = ["Daily", "Hourly", "Minutes", "Monthly", "Weekly", "Yearly"];
-  allMonths: any = [
+  FullQueryParams;
+  queryParamsWithoutFilter;
+  urlToRedirect = '';
+  mandatory;
+  activePolicy = [];
+  parametersInput = { ruleKey: '', ruleValue: '', envKey: '', envValue: '' };
+  alexaKeywords = [];
+  assetGroupNames = [];
+  datasourceDetails = [];
+  targetTypesNames = [];
+  allPolicyIds = [];
+  allFrequencies = ['Daily', 'Hourly', 'Minutes', 'Monthly', 'Weekly', 'Yearly'];
+  allMonths = [
     { text: 'January', id: 0 },
     { text: 'February', id: 1 },
     { text: 'March', id: 2 },
@@ -124,21 +122,22 @@ export class CreateRuleComponent implements OnInit {
     { text: 'November', id: 10 },
     { text: 'December', id: 11 }
   ];
-  isAlexaKeywordValid: any = -1;
-  ruleJarFile: any;
+  isAlexaKeywordValid = -1;
+  ruleJarFile;
   currentFileUpload: File;
   selectedFiles: FileList;
 
-  ruleType: any = "Classic";
-  selectedFrequency: any = "";
-  ruleJarFileName: any = "";
-  selectedPolicyId: any = "";
-  selectedRuleName: any = "";
-  selectedTargetType: any = "";
-  isAutofixEnabled: boolean = false;
+  ruleType = 'Classic';
+  selectedFrequency = '';
+  ruleJarFileName = '';
+  selectedPolicyId = '';
+  contentHidden = true;
+  selectedRuleName = '';
+  selectedTargetType = '';
+  isAutofixEnabled = false;
 
-  public labels: any;
-  private previousUrl: any = "";
+  public labels;
+  private previousUrl = '';
   private pageLevel = 0;
   public backButtonRequired;
   private routeSubscription: Subscription;
@@ -153,7 +152,6 @@ export class CreateRuleComponent implements OnInit {
     private logger: LoggerService,
     private errorHandling: ErrorHandlingService,
     private uploadService: UploadFileService,
-    private ref: ChangeDetectorRef,
     private refactorFieldsService: RefactorFieldsService,
     private workflowService: WorkflowService,
     private routerUtilityService: RouterUtilityService,
@@ -166,16 +164,16 @@ export class CreateRuleComponent implements OnInit {
 
   ngOnInit() {
     this.urlToRedirect = this.router.routerState.snapshot.url;
-    this.breadcrumbPresent = "Create Rule";
+    this.breadcrumbPresent = 'Create Rule';
     this.backButtonRequired = this.workflowService.checkIfFlowExistsCurrently(
       this.pageLevel
     );
   }
 
   dataMarshalling(dataToMarshall) {
-    let fullPolicies = [];
-    for (var index = 0; index < dataToMarshall.length; index++) {
-      let policyItem = {};
+    const fullPolicies = [];
+    for (let index = 0; index < dataToMarshall.length; index++) {
+      const policyItem = {};
       policyItem['createdDate'] = dataToMarshall[index][0];
       policyItem['modifiedDate'] = dataToMarshall[index][1];
       policyItem['resolution'] = dataToMarshall[index][2];
@@ -195,11 +193,11 @@ export class CreateRuleComponent implements OnInit {
       if (!this.isLastPage) {
         this.pageNumber++;
         this.showLoader = true;
-        //this.getPolicyDetails();
+        // this.getPolicyDetails();
       }
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
@@ -208,12 +206,12 @@ export class CreateRuleComponent implements OnInit {
       if (!this.isFirstPage) {
         this.pageNumber--;
         this.showLoader = true;
-        //this.getPolicyDetails();
+        // this.getPolicyDetails();
       }
 
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
@@ -221,8 +219,8 @@ export class CreateRuleComponent implements OnInit {
     this.rulePolicyLoader = true;
     this.contentHidden = true;
     this.rulePolicyLoaderFailure = false;
-    var url = environment.allAlexaKeywords.url;
-    var method = environment.allAlexaKeywords.method;
+    const url = environment.allAlexaKeywords.url;
+    const method = environment.allAlexaKeywords.method;
     this.adminService.executeHttpAction(url, method, {}, {}).subscribe(reponse => {
       this.alexaKeywords = reponse[0];
       this.getDatasourceDetails();
@@ -232,7 +230,7 @@ export class CreateRuleComponent implements OnInit {
         this.rulePolicyLoader = false;
         this.contentHidden = true;
         this.rulePolicyLoaderFailure = true;
-        this.errorMessage = "apiResponseError";
+        this.errorMessage = 'apiResponseError';
         this.showLoader = false;
       });
   }
@@ -240,13 +238,13 @@ export class CreateRuleComponent implements OnInit {
   getDatasourceDetails() {
     this.rulePolicyLoader = true;
     this.contentHidden = true;
-    this.rulePolicyLoaderFailure = false
-    var url = environment.datasourceDetails.url;
-    var method = environment.datasourceDetails.method;
+    this.rulePolicyLoaderFailure = false;
+    const url = environment.datasourceDetails.url;
+    const method = environment.datasourceDetails.method;
     this.adminService.executeHttpAction(url, method, {}, {}).subscribe(reponse => {
-      var fullDatasourceNames = [];
-      for (var index = 0; index < reponse[0].length; index++) {
-        var datasourceDetail = reponse[0][index];
+      const fullDatasourceNames = [];
+      for (let index = 0; index < reponse[0].length; index++) {
+        const datasourceDetail = reponse[0][index];
         fullDatasourceNames.push(datasourceDetail[0]);
       }
       this.datasourceDetails = fullDatasourceNames;
@@ -255,9 +253,9 @@ export class CreateRuleComponent implements OnInit {
       error => {
         this.rulePolicyLoader = false;
         this.contentHidden = true;
-        this.rulePolicyLoaderFailure = true
+        this.rulePolicyLoaderFailure = true;
         this.datasourceDetails = [];
-        this.errorMessage = "apiResponseError";
+        this.errorMessage = 'apiResponseError';
         this.showLoader = false;
       });
   }
@@ -266,8 +264,8 @@ export class CreateRuleComponent implements OnInit {
     this.rulePolicyLoader = true;
     this.contentHidden = true;
     this.rulePolicyLoaderFailure = false;
-    var url = environment.assetGroupNames.url;
-    var method = environment.assetGroupNames.method;
+    const url = environment.assetGroupNames.url;
+    const method = environment.assetGroupNames.method;
     this.adminService.executeHttpAction(url, method, {}, {}).subscribe(reponse => {
       this.assetGroupNames = reponse[0];
       this.getAllRuleIds();
@@ -277,7 +275,7 @@ export class CreateRuleComponent implements OnInit {
         this.contentHidden = true;
         this.rulePolicyLoaderFailure = true;
         this.assetGroupNames = [];
-        this.errorMessage = "apiResponseError";
+        this.errorMessage = 'apiResponseError';
         this.showLoader = false;
       });
   }
@@ -285,14 +283,14 @@ export class CreateRuleComponent implements OnInit {
   createNewRule(form: NgForm) {
     this.hideContent = true;
     this.ruleLoader = true;
-    let newRuleModel = this.buildCreateRuleModel(form.value);
+    const newRuleModel = this.buildCreateRuleModel(form.value);
   }
 
   isRuleIdAvailable(ruleIdKeyword) {
-    if (ruleIdKeyword.trim().length == 0) {
+    if (ruleIdKeyword.trim().length === 0) {
       this.isRuleIdValid = -1;
     } else {
-        let isKeywordExits = this.ruleIds.findIndex(item => ruleIdKeyword.trim().toLowerCase() === item.trim().toLowerCase());
+      const isKeywordExits = this.ruleIds.findIndex(item => ruleIdKeyword.trim().toLowerCase() === item.trim().toLowerCase());
         if (isKeywordExits === -1) {
           this.isRuleIdValid = 1;
         } else {
@@ -301,13 +299,12 @@ export class CreateRuleComponent implements OnInit {
     }
   }
 
-  ruleIds: any = [];
   getAllRuleIds() {
     this.rulePolicyLoader = true;
     this.contentHidden = true;
     this.rulePolicyLoaderFailure = false;
-    var url = environment.getAllRuleIds.url;
-    var method = environment.getAllRuleIds.method;
+    const url = environment.getAllRuleIds.url;
+    const method = environment.getAllRuleIds.method;
     this.adminService.executeHttpAction(url, method, {}, {}).subscribe(reponse => {
       this.showLoader = false;
       this.contentHidden = false;
@@ -320,15 +317,16 @@ export class CreateRuleComponent implements OnInit {
         this.rulePolicyLoader = false;
         this.rulePolicyLoaderFailure = true;
         this.ruleIds = [];
-        this.errorMessage = "apiResponseError";
+        this.errorMessage = 'apiResponseError';
         this.showLoader = false;
       });
   }
 
   private buildCreateRuleModel(ruleForm) {
-    let newRuleModel = Object();
+    const newRuleModel = Object();
     newRuleModel.assetGroup = ruleForm.assetGroup[0].text;
     newRuleModel.ruleId = ruleForm.policyId[0].text + '_' + ruleForm.ruleName + '_' + ruleForm.targetType[0].text;
+    newRuleModel.ruleId = newRuleModel.ruleId.replace(/\s/g, '-');
     newRuleModel.policyId = ruleForm.policyId[0].text;
     newRuleModel.ruleName = ruleForm.ruleName;
     newRuleModel.targetType = ruleForm.targetType[0].text;
@@ -343,12 +341,12 @@ export class CreateRuleComponent implements OnInit {
     newRuleModel.ruleParams = this.buildRuleParams();
     newRuleModel.isAutofixEnabled = ruleForm.isAutofixEnabled;
     newRuleModel.displayName = ruleForm.ruleDisplayName;
-    var url = environment.createRule.url; 
-    var method = environment.createRule.method; 
-    if(ruleForm.ruleType === 'Classic') {
+    const url = environment.createRule.url;
+    const method = environment.createRule.method;
+    if (ruleForm.ruleType === 'Classic') {
       this.currentFileUpload = this.selectedFiles.item(0);
     } else {
-      this.currentFileUpload = new File([""], "");
+      this.currentFileUpload = new File([''], '');
     }
     this.uploadService.pushFileToStorage(url, method, this.currentFileUpload, newRuleModel).subscribe(event => {
       this.ruleLoader = false;
@@ -357,18 +355,18 @@ export class CreateRuleComponent implements OnInit {
     error => {
       this.isRuleCreationFailed = true;
       this.ruleLoader = false;
-    })
+    });
   }
 
   private buildRuleParams() {
-    let ruleParms = Object();
+    const ruleParms = Object();
     ruleParms.params = this.allRuleParams;
     ruleParms.environmentVariables = this.allEnvironments;
     return JSON.stringify(ruleParms);
   }
 
   private getRuleRestUrl(ruleForm) {
-    let ruleType = ruleForm.ruleType;
+    const ruleType = ruleForm.ruleType;
     if (ruleType === 'Serverless') {
       return ruleForm.ruleRestUrl;
     } else {
@@ -377,19 +375,19 @@ export class CreateRuleComponent implements OnInit {
   }
 
   private buildRuleFrequencyCronJob(ruleForm) {
-    let selectedFrequencyType = ruleForm.ruleFrequency[0].text;
-    let cronDetails = Object();
+    const selectedFrequencyType = ruleForm.ruleFrequency[0].text;
+    const cronDetails = Object();
     cronDetails.interval = selectedFrequencyType;
     if (selectedFrequencyType === 'Yearly') {
       cronDetails.day = ruleForm.ruleFrequencyMonth[0].id;
       cronDetails.month = (ruleForm.ruleFrequencyMonth[0].id + 1);
     } else if (selectedFrequencyType === 'Monthly') {
-      cronDetails.duration = parseInt(ruleForm.ruleFrequencyMonths);
-      cronDetails.day = parseInt(ruleForm.ruleFrequencyDays);
+      cronDetails.duration = parseInt(ruleForm.ruleFrequencyMonths, 10);
+      cronDetails.day = parseInt(ruleForm.ruleFrequencyDays, 10);
     } else if (selectedFrequencyType === 'Weekly') {
       cronDetails.week = ruleForm.weekName;
     } else {
-      cronDetails.duration = parseInt(ruleForm.ruleFrequencyModeValue);
+      cronDetails.duration = parseInt(ruleForm.ruleFrequencyModeValue, 10);
     }
 
     return this.generateExpression(cronDetails);
@@ -397,20 +395,20 @@ export class CreateRuleComponent implements OnInit {
 
   private generateExpression(cronDetails) {
 
-    let getCronExpression = function (cronObj) {
-      if (cronObj === undefined || cronObj === null) {
+    const getCronExpression = function(cronObjInst) {
+      if (cronObjInst === undefined || cronObjInst === null) {
         return undefined;
       } else {
-        let cronObjFields = ['minutes', 'hours', 'dayOfMonth', 'month', 'dayOfWeek', 'year'];
-        let cronExpression = cronObj.minutes;
+        const cronObjFields = ['minutes', 'hours', 'dayOfMonth', 'month', 'dayOfWeek', 'year'];
+        let cronExpression = cronObjInst.minutes;
         for (let index = 1; index < cronObjFields.length; index++) {
-          cronExpression = cronExpression + ' ' + cronObj[cronObjFields[index]];
+          cronExpression = cronExpression + ' ' + cronObjInst[cronObjFields[index]];
         }
         return cronExpression;
       }
     };
 
-    let isValid = function (cronValidity) {
+    const isValid = function (cronValidity) {
       if (cronValidity.minutes && cronValidity.hours && cronValidity.dayOfMonth && cronValidity.month && cronValidity.dayOfWeek && cronValidity.year) {
         return true;
       }
@@ -418,7 +416,7 @@ export class CreateRuleComponent implements OnInit {
     };
 
     let cronObj = {};
-    if (cronDetails.interval == 'Minutes') {
+    if (cronDetails.interval === 'Minutes') {
       cronObj = {
         minutes: '0/' + cronDetails.duration,
         hours: '*',
@@ -427,7 +425,7 @@ export class CreateRuleComponent implements OnInit {
         dayOfWeek: '?',
         year: '*'
       };
-    } else if (cronDetails.interval == 'Hourly') {
+    } else if (cronDetails.interval === 'Hourly') {
       cronObj = {
         minutes: '0',
         hours: '0/' + cronDetails.duration,
@@ -436,7 +434,7 @@ export class CreateRuleComponent implements OnInit {
         dayOfWeek: '?',
         year: '*'
       };
-    } else if (cronDetails.interval == 'Daily') {
+    } else if (cronDetails.interval === 'Daily') {
       cronObj = {
         minutes: '0',
         hours: '0',
@@ -445,7 +443,7 @@ export class CreateRuleComponent implements OnInit {
         dayOfWeek: '?',
         year: '*'
       };
-    } else if (cronDetails.interval == 'Weekly') {
+    } else if (cronDetails.interval === 'Weekly') {
       cronObj = {
         minutes: '0',
         hours: '0',
@@ -454,7 +452,7 @@ export class CreateRuleComponent implements OnInit {
         dayOfWeek: cronDetails.week,
         year: '*'
       };
-    } else if (cronDetails.interval == 'Monthly') {
+    } else if (cronDetails.interval === 'Monthly') {
       cronObj = {
         minutes: '0',
         hours: '0',
@@ -463,7 +461,7 @@ export class CreateRuleComponent implements OnInit {
         dayOfWeek: '?',
         year: '*'
       };
-    } else if (cronDetails.interval == 'Yearly') {
+    } else if (cronDetails.interval === 'Yearly') {
       cronObj = {
         minutes: '0',
         hours: '0',
@@ -474,7 +472,7 @@ export class CreateRuleComponent implements OnInit {
       };
     }
     return getCronExpression(cronObj);
-  };
+  }
 
   closeErrorMessage() {
     this.isRuleCreationFailed = false;
@@ -484,8 +482,8 @@ export class CreateRuleComponent implements OnInit {
   onJarFileChange(event) {
     this.selectedFiles = event.target.files;
     this.ruleJarFileName = this.selectedFiles[0].name;
-    let extension = this.ruleJarFileName.substring(this.ruleJarFileName.lastIndexOf(".")+1);
-    if(extension!=='jar') {
+    const extension = this.ruleJarFileName.substring(this.ruleJarFileName.lastIndexOf('.') + 1);
+    if (extension !== 'jar') {
       this.removeJarFileName();
     }
   }
@@ -501,18 +499,18 @@ export class CreateRuleComponent implements OnInit {
   }
 
   removeJarFileName() {
-    this.ruleJarFileName = "";
-    this.ruleJarFile = "";
+    this.ruleJarFileName = '';
+    this.ruleJarFile = '';
   }
 
   openJarFileBrowser(event) {
-    let element: HTMLElement = document.getElementById('selectJarFile') as HTMLElement;
+    const element: HTMLElement = document.getElementById('selectJarFile') as HTMLElement;
     element.click();
   }
 
   getTargetTypeNamesByDatasourceName(datasourceName) {
-    var url = environment.targetTypesByDatasource.url;
-    var method = environment.targetTypesByDatasource.method;
+    const url = environment.targetTypesByDatasource.url;
+    const method = environment.targetTypesByDatasource.method;
     this.adminService.executeHttpAction(url, method, {}, { dataSourceName: datasourceName }).subscribe(reponse => {
       this.showLoader = false;
       this.targetTypesNames = reponse[0];
@@ -525,17 +523,17 @@ export class CreateRuleComponent implements OnInit {
     },
       error => {
         this.allPolicyIds = [];
-        this.errorMessage = "apiResponseError";
+        this.errorMessage = 'apiResponseError';
         this.showLoader = false;
       });
   }
-  contentHidden : boolean = true;
+
   getAllPolicyIds() {
     this.rulePolicyLoader = true;
     this.contentHidden = true;
     this.rulePolicyLoaderFailure = false;
-    var url = environment.allPolicyIds.url;
-    var method = environment.allPolicyIds.method;
+    const url = environment.allPolicyIds.url;
+    const method = environment.allPolicyIds.method;
     this.adminService.executeHttpAction(url, method, {}, {}).subscribe(reponse => {
       this.allPolicyIds = reponse[0];
       this.getAlexaKeywords();
@@ -545,7 +543,7 @@ export class CreateRuleComponent implements OnInit {
         this.rulePolicyLoader = false;
         this.rulePolicyLoaderFailure = true;
         this.allPolicyIds = [];
-        this.errorMessage = "apiResponseError";
+        this.errorMessage = 'apiResponseError';
         this.showLoader = false;
       });
   }
@@ -580,10 +578,10 @@ export class CreateRuleComponent implements OnInit {
   }
 
   isAlexaKeywordAvailable(alexaKeyword) {
-    if (alexaKeyword.trim().length == 0) {
+    if (alexaKeyword.trim().length === 0) {
       this.isAlexaKeywordValid = -1;
     } else {
-        let isKeywordExits = this.alexaKeywords.findIndex(item => alexaKeyword.trim().toLowerCase() === item.trim().toLowerCase());
+      const isKeywordExits = this.alexaKeywords.findIndex(item => alexaKeyword.trim().toLowerCase() === item.trim().toLowerCase());
         if (isKeywordExits === -1) {
           this.isAlexaKeywordValid = 1;
         } else {
@@ -604,19 +602,13 @@ export class CreateRuleComponent implements OnInit {
     this.selectedFrequency = frequencyType.text;
   }
 
-  onSelectFrequencyMonthDay(selectedMonthDay) {
-
-  }
-
   onSelectFrequencyMonth(selectedMonth) {
-
     this.targetTypeSelectComponent.placeholder = 'Select Day';
     if (this.ruleFrequencyMonthDayComponent.active) {
       this.ruleFrequencyMonthDayComponent.active.length = 0;
     }
-    // this.ruleFrequencyMonthDayComponent.items = [];
-    let monthDays: any = [];
-    let daysCount = this.getNumberOfDays(selectedMonth.id);
+    const monthDays: any = [];
+    const daysCount = this.getNumberOfDays(selectedMonth.id);
     for (let dayNo = 1; dayNo <= daysCount; dayNo++) {
       monthDays.push({ id: dayNo, text: dayNo.toString() });
     }
@@ -626,10 +618,10 @@ export class CreateRuleComponent implements OnInit {
 
 
   private getNumberOfDays = function (month) {
-    var year = new Date().getFullYear();
-    var isLeap = ((year % 4) == 0 && ((year % 100) != 0 || (year % 400) == 0));
+    const year = new Date().getFullYear();
+    const isLeap = ((year % 4) === 0 && ((year % 100) !== 0 || (year % 400) === 0));
     return [31, (isLeap ? 29 : 28), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][month];
-  }
+  };
 
 
   getData() {
@@ -637,13 +629,14 @@ export class CreateRuleComponent implements OnInit {
   }
 
   /*
-    * This function gets the urlparameter and queryObj 
+    * This function gets the urlparameter and queryObj
     *based on that different apis are being hit with different queryparams
-    */
+  */
+
   routerParam() {
     try {
       // this.filterText saves the queryparam
-      let currentQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(this.router.routerState.snapshot.root);
+      const currentQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(this.router.routerState.snapshot.root);
       if (currentQueryParams) {
 
         this.FullQueryParams = currentQueryParams;
@@ -661,7 +654,7 @@ export class CreateRuleComponent implements OnInit {
         );
 
         this.urlID = this.FullQueryParams.TypeAsset;
-        //check for mandatory filters.
+        // check for mandatory filters.
         if (this.FullQueryParams.mandatory) {
           this.mandatory = this.FullQueryParams.mandatory;
         }
@@ -669,7 +662,7 @@ export class CreateRuleComponent implements OnInit {
       }
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
@@ -680,7 +673,7 @@ export class CreateRuleComponent implements OnInit {
 
   updateComponent() {
     this.outerArr = [];
-    this.searchTxt = "";
+    this.searchTxt = '';
     this.currentBucket = [];
     this.bucketNumber = 0;
     this.firstPaginator = 1;
@@ -699,22 +692,22 @@ export class CreateRuleComponent implements OnInit {
     try {
       this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root);
     } catch (error) {
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
   massageData(data) {
-    let refactoredService = this.refactorFieldsService;
-    let newData = [];
-    let formattedFilters = data.map(function (data) {
-      let keysTobeChanged = Object.keys(data);
+    const refactoredService = this.refactorFieldsService;
+    const newData = [];
+    const formattedFilters = data.map(function (datam) {
+      const keysTobeChanged = Object.keys(datam);
       let newObj = {};
       keysTobeChanged.forEach(element => {
-        var elementnew =
+        const elementnew =
           refactoredService.getDisplayNameForAKey(
             element
           ) || element;
-        newObj = Object.assign(newObj, { [elementnew]: data[element] });
+        newObj = Object.assign(newObj, { [elementnew]: datam[element] });
       });
       newObj['Actions'] = '';
       newData.push(newObj);
@@ -724,76 +717,72 @@ export class CreateRuleComponent implements OnInit {
 
   processData(data) {
     try {
-      var innerArr = {};
-      var totalVariablesObj = {};
-      var cellObj = {};
-      var magenta = "#e20074";
-      var green = "#26ba9d";
-      var red = "#f2425f";
-      var orange = "#ffb00d";
-      var yellow = "yellow";
+      let innerArr = {};
+      const totalVariablesObj = {};
+      let cellObj = {};
       this.outerArr = [];
-      var getData = data;
+      const getData = data;
+      let getCols;
 
       if (getData.length) {
-        var getCols = Object.keys(getData[0]);
+        getCols = Object.keys(getData[0]);
       } else {
         this.seekdata = true;
       }
 
-      for (var row = 0; row < getData.length; row++) {
+      for (let row = 0; row < getData.length; row++) {
         innerArr = {};
-        for (var col = 0; col < getCols.length; col++) {
-          if (getCols[col].toLowerCase() == "actions") {
+        for (let col = 0; col < getCols.length; col++) {
+          if (getCols[col].toLowerCase() === 'actions') {
             cellObj = {
               link: true,
               properties: {
-                "text-shadow": "0.33px 0",
-                "color": "#ed0295"
+                'text-shadow': '0.33px 0',
+                'color': '#ed0295'
               },
               colName: getCols[col],
               hasPreImg: false,
-              valText: "Edit",
-              imgLink: "",
+              valText: 'Edit',
+              imgLink: '',
               text: 'Edit',
               statusProp: {
-                "color": "#ed0295"
+                'color': '#ed0295'
               }
             };
           } else {
             cellObj = {
-              link: "",
+              link: '',
               properties: {
-                color: ""
+                color: ''
               },
               colName: getCols[col],
               hasPreImg: false,
-              imgLink: "",
+              imgLink: '',
               text: getData[row][getCols[col]],
               valText: getData[row][getCols[col]]
             };
           }
           innerArr[getCols[col]] = cellObj;
-          totalVariablesObj[getCols[col]] = "";
+          totalVariablesObj[getCols[col]] = '';
         }
         this.outerArr.push(innerArr);
       }
       if (this.outerArr.length > getData.length) {
-        var halfLength = this.outerArr.length / 2;
+        const halfLength = this.outerArr.length / 2;
         this.outerArr = this.outerArr.splice(halfLength);
       }
       this.allColumns = Object.keys(totalVariablesObj);
-      this.allColumns = ["Policy Id", "Policy Name", "Policy Description", "Policy Version", "No of Rules", "Actions"];
+      this.allColumns = ['Policy Id', 'Policy Name', 'Policy Description', 'Policy Version', 'No of Rules', 'Actions'];
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
   goToCreatePolicy() {
     try {
       this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
-      this.router.navigate(["../create-edit-policy"], {
+      this.router.navigate(['../create-edit-policy'], {
         relativeTo: this.activatedRoute,
         queryParamsHandling: 'merge',
         queryParams: {
@@ -801,7 +790,7 @@ export class CreateRuleComponent implements OnInit {
       });
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
@@ -809,7 +798,7 @@ export class CreateRuleComponent implements OnInit {
     if (row.col === 'Actions') {
       try {
         this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
-        this.router.navigate(["../create-edit-policy"], {
+        this.router.navigate(['../create-edit-policy'], {
           relativeTo: this.activatedRoute,
           queryParamsHandling: 'merge',
           queryParams: {
@@ -818,7 +807,7 @@ export class CreateRuleComponent implements OnInit {
         });
       } catch (error) {
         this.errorMessage = this.errorHandling.handleJavascriptError(error);
-        this.logger.log("error", error);
+        this.logger.log('error', error);
       }
     }
   }
@@ -842,7 +831,7 @@ export class CreateRuleComponent implements OnInit {
         this.previousUrlSubscription.unsubscribe();
       }
     } catch (error) {
-      this.logger.log("error", "--- Error while unsubscribing ---");
+      this.logger.log('error', '--- Error while unsubscribing ---');
     }
   }
 }

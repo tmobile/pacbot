@@ -110,7 +110,7 @@ public class JobExecutionManagerControllerTest
 	public void createJobTest() throws Exception {
 		byte[] jobDetailsContent = toJson(getCreateJobDetailsRequest());
 		MultipartFile firstFile = getMockMultipartFile();
-		when(jobExecutionManagerService.createJob(any(), any())).thenReturn(AdminConstants.JOB_CREATION_SUCCESS);
+		when(jobExecutionManagerService.createJob(any(), any(), any())).thenReturn(AdminConstants.JOB_CREATION_SUCCESS);
 		mockMvc.perform(MockMvcRequestBuilders.fileUpload("/job-execution-manager/create")
 				.file("file", firstFile.getBytes())
 				.principal(principal)
@@ -126,7 +126,7 @@ public class JobExecutionManagerControllerTest
 	public void createJobExceptionTest() throws Exception {
 		byte[] jobDetailsContent = toJson(getCreateJobDetailsRequest());
 		MultipartFile firstFile = getMockMultipartFile();
-		when(jobExecutionManagerService.createJob(any(), any())).thenThrow(Exception.class);
+		when(jobExecutionManagerService.createJob(any(), any(), any())).thenThrow(Exception.class);
 		mockMvc.perform(MockMvcRequestBuilders.fileUpload("/job-execution-manager/create")
 				.file("file", firstFile.getBytes())
 				.principal(principal)
@@ -198,6 +198,11 @@ public class JobExecutionManagerControllerTest
 			@Override
 			public Date getCreatedDate() {
 				return new Date();
+			}
+
+			@Override
+			public String getStatus() {
+				return "ENABLED";
 			}
 		};
 	}

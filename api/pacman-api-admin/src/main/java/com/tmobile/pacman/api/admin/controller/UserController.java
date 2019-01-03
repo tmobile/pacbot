@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -41,30 +41,49 @@ import io.swagger.annotations.ApiParam;
  */
 @Api(value = "/users", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
 @RestController
-@PreAuthorize("@securityService.hasPermission(authentication, 'ROLE_ADMIN')")
 @RequestMapping("/users")
 public class UserController {
-
+	
 	/** The Constant logger. */
 	private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
 	@Autowired
     private UserService userService;
-
+	
 	/**
      * API to get user details by email id
-     *
+     * 
      * @author Nidhish
      * @param emailId - valid email Id
      * @return User details
      */
 	@ApiOperation(httpMethod = "GET", value = "API to get user details by email id", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
+	@PreAuthorize("@securityService.hasPermission(authentication, 'ROLE_ADMIN')")
 	@RequestMapping(path = "/list", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getUserByEmailId(
 		@ApiParam(value = "provide valid user email id", required = true) @RequestParam(name = "emailId", required = true) String emailId) {
 		try {
 			return ResponseUtils.buildSucessResponse(userService.getUserByEmailId(emailId));
+		} catch (Exception exception) {
+			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
+			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
+		}
+	}
+	
+	
+	/**
+     * API to get all sign-in users
+     * 
+     * @author Nidhish
+     * @param emailId - valid email Id
+     * @return User details
+     */
+	@ApiOperation(httpMethod = "GET", value = "API to get all sign-in users", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
+	@PreAuthorize("@securityService.hasPermission(authentication, 'ROLE_ADMIN')")
+	@RequestMapping(path = "/list-users", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> getAllLoginUsers()  {
+		try {
+			return ResponseUtils.buildSucessResponse(userService.getAllLoginUsers());
 		} catch (Exception exception) {
 			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());

@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 package com.tmobile.pacman.api.admin.controller;
-import static com.tmobile.pacman.api.admin.common.AdminConstants.ASGC;
+
 import static com.tmobile.pacman.api.admin.common.AdminConstants.UNEXPECTED_ERROR_OCCURRED;
 
 import java.security.Principal;
@@ -72,7 +72,6 @@ public class RuleController {
      */
 	@HystrixCommand
 	@ApiOperation(httpMethod = "GET", value = "API to get all rules", response = Page.class,  produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/list", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getRules(
 			@ApiParam(value = "provide valid page number", required = true) @RequestParam("page") Integer page,
@@ -94,7 +93,6 @@ public class RuleController {
      * @return Rules details
      */
 	@ApiOperation(httpMethod = "GET", value = "API to get rule by id", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/details-by-id", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getRulesById(
 			@ApiParam(value = "provide valid rule id", required = true) @RequestParam(defaultValue = "", name = "ruleId", required = true) String ruleId) {
@@ -114,7 +112,6 @@ public class RuleController {
      */
 	@HystrixCommand
 	@ApiOperation(httpMethod = "GET", value = "API to get alexa keywords", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/alexa-keywords", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getAllAlexaKeywords() {
 		try {
@@ -133,7 +130,6 @@ public class RuleController {
      */
 	@HystrixCommand
 	@ApiOperation(httpMethod = "GET", value = "API to get all Rule Id's", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/rule-ids", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getAllRuleIds() {
 		try {
@@ -154,12 +150,11 @@ public class RuleController {
      */
 	@HystrixCommand
 	@ApiOperation(httpMethod = "POST", value = "API to create new rule", response = Response.class, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/create", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<Object> createRule(
+	public ResponseEntity<Object> createRule(@AuthenticationPrincipal Principal user,
 			@ApiParam(value = "provide valid rule details", required = false) @RequestParam(defaultValue="", value = "file", required = false) MultipartFile fileToUpload, CreateUpdateRuleDetails createRuleDetails) {
 		try {
-			return ResponseUtils.buildSucessResponse(ruleService.createRule(fileToUpload, createRuleDetails, ASGC));
+			return ResponseUtils.buildSucessResponse(ruleService.createRule(fileToUpload, createRuleDetails, user.getName()));
 		} catch (Exception exception) {
 			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
@@ -175,12 +170,11 @@ public class RuleController {
      * @return Success or Failure response
      */
 	@ApiOperation(httpMethod = "POST", value = "API to update new rule", response = Response.class, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/update", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	public ResponseEntity<Object> updateRule(
+	public ResponseEntity<Object> updateRule(@AuthenticationPrincipal Principal user,
 			@ApiParam(value = "provide valid rule details", required = false) @RequestParam(value = "file", required = false) MultipartFile fileToUpload, CreateUpdateRuleDetails updateRuleDetails) {
 		try {
-			return ResponseUtils.buildSucessResponse(ruleService.updateRule(fileToUpload, updateRuleDetails, ASGC));
+			return ResponseUtils.buildSucessResponse(ruleService.updateRule(fileToUpload, updateRuleDetails, user.getName()));
 		} catch (Exception exception) {
 			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
@@ -196,7 +190,6 @@ public class RuleController {
      * @return Success or Failure response
      */
 	@ApiOperation(httpMethod = "POST", value = "API to invoke rule", response = Response.class, consumes = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/invoke", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> invokeRule(
 			@ApiParam(value = "provide valid rule id", required = true) @RequestParam("ruleId") String ruleId,
@@ -219,13 +212,12 @@ public class RuleController {
      * @return Success or Failure response
      */
 	@ApiOperation(httpMethod = "POST", value = "API to enable disable rule", response = Response.class, consumes = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/enable-disable", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> enableDisableRule(@AuthenticationPrincipal Principal user,
 			@ApiParam(value = "provide valid rule id", required = true) @RequestParam("ruleId") String ruleId,
 			@ApiParam(value = "provide valid action", required = true) @RequestParam("action") String action) {
 		try {
-			return ResponseUtils.buildSucessResponse(ruleService.enableDisableRule(ruleId, action, ASGC));
+			return ResponseUtils.buildSucessResponse(ruleService.enableDisableRule(ruleId, action, user.getName()));
 		} catch (Exception exception) {
 			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());

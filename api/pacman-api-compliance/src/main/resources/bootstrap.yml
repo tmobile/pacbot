@@ -15,25 +15,7 @@ spring:
        
   profiles:
     active: ${ENVIRONMENT:prd}
-    
-  boot:
-    admin:
-      url: ${ADMIN_SERVER:http://localhost:8080/pacmonitor}
-      username: ${security.user.name}
-      password: ${security.user.password}
-      client:
-        metadata: 
-          user: 
-            name: ${security.user.name}
-            password: ${security.user.password}
-        management-url: ${DOMAIN_URL:http://localhost:8080/api/compliance}/
-        health-url: ${DOMAIN_URL:http://localhost:8080/api/compliance}/health/
-        service-url: ${DOMAIN_URL:http://localhost:8080/api/compliance}/
-        
-management:
-  health:
-    rabbit:
-      enabled: false
+   
 
 security: 
   oauth2:

@@ -51,7 +51,7 @@ public interface PolicyRepository extends JpaRepository<Policy, String> {
 			+ "LOWER(p.modifiedDate) LIKE %:searchTerm% OR "
 			+ "LOWER(p.policyDesc) LIKE %:searchTerm% OR "
 			+ "LOWER(p.policyVersion) LIKE %:searchTerm% OR "
-			+ "LOWER(p.policyName) LIKE %:searchTerm% GROUP BY p.policyId ORDER BY ?#{#pageable}",
+			+ "LOWER(p.policyName) LIKE %:searchTerm% GROUP BY p.policyId",
 
 			countQuery = "SELECT COUNT(*) FROM cf_Policy p WHERE "
 					+ "LOWER(p.policyId) LIKE %:searchTerm% OR "
@@ -60,7 +60,7 @@ public interface PolicyRepository extends JpaRepository<Policy, String> {
 					+ "LOWER(p.modifiedDate) LIKE %:searchTerm% OR "
 					+ "LOWER(p.policyDesc) LIKE %:searchTerm% OR "
 					+ "LOWER(p.policyVersion) LIKE %:searchTerm% OR "
-					+ "LOWER(p.policyName) LIKE %:searchTerm% GROUP BY p.policyId  ORDER BY ?#{#pageable}", nativeQuery=true)
+					+ "LOWER(p.policyName) LIKE %:searchTerm% GROUP BY p.policyId", nativeQuery=true)
 	public Page<Object[]> getAllPolicyDetails(@Param("searchTerm") String searchTerm, Pageable pageable);
 
 

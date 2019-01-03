@@ -12,7 +12,7 @@
  * limitations under the License.
  -->
 
- <div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+<div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
     <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
     <div class="floating-widgets-header flex flex-between">
         <div>
@@ -112,13 +112,6 @@
                                                     </div>
                                                 </div>
                                             </div>
-                                            <!--<div class="valueaddctn" id="style-1" *ngIf="allOptionalRuleParams.length!==0">
-                                                <div class="valuerow" *ngFor="let ruleParams of allOptionalRuleParams;let ruleIndex = index">
-                                                    <a><i class="fa fa-remove" (click)="removeOptionalRuleParameters(ruleIndex)"></i></a>
-                                                    <span class="addedvalue key">{{ruleParams.key}} :</span>
-                                                    <span class="addedvalue">{{ruleParams.value}}</span>
-                                                </div>
-                                            </div>-->
                                         </div>
                                     </div>
                                 </div>
@@ -168,7 +161,7 @@
                             </div>
                         </div>
                         <div class="pacman-progress" *ngIf="ruleLoader">
-                            <pacman-loading></pacman-loading>
+                            <app-pacman-loader></app-pacman-loader>
                             <div class="title">
                                 Please Wait...
                             </div>

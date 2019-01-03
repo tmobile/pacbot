@@ -24,11 +24,10 @@ package com.tmobile.pacman.api.admin.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 @Configuration
 @ConfigurationProperties("compliance-service")
-public class GlobalConfig extends WebMvcConfigurerAdapter {
+public class GlobalConfig {
 
 	public static class elasticSearch {
 		String host;

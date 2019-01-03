@@ -15,45 +15,74 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.admin.controller;
 
-import static com.google.common.collect.Lists.newArrayList;
+import static com.tmobile.pacman.api.admin.common.AdminConstants.JOBID_OR_RULEID_NOT_EMPTY;
 import static com.tmobile.pacman.api.admin.common.AdminConstants.UNEXPECTED_ERROR_OCCURRED;
 
+import java.security.Principal;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tmobile.pacman.api.admin.domain.Response;
+import com.tmobile.pacman.api.admin.repository.service.JobExecutionManagerService;
+import com.tmobile.pacman.api.admin.repository.service.RuleService;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
-@Api(value = "/secure", consumes = "application/json", produces = "application/json")
+@Api(value = "/", consumes = "application/json", produces = "application/json")
 @RestController
-@RequestMapping("/secure")
+@PreAuthorize("@securityService.hasPermission(authentication, 'ROLE_ADMIN')")
+@RequestMapping("/")
 public class AdminController {
 
-	@ApiOperation(httpMethod = "GET", value = "API to get secure names for admin user", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("@securityService.hasPermission(authentication, 'ROLE_ADMIN')")
-	@RequestMapping(path = "/admin-names", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> getAllAdminNames() {
-		try {
-			return ResponseUtils.buildSucessResponse(newArrayList("manu", "danny"));
-		} catch (Exception exception) {
-			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
-		}
-	}
+	/** The Constant logger. */
+	private static final Logger log = LoggerFactory.getLogger(RuleController.class);
 	
-	@ApiOperation(httpMethod = "GET", value = "API to get secure names for normal user", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
-	@PreAuthorize("@securityService.hasPermission(authentication, 'ROLE_USER')")
-	@RequestMapping(path = "/normal-names", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> getAllNormalNames() {
+	@Autowired
+    private RuleService ruleService;
+	
+	@Autowired
+    private JobExecutionManagerService jobService;
+
+	/**
+     * API to enable disable rule or job
+     * 
+     * @author NKrishn3
+     * @param ruleId - valid rule or job Id
+     * @param user - userId who performs the action
+     * @param action - valid action (disable/ enable)
+     * @return Success or Failure response
+     */
+	@ApiOperation(httpMethod = "POST", value = "API to enable disable rule or job", response = Response.class, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(path = "/enable-disable", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> enableDisableRuleOrJob(@AuthenticationPrincipal Principal user,
+			@ApiParam(value = "provide valid rule id", required = false) @RequestParam(name = "ruleId", required = false) String ruleId,
+			@ApiParam(value = "provide valid job id", required = false) @RequestParam(name = "jobId", required = false) String jobId,
+			@ApiParam(value = "provide valid action", required = true) @RequestParam(name = "action", required = true) String action) {
 		try {
-			return ResponseUtils.buildSucessResponse(newArrayList("nidhish", "kiran"));
+			
+			if (!StringUtils.isBlank(ruleId)) {
+				return ResponseUtils.buildSucessResponse(ruleService.enableDisableRule(ruleId, action, user.getName()));
+			} else if (!StringUtils.isBlank(jobId)) {
+				return ResponseUtils.buildSucessResponse(jobService.enableDisableJob(jobId, action, user.getName()));
+			} else {
+				return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), JOBID_OR_RULEID_NOT_EMPTY);
+			}
 		} catch (Exception exception) {
+			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
 		}
 	}

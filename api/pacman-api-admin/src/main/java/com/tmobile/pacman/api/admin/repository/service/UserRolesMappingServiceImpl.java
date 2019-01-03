@@ -24,9 +24,10 @@ import java.util.UUID;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import javax.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -38,6 +39,7 @@ import com.tmobile.pacman.api.admin.domain.UserRolesMappingResponse;
 import com.tmobile.pacman.api.admin.exceptions.PacManException;
 import com.tmobile.pacman.api.admin.repository.UserRolesMappingRepository;
 import com.tmobile.pacman.api.admin.repository.UserRolesRepository;
+import com.tmobile.pacman.api.admin.repository.model.User;
 import com.tmobile.pacman.api.admin.repository.model.UserRolesMapping;
 
 /**
@@ -53,15 +55,32 @@ public class UserRolesMappingServiceImpl implements UserRolesMappingService {
 	@Autowired
 	private UserRolesRepository userRolesRepository;
 
+	@Value("${pacman.api.oauth2.client-id}")
+	private String oauth2ClientId;
+	
 	@Override
 	public String allocateUserRole(final UserRoleConfigRequest userRoleConfigRequest, final String allocator) throws PacManException {
 		List<UserRolesMapping> allDeletedUserRoleAllocations = Lists.newArrayList();
 		try {
 			Date currentDate = new Date();
+			List<UserRolesMapping> userRolesMappings = Lists.newArrayList();
 			allDeletedUserRoleAllocations = userRolesMappingRepository.deleteByRoleId(userRoleConfigRequest.getRoleId());
-			userRoleConfigRequest.getUserDetails().parallelStream().forEach(user -> {
-				allocateUser(user.getUserId().toLowerCase(), userRoleConfigRequest.getRoleId(), allocator, currentDate);
-			});
+			for(User user: userRoleConfigRequest.getUserDetails()) {
+				if(userRolesRepository.existsById(userRoleConfigRequest.getRoleId())) {
+					UserRolesMapping userRolesMapping = new UserRolesMapping();
+					userRolesMapping.setAllocator(allocator);
+					userRolesMapping.setClientId(oauth2ClientId);
+					userRolesMapping.setCreatedDate(currentDate);
+					userRolesMapping.setModifiedDate(currentDate);
+					userRolesMapping.setRoleId(userRoleConfigRequest.getRoleId());
+					userRolesMapping.setUserId(user.getUserId().toLowerCase());
+					userRolesMapping.setUserRoleId(UUID.randomUUID().toString());
+					userRolesMappings.add(userRolesMapping);
+				}
+			}
+			if(!userRolesMappings.isEmpty()) {
+				userRolesMappingRepository.saveAll(userRolesMappings);
+			}
 			return USER_ROLE_ALLOCATION_SUCCESS;
 		} catch (Exception exception) {
 			allDeletedUserRoleAllocations.parallelStream().forEach(userRolesMapping -> {
@@ -79,21 +98,6 @@ public class UserRolesMappingServiceImpl implements UserRolesMappingService {
 		return allUserRoleMappings;
 	}
 
-	private void allocateUser(String userId, String roleId, final String allocator, final Date currentDate) {
-		if(userRolesRepository.exists(roleId)) {
-			UserRolesMapping userRolesMapping = new UserRolesMapping();
-			userRolesMapping.setAllocator(allocator);
-			userRolesMapping.setClientId("pacman2_api_client");
-			userRolesMapping.setCreatedDate(currentDate);
-			userRolesMapping.setModifiedDate(currentDate);
-			userRolesMapping.setRoleId(roleId);
-			userRolesMapping.setUserId(userId);
-			userRolesMapping.setUserRoleId(UUID.randomUUID().toString());
-			userRolesMapping.setUserRoles(userRolesRepository.findOne(roleId));
-			userRolesMappingRepository.save(userRolesMapping);
-		}
-	}
-
 	Function<UserRolesMapping, UserRolesMappingResponse> fetchUserRolesMappingDetials = userRoleDetail -> {
 		List<String[]> userDetails = userRolesMappingRepository.findAllUserRoleDetailsByUserIdIgnoreCase(userRoleDetail.getUserId());
 		UserRolesMappingResponse userRolesMappingResponse = new UserRolesMappingResponse();
@@ -103,3 +107,4 @@ public class UserRolesMappingServiceImpl implements UserRolesMappingService {
 		return userRolesMappingResponse;
 	};	
 }
+

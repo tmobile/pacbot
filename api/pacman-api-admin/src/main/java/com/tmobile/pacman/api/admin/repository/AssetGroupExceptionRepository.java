@@ -70,7 +70,7 @@ public interface AssetGroupExceptionRepository  extends JpaRepository<AssetGroup
 			+ "LOWER(exception.expiryDate) LIKE %:searchTerm% OR "
 			+ "LOWER(exception.exceptionName) LIKE %:searchTerm% OR "
 			+ "LOWER(exception.exceptionReason) LIKE %:searchTerm% OR "
-			+ "LOWER(exception.dataSource) LIKE %:searchTerm% GROUP BY exception.exceptionName ORDER BY ?#{#pageable}",
+			+ "LOWER(exception.dataSource) LIKE %:searchTerm% GROUP BY exception.exceptionName",
 
 			countQuery = "SELECT COUNT(*) FROM AssetGroupException exception WHERE "
 			+ "LOWER(exception.groupName) LIKE %:searchTerm% OR "
@@ -80,7 +80,7 @@ public interface AssetGroupExceptionRepository  extends JpaRepository<AssetGroup
 			+ "LOWER(exception.expiryDate) LIKE %:searchTerm% OR "
 			+ "LOWER(exception.exceptionName) LIKE %:searchTerm% OR "
 			+ "LOWER(exception.exceptionReason) LIKE %:searchTerm% OR "
-			+ "LOWER(exception.dataSource) LIKE %:searchTerm% GROUP BY exception.exceptionName ORDER BY ?#{#pageable}")
+			+ "LOWER(exception.dataSource) LIKE %:searchTerm% GROUP BY exception.exceptionName")
 	public Page<AssetGroupExceptionProjections> findAllAssetGroupExceptions(@Param("searchTerm") String searchTerm, Pageable pageable);
 
 

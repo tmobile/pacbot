@@ -8,7 +8,7 @@ service:
     devstandards: ${PACMAN_HOST_NAME}/api/devstandards
     auth: ${PACMAN_HOST_NAME}/api/auth
     admin: ${PACMAN_HOST_NAME}/api/admin
-    
+      
 endpoints:
   refresh:
     sensitive: false
@@ -57,9 +57,6 @@ api:
   - name: Asset Service
     url: ${PACMAN_HOST_NAME:http://localhost:8080}/api/asset/v2/api-docs
     version: 2.0
-  - name: Dev Standards Service
-    url: ${PACMAN_HOST_NAME:http://localhost:8080}/api/devstandards/v2/api-docs
-    version: 2.0
   - name: Compliance Service
     url: ${PACMAN_HOST_NAME:http://localhost:8080}/api/compliance/v2/api-docs
     version: 2.0
@@ -77,3 +74,7 @@ vulnerability:
   types: ec2,onpremserver
   summary:
     severity: 5
+    
+swagger:
+  auth:
+    whitelist: /configuration/security,/swagger-ui.html,/api.html,/webjars/**,/user,/public/**,/api.html,/css/styles.js,/js/swagger.js,/js/swagger-ui.js,/js/swagger-oauth.js,/images/pacman_logo.svg,/images/favicon-32x32.png,/images/favicon-16x16.png,/images/favicon.ico,/docs/v1/api.html,/v2/api-docs/**,/v2/swagger.json,/webjars/springfox-swagger-ui/css/**,/webjars/springfox-swagger-ui/js/**,/configuration/ui,/swagger-resources/**,/configuration/**,/imgs/**,/css/**,/css/font/**,/proxy*/**,/hystrix/monitor/**,/hystrix/**/images/pacman_logo.svg,/images/favicon-32x32.png,/images/favicon-16x16.png,/images/favicon.ico,/docs/v1/api.html,/v2/api-docs/**,/v2/swagger.json,/webjars/springfox-swagger-ui/css/**,/webjars/springfox-swagger-ui/js/**,/configuration/ui,/swagger-resources/**,/configuration/**,/imgs/**,/css/**,/css/font/**,/proxy*/**,/hystrix/monitor/**,/hystrix/**,/refresh

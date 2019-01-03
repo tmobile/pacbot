@@ -1,6 +1,6 @@
 server:
-  contextPath: /api/asset
-  
+  servlet:
+    context-path: /api/asset
 cloudinsights:
   tokenurl: ${CLOUD_INSIGHTS_TOKEN_URL}
   costurl: ${CLOUD_INSIGHTS_COST_URL}

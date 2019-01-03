@@ -12,7 +12,7 @@
  * limitations under the License.
  -->
 
- <div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+<div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
     <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
     <div class="floating-widgets-header flex flex-between">
         <div>
@@ -32,8 +32,17 @@
                                 </div>
                             </div>
                         </div>
-                        <form (ngSubmit)="updateRule(ruleForm)" #ruleForm="ngForm" [hidden]="hideContent">
-                            <div class="data-content">
+                        <form (ngSubmit)="updateRule(ruleForm)" #ruleForm="ngForm">
+                            <div class="pacman-progress" [hidden]="!ruleDetailsLoader">
+                                <app-pacman-loader></app-pacman-loader>
+                                <div class="title">
+                                    Please Wait...
+                                </div>
+                                <div class="pacman-alert-message">
+                                    <span class="highlight-pink">{{ruleId}}</span> details is been loading...
+                                </div>
+                            </div>
+                            <div class="data-content" [hidden]="hideContent">
                                 <div class="formcontainerwrapper">
                                     <div class="formctnleft">
                                         <div class="createrule" action="#">
@@ -159,7 +168,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="freq-col-sm-5 input-form"> {{ruleFrequencyDay|json}}
-                                                    <ng-select name="ruleFrequencyDay" [(ngModel)]="ruleFrequencyDay" (selected)='onSelectFrequencyMonthDay($event)' [allowClear]="true" [items]="allMonthDays" placeholder="Select Day" required>
+                                                    <ng-select name="ruleFrequencyDay" [(ngModel)]="ruleFrequencyDay" [allowClear]="true" [items]="allMonthDays" placeholder="Select Day" required>
                                                     </ng-select>
                                                 </div>
                                             </div>
@@ -190,7 +199,7 @@
                                                     <input type="radio" id="manage-rule" value="ManageRule" name="ruleType" class="ib" [(ngModel)]="ruleType">
                                                     <label for="manage-rule" class="manage-rule">Manage Rule</label>
                                                     <input type="radio" id="serverless" value="Serverless" name="ruleType" class="ib" [(ngModel)]="ruleType">
-                                                    <label for="serverless" class="db serverless">Serverless <a class="link" href="https://console.aws.amazon.com" target="_blank">(Create Serverless URL)</a></label>
+                                                    <label for="serverless" class="db serverless">Serverless <a class="link" href="http://jazz.corporate.t-mobile.com/" target="_blank">(Create Serverless URL)</a></label>
                                                 </div>
                                             </div>
                                             <div class="rule-executable">
@@ -369,7 +378,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="data-table-paginator-wrap flex flex-center flex-align-center">
+                            <div class="data-table-paginator-wrap flex flex-center flex-align-center" *ngIf="!hideContent">
                                 <a class="save-container flex flex-row-reverse">
                                     <button class="submit-btn uppercase" type="submit" [disabled]="(ruleForm.form.invalid || isAlexaKeywordValid == 0 || isAlexaKeywordValid == -1)"><i class="fa fa-check"></i> UPDATE</button>
                                 </a>
@@ -385,8 +394,11 @@
                                 <span class="sa-line sa-right"></span>
                                 </span>
                             </div>
+                            <div class="pacman-alert-title">
+                                Rule Updation Failed
+                            </div>
                             <div class="pacman-alert-message">
-                                Rule Updation Failed !!!
+                                <span class="highlight-pink">{{ruleDetails.ruleId}}</span> has been failed to update !!!
                             </div>
                             <div class="pacman-alert-button">
                                 <button class="submit-btn uppercase" type="button" (click)="closeErrorMessage()"><i class="fa fa-remove"></i> CLOSE</button>
@@ -410,7 +422,7 @@
                             </div>
                         </div>
                         <div class="pacman-progress" *ngIf="ruleLoader">
-                            <pacman-loading></pacman-loading>
+                            <app-pacman-loader></app-pacman-loader>
                             <div class="title">
                                 Please Wait...
                             </div>
@@ -418,8 +430,6 @@
                                 <span class="highlight-pink">{{ruleDetails.ruleId}}</span> is been updating...
                             </div>
                         </div>
-                        <div *ngIf="ruleContentLoader" class="loader absolute"></div>
-                        <div *ngIf="ruleContentLoader" class="loader absolute"></div>
                     </div>
                 </li>
             </ul>

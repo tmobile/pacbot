@@ -1,41 +1,66 @@
 <!DOCTYPE html>
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<title>Pacman 2.0 Login</title>
-<link href="css/custom.css" rel="stylesheet" type="text/css" media="all">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>OAuth Server Login</title>
+<link rel="stylesheet" href="webjars/bootstrap/3.3.2/css/bootstrap.min.css" />
+<link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
-	<div class="main">
-		<div class="login">
-			<div class="login-top">
-				<img src="imgs/p.png">
-			</div>
-			<h1 class="header-pac">Pacman 2.0</h1>
-			<div class="login-bottom">
-			<#if RequestParameters['error']??>
-				<div class="row col-md-12 col-xs-12 col-sm-12">
-					<div class="alert alert-danger">
-						An error occurred during the login process. Try again.
-					</div>
-				</div>
-			</#if>
-			<form class="form-horizontal" role="form" action="login" method="post">
-				<div class="control-group input-text-wrapper error"> 
-					<label class="control-label" for="username"> Your NT ID </label>
-					<input type="text" id="username" name="username" placeholder="Enter your NT ID" required="" autocomplete="off">
-				</div>	
-				<div class="control-group input-text-wrapper error password" style="margin-top: 20px;margin-bottom: 20px;"> 				
-					<label class="control-label" for="password"><b> Password </b></label>				
-					<input type="password" id="password" name="password" placeholder="Enter your password for NT ID" required="" autocomplete="off">	
-				</div>
-				<input type="hidden" id="csrf_token" name="${_csrf.parameterName}" value="${_csrf.token}" />					
-				<input type="submit" value="login">
-			</form>
+	<div layout:fragment="content" th:remove="tag">
+		<div class="header">
+			<a href="javascript:void(0);" class="logo"><img class="logo__img" height="30" width="30" src="images/pacman_logo.svg"> PacBot OAuth2 Server</a>
+			<div class="header-right">
+	        	<a class="active" th:href="@{/}">Login</a>
 			</div>
 		</div>
-	</div>
-	<div class="footer-pac">
-		<p>© 2018 PacMan (Policy as Code Manager) is developed by the <a>Cloud Strategy & Development Team</a> | <a>Request Feature</a> | <a>Report Issue</a></p>
+		<div>
+			<div class="col-md-4 col-md-offset-4">
+				<h3>Oauth2 Login</h3>
+				<hr>
+				<form action="login.do" method="post">
+					<div th:if="${param.error}">
+						<div class="alert alert-danger">Invalid username or
+							password.</div>
+					</div>
+					<div th:if="${param.logout}">
+						<div class="alert alert-info">You have been logged out.</div>
+					</div>
+					<div class="form-group">
+						<label for="username">Username</label>: <input type="text"
+							id="username" class="form-control" name="username"
+							placeholder="Userame" />
+					</div>
+					<div class="form-group">
+						<label for="password">Password</label>: <input type="password"
+							id="password" class="form-control" name="password"
+							placeholder="Password" />
+
+					</div>
+					<div class="form-group">
+						<div class="row">
+							<div class="col-sm-6">
+								<input type="hidden" th:name="${_csrf.parameterName}"
+									th:value="${_csrf.token}" /> <input type="submit"
+									name="login-submit" id="login-submit"
+									class="form-control btn btn-info" value="Sign In">
+							</div>
+							<div class="col-sm-6">
+								 <input type="reset"
+									name="login-reset" id="login-reset"
+									class="form-control btn btn-default" value="Reset">
+							</div>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<footer class="page-footer font-small blue">
+			<div class="footer-copyright text-center py-3">
+				© 2018 Copyright: <a href="https://github.com/tmobile/pacbot">PacBot (Policy as Code Bot)</a>
+			</div>
+		</footer>
 	</div>
 </body>
 </html>

@@ -17,13 +17,15 @@ package com.tmobile.pacman.api.admin.domain;
 
 import java.util.List;
 
+import com.tmobile.pacman.api.admin.repository.model.User;
+
 /**
  * User Role Configuration Request Domain Class
  */
 public class UserRoleConfigRequest {
 
 	private String roleId;
-	private List<UserDetailsRequest> userDetails;
+	private List<User> userDetails;
 
 	public String getRoleId() {
 		return roleId;
@@ -33,11 +35,11 @@ public class UserRoleConfigRequest {
 		this.roleId = roleId;
 	}
 
-	public List<UserDetailsRequest> getUserDetails() {
+	public List<User> getUserDetails() {
 		return userDetails;
 	}
 
-	public void setUserDetails(List<UserDetailsRequest> userDetails) {
+	public void setUserDetails(List<User> userDetails) {
 		this.userDetails = userDetails;
 	}
 }

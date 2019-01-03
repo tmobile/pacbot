@@ -38,12 +38,12 @@ import org.springframework.data.domain.PageRequest;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.tmobile.pacman.api.admin.domain.UserDetailsRequest;
 import com.tmobile.pacman.api.admin.domain.UserRoleConfigRequest;
 import com.tmobile.pacman.api.admin.domain.UserRolesMappingResponse;
 import com.tmobile.pacman.api.admin.exceptions.PacManException;
 import com.tmobile.pacman.api.admin.repository.UserRolesMappingRepository;
 import com.tmobile.pacman.api.admin.repository.UserRolesRepository;
+import com.tmobile.pacman.api.admin.repository.model.User;
 import com.tmobile.pacman.api.admin.repository.model.UserRoles;
 import com.tmobile.pacman.api.admin.repository.model.UserRolesMapping;
 
@@ -74,11 +74,10 @@ public class UserRolesMappingServiceImplTest {
 		UserRoleConfigRequest roleAllocateDetailsRequest = getUserRoleConfigRequest();
 		List<UserRolesMapping> userRolesMappingDetails = getUserRolesMappingDetailsRequest();
 		when(userRolesMappingRepository.deleteByRoleId(anyString())).thenReturn(userRolesMappingDetails);
-		when(userRolesRepository.exists(anyString())).thenReturn(true);
+		when(userRolesRepository.existsById(anyString())).thenReturn(true);
 		assertThat(userRolesMappingService.allocateUserRole(roleAllocateDetailsRequest, "userId"), is(USER_ROLE_ALLOCATION_SUCCESS));
 	}
-	
-	@SuppressWarnings("unchecked")
+
 	@Test
 	public void allocateUserRoleExceptionTest() throws PacManException {
 		UserRoleConfigRequest roleAllocateDetailsRequest = getUserRoleConfigRequest();
@@ -89,12 +88,8 @@ public class UserRolesMappingServiceImplTest {
 	private UserRoleConfigRequest getUserRoleConfigRequest() {
 		UserRoleConfigRequest userRoleConfigRequest = new UserRoleConfigRequest();
 		userRoleConfigRequest.setRoleId("roleId");
-		List<UserDetailsRequest> userDetails = Lists.newArrayList();
-		UserDetailsRequest userDetailsRequest = new UserDetailsRequest();
-		userDetailsRequest.setDisplayName("displayName");
-		userDetailsRequest.setGivenName("givenName");
-		userDetailsRequest.setUser("user");
-		userDetailsRequest.setUserEmail("userEmail");
+		List<User> userDetails = Lists.newArrayList();
+		User userDetailsRequest = new User();
 		userDetailsRequest.setUserId("userId");
 		userDetails.add(userDetailsRequest);
 		userRoleConfigRequest.setUserDetails(userDetails);
