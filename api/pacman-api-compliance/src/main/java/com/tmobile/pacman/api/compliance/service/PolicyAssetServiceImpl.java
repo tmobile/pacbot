@@ -26,6 +26,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tmobile.pacman.api.commons.Constants;
+import com.tmobile.pacman.api.commons.exception.DataException;
+import com.tmobile.pacman.api.commons.exception.ServiceException;
 import com.tmobile.pacman.api.compliance.domain.PolicyScanInfo;
 import com.tmobile.pacman.api.compliance.domain.PolicyVialationSummary;
 import com.tmobile.pacman.api.compliance.domain.SevInfo;
@@ -46,13 +48,18 @@ public class PolicyAssetServiceImpl implements PolicyAssetService, Constants {
      */
     @Override
     public List<PolicyScanInfo> getPolicyExecutionDetails(String ag,
-            String resourceType, String resourceId) {
+            String resourceType, String resourceId) throws ServiceException {
         List<Map<String, Object>> rules = repository
                 .fetchRuleDetails(resourceType);
-        List<Map<String, Object>> issueList = repository.fetchOpenIssues(ag,
-                resourceType, resourceId, true);
+        List<Map<String, Object>> issueList;
+		try {
+			issueList = repository.fetchOpenIssues(ag,
+			        resourceType, resourceId, true);
+		} catch (DataException e) {
+			throw new ServiceException("Error fetching issues from ES",e);
+		}
         List<PolicyScanInfo> scanList = new ArrayList<>();
-        if (issueList != null) {
+        if (issueList != null && !issueList.isEmpty()) {
 
             for (Map<String, Object> rule : rules) {
                 PolicyScanInfo scanInfo = new PolicyScanInfo();
@@ -94,15 +101,9 @@ public class PolicyAssetServiceImpl implements PolicyAssetService, Constants {
                 // Need additional data source to find if the asset is scanned.
                 // As we only capture issue aduti which is not truley scan
                 // history
-
             }
-            return scanList;
-        } else {
-            return new ArrayList<>();
-            // Issue List null indicates error fetching data from ES related to
-            // issues. Something might have gone wrong there.
-        }
-
+        } 
+        return scanList;
     }
 
     /* (non-Javadoc)
@@ -110,11 +111,16 @@ public class PolicyAssetServiceImpl implements PolicyAssetService, Constants {
      */
     @Override
     public PolicyVialationSummary getPolicyViolationSummary(String ag,
-            String resourceType, String resourceId) {
+            String resourceType, String resourceId) throws ServiceException {
         List<Map<String, Object>> rules = repository
                 .fetchRuleDetails(resourceType);
         Map<String, String> ruleSevMap = new HashMap<>();
-		List<Map<String, Object>> issueList = repository.fetchOpenIssues(ag, resourceType, resourceId, false);
+		List<Map<String, Object>> issueList;
+		try {
+			issueList = repository.fetchOpenIssues(ag, resourceType, resourceId, false);
+		} catch (DataException e) {
+			throw new ServiceException("Error fetching issues from ES",e);
+		}
 
         if (!issueList.isEmpty()) {
             rules.forEach(rule -> {

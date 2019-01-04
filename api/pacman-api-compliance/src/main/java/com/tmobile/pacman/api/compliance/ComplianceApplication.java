@@ -22,6 +22,9 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.util.UrlPathHelper;
 
 /**
  * The Class ComplianceApplication.
@@ -34,7 +37,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 /*@EnableHystrix
 @EnableHystrixDashboard*/
 @ComponentScan(basePackages = "com.tmobile.pacman")
-public class ComplianceApplication /*extends WebMvcConfigurerAdapter*/ {  //Commented the WebMvcConfigurerAdapter since API Security was not working properly
+public class ComplianceApplication implements WebMvcConfigurer {  
 
     /**
      * The main method.
@@ -48,13 +51,14 @@ public class ComplianceApplication /*extends WebMvcConfigurerAdapter*/ {  //Comm
         SpringApplication.run(ComplianceApplication.class, args);
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter#configurePathMatch(org.springframework.web.servlet.config.annotation.PathMatchConfigurer)
+    /**
+     * Configures the PathMatchConfigurer with  UrlPathHelper
+     * @param configurer PathMatchConfigurer
      */
-    /*@Override
+    @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
         UrlPathHelper urlPathHelper = new UrlPathHelper();
         urlPathHelper.setUrlDecode(false);
         configurer.setUrlPathHelper(urlPathHelper);
-    }*/
+    }
 }
