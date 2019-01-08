@@ -805,5 +805,9 @@ export const environment = {
     roleAndDefaultAssetGroup : {
         url: '{{baseUrl}}/admin/users/list',
         method: 'GET'
+    },
+    ruleCategory : {
+        url: '{{baseUrl}}/admin/rule/categories',
+        method: 'GET'
     }
 };

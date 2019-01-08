@@ -17,6 +17,7 @@ package com.tmobile.pacman.api.admin.repository.service;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
@@ -26,6 +27,7 @@ import static org.powermock.api.mockito.PowerMockito.mock;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -75,6 +77,7 @@ import com.tmobile.pacman.api.admin.domain.RuleProjection;
 import com.tmobile.pacman.api.admin.domain.RuleProperty;
 import com.tmobile.pacman.api.admin.domain.S3Property;
 import com.tmobile.pacman.api.admin.exceptions.PacManException;
+import com.tmobile.pacman.api.admin.repository.RuleCategoryRepository;
 import com.tmobile.pacman.api.admin.repository.RuleRepository;
 import com.tmobile.pacman.api.admin.repository.model.Rule;
 import com.tmobile.pacman.api.admin.service.AmazonClientBuilderService;
@@ -124,6 +127,9 @@ public class RuleServiceImplTest {
 	
 	@Mock
 	private InvokeResult invokeResult;
+	
+	@Mock
+	private RuleCategoryRepository ruleCategoryRepository;
 
 	@Before
     public void setUp() throws Exception{
@@ -377,6 +383,13 @@ public class RuleServiceImplTest {
         when(mapper.readValue(anyString(), any(TypeReference.class))).thenReturn(ruleParamDetails);
         when(mapper.writeValueAsString(any())).thenReturn("[]");
 		assertThat(ruleService.updateRule(firstFile, getCreateUpdateRuleDetailsRequest(), "userId123"), is(String.format(AdminConstants.RULE_CREATION_SUCCESS)));
+	}
+	
+	@Test
+	public void getAllRuleCategoriesTest() throws PacManException {
+		
+		when(ruleCategoryRepository.findAll()).thenReturn(new ArrayList<>());
+		assertThat(ruleService.getAllRuleCategories(), is(notNullValue()));
 	}
 	
 	
