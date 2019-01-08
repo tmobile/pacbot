@@ -20,6 +20,7 @@ import static com.tmobile.pacman.api.admin.common.AdminConstants.UNEXPECTED_ERRO
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -54,8 +55,10 @@ import com.tmobile.pacman.api.admin.config.PacmanConfiguration;
 import com.tmobile.pacman.api.admin.domain.CreateUpdateRuleDetails;
 import com.tmobile.pacman.api.admin.domain.RuleProjection;
 import com.tmobile.pacman.api.admin.exceptions.PacManException;
+import com.tmobile.pacman.api.admin.repository.RuleCategoryRepository;
 import com.tmobile.pacman.api.admin.repository.RuleRepository;
 import com.tmobile.pacman.api.admin.repository.model.Rule;
+import com.tmobile.pacman.api.admin.repository.model.RuleCategory;
 import com.tmobile.pacman.api.admin.service.AmazonClientBuilderService;
 import com.tmobile.pacman.api.admin.service.AwsS3BucketService;
 import com.tmobile.pacman.api.admin.util.AdminUtils;
@@ -82,6 +85,9 @@ public class RuleServiceImpl implements RuleService {
 	
 	@Autowired
 	private ObjectMapper mapper;
+	
+	@Autowired
+	private RuleCategoryRepository ruleCategoryRepository;
 	
 	@Override
 	public List<Rule> getAllRulesByTargetType(String targetType) {
@@ -212,6 +218,8 @@ public class RuleServiceImpl implements RuleService {
 				updateRuleDetails.setModifiedDate(currentDate);
 				updateRuleDetails.setRuleType(ruleDetails.getRuleType());
 				updateRuleDetails.setRuleRestUrl(ruleDetails.getRuleRestUrl());
+				updateRuleDetails.setSeverity(ruleDetails.getSeverity());
+				updateRuleDetails.setCategory(ruleDetails.getCategory());
 				createUpdateCloudWatchEventRule(updateRuleDetails);
 				if (ruleDetails.getIsFileChanged() && ruleDetails.getRuleType().equalsIgnoreCase("Classic")) {
 					createUpdateRuleJartoS3Bucket(fileToUpload, updateRuleDetails.getRuleUUID());
@@ -260,6 +268,8 @@ public class RuleServiceImpl implements RuleService {
 				newRuleDetails.setRuleUUID(ruleUUID);
 				newRuleDetails.setRuleType(ruleDetails.getRuleType());
 				newRuleDetails.setRuleRestUrl(ruleDetails.getRuleRestUrl());
+				newRuleDetails.setSeverity(ruleDetails.getSeverity());
+				newRuleDetails.setCategory(ruleDetails.getCategory());
 				createUpdateCloudWatchEventRule(newRuleDetails);
 				if (ruleDetails.getIsFileChanged() && ruleDetails.getRuleType().equalsIgnoreCase("Classic")) {
 					createUpdateRuleJartoS3Bucket(fileToUpload, ruleUUID);
@@ -425,8 +435,18 @@ public class RuleServiceImpl implements RuleService {
 			newJobParams.put("assetGroup", ruleDetails.getAssetGroup());
 			newJobParams.put("ruleUUID", ruleUUID);
 			newJobParams.put("ruleType", ruleDetails.getRuleType());
+			Map<String, Object> severity = new HashMap<>();
+			severity.put("key", "severity");
+			severity.put("value", ruleDetails.getSeverity());
+			severity.put("encrypt", false);
+			Map<String, Object> category = new HashMap<>();
+			category.put("key", "ruleCategory");
+			category.put("value", ruleDetails.getCategory());
+			category.put("encrypt", false);
 			List<Map<String, Object>> environmentVariables = (List<Map<String, Object>>) newJobParams.get("environmentVariables");
 			List<Map<String, Object>> params = (List<Map<String, Object>>) newJobParams.get("params");
+			params.add(severity);
+			params.add(category);
 			newJobParams.put("environmentVariables", encryptDecryptValues(environmentVariables, ruleUUID, isCreatedNew));
 			newJobParams.put("params", encryptDecryptValues(params, ruleUUID, isCreatedNew));
 			return mapper.writeValueAsString(newJobParams);
@@ -465,5 +485,10 @@ public class RuleServiceImpl implements RuleService {
 			}
 		}
 		return ruleParams;
+	}
+	
+	@Override
+	public List<RuleCategory> getAllRuleCategories() throws PacManException{
+		return ruleCategoryRepository.findAll();
 	}
 }

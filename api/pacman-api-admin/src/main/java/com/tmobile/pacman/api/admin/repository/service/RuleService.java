@@ -26,6 +26,7 @@ import com.tmobile.pacman.api.admin.domain.CreateUpdateRuleDetails;
 import com.tmobile.pacman.api.admin.domain.RuleProjection;
 import com.tmobile.pacman.api.admin.exceptions.PacManException;
 import com.tmobile.pacman.api.admin.repository.model.Rule;
+import com.tmobile.pacman.api.admin.repository.model.RuleCategory;
 
 /**
  * Rule Service Functionalities
@@ -160,4 +161,11 @@ public interface RuleService {
      * @return List of Rule Id's
      */
 	public Collection<String> getAllRuleIds();
+	
+	/**
+	 * Gets the all rule categories.
+	 *
+	 * @return the all rule categories
+	 */
+	public List<RuleCategory> getAllRuleCategories() throws PacManException;
 }

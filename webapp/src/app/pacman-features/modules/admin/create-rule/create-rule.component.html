@@ -94,6 +94,16 @@
                                                 <ng-select name="targetType" ngModel (selected)='onSelectTargetType($event)' [allowClear]="true" [items]="targetTypesNames" placeholder="Select Target Type" #targetType required>
                                                 </ng-select>
                                             </div>
+                                            <div class="input-form">
+                                                <label>Severity *</label>
+                                                <ng-select name="ruleSeverity" ngModel [allowClear]="true" [items]="ruleSeverities" placeholder="Select Rule Severity" #ruleSeverity required>
+                                                </ng-select>
+                                            </div>
+                                            <div class="input-form">
+                                                <label>Category *</label>
+                                                <ng-select name="ruleCategory" ngModel [allowClear]="true" [items]="ruleCategories" placeholder="Select Rule Category" #ruleCategory required>
+                                                </ng-select>
+                                            </div>
                                             <div class="freq-col-row input-form">
                                                 <label>Rule Frequency *</label>
                                                 <ng-select name="ruleFrequency" ngModel (selected)='onSelectFrequency($event)' [allowClear]="true" [items]="allFrequencies" placeholder="Select Frequency" required>

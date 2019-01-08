@@ -70,7 +70,7 @@ export class CreateRuleComponent implements OnInit {
   showLoader: boolean = true;
   allMonthDays: any = [];
   allEnvironments: any = [];
-  allRuleParamKeys: any = [];
+  allRuleParamKeys = ["severity","ruleCategory"];
   allEnvParamKeys: any = [];
   allRuleParams: any = [];
   hideContent: boolean = false;
@@ -108,6 +108,8 @@ export class CreateRuleComponent implements OnInit {
   assetGroupNames: any = [];
   datasourceDetails: any = [];
   targetTypesNames: any = [];
+  ruleCategories = [];
+  ruleSeverities = ["critical","high","medium","low"];
   allPolicyIds: any = [];
   allFrequencies: any = ["Daily", "Hourly", "Minutes", "Monthly", "Weekly", "Yearly"];
   allMonths: any = [
@@ -261,6 +263,34 @@ export class CreateRuleComponent implements OnInit {
         this.showLoader = false;
       });
   }
+  
+  getRuleCategoryDetails() {
+    this.rulePolicyLoader = true;
+    this.contentHidden = true;
+    this.rulePolicyLoaderFailure = false;
+    const url = environment.ruleCategory.url;
+    const method = environment.ruleCategory.method;
+    this.adminService.executeHttpAction(url, method, {}, {}).subscribe(reponse => {
+      const categories = [];
+      for (let index = 0; index < reponse[0].length; index++) {
+        const categoryDetail = reponse[0][index];
+        categories.push(categoryDetail.ruleCategory);
+      }
+      this.ruleCategories = categories;
+      this.showLoader = false;
+      this.contentHidden = false;
+      this.rulePolicyLoaderFailure = false;
+      this.rulePolicyLoader = false;
+    },
+      error => {
+        this.rulePolicyLoader = false;
+        this.contentHidden = true;
+        this.rulePolicyLoaderFailure = true;
+        this.ruleCategories = [];
+        this.errorMessage = 'apiResponseError';
+        this.showLoader = false;
+      });
+  }
 
   getAllAssetGroupNames() {
     this.rulePolicyLoader = true;
@@ -309,11 +339,8 @@ export class CreateRuleComponent implements OnInit {
     var url = environment.getAllRuleIds.url;
     var method = environment.getAllRuleIds.method;
     this.adminService.executeHttpAction(url, method, {}, {}).subscribe(reponse => {
-      this.showLoader = false;
-      this.contentHidden = false;
-      this.rulePolicyLoaderFailure = false;
-      this.rulePolicyLoader = false;
       this.ruleIds = reponse[0];
+      this.getRuleCategoryDetails();
     },
       error => {
         this.contentHidden = true;
@@ -343,6 +370,8 @@ export class CreateRuleComponent implements OnInit {
     newRuleModel.ruleParams = this.buildRuleParams();
     newRuleModel.isAutofixEnabled = ruleForm.isAutofixEnabled;
     newRuleModel.displayName = ruleForm.ruleDisplayName;
+    newRuleModel.severity = ruleForm.ruleSeverity[0].text;
+    newRuleModel.category = ruleForm.ruleCategory[0].text;
     var url = environment.createRule.url; 
     var method = environment.createRule.method; 
     if(ruleForm.ruleType === 'Classic') {

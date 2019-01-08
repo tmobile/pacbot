@@ -231,5 +231,23 @@ public class RuleController {
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
 		}
 	}
+	
+	/**
+	 * Gets the all rule category.
+	 *
+	 * @return the all rule category
+	 */
+	@HystrixCommand
+	@ApiOperation(httpMethod = "GET", value = "API to get all Rule Category's", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
+	//@PreAuthorize("@securityService.hasPermission(authentication)")
+	@RequestMapping(path = "/categories", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> getAllRuleCategory() {
+		try {
+			return ResponseUtils.buildSucessResponse(ruleService.getAllRuleCategories());
+		} catch (Exception exception) {
+			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
+			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
+		}
+	}
 }
 

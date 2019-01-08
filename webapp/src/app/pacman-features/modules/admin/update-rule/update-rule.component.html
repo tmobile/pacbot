@@ -67,6 +67,16 @@
                                                     {{ruleDetails.targetType}}
                                                 </ul>
                                             </div>
+                                            <div class="input-form">
+                                                <label>Severity *</label>
+                                                <ng-select name="ruleSeverity" (selected)='onSelectSeverity($event.text)' [allowClear]="true" [items]="ruleSeverities" placeholder="Select Rule Severity" #ruleSeverity required>
+                                                </ng-select>
+                                            </div>
+                                            <div class="input-form">
+                                                <label>Category *</label>
+                                                <ng-select name="ruleCategory" (selected)='onSelectCategory($event.text)' [allowClear]="true" [items]="ruleCategories" placeholder="Select Rule Category" #ruleCategory required>
+                                                </ng-select>
+                                            </div>
                                             <div class="freq-col-row input-form">
                                                 <label>Rule Frequency*</label>
                                                 <ng-select name="ruleFrequency" [(ngModel)]="ruleFrequency" (selected)='onSelectFrequency($event.text)' [allowClear]="true" [items]="allFrequencies" placeholder="Select Frequency" required>
