@@ -112,10 +112,10 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
 
         String ttypesTemp;
         String ttypes = null;
-        try{
         AssetApi assetApi = assetServiceClient.getTargetTypeList(assetGroup, domain);
         AssetApiData data = assetApi.getData();
         AssetApiName[] targetTypes = data.getTargettypes();
+        try{
         for (AssetApiName name : targetTypes) {
             ttypesTemp = new StringBuilder().append('\'').append(name.getType()).append('\'').toString();
             if (Strings.isNullOrEmpty(ttypes)) {
@@ -140,7 +140,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
                     + targetType + ")";
             return rdsepository.getDataFromPacman(ruleIdWithTargetTypeQuery);
         } catch (Exception e) {
-        	LOGGER.error("Error @ StatisticsRepositoryImpl/getRuleIdWithTargetTypeQuery ", e);
+            LOGGER.error("Error @ StatisticsRepositoryImpl/getRuleIdWithTargetTypeQuery ", e);
             return new ArrayList<>();
         }
     }
