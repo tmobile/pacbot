@@ -115,7 +115,6 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
         AssetApi assetApi = assetServiceClient.getTargetTypeList(assetGroup, domain);
         AssetApiData data = assetApi.getData();
         AssetApiName[] targetTypes = data.getTargettypes();
-        try{
         for (AssetApiName name : targetTypes) {
             ttypesTemp = new StringBuilder().append('\'').append(name.getType()).append('\'').toString();
             if (Strings.isNullOrEmpty(ttypes)) {
@@ -123,10 +122,6 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             } else {
                 ttypes = new StringBuilder(ttypes).append(",").append(ttypesTemp).toString();
             }
-        }
-        }catch(Exception e){
-        	LOGGER.error("error proccessing fiegnclien assetServiceClient",e.getMessage());
-        	return "";
         }
         return ttypes;
     }
@@ -141,7 +136,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             return rdsepository.getDataFromPacman(ruleIdWithTargetTypeQuery);
         } catch (Exception e) {
             LOGGER.error("Error @ StatisticsRepositoryImpl/getRuleIdWithTargetTypeQuery ", e);
-            return new ArrayList<>();
+            throw new DataException(e);
         }
     }
 
@@ -161,8 +156,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             JsonObject aggsJson = (JsonObject) parser.parse(paramObj.get(AGGS).toString());
             return aggsJson.getAsJsonObject("accounts").getAsJsonArray(BUCKETS);
         } catch (Exception e) {
-        	LOGGER.error("Error while processing the aws accounts",e.getMessage());
-        	return new JsonArray();
+            throw new DataException(e);
         }
 
     }
@@ -184,8 +178,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             JsonObject totalEvals = (JsonObject) aggregations.get("total_evals");
             return totalEvals.get("value").toString();
         } catch (Exception e) {
-        	LOGGER.error("Error while processing the number of policies evaluated",e.getMessage());
-        	return "0";
+            throw new DataException(e);
         }
 
     }
@@ -206,8 +199,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             JsonObject aggsJson = (JsonObject) parser.parse(paramObj.get(AGGS).toString());
             return aggsJson.getAsJsonObject("severity").getAsJsonArray(BUCKETS);
         } catch (Exception e) {
-        	LOGGER.error("Error while processing the getTotalViolations",e.getMessage());
-        	return new JsonArray();
+            throw new DataException(e);
         }
     }
 
@@ -218,8 +210,8 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             String query="SELECT * FROM cf_RuleInstance WHERE `status`='ENABLED' AND ruleParams LIKE '%\"autofix\":true%'";
             return rdsepository.getDataFromPacman(query);
         } catch (Exception e) {
-        	 LOGGER.error("Error @ StatisticsRepositoryImpl/ getAutofixRulesFromDb ", e);
-             return new ArrayList<>();
+            LOGGER.error("Error @ StatisticsRepositoryImpl/ getAutofixRulesFromDb ", e);
+            throw new DataException(e);
         }
     }
     
@@ -236,8 +228,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
                     mustFilter, mustNotFilter, shouldFilter, null, mustTermsFilter);
 
         } catch (Exception e) {
-        	LOGGER.error("Error while processing the fre auto fix",e.getMessage());
-            return 0l;
+            throw new DataException("" + e);
         }
         return totalAutoFixActionCount;
     }
@@ -260,8 +251,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             Gson googleJson = new Gson();
            return googleJson.fromJson(outerBuckets, ArrayList.class); 
         } catch (Exception e) {
-        	LOGGER.error("Error while processing the fre auto fix",e.getMessage());
-        	return new ArrayList<>();
+            throw new DataException(e);
         }
     }
 
