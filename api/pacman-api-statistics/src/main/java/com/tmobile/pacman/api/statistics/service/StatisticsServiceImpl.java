@@ -261,6 +261,7 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         Long totalViolations;
         Map<String, Long> violationsMap = new HashMap<>();
         JsonParser parser = new JsonParser();
+        try {
         String distributionStr = complianceClient.getDistributionAsJson(AWS, null);
         if (!Strings.isNullOrEmpty(distributionStr)) {
             JsonObject responseDetailsjson = parser.parse(distributionStr).getAsJsonObject();
@@ -274,6 +275,10 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
             violationsMap.put("medium", severityJson.get("medium").getAsLong());
             violationsMap.put("totalViolations", totalViolations);
         }
+        } catch (Exception e) {
+			LOGGER.error("error processing compliance fiegnclient", e);
+			return violationsMap;
+		}
         return violationsMap;
     }
 
@@ -295,6 +300,7 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         if(null==heimdallElasticSearchRepository) {
         	return eventsProcessed;
         }
+        try{
         JsonArray eventsBuckets = heimdallElasticSearchRepository.getEventsProcessed();
 
         // Get Total Events Processed
@@ -305,6 +311,10 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
                 eventsProcessed = eventsBuckets.get(i).getAsJsonObject().get("doc_count").getAsLong();
             }
         }
+        }catch(Exception e){
+	    	LOGGER.error("error processing getTotalEventProcessed", e.getMessage());
+	    	return eventsProcessed;
+	    }
         return eventsProcessed;
     }
 
@@ -317,10 +327,11 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         Map<String,Long> totalAssetCountMap = new HashMap<>();
         totalAssetCountMap.put(TOTAL, 0l);
         JsonParser parser = new JsonParser();
+        try{
         Map<String, Object> assetCounts = assetClient.getTypeCounts(AWS, null, null);
         // Get Total Asset Count
         assetCounts.entrySet().stream().forEach(entry->{
-
+        	
         if ("data".equalsIgnoreCase(entry.getKey())) {
             Long totalAssets = 0l;
             JsonObject responseDetailsjson = parser.parse(entry.getValue().toString()).getAsJsonObject();
@@ -333,7 +344,10 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         }
 
         });
-
+        }catch(Exception e){
+	    	LOGGER.error("error processing fiegn assetClienr", e.getMessage());
+	    	return totalAssetCountMap.get(TOTAL);
+	    }
         return totalAssetCountMap.get(TOTAL);
     }
 
