@@ -28,7 +28,7 @@ import { WorkflowService } from '../../../../core/services/workflow.service';
 import { RouterUtilityService } from '../../../../shared/services/router-utility.service';
 import { AdminService } from '../../../services/all-admin.service';
 import { NgForm } from '@angular/forms';
-import { SelectComponent } from 'ng2-select';
+import { SelectComponent , SelectItem} from 'ng2-select';
 import { UploadFileService } from '../../../services/upload-file-service';
 
 @Component({
@@ -46,6 +46,8 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
   @ViewChild('targetType') targetTypeSelectComponent: SelectComponent;
   // @ViewChild('ruleFrequencyMonthDay') ruleFrequencyMonthDayComponent: SelectComponent;
   @ViewChild('ruleFrequency') ruleFrequencyComponent: SelectComponent;
+  @ViewChild('ruleSeverity') ruleSeverityComponent: SelectComponent;
+  @ViewChild('ruleCategory') ruleCategoryComponent: SelectComponent;
 
   ruleFrequencyMonth: any;
   ruleFrequencyDay: any;
@@ -100,6 +102,7 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
   filters: any = [];
   searchCriteria: any;
   filterText: any = {};
+  ruleId = '';
   errorValue: number = 0;
   showGenericMessage: boolean = false;
   dataTableDesc: String = '';
@@ -109,7 +112,7 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
   queryParamsWithoutFilter: any;
   urlToRedirect: any = '';
   mandatory: any;
-  allRuleParamKeys: any = [];
+  allRuleParamKeys: any = ["severity","ruleCategory"];
   allEnvParamKeys: any = [];
   activePolicy: any = [];
   parametersInput: any = { ruleKey: '', ruleValue: '', envKey: '', envValue: '' };
@@ -117,6 +120,8 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
   assetGroupNames: any = [];
   datasourceDetails: any = [];
   targetTypesNames: any = [];
+  ruleCategories = [];
+  ruleSeverities = ["critical","high","medium","low"];
   allPolicyIds: any = [];
   allFrequencies: any = ['Daily', 'Hourly', 'Minutes', 'Monthly', 'Weekly', 'Yearly'];
   allMonths: any = [
@@ -140,6 +145,8 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
 
   ruleType: any = 'Classic';
   selectedFrequency: any = '';
+  selectedSeverity:any = '';
+  selectedCategory:any = '';
   ruleJarFileName: any = '';
   selectedPolicyId: any = '';
   selectedTargetType: any = '';
@@ -230,6 +237,7 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
     this.adminService.executeHttpAction(url, method, {}, {}).subscribe(reponse => {
       this.showLoader = false;
       this.allAlexaKeywords = reponse[0];
+      this.getRuleCategoryDetails();
     },
       error => {
         this.allAlexaKeywords = [];
@@ -252,6 +260,25 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
     },
       error => {
         this.datasourceDetails = [];
+        this.errorMessage = 'apiResponseError';
+        this.showLoader = false;
+      });
+  }
+  
+  getRuleCategoryDetails() {
+    const url = environment.ruleCategory.url;
+    const method = environment.ruleCategory.method;
+    this.adminService.executeHttpAction(url, method, {}, {}).subscribe(reponse => {
+      const categories = [];
+      for (let index = 0; index < reponse[0].length; index++) {
+        const categoryDetail = reponse[0][index];
+        categories.push(categoryDetail.ruleCategory);
+      }
+      this.ruleCategories = categories;
+      this.showLoader = false;
+    },
+      error => {
+        this.ruleCategories = [];
         this.errorMessage = 'apiResponseError';
         this.showLoader = false;
       });
@@ -291,6 +318,8 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
     newRuleModel.displayName = ruleForm.ruleDisplayName;
     newRuleModel.ruleParams = this.buildRuleParams();
     newRuleModel.isAutofixEnabled = ruleForm.isAutofixEnabled;
+    newRuleModel.severity = this.selectedSeverity;
+    newRuleModel.category = this.selectedCategory;
 
     if (this.isFileChanged) {
       this.currentFileUpload = this.selectedFiles.item(0);
@@ -512,6 +541,17 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
       }
       if (ruleParams.hasOwnProperty('params')) {
         if (ruleParams.params instanceof Array) {
+          for (let i = ruleParams.params.length - 1; i >= 0; i -= 1) {
+            if(ruleParams.params[i].key == 'severity') {
+              this.selectedSeverity = ruleParams.params[i].value;
+              this.ruleSeverityComponent.active.push(new SelectItem(ruleParams.params[i].value));
+              ruleParams.params.splice(i,1);
+            } else if(ruleParams.params[i].key == 'ruleCategory') {
+              this.selectedCategory = ruleParams.params[i].value;
+              this.ruleCategoryComponent.active.push(new SelectItem(ruleParams.params[i].value));
+              ruleParams.params.splice(i,1);
+            }
+          }
           this.allRuleParams = ruleParams.params;
           this.allRuleParamKeys = _.map(ruleParams.params, 'key');
         }
@@ -704,6 +744,14 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
   onSelectFrequencyMonthDay(selectedMonthDay) {
 
   }
+  
+  onSelectSeverity(selectedSeverity) {
+    this.selectedSeverity = selectedSeverity;
+  }
+
+  onSelectCategory(selectedCategory) {
+    this.selectedCategory = selectedCategory;
+  }
 
   onSelectFrequencyMonth(selectedMonth) {
     let monthDays: any = [];
@@ -741,7 +789,7 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
       if (currentQueryParams) {
 
         this.FullQueryParams = currentQueryParams;
-
+        this.ruleId = this.FullQueryParams.ruleId;
         this.queryParamsWithoutFilter = JSON.parse(JSON.stringify(this.FullQueryParams));
         delete this.queryParamsWithoutFilter['filter'];
 

@@ -27,6 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+import java.security.Principal;
 import java.util.Date;
 import java.util.List;
 
@@ -36,6 +37,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
@@ -56,6 +58,8 @@ import com.tmobile.pacman.api.admin.repository.service.DomainService;
 public class DomainControllerTest {
 	
 	private MockMvc mockMvc;
+	
+	private Principal principal;
 
 	@Mock
 	private DomainService domainService;
@@ -67,8 +71,8 @@ public class DomainControllerTest {
 	public void setUp() {
 		MockitoAnnotations.initMocks(this);
 		mockMvc = MockMvcBuilders.standaloneSetup(domainController)
-				/* .addFilters(new CORSFilter()) */
 				.build();
+		principal = Mockito.mock(Principal.class);
 	}
 	
 	@Test
@@ -145,8 +149,8 @@ public class DomainControllerTest {
 	@Test
 	public void createDomainTest() throws Exception {
 		byte[] domainDetailsContent = toJson(getDomainDetailsRequest());
-		when(domainService.createDomain(any())).thenReturn(AdminConstants.DOMAIN_CREATION_SUCCESS);
-		mockMvc.perform(post("/domains/create")
+		when(domainService.createDomain(any(), any())).thenReturn(AdminConstants.DOMAIN_CREATION_SUCCESS);
+		mockMvc.perform(post("/domains/create").principal(principal)
 				.content(domainDetailsContent)
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -158,7 +162,7 @@ public class DomainControllerTest {
 	@SuppressWarnings("unchecked")
 	public void createDomainExceptionTest() throws Exception {
 		byte[] domainDetailsContent = toJson(getDomainDetailsRequest());
-		when(domainService.createDomain(any())).thenThrow(Exception.class);
+		when(domainService.createDomain(any(), any())).thenThrow(Exception.class);
 		mockMvc.perform(post("/domains/create")
 				.content(domainDetailsContent)
 				.contentType(MediaType.APPLICATION_JSON)
@@ -170,8 +174,8 @@ public class DomainControllerTest {
 	@Test
 	public void updateDomainTest() throws Exception {
 		byte[] domainDetailsContent = toJson(getDomainDetailsRequest());
-		when(domainService.updateDomain(any())).thenReturn(AdminConstants.DOMAIN_UPDATION_SUCCESS);
-		mockMvc.perform(post("/domains/update")
+		when(domainService.updateDomain(any(), any())).thenReturn(AdminConstants.DOMAIN_UPDATION_SUCCESS);
+		mockMvc.perform(post("/domains/update").principal(principal)
 				.content(domainDetailsContent)
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
 				.andExpect(status().isOk())
@@ -183,7 +187,7 @@ public class DomainControllerTest {
 	@SuppressWarnings("unchecked")
 	public void updateDomainExceptionTest() throws Exception {
 		byte[] domainDetailsContent = toJson(getDomainDetailsRequest());
-		when(domainService.updateDomain(any())).thenThrow(Exception.class);
+		when(domainService.updateDomain(any(), any())).thenThrow(Exception.class);
 		mockMvc.perform(post("/domains/update")
 				.content(domainDetailsContent)
 				.contentType(MediaType.APPLICATION_JSON)

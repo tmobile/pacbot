@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -19,13 +19,13 @@ import static com.google.common.collect.Lists.newArrayList;
 
 import java.util.List;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import com.google.common.collect.Lists;
 import com.tmobile.pacman.api.commons.Constants;
@@ -56,12 +56,13 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * Swagger Config Class
- *
+ * 
  * @author Nidhish
  */
 @EnableSwagger2
 @Configuration
-public class SwaggerConfig extends WebMvcConfigurerAdapter implements Constants {
+public class SwaggerConfig implements WebMvcConfigurer, Constants {
+
 	@Override
 	public void addResourceHandlers(final ResourceHandlerRegistry registry) {
 		registry.addResourceHandler("/**").addResourceLocations("classpath:/docs/v1/");
@@ -70,27 +71,30 @@ public class SwaggerConfig extends WebMvcConfigurerAdapter implements Constants 
 
 	@Value("${auth.active}")
 	private String dataSource;
-
+	
 	@Value("${spring.application.title}")
 	private String serviceName;
-
+	
 	@Value("${spring.application.description}")
 	private String serviceDesc;
-
+	
 	@Value("${azure.authorizeEndpoint:}")
 	private String authorizeEndpoint;
 
 	@Value("${azure.activedirectory.client-id:}")
 	private String clientId;
-
+	
 	@Value("${azure.activedirectory.scope:}")
 	private String scope;
-
+	
 	@Value("${azure.activedirectory.scopeDesc:}")
 	private String scopeDesc;
-
+	
 	@Value("${azure.activedirectory.state:}")
 	private String state;
+	
+	@Value("${CONFIG_SERVER_URL:}")
+	private String configUrl;
 
 	@Bean
 	public Docket userApi() {
@@ -128,29 +132,29 @@ public class SwaggerConfig extends WebMvcConfigurerAdapter implements Constants 
 				.build();
 		return newArrayList(grantType);
 	}
-
+	
 	@Bean
     public SecurityConfiguration securityInfo() {
-		String hostName = System.getenv("PACMAN_HOST_NAME");
+		String hostName = configUrl.split("/api")[0];
 		if (dataSource.equalsIgnoreCase("azuread")) {
 			return new SecurityConfiguration(
-					clientId,
-					StringUtils.EMPTY,
-					hostName,
-					clientId,
-					BEARER,
-					ApiKeyVehicle.HEADER,
-					AUTHORIZATION,
+					clientId, 
+					StringUtils.EMPTY, 
+					hostName, 
+					clientId, 
+					BEARER, 
+					ApiKeyVehicle.HEADER, 
+					AUTHORIZATION, 
 					StringUtils.EMPTY
 			);
 		} else {
 			return new SecurityConfiguration(
-					null,
-					null,
+					null, 
+					null, 
 					hostName,
 					null,
 					null,
-					ApiKeyVehicle.HEADER,
+					ApiKeyVehicle.HEADER, 
 					AUTHORIZATION,
 					null
 			);

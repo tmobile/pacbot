@@ -19,15 +19,16 @@ package com.tmobile.pacman.api.admin.domain;
  * AttributeValuesRequest Domain Class
  */
 public class AttributeValuesRequest {
-	private String endpoint;
+	
+	private String index;
 	private String payload;
 
-	public String getEndpoint() {
-		return endpoint;
+	public String getIndex() {
+		return index;
 	}
 
-	public void setEndpoint(String endpoint) {
-		this.endpoint = endpoint;
+	public void setIndex(String index) {
+		this.index = index;
 	}
 
 	public String getPayload() {

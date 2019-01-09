@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,14 +33,19 @@ import com.google.common.collect.Maps;
 import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.auth.domain.TokenDetails;
 import com.tmobile.pacman.api.auth.domain.UserLoginCredentials;
-import com.tmobile.pacman.api.auth.service.ApiService;
-import com.tmobile.pacman.api.auth.service.AuthService;
+import com.tmobile.pacman.api.auth.services.ApiService;
+import com.tmobile.pacman.api.auth.services.AuthService;
 
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 
+/**
+ * @author 	NidhishKrishnan
+ * @purpose Controller for user authorization functionalities
+ * @since	November 10, 2018
+ * @version	1.0 
+**/
 @RestController
-@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class AuthController {
 	
 	@Autowired
@@ -98,60 +103,14 @@ public class AuthController {
 	@ApiOperation(httpMethod = "GET", value = "Logout User from Auth Server")
 	@RequestMapping(value = "/user/logout-session", method = RequestMethod.GET)
 	@HystrixCommand
-	public void logout(Principal principal) {
+	public void logout(@AuthenticationPrincipal Principal principal) {
 		apiService.logout(principal);
 	}
-	
-	/**
-	 * 
-	 * @param credentials
-	 * @return
-	 */
-	/*
-	@ApiOperation(httpMethod = "POST", value = "test method")
-	@RequestMapping(value = "/test", method = RequestMethod.POST)
-	@HystrixCommand
-	public ResponseEntity<Object> doTest() {
-			return new ResponseEntity<>(new ArrayList<>(), HttpStatus.OK);
-	
-	}
-	
-	@ApiOperation(httpMethod = "GET", value = "secure method")
-	@PreAuthorize("@securityService.hasPermission(authentication, 'ROLE_ADMIN')")
-	@RequestMapping(value = "/secure-test", method = RequestMethod.GET)
-	@HystrixCommand
-	public ResponseEntity<Object> secureTest() {
-		return ResponseUtils.buildSucessResponse(newArrayList("admin", "secure"));
-	}
-	
-	@ApiOperation(httpMethod = "GET", value = "secure method")
-	@RequestMapping(value = "/public-test", method = RequestMethod.GET)
-	@HystrixCommand
-	public ResponseEntity<Object> publicTest() {
-		return ResponseUtils.buildSucessResponse(newArrayList("user", "public"));
-	}
-	
-	
-	@ApiOperation(httpMethod = "POST", value = "Login to Auth Server")
-	@RequestMapping(value = "/client-auth", method = RequestMethod.POST)
-	@HystrixCommand
-	public ResponseEntity<Object> clientAuth(@ApiParam(value = "Provide ClientId, Username and Password Details", required = true) @RequestBody final UserClientCredentials credentials) {
-		Map<String, Object> response = authService.authorizeUser(credentials);
-		return new ResponseEntity<>(response, HttpStatus.OK);
-	}
-	
-	@ApiOperation(httpMethod = "POST", value = "Login to Auth Server")
-	@RequestMapping(value = "/user/login", method = RequestMethod.POST)
-	@HystrixCommand
-	public ResponseEntity<Object> login(@ApiParam(value = "Provide ClientId, Username and Password Details", required = true) @RequestBody final UserClientCredentials credentials) {
-		Map<String, Object> response = authService.loginProxy(credentials);
-		return new ResponseEntity<>(response, HttpStatus.OK);
-	}*/
 
 	@ApiOperation(httpMethod = "GET", value = "Get User Details")
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
 	@HystrixCommand
-	public Principal user(Principal user) {
+	public Principal user(@AuthenticationPrincipal Principal user) {
 		return user;
 	}
 	

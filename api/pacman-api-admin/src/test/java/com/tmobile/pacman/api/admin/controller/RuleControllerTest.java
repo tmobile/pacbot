@@ -16,8 +16,11 @@
 package com.tmobile.pacman.api.admin.controller;
 
 import static com.tmobile.pacman.api.admin.common.AdminConstants.UNEXPECTED_ERROR_OCCURRED;
+import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.Matchers.hasSize;
 import static org.hamcrest.Matchers.is;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyList;
@@ -49,6 +52,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.web.servlet.MockMvc;
@@ -60,6 +64,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.collect.Lists;
 import com.tmobile.pacman.api.admin.common.AdminConstants;
 import com.tmobile.pacman.api.admin.domain.CreateUpdateRuleDetails;
+import com.tmobile.pacman.api.admin.exceptions.PacManException;
 import com.tmobile.pacman.api.admin.repository.model.Rule;
 import com.tmobile.pacman.api.admin.repository.service.RuleService;
 
@@ -223,6 +228,16 @@ public class RuleControllerTest {
 		mockMvc.perform(MockMvcRequestBuilders.fileUpload("/rule/update").file("file", firstFile.getBytes())
 				.principal(principal).content(ruleDetailsContent).contentType(MediaType.MULTIPART_FORM_DATA_VALUE))
 				.andExpect(status().isExpectationFailed()).andExpect(jsonPath("$.message", is(UNEXPECTED_ERROR_OCCURRED)));
+	}
+	
+	@Test
+	public void getAllRuleCategoryTest() throws PacManException {
+		
+		when(ruleService.getAllRuleCategories()).thenReturn(new ArrayList<>());
+        assertThat(ruleController.getAllRuleCategory(), is(notNullValue()));
+        
+        when(ruleService.getAllRuleCategories()).thenThrow(new PacManException("error"));
+        assertTrue(ruleController.getAllRuleCategory().getStatusCode() == HttpStatus.EXPECTATION_FAILED);
 	}
 
 	private MultipartFile getMockMultipartFile() {

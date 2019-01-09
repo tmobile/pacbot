@@ -210,6 +210,7 @@ window.onOAuthComplete = function(e, o) {
             if(window.location.hostname === 'localhost') {
             	url = hostName + '/api/auth/user/authorize';
             }
+            url = decodeURIComponent(url);
             $.ajax({
                 url: url,
                 headers: {

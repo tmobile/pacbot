@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.compliance.client;
 
-import org.springframework.cloud.netflix.feign.FeignClient;
+import org.springframework.cloud.openfeign.FeignClient;
 
 /**
  * The Interface AuthServiceClient.

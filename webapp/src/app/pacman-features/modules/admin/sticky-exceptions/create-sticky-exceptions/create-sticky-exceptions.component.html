@@ -12,7 +12,7 @@
  * limitations under the License.
  -->
 
- <div class="sticky-exceptions-wrapper floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+<div class="sticky-exceptions-wrapper floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
     <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
     <div class="floating-widgets-header flex flex-between">
         <div>
@@ -50,7 +50,7 @@
                         <div [hidden]="hideContent">
                             <div class="data-content group-details">
                                 <div class="pacman-progress" [hidden]="!assetLoader">
-                                    <pacman-loading></pacman-loading>
+                                    <app-pacman-loader></app-pacman-loader>
                                     <div class="title">
                                         Please Wait...
                                     </div>
@@ -192,7 +192,7 @@
                             </div>
                         </div>
                         <div class="pacman-progress" *ngIf="assetGroupExceptionLoader">
-                            <pacman-loading></pacman-loading>
+                            <app-pacman-loader></app-pacman-loader>
                             <div class="title">
                                 Please Wait...
                             </div>

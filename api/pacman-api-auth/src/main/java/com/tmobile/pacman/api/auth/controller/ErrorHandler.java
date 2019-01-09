@@ -22,6 +22,12 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+/**
+ * @author 	NidhishKrishnan
+ * @purpose Custom implementation for ErrorHandler
+ * @since	November 10, 2018
+ * @version	1.0 
+**/
 @ControllerAdvice
 public class ErrorHandler {
 

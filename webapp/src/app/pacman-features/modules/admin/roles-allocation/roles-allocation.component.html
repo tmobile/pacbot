@@ -20,16 +20,16 @@
             <h1 class="title-text">{{pageTitle}}</h1>
         </div>
     </div>
-    <div class="floating-widgets-container">
+    <div class="floating-widgets-container data-table-container">
         <section>
             <ul>
                 <li class="widget-wrapper relative">
-                    <div class="relative">
+                    <div class="relative table-head-wrapper">
                         <app-data-table [searchTextValues]=searchTxt [showGenericMessage]='showGenericMessage' [errorValue]='errorValue' [parentName]="'taggingTargetMessage'" [showingArr]='showingArr' [outerArr]='outerArr' [searchableHeader]='true' [allColumns]='allColumns'
                             [dataHead]="'All User Roles'" (selectedRow)='goToDetails($event)' [firstPaginator]='firstPaginator' [lastPaginator]='lastPaginator' [totalRows]='totalRows' [currentPointer]='currentPointer' (searchRowTxt)='searchCalled($event)'
                             (previousPageCalled)='prevPage()' (nextPageCalled)='nextPage()' (searchTriggerred)='callNewSearch()'>
                         </app-data-table>
-                        <div class="data-table-desc">{{dataTableDesc}}</div>
+                        <div *ngIf='dataTableDesc' class="data-table-desc">{{dataTableDesc}}</div>
                     </div>
                 </li>
             </ul>

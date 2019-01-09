@@ -50,6 +50,8 @@ public class Rule {
 	private String displayName;
 	private Date createdDate;
 	private Date modifiedDate;
+	private String severity;
+	private String category;
 
 	public String getRuleId() {
 		return ruleId;
@@ -193,5 +195,21 @@ public class Rule {
 
 	public void setModifiedDate(Date modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+	
+	public String getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 }

@@ -14,7 +14,7 @@
  * the License.
  ******************************************************************************/
 package com.tmobile.pacman.api.admin.controller;
-import static com.tmobile.pacman.api.admin.common.AdminConstants.ASGC;
+
 import static com.tmobile.pacman.api.admin.common.AdminConstants.UNEXPECTED_ERROR_OCCURRED;
 
 import java.security.Principal;
@@ -25,9 +25,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -68,7 +68,6 @@ public class AssetGroupExceptionController {
      * @return All AssetGroupException Details
      */
 	@ApiOperation(httpMethod = "GET", value = "API to get all asset group exception details", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/list", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getAllAssetGroupExceptionDetails(
 		@ApiParam(value = "provide valid page number", required = true) @RequestParam("page") Integer page,
@@ -91,7 +90,6 @@ public class AssetGroupExceptionController {
      * @return All AssetGroup Exception Details
      */
 	@ApiOperation(httpMethod = "GET", value = "API to get all asset group exception details by exception name and datasource", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/list-by-name-and-datasource", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getAllTargetTypesByExceptionNameAndDataSource(
 		@ApiParam(value = "provide valid exception name", required = true) @RequestParam(defaultValue="", name = "exceptionName", required = true) String exceptionName,
@@ -113,11 +111,10 @@ public class AssetGroupExceptionController {
      * @return Success or Failure response
      */
 	@ApiOperation(httpMethod = "POST", value = "API to configure asset group exception", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/configure", method = RequestMethod.POST,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> createAssetGroupDetails(@AuthenticationPrincipal Principal user, @RequestBody CreateAssetGroupExceptionDetailsRequest assetGroupDetails) {
 		try {
-			return ResponseUtils.buildSucessResponse(assetGroupExceptionService.createAssetGroupExceptions(assetGroupDetails, ASGC));
+			return ResponseUtils.buildSucessResponse(assetGroupExceptionService.createAssetGroupExceptions(assetGroupDetails, user.getName()));
 		} catch (Exception exception) {
 			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
@@ -133,11 +130,10 @@ public class AssetGroupExceptionController {
      * @return Success or Failure response
      */
 	@ApiOperation(httpMethod = "POST", value = "API to delete asset group exception", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/delete", method = RequestMethod.POST,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> createAssetGroupDetails(@AuthenticationPrincipal Principal user, @RequestBody DeleteAssetGroupExceptionRequest assetGroupDetails) {
 		try {
-			return ResponseUtils.buildSucessResponse(assetGroupExceptionService.deleteAssetGroupExceptions(assetGroupDetails, ASGC));
+			return ResponseUtils.buildSucessResponse(assetGroupExceptionService.deleteAssetGroupExceptions(assetGroupDetails, user.getName()));
 		} catch (Exception exception) {
 			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
@@ -151,7 +147,6 @@ public class AssetGroupExceptionController {
      * @return All Exception Names
      */
 	@ApiOperation(httpMethod = "GET", value = "API to get all asset group exception names", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/exception-names", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getAllExceptionNames() {
 		try {
@@ -161,6 +156,5 @@ public class AssetGroupExceptionController {
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
 		}
 	}
-
 }
 

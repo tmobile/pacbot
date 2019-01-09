@@ -1,4 +1,3 @@
 server:
-  contextPath: /api/statistics
-  
-    
+  servlet:
+    context-path: /api/statistics

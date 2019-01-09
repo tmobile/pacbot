@@ -31,7 +31,7 @@
 }
 
 .widget-wrapper {
-    min-height: 17em;
+    padding-bottom: 4px;
 }
 
 .data-table-desc {
@@ -46,34 +46,6 @@
 
 .admin-widgets-header h1 {
     text-transform: capitalize;
-}
-
-.issue-listing-wrapper /deep/ .data-table-wrap {
-    min-height: calc( 100vh - 24em);
-}
-
-.issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 32em);
-}
-
-.issue-listing-wrapper /deep/ .data-table-inner-wrap {
-    max-height: calc(100vh - 35em)
-}
-
-.issue-listing-wrapper /deep/ .data-table-wrap.loading {
-    min-height: calc( 100vh - 24em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-wrap {
-    min-height: calc(100vh - 20em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 28em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
-    max-height: calc(100vh - 31em)
 }
 
 .details-bar[_ngcontent-c14] {
@@ -161,22 +133,6 @@ input.inputarea-container {
     display: inline-block;
     border: none;
 }
-
-
-/*
-:host ::ng-deep ng-select .ui-select-placeholder .text-muted {
-    color: dimgrey !important;
-    border: 1px solid #aaa !important;
-    padding-bottom: 5px;
-    border-radius: 0.3em !important;
-    height: 2.7em !important;
-    padding: 0 0.5em;
-    display: inline-block;
-    border: none;
-    width: 100%;
-    padding-left: 0.2em !important;
-}
-*/
 
 :host ::ng-deep ng-select .form-control .ui-select-search {
     border: 1px solid #aaa !important;
@@ -339,6 +295,8 @@ li.list-inputs:hover {
     box-shadow: 0 1px 7px -1px #0000001e, 0 2px 4px 0 #00000023;
     font-size: 1em;
     overflow: hidden;
+    max-height: calc( 100vh - 21em) !important;
+    min-height: calc( 100vh - 21em) !important;
 }
 
 .data-table-wrap.loading {
@@ -695,8 +653,7 @@ li.list-inputs:hover {
 }
 
 .data-content {
-    max-height: calc(100vh - 26em);
-    min-height: calc(100vh - 26em) !important;
+    max-height: calc(100vh - 30em);
     overflow: auto;
 }
 
@@ -1024,7 +981,7 @@ button.tmbutton {
     border: solid 2px #ed027d;
     font-size: 13px;
     font-weight: 600;
-    color: #232323;
+    color: #ed027d;
     text-align: center;
     letter-spacing: 0.3px;
     cursor: pointer;
@@ -1078,7 +1035,7 @@ button.tmbutton:disabled:hover {
     width: 100%;
     min-height: 8.4em;
     max-height: 8em;
-    overflow-y: auto;
+    overflow-y: hidden;
     overflow-x: hidden;
 }
 
@@ -1784,4 +1741,26 @@ button.tmbutton:disabled:hover {
     border: solid 2px #d3d3d3;
     min-height: 11.132em;
     margin-bottom: 20px;
+}
+
+.floating-widgets-section /deep/ .data-table-wrap.loading {
+    max-height: calc( 100vh - 21em) !important;
+    min-height: calc( 100vh - 21em) !important;
+}
+
+.floating-widgets-section /deep/ .data-table-inner-wrap {
+    height: auto;
+}
+
+.floating-widgets-section /deep/ .data-table-content {
+    max-height: calc( 100vh - 30em);
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-content {
+    max-height: calc( 100vh - 30em);
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
+    max-height: 8em;
+    overflow-y: auto;
 }
