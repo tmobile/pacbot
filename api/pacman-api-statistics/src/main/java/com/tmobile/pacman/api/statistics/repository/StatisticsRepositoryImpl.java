@@ -77,22 +77,22 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
 
     /** The Constant LOGGER. */
     private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsRepositoryImpl.class);
-    
+
     /** The Constant AG_NAME_AWS. */
     private static final String AG_NAME_AWS = "aws";
-    
+
     /** The Constant PROTOCOL. */
     private static final String PROTOCOL = "http";
-    
+
     /** The Constant AGGS. */
     private static final String AGGS = "aggregations";
-    
+
     /** The Constant BUCKETS. */
     private static final String BUCKETS = "buckets";
-    
+
     /** The Constant SEARCH. */
     private static final String SEARCH = "_search";
-    
+
     /** The elastic search repository. */
     @Autowired
     private ElasticSearchRepository elasticSearchRepository;
@@ -124,10 +124,10 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
                 ttypes = new StringBuilder(ttypes).append(",").append(ttypesTemp).toString();
             }
         }
-    }catch(Exception e){
-    	LOGGER.error("error proccessing fiegnclien assetServiceClient",e.getMessage());
-    	return "";
-    }
+        }catch(Exception e){
+        	LOGGER.error("error proccessing fiegnclien assetServiceClient",e.getMessage());
+        	return "";
+        }
         return ttypes;
     }
 
@@ -140,8 +140,8 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
                     + targetType + ")";
             return rdsepository.getDataFromPacman(ruleIdWithTargetTypeQuery);
         } catch (Exception e) {
-        	 LOGGER.error("Error @ StatisticsRepositoryImpl/getRuleIdWithTargetTypeQuery ", e);
-             return new ArrayList<>();
+            LOGGER.error("Error @ StatisticsRepositoryImpl/getRuleIdWithTargetTypeQuery ", e);
+            return new ArrayList<>();
         }
     }
 
@@ -214,7 +214,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
     @Override
     public List<Map<String, Object>> getAutofixRulesFromDb() throws DataException{
         try {
-                    
+
             String query="SELECT * FROM cf_RuleInstance WHERE `status`='ENABLED' AND ruleParams LIKE '%\"autofix\":true%'";
             return rdsepository.getDataFromPacman(query);
         } catch (Exception e) {
@@ -222,7 +222,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
              return new ArrayList<>();
         }
     }
-    
+
     private Long getAutoFixActionCount() throws DataException{
 
         long totalAutoFixActionCount;
@@ -241,7 +241,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
         }
         return totalAutoFixActionCount;
     }
-    
+
     /* (non-Javadoc)
      * @see com.tmobile.pacman.api.statistics.repository.StatisticsRepository#getAutofixActionCountByRule()
      */
