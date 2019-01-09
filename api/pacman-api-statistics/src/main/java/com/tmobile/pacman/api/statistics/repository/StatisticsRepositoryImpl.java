@@ -218,7 +218,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             String query="SELECT * FROM cf_RuleInstance WHERE `status`='ENABLED' AND ruleParams LIKE '%\"autofix\":true%'";
             return rdsepository.getDataFromPacman(query);
         } catch (Exception e) {
-        	 LOGGER.error("Error @ StatisticsRepositoryImpl/ getAutofixRulesFromDb ", e);
+           LOGGER.error("Error @ StatisticsRepositoryImpl/ getAutofixRulesFromDb ", e);
              return new ArrayList<>();
         }
     }
