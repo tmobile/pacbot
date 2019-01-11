@@ -398,7 +398,7 @@ export class UpdateJobExecutionManagerComponent implements OnInit, OnDestroy {
 
   addEnvironmentParameters(parametersInput: any, isEncrypted: any) {
     if (parametersInput.envKey.trim() !== '' && parametersInput.envValue.trim() !== '') {
-      this.allEnvironments.push({ key: parametersInput.envKey.trim(), value: parametersInput.envValue.trim(), encrypt: isEncrypted.checked });
+      this.allEnvironments.push({ name: parametersInput.envKey.trim(), value: parametersInput.envValue.trim(), encrypt: isEncrypted.checked });
       this.allEnvParamKeys.push(parametersInput.envKey.trim());
       parametersInput.envKey = '';
       parametersInput.envValue = '';
