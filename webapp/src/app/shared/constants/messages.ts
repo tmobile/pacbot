@@ -92,6 +92,10 @@ export const MESSAGES = {
         'noBranchesFound': {
             'title': '',
             'description': 'No Branches found for this criteria'
+        },
+        'noPolicyFound': {
+            'title': '',
+            'description': 'There are no active Policies for this Asset Type.'
         }
     }
 };
