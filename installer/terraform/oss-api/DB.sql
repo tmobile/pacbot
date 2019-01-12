@@ -483,7 +483,7 @@ CREATE TABLE `oauth_user` (
 
 /*Table structure for table `pac_rule_engine_autofix_actions` */
 
-DROP TABLE IF EXISTS `pac_ _engine_autofix_actions`;
+DROP TABLE IF EXISTS `pac_rule_engine_autofix_actions`;
 
 CREATE TABLE `pac_rule_engine_autofix_actions` (
   `resourceId` varchar(100) COLLATE utf8_bin NOT NULL,
