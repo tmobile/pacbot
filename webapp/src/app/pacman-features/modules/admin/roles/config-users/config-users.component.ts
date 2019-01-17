@@ -506,10 +506,7 @@ export class ConfigUsersComponent implements OnInit, OnDestroy {
     const userRoleConfigRequest = {};
     userRoleConfigRequest['roleId'] = this.roleId;
     const userId = [];
-    this.selectedItems.forEach((userDetails) => {
-      userId.push(userDetails.userId);
-    });
-    userRoleConfigRequest['userDetails'] = userId;
+    userRoleConfigRequest['userDetails'] = this.selectedItems;
     const url = environment.configUserRolesAllocation.url;
     const method = environment.configUserRolesAllocation.method;
     this.adminService.executeHttpAction(url, method, userRoleConfigRequest, {}).subscribe(reponse => {
