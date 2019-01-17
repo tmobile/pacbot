@@ -59,7 +59,7 @@ public class PolicyAssetServiceImpl implements PolicyAssetService, Constants {
 			throw new ServiceException("Error fetching issues from ES",e);
 		}
         List<PolicyScanInfo> scanList = new ArrayList<>();
-        if (issueList != null && !issueList.isEmpty()) {
+        if (issueList != null) {
 
             for (Map<String, Object> rule : rules) {
                 PolicyScanInfo scanInfo = new PolicyScanInfo();
