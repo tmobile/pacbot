@@ -335,6 +335,10 @@ li.list-inputs:hover {
     overflow-x: overlay;
 }
 
+.floating-widgets-section /deep/ .data-table-content {
+    min-height: calc( 100vh - 28em);
+}
+
 .data-table-head-outer {
     background-color: #fff;
     left: 0;

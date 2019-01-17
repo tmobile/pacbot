@@ -110,9 +110,9 @@ public class AssetGroupServiceImplTest {
 	
 	@Test
 	public void getAllAssetGroupDetailsTest() {
-		List<AssetGroupView> assetGroupDetail = new ArrayList<AssetGroupView>();
-		assetGroupDetail.add(getAssetGroupViewDetails());
-		Page<AssetGroupView> allAssetGroupDetails = new PageImpl<AssetGroupView>(assetGroupDetail,new PageRequest(0, 1), assetGroupDetail.size());
+		List<AssetGroupDetails> assetGroupDetail = new ArrayList<AssetGroupDetails>();
+		assetGroupDetail.add(getAssetGroupDetails());
+		Page<AssetGroupDetails> allAssetGroupDetails = new PageImpl<AssetGroupDetails>(assetGroupDetail,new PageRequest(0, 1), assetGroupDetail.size());
 		when(assetGroupRepository.findAll(anyString(), any(PageRequest.class))).thenReturn(allAssetGroupDetails);
 		assertThat(assetGroupService.getAllAssetGroupDetails(StringUtils.EMPTY, 0, 1), is(notNullValue()));
 	}

@@ -309,6 +309,9 @@ public class AssetGroupExceptionServiceImpl implements AssetGroupExceptionServic
             if (payLoad != null) {
                 entity = new NStringEntity(payLoad, ContentType.APPLICATION_JSON);
             }
+            if(!endpoint.startsWith("/")) {
+            	endpoint = "/"+endpoint;
+            }
             return getRestClient().performRequest(method, endpoint, Collections.<String, String>emptyMap(), entity);
         } catch (IOException exception) {
         	log.error(UNEXPECTED_ERROR_OCCURRED, exception);
