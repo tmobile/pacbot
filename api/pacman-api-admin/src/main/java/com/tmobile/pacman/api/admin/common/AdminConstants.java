@@ -31,7 +31,7 @@ public final class AdminConstants {
 	public static final String FAILED								=	"failed";
 	public static final String ENABLED_CAPS							=	"ENABLED";
 	
-	public static final String DATE_FORMAT 							= 	"MM/dd/yyyy HH:mm";
+	public static final String MM_DD_YYY_HH_MM 						= 	"MM/dd/yyyy HH:mm";
 	
 	public static final String RULE_CREATION_SUCCESS				=	"Rule has been successfully created";
 	public static final String RULE_DISABLE_ENABLE_SUCCESS			=	"Rule has been successfully %s !!";

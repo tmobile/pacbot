@@ -44,15 +44,15 @@ public interface AssetGroupRepository extends JpaRepository<AssetGroupDetails, S
 
 	/**
      * AssetGroup Repository function for to get all assetGroup names
-     * 
-     * @author NKrishn3
+     *
+     * @author Nidhish
      * @param searchTerm - searchTerm to be searched.
-     * @param pageRequest - pagination information 
+     * @param pageRequest - pagination information
      * @return All AssetGroup Details
      */
-	@Query(value = "SELECT ag FROM AssetGroupDetails ag WHERE LOWER(ag.groupId) LIKE %:searchTerm% OR LOWER(ag.groupName) LIKE %:searchTerm% OR LOWER(ag.dataSource) LIKE %:searchTerm% OR LOWER(ag.displayName) LIKE %:searchTerm% OR LOWER(ag.groupType) LIKE %:searchTerm% OR LOWER(ag.createdBy) LIKE %:searchTerm% OR LOWER(ag.createdUser) LIKE %:searchTerm% OR LOWER(ag.createdDate) LIKE %:searchTerm% OR LOWER(ag.modifiedUser) LIKE %:searchTerm% OR LOWER(ag.modifiedDate) LIKE %:searchTerm% OR LOWER(ag.description) LIKE %:searchTerm% OR LOWER(ag.aliasQuery) LIKE %:searchTerm% GROUP BY ag.groupId", 
+	@Query(value = "SELECT new com.tmobile.pacman.api.admin.domain.AssetGroupView(ag) FROM AssetGroupDetails ag WHERE LOWER(ag.groupId) LIKE %:searchTerm% OR LOWER(ag.groupName) LIKE %:searchTerm% OR LOWER(ag.dataSource) LIKE %:searchTerm% OR LOWER(ag.displayName) LIKE %:searchTerm% OR LOWER(ag.groupType) LIKE %:searchTerm% OR LOWER(ag.createdBy) LIKE %:searchTerm% OR LOWER(ag.createdUser) LIKE %:searchTerm% OR LOWER(ag.createdDate) LIKE %:searchTerm% OR LOWER(ag.modifiedUser) LIKE %:searchTerm% OR LOWER(ag.modifiedDate) LIKE %:searchTerm% OR LOWER(ag.description) LIKE %:searchTerm% OR LOWER(ag.aliasQuery) LIKE %:searchTerm% GROUP BY ag.groupId",
 	countQuery = "SELECT COUNT(*) FROM AssetGroupDetails ag WHERE LOWER(ag.groupId) LIKE %:searchTerm% OR LOWER(ag.groupName) LIKE %:searchTerm% OR LOWER(ag.dataSource) LIKE %:searchTerm% OR LOWER(ag.displayName) LIKE %:searchTerm% OR LOWER(ag.groupType) LIKE %:searchTerm% OR LOWER(ag.createdBy) LIKE %:searchTerm% OR LOWER(ag.createdUser) LIKE %:searchTerm% OR LOWER(ag.createdDate) LIKE %:searchTerm% OR LOWER(ag.modifiedUser) LIKE %:searchTerm% OR LOWER(ag.modifiedDate) LIKE %:searchTerm% OR LOWER(ag.description) LIKE %:searchTerm% OR LOWER(ag.aliasQuery) LIKE %:searchTerm% GROUP BY ag.groupId")
-	public Page<AssetGroupDetails> findAll(@Param("searchTerm") String searchTerm, Pageable pageable);
+	public Page<AssetGroupView> findAll(@Param("searchTerm") String searchTerm, Pageable pageable);
 
 	/**
      * AssetGroup Repository function for to get all assetGroup by name
