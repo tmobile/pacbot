@@ -62,4 +62,7 @@ public interface TargetTypesRepository extends JpaRepository<TargetTypes, String
 					+ "LOWER(t.domain) LIKE %:searchTerm% GROUP BY t.targetName")
 	public Page<TargetTypesProjections> findAllTargetTypeDetails(@Param("searchTerm") String searchTerm, Pageable pageable);
 
+	@Query("SELECT target.targetName AS id, target.targetName AS text FROM TargetTypes target GROUP BY target.targetName")
+	public List<TargetTypesProjection> getAllTargetTypes(); 
+
 }
