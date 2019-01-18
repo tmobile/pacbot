@@ -258,7 +258,7 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
      * @return the issue distribution
      */
     private Map<String, Long> getIssueDistribution() {
-        Long totalViolations;
+        Long totalViolations = 0l;
         Map<String, Long> violationsMap = new HashMap<>();
         JsonParser parser = new JsonParser();
         try {
@@ -269,10 +269,27 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
             JsonObject distributionJson = dataJson.get("distribution").getAsJsonObject();
             totalViolations = distributionJson.get("total_issues").getAsLong();
             JsonObject severityJson = distributionJson.get("distribution_by_severity").getAsJsonObject();
-            violationsMap.put("critical", severityJson.get("critical").getAsLong());
-            violationsMap.put("high", severityJson.get("high").getAsLong());
-            violationsMap.put("low", severityJson.get("low").getAsLong());
-            violationsMap.put("medium", severityJson.get("medium").getAsLong());
+				Long critical = 0l;
+				Long high = 0l;
+				Long low = 0l;
+				Long medium = 0l;
+
+				if (severityJson.has("critical")) {
+					critical = severityJson.get("critical").getAsLong();
+				}
+				if (severityJson.has("high")) {
+					high = severityJson.get("high").getAsLong();
+				}
+				if (severityJson.has("low")) {
+					low = severityJson.get("low").getAsLong();
+				}
+				if (severityJson.has("medium")) {
+					medium = severityJson.get("medium").getAsLong();
+				}
+			violationsMap.put("critical", critical);
+            violationsMap.put("high", high);
+            violationsMap.put("low", low);
+            violationsMap.put("medium", medium);
             violationsMap.put("totalViolations", totalViolations);
         }
     } catch (Exception e) {
@@ -336,7 +353,7 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
             Long totalAssets = 0l;
             JsonObject responseDetailsjson = parser.parse(entry.getValue().toString()).getAsJsonObject();
             JsonArray assetcounts = responseDetailsjson.get("assetcount").getAsJsonArray();
-
+System.out.println(assetcounts);
             for (int i = 0; i < assetcounts.size(); i++) {
                 totalAssets += assetcounts.get(i).getAsJsonObject().get("count").getAsLong();
             }
