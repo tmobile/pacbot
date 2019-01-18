@@ -190,7 +190,7 @@ export class PacmanPolicyViolationsComponent implements OnInit, OnDestroy {
             this.dataComing = true;
 
             if (response.response.length === 0 && this.firstTimeLoad) {
-              this.errorMessage = 'noDataAvailable';
+              this.errorMessage = 'noPolicyFound';
             }
             this.firstTimeLoad = false;
             this.totalRows = response.total;

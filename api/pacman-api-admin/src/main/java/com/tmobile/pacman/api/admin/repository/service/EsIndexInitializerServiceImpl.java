@@ -75,6 +75,10 @@ public class EsIndexInitializerServiceImpl implements EsIndexInitializerService
 					if(StringUtils.isNotBlank(task.getData())) {
 						PacHttpUtils.doHttpPut(bulkIndex, task.getData());	
 					}
+				} else {
+					if(StringUtils.isNotBlank(task.getData())) {
+						PacHttpUtils.doHttpPut(bulkIndex, task.getData());	
+					}
 				}
 			} catch (Exception exception) {
 				LOG.info("Exception in executeExceptionIndexInitializer: {}", exception.getMessage());
