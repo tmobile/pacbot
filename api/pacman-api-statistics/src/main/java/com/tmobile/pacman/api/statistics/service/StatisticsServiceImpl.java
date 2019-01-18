@@ -353,7 +353,6 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
             Long totalAssets = 0l;
             JsonObject responseDetailsjson = parser.parse(entry.getValue().toString()).getAsJsonObject();
             JsonArray assetcounts = responseDetailsjson.get("assetcount").getAsJsonArray();
-System.out.println(assetcounts);
             for (int i = 0; i < assetcounts.size(); i++) {
                 totalAssets += assetcounts.get(i).getAsJsonObject().get("count").getAsLong();
             }
