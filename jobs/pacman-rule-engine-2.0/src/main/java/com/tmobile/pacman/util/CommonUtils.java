@@ -30,6 +30,7 @@ import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -69,9 +70,6 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import sun.misc.BASE64Decoder;
-import sun.misc.BASE64Encoder;
-
 import com.amazonaws.util.StringUtils;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -93,7 +91,6 @@ import com.tmobile.pacman.commons.rule.Annotation;
 /**
  * The Class CommonUtils.
  */
-@SuppressWarnings("restriction")
 public class CommonUtils {
 
     /** The Constant TLS. */
@@ -843,10 +840,9 @@ public class CommonUtils {
      * @return the string
      */
     public static String encryptB64(String plainText) {
-        BASE64Encoder encoder = new BASE64Encoder();
         byte[] salt = new byte[8];
         random.nextBytes(salt);
-        return encoder.encode(salt) + encoder.encode(plainText.getBytes());
+        return Base64.getEncoder().encodeToString(salt) + Base64.getEncoder().encodeToString(plainText.getBytes());
     }
 
     /**
@@ -863,8 +859,7 @@ public class CommonUtils {
         // bytes (i.e., a total of 24 bits) can therefore be represented by four
         // 6-bit base64 digits.
         String cipher = text.substring(12);
-        BASE64Decoder decoder = new BASE64Decoder();
-        return new String(decoder.decodeBuffer(cipher));
+        return new String(Base64.getDecoder().decode(cipher));
     }
 
     /**
@@ -909,7 +904,7 @@ public class CommonUtils {
      * @throws UnsupportedEncodingException the unsupported encoding exception
      */
     private static SecretKeySpec getSecretKey(final String baseKey) throws UnsupportedEncodingException {
-        String secretKeyValue = new BASE64Encoder().encode(baseKey.substring(0, 16).getBytes()).substring(0, 16);
+        String secretKeyValue = Base64.getEncoder().encodeToString(baseKey.substring(0, 16).getBytes()).substring(0, 16);
         return new SecretKeySpec(secretKeyValue.getBytes(StandardCharsets.UTF_8), "AES");
     }
 
