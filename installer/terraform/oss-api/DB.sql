@@ -84,7 +84,7 @@ CREATE TABLE `cf_AssetGroupDetails` (
 DROP TABLE IF EXISTS `cf_AssetGroupException`;
 
 CREATE TABLE `cf_AssetGroupException` (
-  `id_` bigint(20) NOT NULL,
+  `id_` bigint(20) NOT NULL AUTO_INCREMENT,
   `groupName` varchar(75) COLLATE utf8_bin DEFAULT NULL,
   `targetType` varchar(75) COLLATE utf8_bin DEFAULT NULL,
   `ruleName` varchar(200) COLLATE utf8_bin DEFAULT NULL,
@@ -94,7 +94,7 @@ CREATE TABLE `cf_AssetGroupException` (
   `exceptionReason` varchar(2000) COLLATE utf8_bin DEFAULT NULL,
   `dataSource` varchar(75) COLLATE utf8_bin DEFAULT NULL,
   PRIMARY KEY (`id_`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB AUTO_INCREMENT=2000 DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Table structure for table `cf_AssetGroupOwnerDetails` */
 
