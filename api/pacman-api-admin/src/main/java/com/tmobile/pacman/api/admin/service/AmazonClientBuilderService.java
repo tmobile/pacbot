@@ -53,7 +53,7 @@ public class AmazonClientBuilderService {
      * @return AmazonS3 Client
      */
 	public AmazonS3 getAmazonS3(final String region) {
-		return AmazonS3ClientBuilder.standard().withRegion(region).withCredentials(buildCredentials()).build();
+		return AmazonS3ClientBuilder.standard().withRegion(region).build();
 	}
 
 	/**
@@ -63,7 +63,7 @@ public class AmazonClientBuilderService {
      * @return AmazonCloudWatchEvents Client
      */
 	public AmazonCloudWatchEvents getAmazonCloudWatchEvents(final String region) {
-		return AmazonCloudWatchEventsClientBuilder.standard().withRegion(region).withCredentials(buildCredentials()).build();
+		return AmazonCloudWatchEventsClientBuilder.standard().withRegion(region).build();
 	}
 
 	/**
@@ -73,7 +73,7 @@ public class AmazonClientBuilderService {
      * @return AWSLambda Client
      */
 	public AWSLambda getAWSLambdaClient(final String region) {
-		return AWSLambdaClientBuilder.standard().withRegion(region).withCredentials(buildCredentials()).build();
+		return AWSLambdaClientBuilder.standard().withRegion(region).build();
 	}
 
 	private AWSCredentialsProvider buildCredentials() {
