@@ -71,7 +71,7 @@ public class AssetGroupServiceImpl implements AssetGroupService {
 	private static final Logger log = LoggerFactory.getLogger(AssetGroupServiceImpl.class);
 	
 	private static final String ALIASES = "/_aliases";
-	
+		
 	@Autowired
 	private AssetGroupRepository assetGroupRepository;
 	
@@ -114,6 +114,7 @@ public class AssetGroupServiceImpl implements AssetGroupService {
 		return assetGroupRepository.findByGroupName(groupName);
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	public String updateAssetGroupDetails(final CreateUpdateAssetGroupDetails updateAssetGroupDetails, final String userId) throws PacManException {
 		AssetGroupDetails isAssetGroupExits = assetGroupRepository.findByGroupName(updateAssetGroupDetails.getGroupName());
@@ -122,11 +123,16 @@ public class AssetGroupServiceImpl implements AssetGroupService {
 			if(isDeletedSuccess) {
 				try {
 					Map<String, Object> assetGroupAlias = createAliasForAssetGroup(updateAssetGroupDetails);
-					Response response = commonService.invokeAPI("POST", ALIASES, mapper.writeValueAsString(assetGroupAlias));
-					if(response != null && response.getStatusLine().getStatusCode() == 200) {
-						return processUpdateAssetGroupDetails(updateAssetGroupDetails, assetGroupAlias, userId);
+					List<Object> actions = (List<Object>) assetGroupAlias.get("actions");
+					if(!actions.isEmpty()) {
+						Response response = commonService.invokeAPI("POST", ALIASES, mapper.writeValueAsString(assetGroupAlias));
+						if(response != null && response.getStatusLine().getStatusCode() == 200) {
+							return processUpdateAssetGroupDetails(updateAssetGroupDetails, assetGroupAlias, userId);
+						} else {
+							throw new PacManException(UNEXPECTED_ERROR_OCCURRED);
+						}
 					} else {
-						throw new PacManException(UNEXPECTED_ERROR_OCCURRED);
+						return processUpdateAssetGroupDetails(updateAssetGroupDetails, assetGroupAlias, userId);
 					}
 				} catch (Exception exception) {
 					log.error(UNEXPECTED_ERROR_OCCURRED, exception);
@@ -323,6 +329,7 @@ public class AssetGroupServiceImpl implements AssetGroupService {
 			remainingTargetTypes = targetTypesRepository.getAllTargetTypes();
 		}
 		
+		
 		for(TargetTypesProjection remainingTargetType : remainingTargetTypes) {
 			String targetName = remainingTargetType.getText().trim();
 			TargetTypesDetails targetTypeAttribute = new TargetTypesDetails();
@@ -344,7 +351,6 @@ public class AssetGroupServiceImpl implements AssetGroupService {
 			Set<AssetGroupTargetDetails> targetTypes = assetGroupDetails.getTargetTypes();
 			final String aliasName = assetGroupDetails.getGroupName().toLowerCase().trim().replaceAll(" ", "-");
 			
-			System.out.println("targetTypes=========>"+mapper.writeValueAsString(targetTypes));
 			if(!targetTypes.isEmpty()) {
 				targetTypes.forEach(targetType -> {
 					Map<String, Object> addObj = Maps.newHashMap();
