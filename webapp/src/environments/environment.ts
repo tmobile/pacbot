@@ -648,7 +648,7 @@ export const environment = {
     },
     listTargetTypeAttributeValues: {
         url: '{{baseUrl}}/admin/target-types/list-target-type-attributes-values',
-        method: 'GET'
+        method: 'POST'
     },
     roles: {
         url: '{{baseUrl}}/admin/roles/list',
