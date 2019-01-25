@@ -72,7 +72,7 @@
                                         Please Wait...
                                     </div>
                                     <div class="pacman-alert-message">
-                                        <span class="highlight-pink">{{assetLoaderTitle}}</span> is been loading...
+                                        <span class="highlight-pink">{{assetLoaderTitle}}</span> details is been loading...
                                     </div>
                                 </div>
                                 <div class="pacman-progress pacman-alert" [hidden]="!assetLoaderFailure">
@@ -349,23 +349,26 @@
                                         </div>
                                     </div>
                                 </div>
-                                <div class="data-content">
+                                <div class="data-content-attr data-content">
                                     <div class="">
                                         <div class="asset-formctn">
                                             <div class="formctn">
                                                 <div class="input-box">
                                                     <ul class="parameters">
-                                                        <label>Select Attribute Name :</label>
-                                                        <ng-select #attributeNameElement name="attributeName" [(ngModel)]="attributeName" (selected)="getAttributeValues($event)" [allowClear]="true" [items]="selectedAttributeDetails" placeholder="Select Attribute Name" required>
+                                                        <label>Select Name :</label>
+                                                        <ng-select #attributeNameElement [allowClear]="true" name="attributeName" [(ngModel)]="attributeName" (selected)='getTargetTypeAttributeValues($event.text)' [items]="selectedAttributeDetails" placeholder="Select Name" required>
                                                         </ng-select>
                                                     </ul>
                                                     <ul class="parameters">
-                                                        <label>Enter Attribute Value :</label>
-                                                        <ul class="input-wrapper">
-                                                            <input type="text" name="attributeValue" [(ngModel)]="attributeValue" class="inputarea-container " placeholder="Enter Attribute Value" required>
-                                                        </ul>
+                                                        <label>Select Value : 
+                                                            <span *ngIf="isAttributeAlreadyAdded==0" class="not-available">(Already Added)</span>
+                                                            <span *ngIf="isAttributeAlreadyAdded==1" class="available"></span>
+                                                        </label>
+                                                        <ng-select #attributeValueElement [allowClear]="true" name="attributeValue" [(ngModel)]="attributeValue" (selected)='selectAttributes($event)' (input)="typedAttributes($event.target.value)" [items]="targetTypeAttributeValues" placeholder="Select Value"
+                                                            required>
+                                                        </ng-select>
                                                     </ul>
-                                                    <button class="tmbutton btm30 ib" [disabled]="attributeValue=='' || attributeName.length==0" (click)="addAttributes(attributeName, attributeValue)">+ Add</button>
+                                                    <button class="tmbutton btm30 ib" [disabled]="attributeValue=='' || attributeName.length==0 || isAttributeAlreadyAdded !== -1" (click)="addAttributes(attributeName, attributeValue)">+ Add</button>
                                                 </div>
                                             </div>
                                             <div class="data-table-content">
@@ -373,15 +376,15 @@
                                                     <div class="data-table-head flex flex-around flex-align-center">
                                                         <div class="head-cells table-cells">
                                                             Attribute Name
-                                                            <span class="list-sortable-arrow relative"></span>
+                                                            <span class="relative"></span>
                                                         </div>
                                                         <div class="head-cells table-cells">
                                                             Attribute Value
-                                                            <span class="list-sortable-arrow relative"></span>
+                                                            <span class="relative"></span>
                                                         </div>
                                                         <div class="head-cells table-cells">
                                                             Action
-                                                            <span class="list-sortable-arrow relative"></span>
+                                                            <span class="relative"></span>
                                                         </div>
                                                     </div>
                                                 </div>

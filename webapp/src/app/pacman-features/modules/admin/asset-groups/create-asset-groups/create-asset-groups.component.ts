@@ -1,38 +1,33 @@
 /*
  *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * Licensed under the Apache License, Version 2.0 (the 'License'); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * or in the "license" file accompanying this file. This file is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ *
+ * or in the 'license' file accompanying this file. This file is distributed on
+ * an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef, trigger, state, style, transition, animate } from "@angular/core";
-import { environment } from "./../../../../../../environments/environment";
+import { Component, OnInit, OnDestroy, ViewChild, trigger, state, style, transition, animate } from '@angular/core';
+import { environment } from './../../../../../../environments/environment';
 
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs/Subscription";
-import * as _ from "lodash";
-import { UtilsService } from "../../../../../shared/services/utils.service";
-import { LoggerService } from "../../../../../shared/services/logger.service";
-import { ErrorHandlingService } from "../../../../../shared/services/error-handling.service";
-import { NavigationStart } from "@angular/router";
-import { Event, NavigationEnd } from "@angular/router";
-import "rxjs/add/operator/filter";
-import "rxjs/add/operator/pairwise";
-import { RoutesRecognized } from "@angular/router";
-import { RefactorFieldsService } from "./../../../../../shared/services/refactor-fields.service";
-import { WorkflowService } from "../../../../../core/services/workflow.service";
-import { RouterUtilityService } from "../../../../../shared/services/router-utility.service";
-import { AdminService } from "../../../../services/all-admin.service";
-import { NgForm } from "@angular/forms";
-import { SelectComponent } from "ng2-select";
-import { UploadFileService } from "../../../../services/upload-file-service";
+import { Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+import * as _ from 'lodash';
+import { UtilsService } from '../../../../../shared/services/utils.service';
+import { LoggerService } from '../../../../../shared/services/logger.service';
+import { ErrorHandlingService } from '../../../../../shared/services/error-handling.service';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/pairwise';
+import { WorkflowService } from '../../../../../core/services/workflow.service';
+import { RouterUtilityService } from '../../../../../shared/services/router-utility.service';
+import { AdminService } from '../../../../services/all-admin.service';
+import { SelectComponent } from 'ng2-select';
+import { UploadFileService } from '../../../../services/upload-file-service';
 
 @Component({
   selector: 'app-admin-create-asset-groups',
@@ -49,10 +44,10 @@ import { UploadFileService } from "../../../../services/upload-file-service";
       transition('in => out', animate('400ms ease-in-out')),
       transition('out => in', animate('400ms ease-in-out'))
     ]),
-    trigger("fadeInOut", [
-      state("open", style({ 'z-index': 2, opacity: 1 })),
-      state("closed", style({ 'z-index': -1, opacity: 0 })),
-      transition("open <=> closed", animate("500ms")),
+    trigger('fadeInOut', [
+      state('open', style({ 'z-index': 2, opacity: 1 })),
+      state('closed', style({ 'z-index': -1, opacity: 0 })),
+      transition('open <=> closed', animate('500ms')),
     ])
   ],
   providers: [
@@ -62,21 +57,21 @@ import { UploadFileService } from "../../../../services/upload-file-service";
     AdminService
   ]
 })
-export class CreateAssetGroupsComponent implements OnInit {
-  @ViewChild('attributeNameElement') attributeNameElement: SelectComponent;
+export class CreateAssetGroupsComponent implements OnInit, OnDestroy {
+  @ViewChild('attributeValueElement') attributeValueElement: SelectComponent;
   @ViewChild('targetType') targetTypeElement: SelectComponent;
-  
-  pageTitle: String = "Create Asset Group";
-  breadcrumbArray: any = ["Admin", "Asset Groups"];
-  breadcrumbLinks: any = ["policies", "asset-groups"];
-  breadcrumbPresent: any;
-  highlightedText: string;
-  progressText: string;
-  outerArr: any = [];
-  filters: any = [];
-  isGroupNameValid: any = -1;
-  targetTypeValue: any = [];
-  assetForm: any = {
+
+  pageTitle = 'Create Asset Group';
+  breadcrumbArray = ['Admin', 'Asset Groups'];
+  breadcrumbLinks = ['policies', 'asset-groups'];
+  breadcrumbPresent;
+  highlightedText;
+  progressText;
+  outerArr = [];
+  filters = [];
+  isGroupNameValid = -1;
+  targetTypeValue = [];
+  assetForm = {
     dataSourceName: 'aws',
     groupName: '',
     displayName: '',
@@ -85,123 +80,129 @@ export class CreateAssetGroupsComponent implements OnInit {
     description: '',
     visible: true,
     targetTypes: []
-  }
-  isCreate: boolean = false;
-  highlightName: string = '';
-  groupName: string = '';
-  assetLoaderTitle: string = '';
-  assetLoader: boolean = false;
-  assetLoaderFailure: boolean = false;
-  attributeName: any = [];
-  attributeValue: string = '';
-  targetTypeSelectedValue: string = '';
-  selectedAttributes: any = [];
+  };
+  isCreate = false;
+  highlightName = '';
+  groupName = '';
+  assetLoaderTitle = '';
+  assetLoader = false;
+  assetLoaderFailure = false;
+  attributeName = [];
+  attributeValue;
+  targetTypeSelectedValue = '';
+  selectedAttributes = [];
 
-  allOptionalRuleParams: any = [];
-  isAssetGroupFailed: boolean = false;
-  isAssetGroupSuccess: boolean = false;
-  ruleContentLoader: boolean = true;
-  assetGroupLoader: boolean = false;
-  invocationId: String = "";
-  paginatorSize: number = 25;
-  isLastPage: boolean;
-  isFirstPage: boolean;
-  totalPages: number;
-  pageNumber: number = 0;
-  showLoader: boolean = true;
-  showWidget: boolean = true;
-  errorMessage: any;
-  searchTerm: String = '';
+  allOptionalRuleParams = [];
+  isAssetGroupFailed = false;
+  isAssetGroupSuccess = false;
+  ruleContentLoader = true;
+  assetGroupLoader = false;
+  invocationId = '';
+  paginatorSize = 25;
+  isLastPage;
+  assetGroupNames;
+  isFirstPage;
+  totalPages;
+  pageNumber = 0;
+  showLoader = true;
+  showWidget = true;
+  remainingTargetTypes;
+  remainingTargetTypesFullDetails;
+  targetTypeAttributeValues = [];
+  errorMessage;
+  searchTerm = '';
 
-  hideContent: boolean = false;
-  pageContent: any = [
-    { title: 'Enter Group Details', hide: false },
-    { title: 'Select Domains', hide: true },
-    { title: 'Select Targets', hide: true },
-    { title: 'Configure Attributes', hide: true }
+  hideContent = false;
+  pageContent = [
+    { title: 'Enter Group Details', hide: false, isChanged: false },
+    { title: 'Select Domains', hide: true, isChanged: false },
+    { title: 'Select Targets', hide: true, isChanged: false },
+    { title: 'Configure Attributes', hide: true, isChanged: false }
   ];
 
-  availChoosedItems: any = {};
+  availChoosedItems = {};
   availChoosedSelectedItems = {};
   availChoosedItemsCount = 0;
 
-  selectChoosedItems: any = {};
+  selectChoosedItems = {};
   selectChoosedSelectedItems = {};
   selectChoosedItemsCount = 0;
 
-  availableItems: any = [];
-  selectedItems: any = [];
+  availableItems = [];
+  selectedItems = [];
 
-  availableItemsBackUp: any = [];
-  selectedItemsBackUp: any = [];
+  availableItemsBackUp = [];
+  selectedItemsBackUp = [];
 
-  availableItemsCopy: any = [];
-  selectedItemsCopy: any = [];
+  availableItemsCopy = [];
+  selectedItemsCopy = [];
 
-  searchSelectedDomainTerms: any = '';
+  searchSelectedDomainTerms = '';
   searchAvailableDomainTerms = '';
 
 
   // Target Details //
-  availTdChoosedItems: any = {};
+  availTdChoosedItems = {};
   availTdChoosedSelectedItems = {};
   availTdChoosedItemsCount = 0;
+  state = 'closed';
+  menuState = 'out';
+  selectedIndex = -1;
+  selectedAttributeDetails= [];
+  selectedAttributeIndex = '';
 
-  selectTdChoosedItems: any = {};
+  selectTdChoosedItems = {};
   selectTdChoosedSelectedItems = {};
   selectTdChoosedItemsCount = 0;
 
-  availableTdItems: any = [];
-  selectedTdItems: any = [];
+  availableTdItems = [];
+  selectedTdItems = [];
+  selectedTdItemsCopyForPrevNext = [];
 
-  availableTdItemsBackUp: any = [];
-  selectedTdItemsBackUp: any = [];
+  availableTdItemsBackUp = [];
+  selectedTdItemsBackUp = [];
 
-  availableTdItemsCopy: any = [];
-  selectedTdItemsCopy: any = [];
+  availableTdItemsCopy = [];
+  selectedTdItemsCopy = [];
 
-  searchSelectedTargetTerms: any = '';
+  searchSelectedTargetTerms = '';
   searchAvailableTargetTerms = '';
 
-  stepIndex: number = 0;
-  stepTitle: any = this.pageContent[this.stepIndex].title;
-  allAttributeDetails: any = [];
-  allAttributeDetailsCopy: any = [];
-  allSelectedAttributeDetailsCopy: any = [];
+  stepIndex = 0;
+  stepTitle = this.pageContent[this.stepIndex].title;
+  allAttributeDetails = [];
+  allAttributeDetailsCopy = [];
+  allAttributeDetailsCopyForPrevNext = [];
+  allSelectedAttributeDetailsCopy = [];
 
-  filterText: any = {};
-  errorValue: number = 0;
-  urlID: String = "";
-  groupId: String = "";
-  successTitleStart: string = '';
-  successTitleEnd: string = '';
+  filterText = {};
+  errorValue = 0;
+  urlID = '';
+  groupId = '';
+  successTitleStart = '';
+  successTitleEnd = '';
 
-  failedTitleStart: string = '';
-  failedTitleEnd: string = '';
+  failedTitleStart = '';
+  isAttributeAlreadyAdded = -1;
+  failedTitleEnd = '';
 
-  FullQueryParams: any;
-  queryParamsWithoutFilter: any;
-  urlToRedirect: any = "";
-  mandatory: any;
+  FullQueryParams;
+  queryParamsWithoutFilter;
+  urlToRedirect = '';
+  mandatory;
 
-  public labels: any;
-  private previousUrl: any = "";
-  private pageLevel = 0;
-  public backButtonRequired;
+  public labels;
+  private previousUrl = '';
   private routeSubscription: Subscription;
   private getKeywords: Subscription;
   private previousUrlSubscription: Subscription;
   private downloadSubscription: Subscription;
 
   constructor(
-    private activatedRoute: ActivatedRoute,
     private router: Router,
     private utils: UtilsService,
     private logger: LoggerService,
     private errorHandling: ErrorHandlingService,
-    private uploadService: UploadFileService,
-    private ref: ChangeDetectorRef,
-    private refactorFieldsService: RefactorFieldsService,
     private workflowService: WorkflowService,
     private routerUtilityService: RouterUtilityService,
     private adminService: AdminService
@@ -213,29 +214,26 @@ export class CreateAssetGroupsComponent implements OnInit {
 
   ngOnInit() {
     this.urlToRedirect = this.router.routerState.snapshot.url;
-    this.backButtonRequired = this.workflowService.checkIfFlowExistsCurrently(
-      this.pageLevel
-    );
   }
 
-  state: string = 'closed';
-  menuState: string = 'out';
+
   closeAttributeConfigure() {
     this.state = 'closed';
     this.menuState = 'out';
     this.selectedIndex = -1;
   }
-  selectedIndex: number = -1;
-  selectedAttributeDetails: Array<string> = [];
+
   openAttributeConfigure(attributeDetail, index) {
-    if(!attributeDetail.includeAll) {
+    if (!attributeDetail.includeAll) {
       this.attributeValue = '';
       this.attributeName = [];
       this.state = 'open';
       this.menuState = 'in';
       this.selectedIndex = index;
+      console.log('attributeDetail==============>', attributeDetail);
       this.selectedAttributeDetails = attributeDetail.allAttributesName;
       this.selectedAttributes = attributeDetail.attributes;
+      this.selectedAttributeIndex = '/aws_' +attributeDetail.targetName+ '/_search?filter_path=aggregations.alldata.buckets.key';
     }
   }
 
@@ -244,27 +242,27 @@ export class CreateAssetGroupsComponent implements OnInit {
   }
 
   isGroupNameAvailable(alexaKeyword) {
-    if (alexaKeyword.length == 0) {
+    if (alexaKeyword.length === 0) {
       this.isGroupNameValid = -1;
     } else {
-        let isKeywordExits = this.assetGroupNames.findIndex(item => alexaKeyword.toLowerCase() === item.toLowerCase());
-        if (isKeywordExits === -1) {
-          this.isGroupNameValid = 1;
-        } else {
-          this.isGroupNameValid = 0;
-        }
+      const isKeywordExits = this.assetGroupNames.findIndex(item => alexaKeyword.toLowerCase() === item.toLowerCase());
+      if (isKeywordExits === -1) {
+        this.isGroupNameValid = 1;
+      } else {
+        this.isGroupNameValid = 0;
+      }
     }
   }
 
-  assetGroupNames: any;
+
   getAllAssetGroupNames() {
-     this.hideContent = true;
+    this.hideContent = true;
     this.assetGroupLoader = true;
     this.progressText = 'Loading details';
     this.isAssetGroupFailed = false;
     this.isAssetGroupSuccess = false;
-    var url = environment.assetGroupNames.url;
-    var method = environment.assetGroupNames.method;
+    const url = environment.assetGroupNames.url;
+    const method = environment.assetGroupNames.method;
     this.adminService.executeHttpAction(url, method, {}, {}).subscribe(reponse => {
       this.hideContent = false;
       this.assetGroupLoader = false;
@@ -273,50 +271,103 @@ export class CreateAssetGroupsComponent implements OnInit {
     },
       error => {
         this.assetGroupNames = [];
-        this.errorMessage = "apiResponseError";
+        this.errorMessage = 'apiResponseError';
         this.showLoader = false;
       });
   }
 
-  typedAttributeValue: string = '';
-  public typedAttributes(value:any):void {
-    this.typedAttributeValue = value;
+  public selectAttributes(value: any): void {
+    this.checkAttributeAlreadyTaken(value.text);
   }
 
-  public getAttributeValues(value:any):void {
 
+  public typedAttributes(value: any): void {
+    this.attributeValue = [{ text: value, id: value }];
+    this.checkAttributeAlreadyTaken(value);
   }
+
+  checkAttributeAlreadyTaken(attributeValue) {
+    const attributeSearchedResult = _.find(this.allAttributeDetails[this.selectedIndex].attributes, { name: this.attributeName[0].text, value: attributeValue });
+    if (attributeSearchedResult === undefined) {
+      this.isAttributeAlreadyAdded = -1;
+    } else {
+      this.isAttributeAlreadyAdded = 0;
+    }
+  }
+
+  public getAttributeValues(value: any): void {
+    this.attributeValue = [{ text: value, id: value }];
+  }
+
+
+  getTargetTypeAttributeValues(attributeName) {
+    const attrNameObj: any = {};
+    attrNameObj.size = 0;
+    attrNameObj.aggs = {};
+    attrNameObj.aggs.alldata = {};
+    attrNameObj.aggs.alldata.terms = {};
+    attrNameObj.aggs.alldata.terms.field = attributeName + '.keyword';
+    attrNameObj.aggs.alldata.terms.size = 10000;
+    this.isAttributeAlreadyAdded = -1;
+    this.attributeValueElement.disabled = true;
+    this.attributeValueElement.placeholder = 'Loading Values...';
+    this.attributeValue = [];
+    this.targetTypeAttributeValues = [];
+    const url = environment.listTargetTypeAttributeValues.url;
+    const method = environment.listTargetTypeAttributeValues.method;
+    let queryParams = { index: this.selectedAttributeIndex, payload: JSON.stringify(attrNameObj) };
+    console.log('queryParams=============>', queryParams);
+    this.adminService.executeHttpAction(url, method, queryParams, {}).subscribe(attributeValues => {
+      if (attributeValues.length > 0) {
+
+        if (attributeValues[0].hasOwnProperty('data')) {
+          if (attributeValues[0].data.hasOwnProperty('aggregations')) {
+            if (attributeValues[0].data.aggregations.alldata.hasOwnProperty('buckets')) {
+              const allAttributeValues = attributeValues[0].data.aggregations.alldata.buckets;
+              allAttributeValues.forEach((attrValue) => {
+                const allCurrentAttributeValues = {};
+                allCurrentAttributeValues['text'] = attrValue.key;
+                allCurrentAttributeValues['id'] = attrValue.key;
+                this.targetTypeAttributeValues.push(allCurrentAttributeValues);
+              });
+              this.attributeValueElement.items = this.targetTypeAttributeValues;
+            }
+          }
+        }
+        this.attributeValueElement.disabled = false;
+        this.attributeValueElement.placeholder = 'Select Value';
+
+      } else {
+        this.attributeValueElement.disabled = false;
+        this.attributeValueElement.placeholder = '';
+      }
+    },
+      error => {
+        this.targetTypeAttributeValues = [];
+        this.attributeValueElement.disabled = false;
+        this.attributeValueElement.placeholder = 'Select Value';
+      });
+  }
+
   addTagetType(targetTypeValue) {
-    let targetTypeName = targetTypeValue[0].text;
-    let targetTypeDetails1 = _.find(this.remainingTargetTypesFullDetails, { targetName: targetTypeName });
-    let targetTypeDetails2 = _.find(this.remainingTargetTypes, { id: targetTypeName });
+    const targetTypeName = targetTypeValue[0].text;
+    const targetTypeDetails1 = _.find(this.remainingTargetTypesFullDetails, { targetName: targetTypeName });
+    const targetTypeDetails2 = _.find(this.remainingTargetTypes, { id: targetTypeName });
     this.allAttributeDetails.push(targetTypeDetails1);
-    //this.allSelectedAttributeDetailsCopy.push(targetTypeDetails1);
-    let itemIndex2 = this.remainingTargetTypes.indexOf(targetTypeDetails2);
+    const itemIndex2 = this.remainingTargetTypes.indexOf(targetTypeDetails2);
     this.remainingTargetTypes.splice(itemIndex2, 1);
     this.targetTypeElement.items = this.remainingTargetTypes;
     this.targetTypeValue = [];
   }
 
   addAttributes(attributeName, attributeValue) {
-    this.allAttributeDetails[this.selectedIndex].attributes.push({ name: attributeName[0].text, value: attributeValue });
-    /*let itemIndex = this.allAttributeDetails[this.selectedIndex].allAttributesName.indexOf(attributeName[0].text);
-    if (itemIndex !== -1) {
-      this.allAttributeDetails[this.selectedIndex].allAttributesName.splice(itemIndex, 1);
-      this.selectedAttributeDetails = this.allAttributeDetails[this.selectedIndex].allAttributesName;
-      this.attributeNameElement.items = this.selectedAttributeDetails;
-    }*/
-    this.attributeValue = '';
+    this.allAttributeDetails[this.selectedIndex].attributes.push({ name: attributeName[0].text, value: attributeValue[0].text });
+    this.attributeValue = [];
     this.attributeName = [];
   }
 
   deleteAttributes(attributeName, itemIndex) {
     this.allAttributeDetails[this.selectedIndex].attributes.splice(itemIndex, 1);
-    /*if (itemIndex !== -1) {
-      this.allAttributeDetails[this.selectedIndex].allAttributesName.push(attributeName);
-      this.selectedAttributeDetails = this.allAttributeDetails[this.selectedIndex].allAttributesName;
-      this.attributeNameElement.items = this.selectedAttributeDetails;
-    }*/
   }
 
   nextPage() {
@@ -327,7 +378,7 @@ export class CreateAssetGroupsComponent implements OnInit {
       }
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
@@ -340,99 +391,134 @@ export class CreateAssetGroupsComponent implements OnInit {
 
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
   nextStep() {
-    if(!this.isCreate) {
+    if (!this.isCreate) {
       this.goToNextStep();
     } else {
       if (this.stepIndex + 1 === 1) {
-        this.assetLoaderFailure = false;
-        this.assetLoader = true;
-        this.assetLoaderTitle = 'Domain Details';
-        this.pageContent[0].hide = true;
-        let url = environment.domains.url;
-        let method = environment.domains.method;
-        this.adminService.executeHttpAction(url, method, {}, {}).subscribe(reponse => {
-          this.assetLoader = false;
-          this.showLoader = false;
-          if (reponse !== undefined) {
-            this.availableItems = reponse[0];
-            this.selectedItems = [];
-            this.availableItemsBackUp = _.cloneDeep(this.availableItems);
-            this.selectedItemsBackUp = _.cloneDeep(this.selectedItems);
-            this.availableItemsCopy = _.cloneDeep(this.availableItems);
-            this.selectedItemsCopy = _.cloneDeep(this.selectedItems);
-            this.searchAvailableDomains();
-            this.searchSelectedDomains();
-            this.goToNextStep();
-          }
-        },
-          error => {
+        if (!this.pageContent[this.stepIndex].isChanged) {
+          this.assetLoaderFailure = false;
+          this.assetLoader = true;
+          this.assetLoaderTitle = 'Domain';
+          this.pageContent[0].hide = true;
+          const url = environment.domains.url;
+          const method = environment.domains.method;
+          this.adminService.executeHttpAction(url, method, {}, {}).subscribe(reponse => {
             this.assetLoader = false;
-            this.assetLoaderFailure = true;
-            this.errorValue = -1;
-            this.outerArr = [];
-            this.errorMessage = "apiResponseError";
             this.showLoader = false;
-          });
+            if (reponse !== undefined) {
+              this.availableItems = reponse[0];
+              this.selectedItems = [];
+              this.availableItemsBackUp = _.cloneDeep(this.availableItems);
+              this.selectedItemsBackUp = _.cloneDeep(this.selectedItems);
+              this.availableItemsCopy = _.cloneDeep(this.availableItems);
+              this.selectedItemsCopy = _.cloneDeep(this.selectedItems);
+              this.searchAvailableDomains();
+              this.searchSelectedDomains();
+              this.goToNextStep();
+            }
+          },
+            error => {
+              this.assetLoader = false;
+              this.assetLoaderFailure = true;
+              this.errorValue = -1;
+              this.outerArr = [];
+              this.errorMessage = 'apiResponseError';
+              this.showLoader = false;
+            });
+        } else {
+          this.searchAvailableDomains();
+          this.searchSelectedDomains();
+          this.goToNextStep();
+        }
       } else if (this.stepIndex + 1 === 2) {
-        this.assetLoaderTitle = 'Target Details';
-        this.assetLoaderFailure = false;
-        this.assetLoader = true;
-        this.pageContent[1].hide = true;
-        let url = environment.targetTypesByDomains.url;
-        let method = environment.targetTypesByDomains.method;
-        let domainList = this.selectedItems.map(domain => domain.domainName);
-        this.adminService.executeHttpAction(url, method, domainList, {}).subscribe(reponse => {
-          this.assetLoader = false;
-          this.showLoader = false;
-          if (reponse !== undefined) {
-            this.availableTdItems = reponse[0].data;
-            this.selectedTdItems = [];
-            this.availableTdItemsBackUp = _.cloneDeep(this.availableTdItems);
-            this.selectedTdItemsBackUp = _.cloneDeep(this.selectedTdItems);
-            this.availableTdItemsCopy = _.cloneDeep(this.availableTdItems);
-            this.selectedTdItemsCopy = _.cloneDeep(this.selectedTdItems);
-            this.searchAvailableTargets();
-            this.searchSelectedTargets();
-            this.goToNextStep();
-          }
-        },
-          error => {
+        if (!this.pageContent[this.stepIndex].isChanged) {
+          this.assetLoaderTitle = 'Target';
+          this.assetLoaderFailure = false;
+          this.assetLoader = true;
+          this.pageContent[1].hide = true;
+          const url = environment.targetTypesByDomains.url;
+          const method = environment.targetTypesByDomains.method;
+          const domainList = this.selectedItems.map(domain => domain.domainName);
+          this.adminService.executeHttpAction(url, method, domainList, {}).subscribe(reponse => {
             this.assetLoader = false;
-            this.assetLoaderFailure = true;
-            this.errorValue = -1;
-            this.outerArr = [];
-            this.errorMessage = "apiResponseError";
             this.showLoader = false;
-          });
+            if (reponse !== undefined) {
+              this.availableTdItems = reponse[0].data;
+              this.selectedTdItems = [];
+              if (this.selectedTdItemsCopyForPrevNext.length > 0) {
+                this.selectedTdItemsCopyForPrevNext.forEach(tdItem => {
+                  const availableTdSearchedResult = _.find(this.availableTdItems, { targetName: tdItem.targetName });
+                  const itemIndex = this.availableTdItems.indexOf(availableTdSearchedResult);
+                  if (itemIndex !== -1) {
+                    this.availableTdItems.splice(itemIndex, 1);
+                    this.selectedTdItems.push(availableTdSearchedResult);
+                  }
+                });
+              }
+              this.availableTdItemsBackUp = _.cloneDeep(this.availableTdItems);
+              this.selectedTdItemsBackUp = _.cloneDeep(this.selectedTdItems);
+              this.availableTdItemsCopy = _.cloneDeep(this.availableTdItems);
+              this.selectedTdItemsCopy = _.cloneDeep(this.selectedTdItems);
+              this.searchAvailableTargets();
+              this.searchSelectedTargets();
+              this.goToNextStep();
+            }
+          },
+            error => {
+              this.assetLoader = false;
+              this.assetLoaderFailure = true;
+              this.errorValue = -1;
+              this.outerArr = [];
+              this.errorMessage = 'apiResponseError';
+              this.showLoader = false;
+            });
+        } else {
+          this.searchAvailableDomains();
+          this.searchSelectedDomains();
+          this.goToNextStep();
+        }
       } else if (this.stepIndex + 1 === 3) {
-        this.assetLoaderTitle = 'Target Attributes';
-        this.assetLoaderFailure = false;
-        this.assetLoader = true;
-        this.pageContent[2].hide = true;
-        let url = environment.targetTypesAttributes.url;
-        let method = environment.targetTypesAttributes.method;
-        this.adminService.executeHttpAction(url, method, this.selectedTdItems, {}).subscribe(reponse => {
-          this.assetLoader = false;
-          this.showLoader = false;
-          if (reponse !== undefined) {
-            this.allAttributeDetails = reponse[0].data;
-            this.allSelectedAttributeDetailsCopy = reponse[0].data;
+        if (!this.pageContent[this.stepIndex].isChanged) {
+          this.assetLoaderTitle = 'Target Attributes';
+          this.assetLoaderFailure = false;
+          this.assetLoader = true;
+          this.pageContent[2].hide = true;
+          const url = environment.targetTypesAttributes.url;
+          const method = environment.targetTypesAttributes.method;
+          this.adminService.executeHttpAction(url, method, this.selectedTdItems, {}).subscribe(reponse => {
+            this.assetLoader = false;
+            this.showLoader = false;
+            if (reponse !== undefined) {
+              this.allAttributeDetails = reponse[0].data;
+              if (this.allAttributeDetailsCopyForPrevNext.length > 0) {
+                this.allAttributeDetailsCopyForPrevNext.forEach(attrElement => {
+                  const attributeSearchedResult = _.find(this.allAttributeDetails, { targetName: attrElement.targetName });
+                  const itemIndex = this.allAttributeDetails.indexOf(attributeSearchedResult);
+                  if (itemIndex !== -1) {
+                    this.allAttributeDetails[itemIndex] = attrElement;
+                  }
+                });
+              }
+              this.allSelectedAttributeDetailsCopy = _.cloneDeep(this.allAttributeDetails);
+              this.goToNextStep();
+            }
+          },
+            error => {
+              this.assetLoader = false;
+              this.assetLoaderFailure = true;
+              this.errorValue = -1;
+              this.outerArr = [];
+              this.errorMessage = 'apiResponseError';
+              this.showLoader = false;
+            });
+          } else {
             this.goToNextStep();
           }
-        },
-          error => {
-            this.assetLoader = false;
-            this.assetLoaderFailure = true;
-            this.errorValue = -1;
-            this.outerArr = [];
-            this.errorMessage = "apiResponseError";
-            this.showLoader = false;
-          });
       } else {
         this.goToNextStep();
       }
@@ -441,24 +527,33 @@ export class CreateAssetGroupsComponent implements OnInit {
 
   goToNextStep() {
     this.pageContent[this.stepIndex].hide = true;
-    if(this.isCreate) {
+    this.pageContent[this.stepIndex].isChanged = true;
+    if (this.isCreate) {
       this.stepIndex++;
     } else {
-      this.stepIndex+=3;
+      this.stepIndex += 3;
     }
     this.stepTitle = this.pageContent[this.stepIndex].title;
     this.pageContent[this.stepIndex].hide = false;
   }
 
   prevStep() {
+    this.assetLoaderFailure = false;
+    this.assetLoader = false;
     this.pageContent[this.stepIndex].hide = true;
-    if(this.isCreate) {
+    if (this.isCreate) {
       this.stepIndex--;
     } else {
-      this.stepIndex-=3;
+      this.stepIndex -= 3;
     }
     this.stepTitle = this.pageContent[this.stepIndex].title;
     this.pageContent[this.stepIndex].hide = false;
+    if (this.stepIndex + 1 === 3) {
+      this.allAttributeDetailsCopyForPrevNext = _.cloneDeep(this.allAttributeDetails);
+    }
+    if (this.stepIndex + 1 === 2) {
+      this.selectedTdItemsCopyForPrevNext = _.cloneDeep(this.selectedTdItems);
+    }
   }
 
   closeAssetErrorMessage() {
@@ -476,11 +571,11 @@ export class CreateAssetGroupsComponent implements OnInit {
     this.assetGroupLoader = true;
     this.isAssetGroupFailed = false;
     this.isAssetGroupSuccess = false;
-    let url = environment.updateAssetGroups.url;
-    let method = environment.updateAssetGroups.method;
+    const url = environment.updateAssetGroups.url;
+    const method = environment.updateAssetGroups.method;
     this.adminService.executeHttpAction(url, method, newAssetGroupDetails, {}).subscribe(reponse => {
       this.assetGroupLoader = false;
-      this.isAssetGroupSuccess = true; 
+      this.isAssetGroupSuccess = true;
       this.successTitleStart = 'Asset Group';
       this.successTitleEnd = 'has been successfully updated !!!';
     },
@@ -489,7 +584,7 @@ export class CreateAssetGroupsComponent implements OnInit {
         this.isAssetGroupFailed = true;
         this.failedTitleStart = 'Failed in updating Asset Group';
         this.failedTitleEnd = '!!!';
-      })
+      });
   }
 
   create(newAssetGroupDetails) {
@@ -501,11 +596,11 @@ export class CreateAssetGroupsComponent implements OnInit {
     this.assetGroupLoader = true;
     this.isAssetGroupFailed = false;
     this.isAssetGroupSuccess = false;
-    let url = environment.createAssetGroups.url;
-    let method = environment.createAssetGroups.method;
+    const url = environment.createAssetGroups.url;
+    const method = environment.createAssetGroups.method;
     this.adminService.executeHttpAction(url, method, newAssetGroupDetails, {}).subscribe(reponse => {
       this.assetGroupLoader = false;
-      this.isAssetGroupSuccess = true; 
+      this.isAssetGroupSuccess = true;
       this.successTitleStart = 'Asset Group';
       this.successTitleEnd = 'has been successfully created !!!';
     },
@@ -514,13 +609,13 @@ export class CreateAssetGroupsComponent implements OnInit {
         this.isAssetGroupFailed = true;
         this.failedTitleStart = 'Failed in creating Asset Group !!!';
         this.failedTitleEnd = '!!!';
-      })
+      });
   }
 
   isStepDisabled(stepIndex) {
     if (stepIndex === 0) {
       if (this.assetForm.groupName !== '' && this.assetForm.displayName !== '' &&
-        this.assetForm.type !== '' && this.assetForm.createdBy !== '' &&  this.isGroupNameValid == 1) {
+        this.assetForm.type !== '' && this.assetForm.createdBy !== '' && this.isGroupNameValid === 1) {
         return false;
       }
     } else if (stepIndex === 1) {
@@ -538,7 +633,7 @@ export class CreateAssetGroupsComponent implements OnInit {
   }
 
   searchAttribute() {
-    let term = this.searchTerm;
+    const term = this.searchTerm;
     this.allAttributeDetails = this.allSelectedAttributeDetailsCopy.filter(function (tag) {
       return tag.targetName.indexOf(term) >= 0;
     });
@@ -576,7 +671,9 @@ export class CreateAssetGroupsComponent implements OnInit {
   }
 
   moveAllItemsToLeft() {
-    if (this.searchSelectedDomainTerms.length == 0) {
+    this.pageContent[this.stepIndex].isChanged = false;
+    this.pageContent[2].isChanged = false;
+    if (this.searchSelectedDomainTerms.length === 0) {
       this.availableItems = _.cloneDeep(this.availableItemsBackUp);
       this.availableItemsCopy = _.cloneDeep(this.availableItemsBackUp);
       this.selectedItems = [];
@@ -586,8 +683,6 @@ export class CreateAssetGroupsComponent implements OnInit {
       this.selectChoosedItemsCount = 0;
       this.searchAvailableDomains();
       this.searchSelectedDomains();
-
-
     } else {
       this.selectChoosedSelectedItems = {};
       this.selectedItems.forEach((element) => {
@@ -599,7 +694,9 @@ export class CreateAssetGroupsComponent implements OnInit {
   }
 
   moveAllItemsToRight() {
-    if (this.searchAvailableDomainTerms.length == 0) {
+    this.pageContent[this.stepIndex].isChanged = false;
+    this.pageContent[2].isChanged = false;
+    if (this.searchAvailableDomainTerms.length === 0) {
       this.selectedItems = _.cloneDeep(this.availableItemsBackUp);
       this.selectedItemsCopy = _.cloneDeep(this.availableItemsBackUp);
       this.availableItemsCopy = [];
@@ -619,24 +716,25 @@ export class CreateAssetGroupsComponent implements OnInit {
   }
 
   moveItemToRight() {
-
-    let selectedItemsCopy = this.selectedItemsCopy;
-    let availableItemsCopy = this.availableItemsCopy
-    for (let choosedSelectedKey in this.availChoosedSelectedItems) {
+    this.pageContent[this.stepIndex].isChanged = false;
+    this.pageContent[2].isChanged = false;
+    const selectedItemsCopy = this.selectedItemsCopy;
+    const availableItemsCopy = this.availableItemsCopy;
+    for (const choosedSelectedKey in this.availChoosedSelectedItems) {
       if (this.availChoosedSelectedItems.hasOwnProperty(choosedSelectedKey)) {
         selectedItemsCopy.push(this.availChoosedSelectedItems[choosedSelectedKey]);
-        let filterIndex = availableItemsCopy.indexOf(this.availChoosedSelectedItems[choosedSelectedKey]);
+        const filterIndex = availableItemsCopy.indexOf(this.availChoosedSelectedItems[choosedSelectedKey]);
         availableItemsCopy.splice(filterIndex, 1);
       }
     }
 
     this.availableItems = availableItemsCopy;
-    if (this.searchAvailableDomainTerms.length != 0) {
+    if (this.searchAvailableDomainTerms.length !== 0) {
       this.searchAvailableDomains();
     }
 
     this.selectedItems = selectedItemsCopy;
-    if (this.searchSelectedDomainTerms.length != 0) {
+    if (this.searchSelectedDomainTerms.length !== 0) {
       this.searchSelectedDomains();
     }
 
@@ -646,23 +744,25 @@ export class CreateAssetGroupsComponent implements OnInit {
   }
 
   moveItemToLeft() {
-    let selectedItemsCopy = this.selectedItemsCopy;
-    let availableItemsCopy = this.availableItemsCopy
-    for (let choosedSelectedKey in this.selectChoosedSelectedItems) {
+    this.pageContent[this.stepIndex].isChanged = false;
+    this.pageContent[2].isChanged = false;
+    const selectedItemsCopy = this.selectedItemsCopy;
+    const availableItemsCopy = this.availableItemsCopy;
+    for (const choosedSelectedKey in this.selectChoosedSelectedItems) {
       if (this.selectChoosedSelectedItems.hasOwnProperty(choosedSelectedKey)) {
         availableItemsCopy.push(this.selectChoosedSelectedItems[choosedSelectedKey]);
-        let filterIndex = selectedItemsCopy.indexOf(this.selectChoosedSelectedItems[choosedSelectedKey]);
+        const filterIndex = selectedItemsCopy.indexOf(this.selectChoosedSelectedItems[choosedSelectedKey]);
         selectedItemsCopy.splice(filterIndex, 1);
       }
     }
 
     this.availableItems = availableItemsCopy;
-    if (this.searchAvailableDomainTerms.length != 0) {
+    if (this.searchAvailableDomainTerms.length !== 0) {
       this.searchAvailableDomains();
     }
 
     this.selectedItems = selectedItemsCopy;
-    if (this.searchSelectedDomainTerms.length != 0) {
+    if (this.searchSelectedDomainTerms.length !== 0) {
       this.searchSelectedDomains();
     }
 
@@ -673,23 +773,21 @@ export class CreateAssetGroupsComponent implements OnInit {
 
 
   searchAvailableDomains() {
-    let term = this.searchAvailableDomainTerms;
+    const term = this.searchAvailableDomainTerms;
     this.availableItems = this.availableItemsCopy.filter(function (tag) {
       return tag.domainName.toLowerCase().indexOf(term.toLowerCase()) >= 0;
     });
   }
 
   searchSelectedDomains() {
-    let term = this.searchSelectedDomainTerms;
+    const term = this.searchSelectedDomainTerms;
     this.selectedItems = this.selectedItemsCopy.filter(function (tag) {
       return tag.domainName.toLowerCase().indexOf(term.toLowerCase()) >= 0;
     });
   }
-
-
   /*
   *
-        TARGET DETAILS  
+        TARGET DETAILS
   *
   */
   onClickAvailableTdItem(index, availableItem, key) {
@@ -724,7 +822,8 @@ export class CreateAssetGroupsComponent implements OnInit {
   }
 
   moveTdAllItemsToLeft() {
-    if (this.searchSelectedTargetTerms.length == 0) {
+    this.pageContent[this.stepIndex].isChanged = false;
+    if (this.searchSelectedTargetTerms.length === 0) {
       this.availableTdItems = _.cloneDeep(this.availableTdItemsBackUp);
       this.availableTdItemsCopy = _.cloneDeep(this.availableTdItemsBackUp);
       this.selectedTdItems = [];
@@ -745,7 +844,8 @@ export class CreateAssetGroupsComponent implements OnInit {
   }
 
   moveTdAllItemsToRight() {
-    if (this.searchAvailableTargetTerms.length == 0) {
+    this.pageContent[this.stepIndex].isChanged = false;
+    if (this.searchAvailableTargetTerms.length === 0) {
       this.selectedTdItems = _.cloneDeep(this.availableTdItemsBackUp);
       this.selectedTdItemsCopy = _.cloneDeep(this.availableTdItemsBackUp);
       this.availableTdItemsCopy = [];
@@ -765,23 +865,24 @@ export class CreateAssetGroupsComponent implements OnInit {
   }
 
   moveTdItemToRight() {
-    let selectedTdItemsCopy = this.selectedTdItemsCopy;
-    let availableTdItemsCopy = this.availableTdItemsCopy
-    for (let choosedTdSelectedKey in this.availTdChoosedSelectedItems) {
+    this.pageContent[this.stepIndex].isChanged = false;
+    const selectedTdItemsCopy = this.selectedTdItemsCopy;
+    const availableTdItemsCopy = this.availableTdItemsCopy;
+    for (const choosedTdSelectedKey in this.availTdChoosedSelectedItems) {
       if (this.availTdChoosedSelectedItems.hasOwnProperty(choosedTdSelectedKey)) {
         selectedTdItemsCopy.push(this.availTdChoosedSelectedItems[choosedTdSelectedKey]);
-        let filterIndex = availableTdItemsCopy.indexOf(this.availTdChoosedSelectedItems[choosedTdSelectedKey]);
+        const filterIndex = availableTdItemsCopy.indexOf(this.availTdChoosedSelectedItems[choosedTdSelectedKey]);
         availableTdItemsCopy.splice(filterIndex, 1);
       }
     }
 
     this.availableTdItems = availableTdItemsCopy;
-    if (this.searchAvailableTargetTerms.length != 0) {
+    if (this.searchAvailableTargetTerms.length !== 0) {
       this.searchAvailableTargets();
     }
 
     this.selectedTdItems = selectedTdItemsCopy;
-    if (this.searchSelectedTargetTerms.length != 0) {
+    if (this.searchSelectedTargetTerms.length !== 0) {
       this.searchSelectedTargets();
     }
 
@@ -791,23 +892,24 @@ export class CreateAssetGroupsComponent implements OnInit {
   }
 
   moveTdItemToLeft() {
-    let selectedTdItemsCopy = this.selectedTdItemsCopy;
-    let availableTdItemsCopy = this.availableTdItemsCopy
-    for (let choosedTdSelectedKey in this.selectTdChoosedSelectedItems) {
+    this.pageContent[this.stepIndex].isChanged = false;
+    const selectedTdItemsCopy = this.selectedTdItemsCopy;
+    const availableTdItemsCopy = this.availableTdItemsCopy;
+    for (const choosedTdSelectedKey in this.selectTdChoosedSelectedItems) {
       if (this.selectTdChoosedSelectedItems.hasOwnProperty(choosedTdSelectedKey)) {
         availableTdItemsCopy.push(this.selectTdChoosedSelectedItems[choosedTdSelectedKey]);
-        let filterIndex = selectedTdItemsCopy.indexOf(this.selectTdChoosedSelectedItems[choosedTdSelectedKey]);
+        const filterIndex = selectedTdItemsCopy.indexOf(this.selectTdChoosedSelectedItems[choosedTdSelectedKey]);
         selectedTdItemsCopy.splice(filterIndex, 1);
       }
     }
 
     this.availableTdItems = availableTdItemsCopy;
-    if (this.searchAvailableTargetTerms.length != 0) {
+    if (this.searchAvailableTargetTerms.length !== 0) {
       this.searchAvailableTargets();
     }
 
     this.selectedTdItems = selectedTdItemsCopy;
-    if (this.searchSelectedTargetTerms.length != 0) {
+    if (this.searchSelectedTargetTerms.length !== 0) {
       this.searchSelectedTargets();
     }
 
@@ -818,21 +920,20 @@ export class CreateAssetGroupsComponent implements OnInit {
 
 
   searchAvailableTargets() {
-    let term = this.searchAvailableTargetTerms;
+    const term = this.searchAvailableTargetTerms;
     this.availableTdItems = this.availableTdItemsCopy.filter(function (tag) {
       return tag.targetName.toLowerCase().indexOf(term.toLowerCase()) >= 0;
     });
   }
 
   searchSelectedTargets() {
-    let term = this.searchSelectedTargetTerms;
+    const term = this.searchSelectedTargetTerms;
     this.selectedTdItems = this.selectedTdItemsCopy.filter(function (tag) {
       return tag.targetName.toLowerCase().indexOf(term.toLowerCase()) >= 0;
     });
   }
 
-  remainingTargetTypes: any;
-  remainingTargetTypesFullDetails: any;
+
   getAssetGroupDetails() {
     this.hideContent = true;
     this.assetGroupLoader = true;
@@ -840,48 +941,46 @@ export class CreateAssetGroupsComponent implements OnInit {
     this.isAssetGroupFailed = false;
     this.isAssetGroupSuccess = false;
     this.isGroupNameValid = 1;
-    let url = environment.assetGroupDetailsById.url;
-    let method = environment.assetGroupDetailsById.method;
-    this.adminService.executeHttpAction(url, method, {}, {assetGroupId: this.groupId, dataSource: 'aws'}).subscribe(assetGroupReponse => {
-        this.hideContent = false;
-        this.assetGroupLoader = false;
-        this.isAssetGroupSuccess = false; 
-        this.allAttributeDetails = assetGroupReponse[0];
-        this.allSelectedAttributeDetailsCopy = assetGroupReponse[0];
-        this.assetForm = {
-          dataSourceName: 'aws',
-          groupName: assetGroupReponse[0].groupName,
-          displayName: assetGroupReponse[0].displayName,
-          type: assetGroupReponse[0].type,
-          createdBy: assetGroupReponse[0].createdBy,
-          description: assetGroupReponse[0].description,
-          visible: assetGroupReponse[0].visible,
-          targetTypes: assetGroupReponse[0].targetTypes
-        }
+    const url = environment.assetGroupDetailsById.url;
+    const method = environment.assetGroupDetailsById.method;
+    this.adminService.executeHttpAction(url, method, {}, { assetGroupId: this.groupId, dataSource: 'aws' }).subscribe(assetGroupReponse => {
+      this.hideContent = false;
+      this.assetGroupLoader = false;
+      this.isAssetGroupSuccess = false;
+      this.allAttributeDetails = assetGroupReponse[0];
+      this.allSelectedAttributeDetailsCopy = assetGroupReponse[0];
+      this.assetForm = {
+        dataSourceName: 'aws',
+        groupName: assetGroupReponse[0].groupName,
+        displayName: assetGroupReponse[0].displayName,
+        type: assetGroupReponse[0].type,
+        createdBy: assetGroupReponse[0].createdBy,
+        description: assetGroupReponse[0].description,
+        visible: assetGroupReponse[0].visible,
+        targetTypes: assetGroupReponse[0].targetTypes
+      };
 
-        this.allAttributeDetails = assetGroupReponse[0].targetTypes;
-        this.allSelectedAttributeDetailsCopy = assetGroupReponse[0].targetTypes;
-        this.remainingTargetTypes = assetGroupReponse[0].remainingTargetTypes;
-        this.remainingTargetTypesFullDetails = assetGroupReponse[0].remainingTargetTypesFullDetails;
-       // this.successTitleStart = 'Asset Group';
-      //  this.successTitleEnd = 'has been successfully created !!!';
+      this.allAttributeDetails = assetGroupReponse[0].targetTypes;
+      this.allSelectedAttributeDetailsCopy = assetGroupReponse[0].targetTypes;
+      this.remainingTargetTypes = assetGroupReponse[0].remainingTargetTypes;
+      this.remainingTargetTypesFullDetails = assetGroupReponse[0].remainingTargetTypesFullDetails;
     },
       error => {
         this.assetGroupLoader = false;
         this.isAssetGroupFailed = true;
         this.failedTitleStart = 'Failed in loading Asset Group';
         this.failedTitleEnd = '!!!';
-      })
+      });
   }
 
   /*
-    * This function gets the urlparameter and queryObj 
+    * This function gets the urlparameter and queryObj
     *based on that different apis are being hit with different queryparams
     */
   routerParam() {
     try {
       // this.filterText saves the queryparam
-      let currentQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(this.router.routerState.snapshot.root);
+      const currentQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(this.router.routerState.snapshot.root);
       if (currentQueryParams) {
 
         this.FullQueryParams = currentQueryParams;
@@ -890,8 +989,8 @@ export class CreateAssetGroupsComponent implements OnInit {
         this.queryParamsWithoutFilter = JSON.parse(JSON.stringify(this.FullQueryParams));
         delete this.queryParamsWithoutFilter['filter'];
         if (this.groupId) {
-          this.pageTitle = "Edit Asset Group";
-          this.breadcrumbPresent = "Edit Asset Group";
+          this.pageTitle = 'Edit Asset Group';
+          this.breadcrumbPresent = 'Edit Asset Group';
           this.isCreate = false;
           this.highlightName = this.groupName;
           this.highlightedText = this.groupName;
@@ -900,13 +999,13 @@ export class CreateAssetGroupsComponent implements OnInit {
           this.pageContent[0].hide = true;
           this.pageContent[1].hide = true;
           this.pageContent[2].hide = true;
-          
+
           this.pageContent[this.stepIndex].hide = false;
-          this.stepTitle = "Update Group Details - " + this.groupName;
+          this.stepTitle = 'Update Group Details - ' + this.groupName;
         } else {
           this.getAllAssetGroupNames();
-          this.pageTitle = "Create Asset Group";
-          this.breadcrumbPresent = "Create Asset Group";
+          this.pageTitle = 'Create Asset Group';
+          this.breadcrumbPresent = 'Create Asset Group';
           this.isCreate = true;
         }
         /**
@@ -919,7 +1018,7 @@ export class CreateAssetGroupsComponent implements OnInit {
         );
 
         this.urlID = this.FullQueryParams.TypeAsset;
-        //check for mandatory filters.
+        // check for mandatory filters.
         if (this.FullQueryParams.mandatory) {
           this.mandatory = this.FullQueryParams.mandatory;
         }
@@ -927,7 +1026,7 @@ export class CreateAssetGroupsComponent implements OnInit {
       }
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
@@ -946,7 +1045,7 @@ export class CreateAssetGroupsComponent implements OnInit {
     try {
       this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root);
     } catch (error) {
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
@@ -959,7 +1058,7 @@ export class CreateAssetGroupsComponent implements OnInit {
         this.previousUrlSubscription.unsubscribe();
       }
     } catch (error) {
-      this.logger.log("error", "--- Error while unsubscribing ---");
+      this.logger.log('error', '--- Error while unsubscribing ---');
     }
   }
 }
