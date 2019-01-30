@@ -262,9 +262,10 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         Map<String, Long> violationsMap = new HashMap<>();
         JsonParser parser = new JsonParser();
         try {
-        LOGGER.info("before the client call",complianceClient.toString());
+        LOGGER.info("before the client call {}",complianceClient.toString());
+        LOGGER.info("before the client call "+complianceClient.toString());
         String distributionStr = complianceClient.getDistributionAsJson(AWS, null);
-        LOGGER.info("after the client call",complianceClient.toString());
+        LOGGER.info("after the client call {}",complianceClient.toString());
         if (!Strings.isNullOrEmpty(distributionStr)) {
             JsonObject responseDetailsjson = parser.parse(distributionStr).getAsJsonObject();
             JsonObject dataJson = responseDetailsjson.get("data").getAsJsonObject();
