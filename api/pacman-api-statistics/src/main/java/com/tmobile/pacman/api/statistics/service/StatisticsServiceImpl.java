@@ -262,7 +262,10 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         Map<String, Long> violationsMap = new HashMap<>();
         JsonParser parser = new JsonParser();
         try {
+        LOGGER.info("before the client call {}",complianceClient.toString());
+        LOGGER.info("before the client call "+complianceClient.toString());
         String distributionStr = complianceClient.getDistributionAsJson(AWS, null);
+        LOGGER.info("after the client call {}",complianceClient.toString());
         if (!Strings.isNullOrEmpty(distributionStr)) {
             JsonObject responseDetailsjson = parser.parse(distributionStr).getAsJsonObject();
             JsonObject dataJson = responseDetailsjson.get("data").getAsJsonObject();
@@ -294,6 +297,7 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         }
     } catch (Exception e) {
 		LOGGER.error("error processing compliance fiegnclient", e);
+		LOGGER.debug("the client call is having error",e);
 		return violationsMap;
 	}
         return violationsMap;
@@ -345,7 +349,9 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         totalAssetCountMap.put(TOTAL, 0l);
         JsonParser parser = new JsonParser();
         try{
+        	LOGGER.debug("before the client call",assetClient.toString());
         Map<String, Object> assetCounts = assetClient.getTypeCounts(AWS, null, null);
+        LOGGER.debug("after the client call",assetClient.toString());
         // Get Total Asset Count
         assetCounts.entrySet().stream().forEach(entry->{
 
@@ -362,7 +368,9 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         });
         }catch(Exception e){
 	    	LOGGER.error("error processing fiegn assetClienr", e.getMessage());
+	    	LOGGER.debug("the client call is having error",e);
 	    	return totalAssetCountMap.get(TOTAL);
+	    	
 	    }
 
         return totalAssetCountMap.get(TOTAL);
