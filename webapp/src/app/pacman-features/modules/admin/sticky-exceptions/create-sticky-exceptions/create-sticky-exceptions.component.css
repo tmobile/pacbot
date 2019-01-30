@@ -1253,7 +1253,7 @@ button.tmbutton:disabled:hover {
 .parameters {
     float: left;
     margin-right: 5px;
-    width: 14em;
+    width: 25em;
     margin-bottom: 0px;
 }
 
@@ -3050,5 +3050,5 @@ div.exchange {
 }
 
 .rules /deep/ .ui-select-choices {
-    width: auto !important;
+    width: 25em !important;
 }
