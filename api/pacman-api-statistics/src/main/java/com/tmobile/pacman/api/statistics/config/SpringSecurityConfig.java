@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.statistics.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
@@ -29,6 +31,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+
+import com.tmobile.pacman.api.statistics.repository.StatisticsRepositoryImpl;
 
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
@@ -45,7 +49,7 @@ import feign.RequestTemplate;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
-    
+	 private static final Logger LOGGER = LoggerFactory.getLogger(SpringSecurityConfig.class);
 	@Value("${swagger.auth.whitelist:}")
 	private String[] AUTH_WHITELIST;
 	/**
@@ -60,6 +64,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 	    return new RequestInterceptor() {
 	        @Override
 	        public void apply(RequestTemplate requestTemplate) {
+	        	LOGGER.info("SecurityContextHolder.getContext() ==============",SecurityContextHolder.getContext());
 	            OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
 	            requestTemplate.header("Authorization", "bearer " + details.getTokenValue());
 	        }
