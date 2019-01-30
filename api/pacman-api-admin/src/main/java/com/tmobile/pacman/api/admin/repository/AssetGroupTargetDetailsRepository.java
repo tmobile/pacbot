@@ -16,6 +16,7 @@
 package com.tmobile.pacman.api.admin.repository;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.transaction.Transactional;
 
@@ -47,7 +48,7 @@ public interface AssetGroupTargetDetailsRepository extends JpaRepository<AssetGr
      * @param targetTypes - valid targetTypes list
      * @return All AssetGroupTarget Details
      */
-	public List<AssetGroupTargetDetails> findByGroupIdAndTargetTypeNotIn(String groupId, List<String> targetTypes);
+	public List<AssetGroupTargetDetails> findByGroupIdAndTargetTypeNotIn(String groupId, Set<String> targetTypes);
 
 	/**
      * AssetGroupTargetDetails Repository function for to delete all AssetGroupTarget details by groupId
@@ -59,3 +60,7 @@ public interface AssetGroupTargetDetailsRepository extends JpaRepository<AssetGr
     @Transactional
     public List<AssetGroupTargetDetails> deleteByGroupIdIgnoreCase(String groupId);
 }
+
+
+
+
