@@ -113,9 +113,9 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
         String ttypesTemp;
         String ttypes = null;
         try{
-        	LOGGER.debug("before the client call",assetServiceClient.toString());
+        LOGGER.info("before the client call",assetServiceClient.toString());
         AssetApi assetApi = assetServiceClient.getTargetTypeList(assetGroup, domain);
-        LOGGER.debug("after the client call",assetServiceClient.toString());
+        LOGGER.info("after the client call",assetServiceClient.toString());
         AssetApiData data = assetApi.getData();
         AssetApiName[] targetTypes = data.getTargettypes();
         for (AssetApiName name : targetTypes) {
