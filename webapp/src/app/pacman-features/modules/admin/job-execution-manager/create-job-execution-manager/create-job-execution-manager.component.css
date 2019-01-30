@@ -702,7 +702,7 @@ li.list-inputs:hover {
 }
 
 .data-content {
-    max-height: calc(100vh - 29em);
+    max-height: calc(100vh - 27em) !important;
     overflow: auto;
 }
 
