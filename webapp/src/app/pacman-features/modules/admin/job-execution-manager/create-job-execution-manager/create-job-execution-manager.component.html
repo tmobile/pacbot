@@ -323,7 +323,7 @@
                                                                 <div class="row-cells1 row-cells table-cells flex flex-align-center">
                                                                     <div class="column-wrapper">
                                                                         <div class='nowrap-ellipsis'>
-                                                                            {{envParams.key}}
+                                                                            {{envParams.name}}
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -354,7 +354,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="data-table-paginator-wrap flex flex-center flex-align-center" *ngIf="!jobDetailsLoader">
+                            <div class="data-table-paginator-wrap flex flex-center flex-align-center" *ngIf="!jobDetailsLoader && !jobLoaderFailure">
                                 <a class="save-container flex flex-row-reverse">
                                     <button class="submit-btn uppercase" type="submit" [disabled]="(jobForm.form.invalid) || isJobNameValid<1"><i class="fa fa-plus"></i> CREATE</button>
                                 </a>
