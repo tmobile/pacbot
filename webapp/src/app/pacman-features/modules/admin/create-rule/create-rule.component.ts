@@ -68,7 +68,7 @@ export class CreateRuleComponent implements OnInit, OnDestroy {
   allMonthDays = [];
   ruleIds = [];
   allEnvironments = [];
-  allRuleParamKeys = ["severity","ruleCategory"];
+  allRuleParamKeys = [];
   allEnvParamKeys = [];
   allRuleParams = [];
   hideContent = false;
@@ -599,7 +599,7 @@ export class CreateRuleComponent implements OnInit, OnDestroy {
   addRuleParameters(parametersInput: any, isEncrypted: any) {
     if (parametersInput.ruleKey !== '' && parametersInput.ruleValue !== '') {
       this.allRuleParams.push({ key: parametersInput.ruleKey.trim(), value: parametersInput.ruleValue.trim(), encrypt: isEncrypted.checked });
-      this.allRuleParamKeys.push(parametersInput.ruleKey);
+      this.allRuleParamKeys.push(parametersInput.ruleKey.trim());
       parametersInput.ruleKey = '';
       parametersInput.ruleValue = '';
       isEncrypted.checked = false;
