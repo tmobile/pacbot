@@ -15,14 +15,6 @@ import os
 class ApplicationECSCluster(ECSClusterResource):
     name = ""
 
-    def pre_terraform_destroy(self):
-        stop_all_services_in_a_cluster(
-            self.get_input_attr('name'),
-            Settings.AWS_ACCESS_KEY,
-            Settings.AWS_SECRET_KEY,
-            Settings.AWS_REGION
-        )
-
 
 class BaseEcsService:
     desired_count = 1

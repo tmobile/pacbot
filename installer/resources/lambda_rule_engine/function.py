@@ -38,7 +38,7 @@ class RulesListVariable(TerraformVariable):
 
 class RuleEngineEventRules(CloudWatchEventRuleResource):
     count = RulesListVariable.length()
-    name = RulesListVariable.lookup('ruleUUID')
+    name = RulesListVariable.lookup('ruleId')
     schedule_expression = RulesListVariable.lookup('schedule')
 
     VARIABLES = [RulesListVariable]
@@ -58,7 +58,7 @@ class RuleEngineEventRules(CloudWatchEventRuleResource):
 
         if not self.resource_in_tf_output(tf_outputs):
             for rule in get_rule_engine_cloudwatch_rules_var():
-                rule_name = rule['ruleUUID']
+                rule_name = rule['ruleId']
                 exists = cloudwatch_event.check_rule_exists(
                     rule_name,
                     input.aws_access_key,
@@ -74,7 +74,7 @@ class RuleEngineEventRules(CloudWatchEventRuleResource):
 
 class RuleEngineCloudWatchEventTargets(CloudWatchEventTargetResource):
     count = RulesListVariable.length()
-    rule = RulesListVariable.lookup('ruleUUID')
+    rule = RulesListVariable.lookup('ruleId')
     arn = RuleEngineLambdaFunction.get_output_attr('arn')
     target_id = RuleEngineLambdaFunction.get_input_attr('function_name') + '-target'
     target_input = RulesListVariable.lookup('ruleParams')
