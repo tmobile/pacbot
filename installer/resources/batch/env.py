@@ -17,7 +17,7 @@ class RuleEngineBatchJobEnv(BatchComputeEnvironmentResource):
     instance_type = ["m4.xlarge"]
     max_vcpus = 256
     min_vcpus = 0
-    desired_vcpus = 2
+    desired_vcpus = 0
     ec2_key_pair = ""
     resource_type = "EC2"
     security_group_ids = [InfraSecurityGroupResource.get_output_attr('id')]
@@ -38,7 +38,7 @@ class RuleEngineBatchJobEnv(BatchComputeEnvironmentResource):
         except Exception as e:
             pass
 
-    def pre_generate_terraform(self):
+    def check_batch_jobs_running(self):
         envs = get_compute_environments(
             [self.get_input_attr('compute_environment_name')],
             self.input.aws_access_key,
@@ -49,9 +49,19 @@ class RuleEngineBatchJobEnv(BatchComputeEnvironmentResource):
             return
 
         if envs[0]['computeResources']['desiredvCpus'] > int(self.get_input_attr('desired_vcpus')):
-            message = "\n\tBatch Jobs are running, please try after it gets completed.\n"
+            return True
+
+    def pre_generate_terraform(self):
+        warn_msg = "Batch Jobs are running, please try after it gets completed."
+        if self.check_batch_jobs_running():
+            message = "\n\t ** %s **\n" % warn_msg
             print(MsgMixin.BERROR_ANSI + message + MsgMixin.RESET_ANSI)
             sys.exit()
+
+    def pre_terraform_destroy(self):
+        warn_msg = "Batch Jobs are running, please try after it gets completed OR manually cancel the jobs"
+        if self.check_batch_jobs_running():
+            raise Exception(warn_msg)
 
     def post_terraform_destroy(self):
         ec2_client = get_ec2_client(self.input.aws_access_key, self.input.aws_secret_key, self.input.aws_region)

@@ -42,23 +42,39 @@ class Destroy(BaseAction):
         thread2.join()
 
     def execute_terraform(self, resources, terraform_with_targets, dry_run):
-        try:
-            if not dry_run:
+        if not dry_run:
+            try:
                 self.run_pre_destoy(resources)
-                self.destroy_resources(resources, terraform_with_targets)
-                self.run_post_destoy(resources)
-                self.current_destroy_status = self.destroy_statuses.get('tf_destroy_complete')
-        except Exception as e:
-            self.current_destroy_status = self.destroy_statuses.get('execution_finished')
-            self._delete_terraform_provider_file()
-            self.executed_with_error = True
-            raise e
+            except Exception as e:
+                self._cleanup_destroy()
+                self.executed_with_error = True
+                raise e
 
+            self.destroy_resources(resources, terraform_with_targets)
+            self.run_post_destoy(resources)
+            self.current_destroy_status = self.destroy_statuses.get('tf_destroy_complete')
+
+        self._cleanup_destroy()
+
+    def _cleanup_destroy(self):
         self.current_destroy_status = self.destroy_statuses.get('execution_finished')
+        self._delete_terraform_provider_file()
 
     def destroy_resources(self, resources, terraform_with_targets):
         destroy_resources = resources if terraform_with_targets else None
-        PyTerraform().terraform_destroy(destroy_resources)
+        exception = None
+
+        # May be timeout causes first destroy to be a failure hence attempt as many times as the value in the setting
+        for attempt in range(Settings.DESTROY_NUM_ATTEMPTS):
+            try:
+                PyTerraform().terraform_destroy(destroy_resources)
+                return
+            except Exception as e:
+                exception = e
+
+        self._cleanup_destroy()
+        self.executed_with_error = True
+        raise Exception(exception)
 
     def run_pre_destoy(self, resources):
         for resource in resources:
