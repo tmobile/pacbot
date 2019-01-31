@@ -419,17 +419,17 @@ public class CommonUtils {
             if (entry.getValue() instanceof String) {
                 flatNestedMap.put(prefixKey + entry.getKey(), (String) entry.getValue());
             }
-            if (entry.getValue() instanceof Long || entry.getValue() instanceof Integer
+            else if (entry.getValue() instanceof Long || entry.getValue() instanceof Integer
                     || entry.getValue() instanceof Boolean || entry.getValue() instanceof Float) {
                 flatNestedMap.put(prefixKey + entry.getKey(), String.valueOf(entry.getValue()));
             }
             // Gson converts Double to Exponential notation, hence converting
             // them back to long here
-            if (entry.getValue() instanceof Double) {
+            else if (entry.getValue() instanceof Double) {
                 flatNestedMap.put(prefixKey + entry.getKey(),
                         String.valueOf(new BigDecimal(String.valueOf(entry.getValue())).longValue()));
             }
-            if (entry.getValue() instanceof Map) {
+            else if (entry.getValue() instanceof Map) {
                 flatNestedMap.putAll(flatNestedMap(prefixKey + entry.getKey(), (Map<String, Object>) entry.getValue()));
             }
         }
