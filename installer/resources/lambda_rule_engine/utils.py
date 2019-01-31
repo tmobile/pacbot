@@ -11,7 +11,7 @@ def get_rule_engine_cloudwatch_rules_var():
     for index in range(len(variable_dict_input)):
         mod = index % 10
         item = {
-            'ruleUUID': variable_dict_input[index]['ruleUUID'],
+            'ruleId': variable_dict_input[index]['ruleId'],
             'ruleParams': variable_dict_input[index]['ruleParams'],
             'schedule': "cron(%s * * * ? *)" % str(mod)
         }
