@@ -48,7 +48,11 @@ def check_ecs_service_exists(service_name, cluster_name, access_key, secret_key,
 
 def get_all_task_arns(cluster_name, access_key, secret_key, region):
     client = get_ecs_client(access_key, secret_key, region)
-    response = client.list_tasks(cluster=cluster_name)
+
+    try:
+        response = client.list_tasks(cluster=cluster_name)
+    except:
+        return []
 
     return response['taskArns']
 

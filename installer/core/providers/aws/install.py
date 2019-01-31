@@ -42,7 +42,9 @@ class Install(BaseAction):
         if self.validate_resources(resources):
             self.generate_terraform_files(resources, terraform_with_targets)
             self.run_tf_execution_and_status_threads(resources, terraform_with_targets, dry_run)
-            self.render_resource_outputs(resources)
+
+            if not self.executed_with_error:
+                self.render_resource_outputs(resources)
 
     def run_tf_execution_and_status_threads(self, resources, terraform_with_targets, dry_run):
         thread1 = Thread(target=self.execute_terraform, args=(list(resources), terraform_with_targets, dry_run))
