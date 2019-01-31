@@ -25,7 +25,6 @@ TOOLS_REQUIRED = {
 
 PYTHON_PACKAGES_REQUIRED = [
     ("docker", "Client"),
-    "python_terraform",
     "boto3"
 ]
 

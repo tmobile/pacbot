@@ -3,7 +3,7 @@ from core.config import Settings
 from core.terraform.utils import get_terraform_resource_path, get_terraform_latest_output_file, get_terraform_status_file
 from core.log import SysLog
 from core import constants as K
-from python_terraform import *
+from core.lib.python_terraform import *
 from datetime import datetime
 from core.utils import exists_teraform_lock
 import inspect
@@ -58,14 +58,13 @@ class PyTerraform():
         CMD = Settings.get('running_command', "Terraform Apply")
         terraform = Terraform(
             working_dir=Settings.TERRAFORM_DIR,
-            targets=self.get_target_resources(resources)
+            targets=self.get_target_resources(resources),
+            stdout_log_file=self.log_obj.get_terraform_install_log_file()
         )
 
-        self.log_obj.write_debug_log(K.TERRAFORM_APPLY_STARTED)
+        self.log_obj.write_terraform_apply_log_header()
         # In order to -auto-approve we need to pass skip_plan=True for python3
         response = terraform.apply(skip_plan=True)
-
-        self.log_obj.write_terraform_apply_log(response)
 
         if response[0] == 1:
             self.log_obj.write_debug_log(K.TERRAFORM_APPLY_ERROR)
@@ -82,14 +81,14 @@ class PyTerraform():
         CMD = Settings.get('running_command', "Terraform Destroy")
         terraform = Terraform(
             working_dir=Settings.TERRAFORM_DIR,
-            targets=self.get_target_resources(resources)
+            targets=self.get_target_resources(resources),
+            stdout_log_file=self.log_obj.get_terraform_destroy_log_file()
         )
 
-        self.log_obj.write_debug_log(K.TERRAFORM_DESTROY_STARTED)
+        self.log_obj.write_terraform_destroy_log_header()
         kwargs = {"auto_approve": True}
         response = terraform.destroy(**kwargs)
 
-        self.log_obj.write_terraform_destroy_log(response)
         if response[0] == 1:
             self.log_obj.write_debug_log(K.TERRAFORM_DESTROY_ERROR)
             self.write_current_status(CMD, K.DESTROY_STATUS_ERROR, response[2])
