@@ -10,6 +10,7 @@ from threading import Thread
 from datetime import datetime
 from core.utils import exists_teraform_lock
 import importlib
+import logging
 import os
 import sys
 
@@ -33,6 +34,7 @@ class Install(BaseAction):
         self.args = args
         self.check_dependent_resources = check_dependent_resources
         super().__init__(input_obj)
+        logging.disable(logging.ERROR)  # To disable python terraform unwanted warnings
 
     def execute(self, resources, terraform_with_targets, dry_run):
         error_response = self.validate_arguments(resources, terraform_with_targets)
@@ -45,6 +47,8 @@ class Install(BaseAction):
 
             if not self.executed_with_error:
                 self.render_resource_outputs(resources)
+            else:
+                raise self.exception
 
     def run_tf_execution_and_status_threads(self, resources, terraform_with_targets, dry_run):
         thread1 = Thread(target=self.execute_terraform, args=(list(resources), terraform_with_targets, dry_run))
@@ -59,11 +63,13 @@ class Install(BaseAction):
     def execute_terraform(self, resources, terraform_with_targets, dry_run):
         try:
             self.terraform_apply(resources, terraform_with_targets, dry_run)
-            self._cleanup_execute_terraform(dry_run)
         except Exception as e:
-            self._cleanup_execute_terraform(dry_run, e)
+            self.executed_with_error = True
+            self.exception = e
 
-    def _cleanup_execute_terraform(self, dry_run, exception=None):
+        self._cleanup_execute_terraform(dry_run)
+
+    def _cleanup_execute_terraform(self, dry_run):
         py_terraform = PyTerraform()
 
         if not dry_run:
@@ -71,9 +77,7 @@ class Install(BaseAction):
 
         self._delete_terraform_provider_file()
         self.current_install_status = self.install_statuses.get('execution_finished')
-        if exception:
-            self.executed_with_error = True
-            raise exception
+
 
     def generate_terraform_files(self, resources, terraform_with_targets):
         if exists_teraform_lock():
