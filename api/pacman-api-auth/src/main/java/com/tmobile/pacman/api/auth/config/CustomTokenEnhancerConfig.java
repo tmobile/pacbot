@@ -25,11 +25,16 @@ import org.springframework.security.oauth2.provider.OAuth2Authentication;
 import org.springframework.security.oauth2.provider.token.TokenEnhancer;
 
 import com.google.common.collect.Maps;
-import com.tmobile.pacman.api.auth.provider.CustomUserService;
-import com.tmobile.pacman.api.auth.repo.AuthRepository;
-import com.tmobile.pacman.api.auth.repo.model.User;
+import com.tmobile.pacman.api.auth.model.User;
+import com.tmobile.pacman.api.auth.repository.AuthRepository;
+import com.tmobile.pacman.api.auth.services.CustomUserService;
 
-
+/**
+ * @author 	NidhishKrishnan
+ * @purpose Custom implementation of TokenEnhancer
+ * @since	November 10, 2018
+ * @version	1.0 
+**/
 public class CustomTokenEnhancerConfig implements TokenEnhancer {
 	
 	@Autowired

@@ -86,48 +86,41 @@ public class PolicyAssetController {
             List<PolicyScanInfo> masterDetailList = service
                     .getPolicyExecutionDetails(ag, resourceType, resourceId);
 
-            if (!masterDetailList.isEmpty()) {
-
-                masterDetailList = (List<PolicyScanInfo>) CommonUtils
-                        .filterMatchingCollectionElements(masterDetailList,
-                                searchText, true);
-                if (masterDetailList.isEmpty()) {
-                    response.put("response", masterDetailList);
-                    response.put("total", masterDetailList.size());
-                    return ResponseUtils.buildSucessResponse(response);
-                }
-
-                if (iFrom >= masterDetailList.size()) {
-                    return ResponseUtils.buildFailureResponse(new Exception(
-                            "From exceeds the size of list"));
-                }
-
-                int endIndex = 0;
-
-                if (iSize == 0) {
-                    iSize = masterDetailList.size();
-                }
-
-                if ((iFrom + iSize) > masterDetailList.size()) {
-                    endIndex = masterDetailList.size();
-                } else {
-                    endIndex = iFrom + iSize;
-                }
-
-                List<PolicyScanInfo> subDetailList = masterDetailList.subList(
-                        iFrom, endIndex);
-
-                response.put("response", subDetailList);
+            masterDetailList = (List<PolicyScanInfo>) CommonUtils
+                    .filterMatchingCollectionElements(masterDetailList,
+                            searchText, true);
+            if (masterDetailList.isEmpty()) {
+                response.put("response", masterDetailList);
                 response.put("total", masterDetailList.size());
-
                 return ResponseUtils.buildSucessResponse(response);
-            } else {
-                return ResponseUtils.buildFailureResponse(new Exception(
-                        "Error fetching data from ES"));
             }
 
+            if (iFrom >= masterDetailList.size()) {
+                return ResponseUtils.buildFailureResponse(new Exception(
+                        "From exceeds the size of list"));
+            }
+
+            int endIndex = 0;
+
+            if (iSize == 0) {
+                iSize = masterDetailList.size();
+            }
+
+            if ((iFrom + iSize) > masterDetailList.size()) {
+                endIndex = masterDetailList.size();
+            } else {
+                endIndex = iFrom + iSize;
+            }
+
+            List<PolicyScanInfo> subDetailList = masterDetailList.subList(
+                    iFrom, endIndex);
+
+            response.put("response", subDetailList);
+            response.put("total", masterDetailList.size());
+
+            return ResponseUtils.buildSucessResponse(response);
         } catch (Exception e) {
-            LOGGER.error(e.toString());
+            LOGGER.error("Error fetching issue Details ",e);
             return ResponseUtils.buildFailureResponse(e);
         }
 

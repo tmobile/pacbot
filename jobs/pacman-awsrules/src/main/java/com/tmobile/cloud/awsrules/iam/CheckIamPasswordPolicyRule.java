@@ -148,8 +148,8 @@ public class CheckIamPasswordPolicyRule extends BaseRule {
 
 		policyIssues = new StringBuilder();
 		Boolean complianceStatus = Boolean.TRUE;
-		if (passwordPolicy.getMaxPasswordAge()==null || passwordPolicy.getMaxPasswordAge() != Integer.parseInt(ruleParam.get("maxPasswordAge"))) {
-			policyIssues.append("Max password age do not matched the standards \n");
+		if (passwordPolicy.getMaxPasswordAge()==null || passwordPolicy.getMaxPasswordAge() > Integer.parseInt(ruleParam.get("maxPasswordAge"))) {
+			policyIssues.append("The standard max password age is "+ruleParam.get("maxPasswordAge")+" days but the found password age is "+passwordPolicy.getMaxPasswordAge()+" days\n");
 			complianceStatus = Boolean.FALSE;
 		}
 		

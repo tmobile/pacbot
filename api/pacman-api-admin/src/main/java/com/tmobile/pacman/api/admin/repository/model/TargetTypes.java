@@ -38,7 +38,7 @@ public class TargetTypes {
 	private String dataSourceName;
 	private String targetConfig;
 	private String status;
-	private Integer userId;
+	private String userId;
 	private String endpoint;
 	private Date createdDate;
 	private Date modifiedDate;
@@ -92,11 +92,11 @@ public class TargetTypes {
 		this.status = status;
 	}
 
-	public Integer getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Integer userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

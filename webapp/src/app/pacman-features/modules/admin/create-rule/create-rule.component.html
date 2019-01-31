@@ -12,7 +12,7 @@
  * limitations under the License.
  -->
 
- <div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
+<div class="floating-widgets-section flex flex-col issue-listing-wrapper" [class.filter-absent]='filters.length == 0'>
     <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [isCustomParentRoute]="true" [parentRouteName]="'admin'" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
     <div class="floating-widgets-header flex flex-between">
         <div>
@@ -35,7 +35,7 @@
                         <form (ngSubmit)="createNewRule(ruleForm)" #ruleForm="ngForm" [hidden]="hideContent">
                             <div class="data-content">
                                 <div class="pacman-progress" [hidden]="!rulePolicyLoader">
-                                    <pacman-loading></pacman-loading>
+                                    <app-pacman-loader></app-pacman-loader>
                                     <div class="title">
                                         Please Wait...
                                     </div>
@@ -92,6 +92,16 @@
                                             <div class="input-form">
                                                 <label>Target Type *</label>
                                                 <ng-select name="targetType" ngModel (selected)='onSelectTargetType($event)' [allowClear]="true" [items]="targetTypesNames" placeholder="Select Target Type" #targetType required>
+                                                </ng-select>
+                                            </div>
+                                            <div class="input-form">
+                                                <label>Severity *</label>
+                                                <ng-select name="ruleSeverity" ngModel [allowClear]="true" [items]="ruleSeverities" placeholder="Select Rule Severity" #ruleSeverity required>
+                                                </ng-select>
+                                            </div>
+                                            <div class="input-form">
+                                                <label>Category *</label>
+                                                <ng-select name="ruleCategory" ngModel [allowClear]="true" [items]="ruleCategories" placeholder="Select Rule Category" #ruleCategory required>
                                                 </ng-select>
                                             </div>
                                             <div class="freq-col-row input-form">
@@ -191,7 +201,7 @@
                                                     </div>
                                                 </div>
                                                 <div class="freq-col-sm-5 input-form">
-                                                    <ng-select name="ruleFrequencyDay" ngModel (selected)='onSelectFrequencyMonthDay($event)' [allowClear]="true" [items]="allMonthDays" placeholder="Select Day" #ruleFrequencyMonthDay required>
+                                                    <ng-select name="ruleFrequencyDay" ngModel [allowClear]="true" [items]="allMonthDays" placeholder="Select Day" #ruleFrequencyMonthDay required>
                                                     </ng-select>
                                                 </div>
                                             </div>
@@ -225,7 +235,7 @@
                                                     <input type="radio" id="manage-rule" value="Manage Rule" name="ruleType" class="ib" [(ngModel)]="ruleType">
                                                     <label for="manage-rule" class="manage-rule">Manage Rule</label>
                                                     <input type="radio" id="serverless" value="Serverless" name="ruleType" class="ib" [(ngModel)]="ruleType">
-                                                    <label for="serverless" class="db serverless">Serverless <a class="link" href="https://console.aws.amazon.com" target="_blank">(Create Serverless URL)</a></label>
+                                                    <label for="serverless" class="db serverless">Serverless <a class="link" href="http://jazz.corporate.t-mobile.com/" target="_blank">(Create Serverless URL)</a></label>
                                                 </div>
                                             </div>
                                             <div class="rule-executable">
@@ -410,7 +420,7 @@
                                 </div>
                             </div>
 
-                            <div class="data-table-paginator-wrap flex flex-center flex-align-center" *ngIf="!rulePolicyLoaderFailure || rulePolicyLoader">
+                            <div class="data-table-paginator-wrap flex flex-center flex-align-center" *ngIf="!rulePolicyLoader">
                                 <a class="save-container flex flex-row-reverse">
                                     <button class="submit-btn uppercase" type="submit" [disabled]="(isRuleIdValid == 0 || isRuleIdValid == -1 || ruleForm.form.invalid || isAlexaKeywordValid == 0 || isAlexaKeywordValid == -1)"><i class="fa fa-plus"></i> CREATE</button>
                                 </a>
@@ -453,7 +463,7 @@
                             </div>
                         </div>
                         <div class="pacman-progress" *ngIf="ruleLoader">
-                            <pacman-loading></pacman-loading>
+                            <app-pacman-loader></app-pacman-loader>
                             <div class="title">
                                 Please Wait...
                             </div>

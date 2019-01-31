@@ -15,11 +15,14 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.admin.repository.service;
 
+import static com.tmobile.pacman.api.admin.common.AdminConstants.CLOUDWATCH_RULE_DELETION_FAILURE;
 import static com.tmobile.pacman.api.admin.common.AdminConstants.UNEXPECTED_ERROR_OCCURRED;
+import static com.tmobile.pacman.api.admin.common.AdminConstants.DELETE_RULE_TARGET_FAILED;
 
 import java.nio.ByteBuffer;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -33,10 +36,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.amazonaws.services.cloudwatchevents.model.DeleteRuleRequest;
+import com.amazonaws.services.cloudwatchevents.model.DeleteRuleResult;
 import com.amazonaws.services.cloudwatchevents.model.PutRuleRequest;
 import com.amazonaws.services.cloudwatchevents.model.PutRuleResult;
 import com.amazonaws.services.cloudwatchevents.model.PutTargetsRequest;
 import com.amazonaws.services.cloudwatchevents.model.PutTargetsResult;
+import com.amazonaws.services.cloudwatchevents.model.RemoveTargetsRequest;
+import com.amazonaws.services.cloudwatchevents.model.RemoveTargetsResult;
 import com.amazonaws.services.cloudwatchevents.model.RuleState;
 import com.amazonaws.services.cloudwatchevents.model.Target;
 import com.amazonaws.services.lambda.AWSLambda;
@@ -54,8 +61,10 @@ import com.tmobile.pacman.api.admin.config.PacmanConfiguration;
 import com.tmobile.pacman.api.admin.domain.CreateUpdateRuleDetails;
 import com.tmobile.pacman.api.admin.domain.RuleProjection;
 import com.tmobile.pacman.api.admin.exceptions.PacManException;
+import com.tmobile.pacman.api.admin.repository.RuleCategoryRepository;
 import com.tmobile.pacman.api.admin.repository.RuleRepository;
 import com.tmobile.pacman.api.admin.repository.model.Rule;
+import com.tmobile.pacman.api.admin.repository.model.RuleCategory;
 import com.tmobile.pacman.api.admin.service.AmazonClientBuilderService;
 import com.tmobile.pacman.api.admin.service.AwsS3BucketService;
 import com.tmobile.pacman.api.admin.util.AdminUtils;
@@ -82,6 +91,9 @@ public class RuleServiceImpl implements RuleService {
 	
 	@Autowired
 	private ObjectMapper mapper;
+	
+	@Autowired
+	private RuleCategoryRepository ruleCategoryRepository;
 	
 	@Override
 	public List<Rule> getAllRulesByTargetType(String targetType) {
@@ -110,7 +122,7 @@ public class RuleServiceImpl implements RuleService {
 
 	@Override
 	public Page<Rule> getRules(final String searchTerm, final int page, final int size) {
-		return ruleRepository.findAll(searchTerm.toLowerCase(), new PageRequest(page, size));
+		return ruleRepository.findAll(searchTerm.toLowerCase(), PageRequest.of(page, size));
 	}
 	
 	@Override
@@ -137,8 +149,8 @@ public class RuleServiceImpl implements RuleService {
 	
 	@Override
 	public String invokeRule(String ruleId, List<Map<String, Object>> ruleOptionalParams) {
-		Rule ruleDetails = ruleRepository.findOne(ruleId);
-		AWSLambda awsLambdaClient = amazonClient.getRuleAWSLambdaClient();
+		Rule ruleDetails = ruleRepository.findById(ruleId).get();
+		AWSLambda awsLambdaClient = amazonClient.getAWSLambdaClient(config.getRule().getLambda().getRegion());
 		String invocationId = AdminUtils.getReferenceId();
 		boolean invokeStatus = invokeRule(awsLambdaClient, ruleDetails, invocationId, ruleOptionalParams);
 		if(invokeStatus) {
@@ -150,39 +162,76 @@ public class RuleServiceImpl implements RuleService {
 	
 	@Override
 	public String enableDisableRule(final String ruleId, final String action, final String userId) throws PacManException {
-		RuleState ruleState = action.equalsIgnoreCase("enable") ? RuleState.ENABLED : RuleState.DISABLED;
-		Rule existingRule = ruleRepository.findOne(ruleId);
-		if(existingRule != null) {
-			PutRuleRequest ruleRequest = new PutRuleRequest()
-	    	.withName(existingRule.getRuleUUID())
-	    	.withDescription(existingRule.getRuleId())
-	    	.withState(ruleState);
-			ruleRequest.setScheduleExpression("cron(".concat(existingRule.getRuleFrequency()).concat(")"));
-			amazonClient.getRuleAmazonCloudWatchEvents().putRule(ruleRequest);
-			
-			existingRule.setUserId(userId);
-			existingRule.setModifiedDate(new Date());
-			existingRule.setStatus(ruleState.name());
-			ruleRequest.setState(ruleState);
-
-			Map<String, Object> closeIssuesBody = Maps.newHashMap();
-			closeIssuesBody.put("reason", "disabled by : ".concat(userId));
-			closeIssuesBody.put("ruleId", ruleId);
-			closeIssuesBody.put("userId", userId);
-			try {
-				AWSLambda awsLambdaClient = amazonClient.getRuleAWSLambdaClient();
-				if (!checkIfPolicyAvailableForLambda(config.getRule().getLambda().getFunctionName(),awsLambdaClient)) {
-					createPolicyForLambda(config.getRule().getLambda().getFunctionName(),awsLambdaClient);
-				}
-				ruleRepository.save(existingRule);
-			} catch (Exception exception) {
-				log.error(UNEXPECTED_ERROR_OCCURRED, exception);
-				throw new PacManException(String.format(AdminConstants.UNEXPECTED_ERROR_OCCURRED, ruleId));
+		if(ruleRepository.existsById(ruleId)) {
+			Rule existingRule = ruleRepository.findById(ruleId).get();
+			if(action.equalsIgnoreCase("enable")) {
+				return enableAndCreateCloudWatchRule(existingRule, userId, RuleState.ENABLED);
+			} else {
+				return disableAndDeleteCloudWatchRule(existingRule, userId, RuleState.DISABLED);
 			}
 		} else {
 			throw new PacManException(String.format(AdminConstants.RULE_ID_NOT_EXITS, ruleId));
 		}
-		return String.format(AdminConstants.RULE_DISABLE_ENABLE_SUCCESS, action);
+	}
+	
+	private String disableAndDeleteCloudWatchRule(Rule existingRule, String userId, RuleState ruleState) throws PacManException {
+		boolean isRemoveTargetSuccess = removeTargetWithRule(existingRule);
+		if(isRemoveTargetSuccess) {
+			DeleteRuleRequest deleteRuleRequest = new DeleteRuleRequest()
+	    	.withName(existingRule.getRuleUUID());
+			DeleteRuleResult deleteRuleResult = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion()).deleteRule(deleteRuleRequest);
+			if (deleteRuleResult.getSdkHttpMetadata() != null) {
+				if(deleteRuleResult.getSdkHttpMetadata().getHttpStatusCode() == 200) {
+					existingRule.setUserId(userId);
+					existingRule.setModifiedDate(new Date());
+					existingRule.setStatus(ruleState.name());
+					ruleRepository.save(existingRule);
+					return String.format(AdminConstants.RULE_DISABLE_ENABLE_SUCCESS, ruleState.name().toLowerCase());
+				} else {
+					linkTargetWithRule(existingRule);
+					throw new PacManException(DELETE_RULE_TARGET_FAILED);
+				}
+			} else {
+				throw new PacManException(CLOUDWATCH_RULE_DELETION_FAILURE);
+			}
+		} else {
+			linkTargetWithRule(existingRule);
+			throw new PacManException(DELETE_RULE_TARGET_FAILED);
+		}
+	}
+
+	private String enableAndCreateCloudWatchRule(Rule existingRule, String userId, RuleState ruleState) throws PacManException {
+		AWSLambda awsLambdaClient = amazonClient.getAWSLambdaClient(config.getRule().getLambda().getRegion());
+		if (!checkIfPolicyAvailableForLambda(config.getRule().getLambda().getFunctionName(), awsLambdaClient)) {
+			createPolicyForLambda(config.getRule().getLambda().getFunctionName(), awsLambdaClient);
+		}
+		
+		PutRuleRequest ruleRequest = new PutRuleRequest()
+    	.withName(existingRule.getRuleUUID())
+    	.withDescription(existingRule.getRuleId())
+    	.withState(ruleState);
+		ruleRequest.setState(ruleState);
+		ruleRequest.setScheduleExpression("cron(".concat(existingRule.getRuleFrequency()).concat(")"));
+		PutRuleResult ruleResult = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion()).putRule(ruleRequest);
+		
+		existingRule.setUserId(userId);
+		existingRule.setModifiedDate(new Date());
+		existingRule.setStatus(ruleState.name());
+		
+
+		if (ruleResult.getRuleArn() != null) {
+			existingRule.setRuleArn(ruleResult.getRuleArn());
+			boolean isLambdaFunctionLinked = linkTargetWithRule(existingRule);
+			if(!isLambdaFunctionLinked) { 
+				throw new PacManException(String.format(AdminConstants.LAMBDA_LINKING_EXCEPTION, existingRule.getRuleId()));
+			} else {
+				ruleRepository.save(existingRule);
+				invokeRule(awsLambdaClient, existingRule, null, null);
+			}
+		} else {
+			throw new PacManException(String.format(AdminConstants.UNEXPECTED_ERROR_OCCURRED, existingRule.getRuleId()));
+		}
+		return String.format(AdminConstants.RULE_DISABLE_ENABLE_SUCCESS, ruleState.name().toLowerCase());
 	}
 
 	private void checkRuleTypeNotServerlessOrManaged(CreateUpdateRuleDetails ruleDetails, MultipartFile fileToUpload) throws PacManException {
@@ -197,7 +246,7 @@ public class RuleServiceImpl implements RuleService {
 		if(ruleDetails != null) {
 			if(isRuleIdExits(ruleDetails.getRuleId())) {		
 				Date currentDate = new Date();
-				Rule updateRuleDetails = ruleRepository.findOne(ruleDetails.getRuleId());
+				Rule updateRuleDetails = ruleRepository.findById(ruleDetails.getRuleId()).get();
 				ruleDetails.setTargetType(updateRuleDetails.getTargetType());
 				ruleDetails.setPolicyId(updateRuleDetails.getPolicyId());
 				ruleDetails.setDataSource(retrieveDataSource(updateRuleDetails));
@@ -212,6 +261,8 @@ public class RuleServiceImpl implements RuleService {
 				updateRuleDetails.setModifiedDate(currentDate);
 				updateRuleDetails.setRuleType(ruleDetails.getRuleType());
 				updateRuleDetails.setRuleRestUrl(ruleDetails.getRuleRestUrl());
+				updateRuleDetails.setSeverity(ruleDetails.getSeverity());
+				updateRuleDetails.setCategory(ruleDetails.getCategory());
 				createUpdateCloudWatchEventRule(updateRuleDetails);
 				if (ruleDetails.getIsFileChanged() && ruleDetails.getRuleType().equalsIgnoreCase("Classic")) {
 					createUpdateRuleJartoS3Bucket(fileToUpload, updateRuleDetails.getRuleUUID());
@@ -260,6 +311,8 @@ public class RuleServiceImpl implements RuleService {
 				newRuleDetails.setRuleUUID(ruleUUID);
 				newRuleDetails.setRuleType(ruleDetails.getRuleType());
 				newRuleDetails.setRuleRestUrl(ruleDetails.getRuleRestUrl());
+				newRuleDetails.setSeverity(ruleDetails.getSeverity());
+				newRuleDetails.setCategory(ruleDetails.getCategory());
 				createUpdateCloudWatchEventRule(newRuleDetails);
 				if (ruleDetails.getIsFileChanged() && ruleDetails.getRuleType().equalsIgnoreCase("Classic")) {
 					createUpdateRuleJartoS3Bucket(fileToUpload, ruleUUID);
@@ -280,7 +333,7 @@ public class RuleServiceImpl implements RuleService {
 		    	.withDescription(ruleDetails.getRuleId());
 				 ruleRequest.withScheduleExpression("cron(".concat(ruleDetails.getRuleFrequency()).concat(")"));
 
-			AWSLambda awsLambdaClient = amazonClient.getRuleAWSLambdaClient();
+			AWSLambda awsLambdaClient = amazonClient.getAWSLambdaClient(config.getRule().getLambda().getRegion());
 			
 			if (!checkIfPolicyAvailableForLambda(config.getRule().getLambda().getFunctionName(), awsLambdaClient)) {
 				createPolicyForLambda(config.getRule().getLambda().getFunctionName(), awsLambdaClient);
@@ -292,7 +345,7 @@ public class RuleServiceImpl implements RuleService {
 				ruleRequest.setState(RuleState.DISABLED);
 			}
 
-			PutRuleResult ruleResult = amazonClient.getRuleAmazonCloudWatchEvents().putRule(ruleRequest);
+			PutRuleResult ruleResult = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion()).putRule(ruleRequest);
 			if (ruleResult.getRuleArn() != null) {
 				ruleDetails.setRuleArn(ruleResult.getRuleArn());
 				boolean isLambdaFunctionLinked = linkTargetWithRule(ruleDetails);
@@ -314,12 +367,12 @@ public class RuleServiceImpl implements RuleService {
 	
 	@Override
 	public Map<String, Object> invokeAllRules(List<String> ruleIds) {
-		AWSLambda awsLambdaClient = amazonClient.getRuleAWSLambdaClient();
+		AWSLambda awsLambdaClient = amazonClient.getAWSLambdaClient(config.getRule().getLambda().getRegion());
 		Map<String, Object> responseLists = Maps.newHashMap();
 		List<String> successList = Lists.newArrayList();
 		List<String> failedList = Lists.newArrayList();
 		for(String ruleId: ruleIds) {
-			Rule ruleInstance = ruleRepository.findOne(ruleId);
+			Rule ruleInstance = ruleRepository.findById(ruleId).get();
 			boolean isInvoked = invokeRule(awsLambdaClient, ruleInstance, null, Lists.newArrayList());
 			if(isInvoked) {
 				successList.add(ruleId);
@@ -367,9 +420,22 @@ public class RuleServiceImpl implements RuleService {
 	    .withRule(rule.getRuleUUID());
 		
 		try {
-			PutTargetsResult targetsResult = amazonClient.getRuleAmazonCloudWatchEvents().putTargets(targetsRequest);
+			PutTargetsResult targetsResult = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion()).putTargets(targetsRequest);
 			return (targetsResult.getFailedEntryCount()==0);
 		} catch(Exception exception) {
+			return false;
+		}
+	}
+	
+	private boolean removeTargetWithRule(final Rule rule) {
+		RemoveTargetsRequest removeTargetsRequest = new RemoveTargetsRequest()
+		.withIds(config.getRule().getLambda().getTargetId())
+	    .withRule(rule.getRuleUUID());
+		try {
+			RemoveTargetsResult targetsResult = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion()).removeTargets(removeTargetsRequest);
+			return (targetsResult.getFailedEntryCount()==0);
+		} catch(Exception exception) {
+			exception.printStackTrace();
 			return false;
 		}
 	}
@@ -403,7 +469,7 @@ public class RuleServiceImpl implements RuleService {
 	}
 
 	private boolean createUpdateRuleJartoS3Bucket(MultipartFile fileToUpload, String ruleUUID) {
-		return awsS3BucketService.uploadFile(amazonClient.getRuleAmazonS3(), fileToUpload, config.getJob().getS3().getBucketName(), ruleUUID.concat(".jar"));
+		return awsS3BucketService.uploadFile(amazonClient.getAmazonS3(config.getRule().getS3().getBucketRegion()), fileToUpload, config.getJob().getS3().getBucketName(), ruleUUID.concat(".jar"));
 	}
 
 	public boolean isRuleIdExits(String ruleId) {
@@ -425,8 +491,18 @@ public class RuleServiceImpl implements RuleService {
 			newJobParams.put("assetGroup", ruleDetails.getAssetGroup());
 			newJobParams.put("ruleUUID", ruleUUID);
 			newJobParams.put("ruleType", ruleDetails.getRuleType());
+			Map<String, Object> severity = new HashMap<>();
+			severity.put("key", "severity");
+			severity.put("value", ruleDetails.getSeverity());
+			severity.put("encrypt", false);
+			Map<String, Object> category = new HashMap<>();
+			category.put("key", "ruleCategory");
+			category.put("value", ruleDetails.getCategory());
+			category.put("encrypt", false);
 			List<Map<String, Object>> environmentVariables = (List<Map<String, Object>>) newJobParams.get("environmentVariables");
 			List<Map<String, Object>> params = (List<Map<String, Object>>) newJobParams.get("params");
+			params.add(severity);
+			params.add(category);
 			newJobParams.put("environmentVariables", encryptDecryptValues(environmentVariables, ruleUUID, isCreatedNew));
 			newJobParams.put("params", encryptDecryptValues(params, ruleUUID, isCreatedNew));
 			return mapper.writeValueAsString(newJobParams);
@@ -465,5 +541,10 @@ public class RuleServiceImpl implements RuleService {
 			}
 		}
 		return ruleParams;
+	}
+	
+	@Override
+	public List<RuleCategory> getAllRuleCategories() throws PacManException{
+		return ruleCategoryRepository.findAll();
 	}
 }

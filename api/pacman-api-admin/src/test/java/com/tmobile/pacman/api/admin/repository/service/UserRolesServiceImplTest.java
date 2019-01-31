@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -25,6 +25,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import org.apache.commons.lang.StringUtils;
 import org.junit.Test;
@@ -49,92 +50,92 @@ public class UserRolesServiceImplTest {
 
 	@InjectMocks
 	private UserRolesServiceImpl userRolesService;
-
+	
 	@Mock
 	private UserRolesRepository userRolesRepository;
 
 	@Test
 	public void getAllUserRolesTest() {
 		List<UserRoles> userRolesDetails = Lists.newArrayList();
-		UserRoles userRolesDetail = getUserRoleDetails();
-		userRolesDetails.add(userRolesDetail);
+		Optional<UserRoles> userRolesDetail = getUserRoleDetails();
+		userRolesDetails.add(userRolesDetail.get());
 		Page<UserRoles> allUserRolesDetails = new PageImpl<UserRoles>(userRolesDetails, new PageRequest(0, 1), userRolesDetails.size());
 		when(userRolesRepository.findAllUserRolesDetails(StringUtils.EMPTY, new PageRequest(0, 1))).thenReturn(allUserRolesDetails);
 		assertThat(userRolesService.getAllUserRoles(StringUtils.EMPTY, 0, 1).getContent().size(), is(1));
 	}
-
+	
 	@Test
 	public void createUserRoleTest() throws PacManException {
 		CreateRoleDetailsRequest roleDetailsRequest = getUserRoleDetailsRequest();
-		UserRoles userRolesDetail = getUserRoleDetails();
+		Optional<UserRoles> userRolesDetail = getUserRoleDetails();
 		when(userRolesRepository.existsByRoleNameIgnoreCase(roleDetailsRequest.getRoleName())).thenReturn(false);
-		when(userRolesRepository.save(userRolesDetail)).thenReturn(userRolesDetail);
+		when(userRolesRepository.save(userRolesDetail.get())).thenReturn(userRolesDetail.get());
 		assertThat(userRolesService.createUserRole(roleDetailsRequest, anyString()), is(USER_ROLE_CREATION_SUCCESS));
 	}
-
+	
 	@Test
 	public void createUserRoleNotFoundTest() throws PacManException {
 		CreateRoleDetailsRequest roleDetailsRequest = getUserRoleDetailsRequest();
-		when(userRolesRepository.existsByRoleNameIgnoreCase(roleDetailsRequest.getRoleName())).thenReturn(true);
+		when(userRolesRepository.existsByRoleNameIgnoreCase(roleDetailsRequest.getRoleName())).thenReturn(true);		
 		assertThatThrownBy(() -> userRolesService.createUserRole(roleDetailsRequest, anyString())).isInstanceOf(PacManException.class);
 	}
-
+	
 
 	@Test
 	public void updateUserRoleTest() throws PacManException {
 		UpdateRoleDetailsRequest roleDetailsRequest = getUpdateRoleDetailsRequest();
-		UserRoles userRolesDetail = getUserRoleDetails();
-		when(userRolesRepository.findOne(anyString())).thenReturn(userRolesDetail);
-		when(userRolesRepository.exists(anyString())).thenReturn(true);
-
-		when(userRolesRepository.save(userRolesDetail)).thenReturn(userRolesDetail);
+		Optional<UserRoles> userRolesDetail = getUserRoleDetails();
+		when(userRolesRepository.findById(anyString())).thenReturn(userRolesDetail);
+		when(userRolesRepository.existsById(anyString())).thenReturn(true);
+		 
+		when(userRolesRepository.save(userRolesDetail.get())).thenReturn(userRolesDetail.get());
 		assertThat(userRolesService.updateUserRole(roleDetailsRequest, anyString()), is(USER_ROLE_UPDATION_SUCCESS));
 	}
-
+	
 	@Test
 	public void updateUserRoleUserNotFoundTest() throws PacManException {
 		UpdateRoleDetailsRequest roleDetailsRequest = getUpdateRoleDetailsRequest();
-		UserRoles userRolesDetail = getUserRoleDetails();
-		when(userRolesRepository.findOne(anyString())).thenReturn(userRolesDetail);
-		when(userRolesRepository.exists(anyString())).thenReturn(false);
-
-		when(userRolesRepository.save(userRolesDetail)).thenReturn(userRolesDetail);
+		Optional<UserRoles> userRolesDetail = getUserRoleDetails();
+		when(userRolesRepository.findById(anyString())).thenReturn(userRolesDetail);
+		when(userRolesRepository.existsById(anyString())).thenReturn(false);
+		 
+		when(userRolesRepository.save(userRolesDetail.get())).thenReturn(userRolesDetail.get());
 		assertThatThrownBy(() -> userRolesService.updateUserRole(roleDetailsRequest, anyString())).isInstanceOf(PacManException.class);
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Test
 	public void updateUserRoleUserNotFoundExceptionTest() throws PacManException {
 		UpdateRoleDetailsRequest roleDetailsRequest = getUpdateRoleDetailsRequest();
-		UserRoles userRolesDetail = getUserRoleDetails();
-		when(userRolesRepository.findOne(anyString())).thenThrow(Exception.class);
-		when(userRolesRepository.exists(anyString())).thenReturn(true);
-
-		when(userRolesRepository.save(userRolesDetail)).thenReturn(userRolesDetail);
+		Optional<UserRoles> userRolesDetail = getUserRoleDetails();
+		when(userRolesRepository.findById(anyString())).thenThrow(Exception.class);
+		when(userRolesRepository.existsById(anyString())).thenReturn(true);
+		 
+		when(userRolesRepository.save(userRolesDetail.get())).thenReturn(userRolesDetail.get());
 		assertThatThrownBy(() -> userRolesService.updateUserRole(roleDetailsRequest, anyString())).isInstanceOf(PacManException.class);
 	}
-
+	
 	@Test
 	public void getUserRoleByIdTest() throws PacManException {
-		UserRoles userRolesDetail = getUserRoleDetails();
-		when(userRolesRepository.exists(anyString())).thenReturn(true);
-		when(userRolesRepository.findOne(anyString())).thenReturn(userRolesDetail);
+		Optional<UserRoles> userRolesDetail = getUserRoleDetails();
+		when(userRolesRepository.existsById(anyString())).thenReturn(true);
+		when(userRolesRepository.findById(anyString())).thenReturn(userRolesDetail);
 		assertThat(userRolesService.getUserRoleById(anyString()).getOwner(), is("owner123"));
 	}
-
+	
 	@Test
 	public void getUserRoleByIdRoleIdNotExitsTest() throws PacManException {
-		UserRoles userRolesDetail = getUserRoleDetails();
-		when(userRolesRepository.exists(anyString())).thenReturn(false);
-		when(userRolesRepository.getOne(anyString())).thenReturn(userRolesDetail);
+		Optional<UserRoles> userRolesDetail = getUserRoleDetails();
+		when(userRolesRepository.existsById(anyString())).thenReturn(false);
+		when(userRolesRepository.findById(anyString())).thenReturn(userRolesDetail);
 		assertThatThrownBy(() -> userRolesService.getUserRoleById(anyString())).isInstanceOf(PacManException.class);
 	}
-/*
+/*	
  * try {
 				Date currentDate = new Date();
 				UserRoles userRole = userRolesRepository.findOne(roleDetailsRequest.getRoleId());
 				userRole.setModifiedDate(currentDate);
-				userRole.setOwner("Nidhish");
+				userRole.setOwner("NKrishn3");
 				userRole.setRoleName(roleDetailsRequest.getRoleName());
 				userRole.setWritePermission(roleDetailsRequest.getWritePermission());
 				userRolesRepository.save(userRole);
@@ -147,7 +148,7 @@ public class UserRolesServiceImplTest {
 	public UserRoles getUserRoleById(final Long roleId) throws PacManException {
 		boolean isRoleIdExits = userRolesRepository.exists(roleId);
 		if(isRoleIdExits) {
-
+			
 		} else {
 			throw new PacManException(USER_ROLE_NOT_EXITS);
 		}
@@ -163,7 +164,7 @@ public class UserRolesServiceImplTest {
 		return updateRoleDetailsRequest;
 	}
 
-	private UserRoles getUserRoleDetails() {
+	private Optional<UserRoles> getUserRoleDetails() {
 		UserRoles userRoleDetails = new UserRoles();
 		userRoleDetails.setClient("clientId123");
 		userRoleDetails.setCreatedDate(new Date());
@@ -173,9 +174,9 @@ public class UserRolesServiceImplTest {
 		userRoleDetails.setRoleName("roleName123");
 		userRoleDetails.setUsers(Sets.newHashSet());
 		userRoleDetails.setWritePermission(false);
-		return userRoleDetails;
+		return Optional.of(userRoleDetails);
 	}
-
+	
 	private CreateRoleDetailsRequest getUserRoleDetailsRequest() {
 		CreateRoleDetailsRequest roleDetailsRequest = new CreateRoleDetailsRequest();
 		roleDetailsRequest.setRoleName("roleName123");

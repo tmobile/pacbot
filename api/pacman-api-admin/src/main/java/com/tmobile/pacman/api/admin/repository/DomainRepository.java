@@ -41,12 +41,12 @@ public interface DomainRepository extends JpaRepository<Domain, String> {
 	@Query(value = "SELECT d.domainDesc AS domainDesc, d.domainName AS domainName, d.config AS config, COUNT(t.domain) AS targetTypesCount FROM cf_Domain d LEFT JOIN cf_Target t ON t.domain = d.domainName WHERE "
 			+ "LOWER(d.domainDesc) LIKE %:searchTerm% OR "
 			+ "LOWER(d.domainName) LIKE %:searchTerm% OR "
-			+ "LOWER(d.config) LIKE %:searchTerm% GROUP BY d.domainName ORDER BY ?#{#pageable}",
+			+ "LOWER(d.config) LIKE %:searchTerm% GROUP BY d.domainName",
 
 			countQuery = "SELECT COUNT(*) FROM cf_Domain d LEFT JOIN cf_Target t ON t.domain = d.domainName WHERE "
 			+ "LOWER(d.domainDesc) LIKE %:searchTerm% OR "
 			+ "LOWER(d.domainName) LIKE %:searchTerm% OR "
-			+ "LOWER(d.config) LIKE %:searchTerm% GROUP BY d.domainName ORDER BY ?#{#pageable}", nativeQuery=true)
+			+ "LOWER(d.config) LIKE %:searchTerm% GROUP BY d.domainName", nativeQuery=true)
 	public Page<Object[]> findAllDomainDetails(@Param("searchTerm") String searchTerm, Pageable pageable);
 
 	@Query("SELECT domainName FROM Domain WHERE domainName != '' AND domainName != null GROUP BY domainName")

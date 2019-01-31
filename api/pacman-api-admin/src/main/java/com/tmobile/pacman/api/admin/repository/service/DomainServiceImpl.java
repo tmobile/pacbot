@@ -51,18 +51,22 @@ public class DomainServiceImpl implements DomainService, Constants {
 	}
 	
 	@Override
-	public Domain getDomainByName(final String domainName) {
-		return domainRepository.findOne(domainName);
+	public Domain getDomainByName(final String domainName) throws PacManException {
+		if(domainRepository.existsById(domainName)) {
+			return domainRepository.findById(domainName).get();
+		} else {
+			throw new PacManException(AdminConstants.DOMAIN_NAME_EXITS);
+		}
 	}
 	
 	@Override
 	public Page<Object[]> getAllDomainDetails(final String searchTerm, final int page, final int size) {
-		return domainRepository.findAllDomainDetails(searchTerm,  new PageRequest(page, size));
+		return domainRepository.findAllDomainDetails(searchTerm,  PageRequest.of(page, size));
 	}
 	
 	@Override
-	public String createDomain(final CreateUpdateDomain createUpdateDomain) throws PacManException {
-		boolean isDomainExits = domainRepository.exists(createUpdateDomain.getName());
+	public String createDomain(final CreateUpdateDomain createUpdateDomain, final String userId) throws PacManException {
+		boolean isDomainExits = domainRepository.existsById(createUpdateDomain.getName());
 		if(!isDomainExits) {
 			Date currentDate = new Date();
 			Domain domain = new Domain();
@@ -71,7 +75,7 @@ public class DomainServiceImpl implements DomainService, Constants {
 			domain.setConfig(createUpdateDomain.getConfig());
 			domain.setModifiedDate(currentDate);
 			domain.setCreatedDate(currentDate);
-			domain.setUserId("123");
+			domain.setUserId(userId);
 			domainRepository.save(domain);
 			return AdminConstants.DOMAIN_CREATION_SUCCESS;
 			
@@ -81,14 +85,14 @@ public class DomainServiceImpl implements DomainService, Constants {
 	}
 
 	@Override
-	public String updateDomain(final CreateUpdateDomain createUpdateDomain) throws PacManException {
-		boolean isDomainExits = domainRepository.exists(createUpdateDomain.getName());
+	public String updateDomain(final CreateUpdateDomain createUpdateDomain, final String userId) throws PacManException {
+		boolean isDomainExits = domainRepository.existsById(createUpdateDomain.getName());
 		if (isDomainExits) {
-			Domain existingDomain = domainRepository.findOne(createUpdateDomain.getName());
+			Domain existingDomain = domainRepository.findById(createUpdateDomain.getName()).get();
 			existingDomain.setDomainDesc(createUpdateDomain.getDesc());
 			existingDomain.setConfig(createUpdateDomain.getConfig());
 			existingDomain.setModifiedDate(new Date());
-			existingDomain.setUserId("123");
+			existingDomain.setUserId(userId);
 			domainRepository.save(existingDomain);
 			return AdminConstants.DOMAIN_UPDATION_SUCCESS;
 		} else {

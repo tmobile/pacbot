@@ -50,7 +50,7 @@ public interface TargetTypesRepository extends JpaRepository<TargetTypes, String
 			+ "LOWER(t.dataSourceName) LIKE %:searchTerm% OR "
 			+ "LOWER(t.targetConfig) LIKE %:searchTerm% OR "
 			+ "LOWER(t.endpoint) LIKE %:searchTerm% OR "
-			+ "LOWER(t.domain) LIKE %:searchTerm% GROUP BY t.targetName ORDER BY ?#{#pageable}", 
+			+ "LOWER(t.domain) LIKE %:searchTerm% GROUP BY t.targetName", 
 			
 			countQuery = "SELECT COUNT(*) FROM TargetTypes t WHERE "
 					+ "LOWER(t.targetName) LIKE %:searchTerm% OR "
@@ -59,7 +59,10 @@ public interface TargetTypesRepository extends JpaRepository<TargetTypes, String
 					+ "LOWER(t.dataSourceName) LIKE %:searchTerm% OR "
 					+ "LOWER(t.targetConfig) LIKE %:searchTerm% OR "
 					+ "LOWER(t.endpoint) LIKE %:searchTerm% OR "
-					+ "LOWER(t.domain) LIKE %:searchTerm% GROUP BY t.targetName ORDER BY ?#{#pageable}")
+					+ "LOWER(t.domain) LIKE %:searchTerm% GROUP BY t.targetName")
 	public Page<TargetTypesProjections> findAllTargetTypeDetails(@Param("searchTerm") String searchTerm, Pageable pageable);
+
+	@Query("SELECT target.targetName AS id, target.targetName AS text FROM TargetTypes target GROUP BY target.targetName")
+	public List<TargetTypesProjection> getAllTargetTypes(); 
 
 }

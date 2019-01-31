@@ -31,7 +31,7 @@
 }
 
 .widget-wrapper {
-    min-height: 17em;
+    padding-bottom: 4px;
 }
 
 .data-table-desc {
@@ -46,34 +46,6 @@
 
 .admin-widgets-header h1 {
     text-transform: capitalize;
-}
-
-.issue-listing-wrapper /deep/ .data-table-wrap {
-    min-height: calc( 100vh - 24em);
-}
-
-.issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 32em);
-}
-
-.issue-listing-wrapper /deep/ .data-table-inner-wrap {
-    max-height: calc(100vh - 35em)
-}
-
-.issue-listing-wrapper /deep/ .data-table-wrap.loading {
-    min-height: calc( 100vh - 24em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-wrap {
-    min-height: calc(100vh - 20em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 28em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
-    max-height: calc(100vh - 31em)
 }
 
 .details-bar[_ngcontent-c14] {
@@ -310,9 +282,6 @@ li.list-inputs:hover {
     border: 1px solid #ed0295;
 }
 
-
-/*    /////////////////////////////////                 */
-
 .sub-head {
     padding: 0.6em 0.8em;
     background-color: #ffffff;
@@ -328,6 +297,8 @@ li.list-inputs:hover {
     box-shadow: 0 1px 7px -1px #0000001e, 0 2px 4px 0 #00000023;
     font-size: 1em;
     overflow: hidden;
+    max-height: calc( 100vh - 21em) !important;
+    min-height: calc( 100vh - 21em) !important;
 }
 
 .data-table-wrap.loading {
@@ -380,7 +351,6 @@ li.list-inputs:hover {
 
 .data-table-wrap a:hover {
     color: #e20074;
-    /*font-family: ex2-medium;*/
     letter-spacing: 0.2px;
     text-shadow: 0.66px 0;
 }
@@ -544,7 +514,6 @@ li.list-inputs:hover {
     height: 9px;
     border-radius: 5px;
     cursor: pointer;
-    /*border: 1px solid #f0f0f0;*/
     margin-right: 6px;
 }
 
@@ -714,8 +683,7 @@ li.list-inputs:hover {
 }
 
 .data-content {
-    max-height: calc(100vh - 26em);
-    min-height: calc(100vh - 26em);
+    min-height: calc(100vh - 29em);
     overflow: auto;
     padding-left: 20%;
     padding-right: 20%;
@@ -885,9 +853,6 @@ select.selectmax {
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, .3)/* slight inner shadow */
 }
 
-
-/* Check symbol aspect */
-
 [type="checkbox"]:not(:checked)+label:after,
 [type="checkbox"]:checked+label:after {
     content: '✔';
@@ -897,19 +862,12 @@ select.selectmax {
     font-size: 16px;
     color: #ed027d;
     transition: all .3s;
-    /* animation incoming :p */
 }
-
-
-/* if "not checked" */
 
 [type="checkbox"]:not(:checked)+label:after {
     opacity: 0;
     transform: scale(0);
 }
-
-
-/* If "checked" */
 
 [type="checkbox"]:checked+label:after {
     opacity: 1;
@@ -2177,4 +2135,13 @@ p.inputnote {
 .users-suggest li.list-inputs {
     padding-top: 0.3em;
     padding-bottom: 0.5em;
+}
+
+.floating-widgets-section /deep/ .data-table-wrap.loading {
+    max-height: calc( 100vh - 21em) !important;
+    min-height: calc( 100vh - 21em) !important;
+}
+
+.floating-widgets-section /deep/ .data-table-inner-wrap {
+    height: auto;
 }

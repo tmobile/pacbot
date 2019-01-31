@@ -15,12 +15,6 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.notification.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
-import java.util.HashMap;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -42,6 +36,11 @@ import com.tmobile.pacman.api.notification.dto.MailMessageRequestBody;
 import com.tmobile.pacman.api.notification.dto.MailTemplateRequestBody;
 import com.tmobile.pacman.api.notification.service.MailService;
 import com.tmobile.pacman.api.notification.service.NotificationService;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 @RestController
 @PreAuthorize("@securityService.hasPermission(authentication, 'ROLE_USER')")
@@ -105,33 +104,6 @@ public class NotificationController implements Constants
 		return ResponseUtils.buildSucessResponse(response); 
 	}
 
-	@RequestMapping(path = "/public/test", method = RequestMethod.GET)
-	public ResponseEntity<Object> testApi() {
-		Map<String,String> response = new HashMap<>();
-		response.put(STATUS, WORKING);
-		return ResponseUtils.buildSucessResponse(response); 
-	}
-	
-	@RequestMapping(path = "/public/user-access-check", method = RequestMethod.GET)
-	public ResponseEntity<Object> resourceReadScope()
-	{
-		Map<String,String> response = new HashMap<>();
-		response.put(STATUS , WORKING);
-		response.put("role", "Public User Access Check");
-		return ResponseUtils.buildSucessResponse(response); 
-	}
-	
-	
-	
-	@RequestMapping(path = "/secure/user-access-check", method = RequestMethod.GET)
-	public ResponseEntity<Object> resourceWriteScope()
-	{
-		Map<String,String> response = new HashMap<>();
-		response.put(STATUS, WORKING);
-		response.put("scope", "Secure User Access Check");
-		return ResponseUtils.buildSucessResponse(response); 
-	}
-	
 	/**
 	 * 
 	 * @param mailDetails

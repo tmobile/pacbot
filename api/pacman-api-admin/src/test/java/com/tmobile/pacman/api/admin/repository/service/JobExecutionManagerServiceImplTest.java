@@ -137,8 +137,8 @@ public class JobExecutionManagerServiceImplTest {
         AWSCredentials awsCredentialsProperty = buildAWSCredentials();
 		when(config.getAws()).thenReturn(awsCredentialsProperty);
         PowerMockito.whenNew(AWSLambdaClient.class).withAnyArguments().thenReturn(awsLambdaClient);  
-        when(amazonClient.getRuleAWSLambdaClient()).thenReturn(awsLambdaClient);
-		when(amazonClient.getRuleAmazonCloudWatchEvents()).thenReturn(amazonCloudWatchEvents);
+        when(amazonClient.getAWSLambdaClient(anyString())).thenReturn(awsLambdaClient);
+		when(amazonClient.getAmazonCloudWatchEvents(anyString())).thenReturn(amazonCloudWatchEvents);
     }
 
 	@Test
@@ -180,7 +180,7 @@ public class JobExecutionManagerServiceImplTest {
 		
 		Map<String, Object> ruleParamDetails = Maps.newHashMap();
         when(mapper.readValue(anyString(), any(TypeReference.class))).thenReturn(ruleParamDetails);
-		assertThat(jobExecutionManagerService.createJob(firstFile, createJobDetails), is(JOB_CREATION_SUCCESS));
+		assertThat(jobExecutionManagerService.createJob(firstFile, createJobDetails, "user123"), is(JOB_CREATION_SUCCESS));
 	}
 	
 	
@@ -216,12 +216,12 @@ public class JobExecutionManagerServiceImplTest {
 		
 		Map<String, Object> ruleParamDetails = Maps.newHashMap();
         when(mapper.readValue(anyString(), any(TypeReference.class))).thenReturn(ruleParamDetails);
-		assertThat(jobExecutionManagerService.createJob(firstFile, createJobDetails), is(JOB_CREATION_SUCCESS));
+		assertThat(jobExecutionManagerService.createJob(firstFile, createJobDetails, "user123"), is(JOB_CREATION_SUCCESS));
 	}
 	
 	@Test
 	public void createJobFileMissingTest() {
-		assertThatThrownBy(() -> jobExecutionManagerService.createJob(getMockEmptyMultipartFile(), getCreateJobDetailsRequest())).isInstanceOf(PacManException.class);
+		assertThatThrownBy(() -> jobExecutionManagerService.createJob(getMockEmptyMultipartFile(), getCreateJobDetailsRequest(), "user123")).isInstanceOf(PacManException.class);
 	}
 	
 	@Test
@@ -235,7 +235,7 @@ public class JobExecutionManagerServiceImplTest {
         when(config.getJob()).thenReturn(jobProperty);
 		Map<String, Object> ruleParamDetails = Maps.newHashMap();
         when(mapper.readValue(anyString(), any(TypeReference.class))).thenReturn(ruleParamDetails);
-		assertThatThrownBy(() -> jobExecutionManagerService.createJob(firstFile, createJobDetails)).isInstanceOf(PacManException.class);
+		assertThatThrownBy(() -> jobExecutionManagerService.createJob(firstFile, createJobDetails, "user123")).isInstanceOf(PacManException.class);
 	}
 
 	private JobProperty buildJobProperty() {
@@ -316,6 +316,11 @@ public class JobExecutionManagerServiceImplTest {
 			@Override
 			public Date getCreatedDate() {
 				return new Date();
+			}
+
+			@Override
+			public String getStatus() {
+				return "ENABLED";
 			}
 		};
 	}

@@ -494,6 +494,26 @@ export const environment = {
         method: 'GET'
     },
 
+    enableDisableRuleOrJob: {
+        url: '{{baseUrl}}/admin/enable-disable',
+        method: 'POST'
+    },
+    listUsers: {
+        url: '{{baseUrl}}/admin/users/list-users',
+        method: 'GET'
+    },
+    jobDetailsById: {
+        url: '{{baseUrl}}/admin/job-execution-manager/details-by-id',
+         method: 'GET'
+    },
+    allJobIdList: {
+        url: '{{baseUrl}}/admin/job-execution-manager/job-ids',
+        method: 'GET'
+    },
+    updateJob: {
+        url: '{{baseUrl}}/admin/job-execution-manager/update',
+        method: 'POST'
+    },
     createRule: {
         url: '{{baseUrl}}/admin/rule/create',
         method: 'POST'
@@ -628,7 +648,7 @@ export const environment = {
     },
     listTargetTypeAttributeValues: {
         url: '{{baseUrl}}/admin/target-types/list-target-type-attributes-values',
-        method: 'GET'
+        method: 'POST'
     },
     roles: {
         url: '{{baseUrl}}/admin/roles/list',
@@ -784,6 +804,10 @@ export const environment = {
     },
     roleAndDefaultAssetGroup : {
         url: '{{baseUrl}}/admin/users/list',
+        method: 'GET'
+    },
+    ruleCategory : {
+        url: '{{baseUrl}}/admin/rule/categories',
         method: 'GET'
     }
 };

@@ -41,7 +41,7 @@ public class JobExecutionManager {
 	private String jobExecutable;
 	private String jobArn;
 	private String status;
-	private Integer userId;
+	private String userId;
 	private Date createdDate;
 	private Date modifiedDate;
 
@@ -117,11 +117,11 @@ public class JobExecutionManager {
 		this.status = status;
 	}
 
-	public Integer getUserId() {
+	public String getUserId() {
 		return userId;
 	}
 
-	public void setUserId(Integer userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

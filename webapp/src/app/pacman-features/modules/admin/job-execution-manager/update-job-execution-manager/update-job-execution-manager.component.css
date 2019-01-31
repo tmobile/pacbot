@@ -32,6 +32,7 @@
 
 .widget-wrapper {
     min-height: 17em;
+    padding-bottom: 4px;
 }
 
 .data-table-desc {
@@ -53,7 +54,7 @@
 }
 
 .issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 32em);
+    max-height: calc( 100vh - 30em);
 }
 
 .issue-listing-wrapper /deep/ .data-table-inner-wrap {
@@ -65,15 +66,16 @@
 }
 
 .filter-absent.issue-listing-wrapper /deep/ .data-table-wrap {
-    min-height: calc(100vh - 20em);
+    min-height: calc(100vh - 21em);
 }
 
 .filter-absent.issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 28em);
+    max-height: calc( 100vh - 30em);
 }
 
 .filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
-    max-height: calc(100vh - 31em)
+    max-height: 8em;
+    overflow-y: auto;
 }
 
 .details-bar[_ngcontent-c14] {
@@ -363,21 +365,10 @@ li.list-inputs:hover {
 }
 
 .data-table-content {
-    padding: 0.83em 0 0;
     position: relative;
     overflow-y: hidden;
     overflow-x: hidden;
     min-height: 7em;
-}
-
-.data-table-inner-wrap:hover {
-    overflow-y: auto;
-    overflow-y: overlay;
-}
-
-.data-table-content:hover {
-    overflow-x: auto;
-    overflow-x: overlay;
 }
 
 .data-table-head-outer {
@@ -390,37 +381,34 @@ li.list-inputs:hover {
 }
 
 .data-table-wrap a {
-    transition: 0.2s ease;
     line-height: 1.3;
 }
 
 .data-table-wrap a:hover {
     color: #e20074;
-    /*font-family: ex2-medium;*/
-    letter-spacing: 0.2px;
-    text-shadow: 0.66px 0;
 }
 
 .data-table-head {
-    margin: 0 0.83em;
-    border-bottom: 2px solid #dce3e9;
+    border-bottom: solid 2px #d3d3d3;
     padding: 0.45em 0px;
     font-size: 0.83em;
     position: relative;
-    min-width: calc(100% - 1.66em);
+    min-width: calc(100%);
     left: 0;
     background-color: #fff;
     z-index: 1;
     bottom: 0;
+    width: -webkit-fit-content;
+    width: -moz-fit-content;
     width: fit-content;
+    font: menu;
 }
 
 .data-table-rows {
-    padding: 0px 0.83em;
+    padding: 0px;
     width: calc(100% - 1px);
     margin: auto;
     min-height: 2.66em;
-    transition: 0.3s ease;
 }
 
 .data-table-rows:nth-child(even) {
@@ -438,36 +426,29 @@ li.list-inputs:hover {
 .row-cells {
     font-size: 1em;
     min-height: 0.66em;
-    overflow: hidden;
+    overflow: unset;
     white-space: nowrap;
-    text-overflow: ellipsis;
+    text-overflow: nowrap;
     padding: 3px 0;
     margin: 0 3px;
+    word-break: break-all;
 }
 
 .row-cells div {
     padding-bottom: 2px;
-    transition: 0.35s ease;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+    text-overflow: nowrap;
+    overflow: unset;
+    white-space: normal;
     display: inline-block;
     vertical-align: middle;
-}
-
-.row-cells div:first-letter {
-    text-transform: uppercase;
+    font: menu;
 }
 
 .row-cells a {
-    text-overflow: ellipsis;
-    overflow: hidden;
+    text-overflow: nowrap;
+    overflow: unset;
     white-space: nowrap;
     padding-bottom: 2px;
-}
-
-.row-cells div:hover {
-    letter-spacing: 0.3px;
 }
 
 .head-cells {
@@ -477,25 +458,15 @@ li.list-inputs:hover {
 }
 
 .table-cells {
-    transition: 0.5s ease;
     cursor: pointer;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    overflow: unset;
+    text-overflow: nowrap;
     white-space: nowrap;
     width: 140px;
-    padding-left: 30px;
-}
-
-.table-cells:hover {
-    letter-spacing: 0.2px;
-}
-
-.table-cells:first-letter {
-    text-transform: uppercase;
 }
 
 .data-table-inner-content {
-    overflow-y: hidden;
+    overflow-y: unset;
     min-width: 100%;
     position: relative;
     margin-bottom: 0.3em;
@@ -731,7 +702,7 @@ li.list-inputs:hover {
 }
 
 .data-content {
-    max-height: calc(100vh - 26em);
+    max-height: calc(100vh - 29em);
     overflow: auto;
 }
 
@@ -759,7 +730,6 @@ li.list-inputs:hover {
     min-width: 5em;
     text-align: center;
     transition: all 0.5s ease;
-    font-size: 1.1em;
     box-shadow: 0px 0px 6px 0 rgba(0, 0, 0, 0.5);
     font-family: ex2-light;
 }
@@ -793,7 +763,7 @@ li.list-inputs:hover {
 }
 
 .formcontainerwrapper div.formctnleft {
-    width: 45%;
+    width: 50%;
     margin-bottom: 10px;
     height: auto;
     float: left;
@@ -1066,7 +1036,7 @@ button.tmbutton {
     border: solid 2px #ed027d;
     font-size: 13px;
     font-weight: 600;
-    color: #232323;
+    color: #ed027d;
     text-align: center;
     letter-spacing: 0.3px;
     cursor: pointer;
@@ -1117,13 +1087,19 @@ button.tmbutton:disabled:hover {
 }
 
 .valueaddctn {
-    width: 98%;
+    width: 100%;
     min-height: 8.4em;
     max-height: 8em;
-    overflow-y: auto;
+    overflow-y: hidden;
+    overflow-x: hidden;
+}
+
+.params-attributes {
+    border: solid 2px #d3d3d3;
+    width: 100%;
+    overflow-y: hidden;
     overflow-x: hidden;
     margin-bottom: 20px;
-    border: solid 1px #aeadad;
 }
 
 .input-form .label {
@@ -1167,7 +1143,6 @@ button.tmbutton:disabled:hover {
 .data-table-rows:nth-child(even) {
     border-radius: 0.3em;
     padding-bottom: 5px;
-    height: 2.7em;
 }
 
 
@@ -1380,7 +1355,7 @@ button.tmbutton:disabled:hover {
 .pacman-alert {
     margin-left: 25%;
     margin-right: 25%;
-    margin-top: 7%;
+    margin-top: 4%;
     text-align: center;
 }
 
@@ -1498,12 +1473,22 @@ button.tmbutton:disabled:hover {
 
 /*************SUCCESS MESSAGES************/
 
-.pacman-alert-message {
+.pacman-alert-title {
     position: relative;
-    font-size: 22px;
+    font-size: 20px;
     color: black;
     padding-bottom: 10px;
     padding-top: 10px;
+    line-height: 25px;
+}
+
+.pacman-alert-message {
+    position: relative;
+    font-size: 14px;
+    color: black;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    line-height: 25px;
 }
 
 .pacman-alert-button {
@@ -1786,11 +1771,42 @@ button.tmbutton:disabled:hover {
     }
 }
 
-.pacman-alert-title {
-    position: relative;
-    font-size: 14px;
-    color: black;
-    padding-bottom: 10px;
-    padding-top: 10px;
-    line-height: 25px;
+.highlight-pink {
+    color: #ed0295 !important;
+    background-color: transparent;
+}
+
+.params-attributes .data-table-content {
+    min-height: calc( 100vh - 73em) !important;
+    max-height: calc( 100vh - 31em) !important;
+    border-color: #c8c8c8;
+}
+
+.row-cells1 {
+    width: calc(100% - 30em);
+}
+
+.row-cells2 {
+    width: calc(100% - 17em);
+}
+
+.row-cells3 {
+    width: calc(100% - 37em);
+}
+
+.no-params-box {
+    border: solid 2px #d3d3d3;
+    min-height: 11.132em;
+    margin-bottom: 20px;
+}
+
+.read-only-text {
+    width: 100%;
+    height: auto;
+    display: inline-block;
+    padding-top: 8px !important;
+    padding-bottom: 9px !important;
+    background: #f7f7f7 !important;
+    color: black !important;
+    font-size: 13px;
 }

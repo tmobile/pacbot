@@ -1,39 +1,33 @@
 /*
  *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * Licensed under the Apache License, Version 2.0 (the 'License'); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
- * or in the "license" file accompanying this file. This file is distributed on
- * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ *
+ * or in the 'license' file accompanying this file. This file is distributed on
+ * an 'AS IS' BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
-import { Component, OnInit, OnDestroy, ChangeDetectorRef, ViewChild, ElementRef } from "@angular/core";
-import { environment } from "./../../../../../../environments/environment";
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { environment } from './../../../../../../environments/environment';
 
-import { ActivatedRoute, Router } from "@angular/router";
-import { Subscription } from "rxjs/Subscription";
-import * as _ from "lodash";
-import { UtilsService } from "../../../../../shared/services/utils.service";
-import { LoggerService } from "../../../../../shared/services/logger.service";
-import { ErrorHandlingService } from "../../../../../shared/services/error-handling.service";
-import { NavigationStart } from "@angular/router";
-import { Event, NavigationEnd } from "@angular/router";
-import "rxjs/add/operator/filter";
-import "rxjs/add/operator/pairwise";
-import { RoutesRecognized } from "@angular/router";
-import { RefactorFieldsService } from "./../../../../../shared/services/refactor-fields.service";
-import { WorkflowService } from "../../../../../core/services/workflow.service";
-import { RouterUtilityService } from "../../../../../shared/services/router-utility.service";
-import { AdminService } from "../../../../services/all-admin.service";
-import { NgForm } from "@angular/forms";
-import { SelectComponent } from "ng2-select";
-import { UploadFileService } from "../../../../services/upload-file-service";
-import { CommonResponseService } from "../../../../../shared/services/common-response.service";
+import {  Router } from '@angular/router';
+import { Subscription } from 'rxjs/Subscription';
+import * as _ from 'lodash';
+import { UtilsService } from '../../../../../shared/services/utils.service';
+import { LoggerService } from '../../../../../shared/services/logger.service';
+import { ErrorHandlingService } from '../../../../../shared/services/error-handling.service';
+import 'rxjs/add/operator/filter';
+import 'rxjs/add/operator/pairwise';
+import { WorkflowService } from '../../../../../core/services/workflow.service';
+import { RouterUtilityService } from '../../../../../shared/services/router-utility.service';
+import { AdminService } from '../../../../services/all-admin.service';
+import { UploadFileService } from '../../../../services/upload-file-service';
+import { CommonResponseService } from '../../../../../shared/services/common-response.service';
 
 @Component({
   selector: 'app-admin-config-users',
@@ -47,13 +41,13 @@ import { CommonResponseService } from "../../../../../shared/services/common-res
     CommonResponseService
   ]
 })
-export class ConfigUsersComponent implements OnInit {
-  pageTitle: String = "";
-  breadcrumbArray: any = ["Admin", "Roles"];
-  breadcrumbLinks: any = ["policies", "roles"];
-  breadcrumbPresent: any;
-  outerArr: any = [];
-  filters: any = [];
+export class ConfigUsersComponent implements OnInit, OnDestroy {
+  pageTitle = '';
+  breadcrumbArray = ['Admin', 'Roles'];
+  breadcrumbLinks = ['policies', 'roles'];
+  breadcrumbPresent;
+  outerArr = [];
+  filters = [];
 
   public queryValue = '';
   public filteredList = [];
@@ -63,6 +57,139 @@ export class ConfigUsersComponent implements OnInit {
   private getUserSubscription: Subscription;
   invalid = true;
   arrowkeyLocation = 0;
+
+  roles = {
+    roleName: '',
+    description: '',
+    writePermission: false
+  };
+
+  isCreate = false;
+  successTitle = '';
+  failedTitle = '';
+  successSubTitle = '';
+  availChoosedItems = {};
+  availChoosedSelectedItems = {};
+  availChoosedItemsCount = 0;
+  selectedRoleName = '';
+
+  selectChoosedItems = {};
+  selectChoosedSelectedItems = {};
+  selectChoosedItemsCount = 0;
+
+  availableItems = [];
+  selectedItems = [];
+
+  availableItemsBackUp = [];
+  selectedItemsBackUp = [];
+
+  availableItemsCopy = [];
+  selectedItemsCopy = [];
+
+  searchSelectedUsersTerms = '';
+  searchAvailableUsersTerms = '';
+  isRoleCreationUpdationFailed = false;
+  isRoleCreationUpdationSuccess = false;
+  highlightName = '';
+  allRDetails: any = [];
+  allCategoryDetails: any = [];
+  allAllocatedUsers: any = [];
+  loadingContent = '';
+  roleLoader = false;
+
+  roleId = '';
+
+  paginatorSize = 25;
+  isLastPage;
+  isFirstPage;
+  totalPages;
+  pageNumber = 0;
+  showLoader = true;
+  errorMessage;
+
+  hideContent = false;
+
+  filterText = {};
+  errorValue = 0;
+
+  FullQueryParams;
+  queryParamsWithoutFilter;
+  urlToRedirect = '';
+  mandatory;
+
+  public labels;
+  private previousUrl = '';
+  private pageLevel = 0;
+  public backButtonRequired;
+  private routeSubscription: Subscription;
+  private getKeywords: Subscription;
+  private previousUrlSubscription: Subscription;
+
+  constructor(
+    private router: Router,
+    private utils: UtilsService,
+    private logger: LoggerService,
+    private errorHandling: ErrorHandlingService,
+    private workflowService: WorkflowService,
+    private routerUtilityService: RouterUtilityService,
+    private adminService: AdminService,
+    private commonResponseService: CommonResponseService,
+  ) {
+
+    this.routerParam();
+    this.updateComponent();
+  }
+
+  ngOnInit() {
+    this.urlToRedirect = this.router.routerState.snapshot.url;
+    this.backButtonRequired = this.workflowService.checkIfFlowExistsCurrently(
+      this.pageLevel
+    );
+  }
+
+  nextPage() {
+    try {
+      if (!this.isLastPage) {
+        this.pageNumber++;
+        this.showLoader = true;
+        // this.getPolicyDetails();
+      }
+    } catch (error) {
+      this.errorMessage = this.errorHandling.handleJavascriptError(error);
+      this.logger.log('error', error);
+    }
+  }
+
+  prevPage() {
+    try {
+      if (!this.isFirstPage) {
+        this.pageNumber--;
+        this.showLoader = true;
+        // this.getPolicyDetails();
+      }
+
+    } catch (error) {
+      this.errorMessage = this.errorHandling.handleJavascriptError(error);
+      this.logger.log('error', error);
+    }
+  }
+
+
+  onClickAvailableItem(index, availableItem, key) {
+    if (this.availChoosedItems.hasOwnProperty(index)) {
+      this.availChoosedItems[index] = !this.availChoosedItems[index];
+      if (this.availChoosedItems[index]) {
+        this.availChoosedSelectedItems[key] = availableItem;
+      } else {
+        delete this.availChoosedSelectedItems[key];
+      }
+
+    } else {
+      this.availChoosedItems[index] = true;
+      this.availChoosedSelectedItems[key] = availableItem;
+    }
+    this.availChoosedItemsCount = Object.keys(this.availChoosedSelectedItems).length;
+  }
 
   filter() {
     try {
@@ -156,8 +283,8 @@ export class ConfigUsersComponent implements OnInit {
 
   getUsers(): any {
     try {
-      const userUrl = environment.users.url;
-      const userMethod = environment.users.method;
+      const userUrl = environment.listUsers.url;
+      const userMethod = environment.listUsers.method;
       const queryparams = {};
       this.hideContent = true;
       this.roleLoader = true;
@@ -171,24 +298,24 @@ export class ConfigUsersComponent implements OnInit {
             this.idDetailsName = [];
             this.hideContent = false;
             this.roleLoader = false;
-            this.users = response.values;
+            this.users = response;
             for (let i = 0; i < this.users.length; i++) {
               const userdetails =
-                this.users[i].displayName +
+                this.users[i].userName +
                 ' ' +
                 '(' +
                 this.users[i].userId +
                 ')';
               this.users[i]['user'] = userdetails;
-              if(this.allAllocatedUsers.indexOf(this.users[i].userId.toLowerCase()) === -1) {
+              if (this.allAllocatedUsers.indexOf(this.users[i].userId.toLowerCase()) === -1) {
                 this.idDetailsName.push(this.users[i]);
               } else {
                 this.emailArray.push(this.users[i]);
               }
             }
 
-            let availableItems = _.cloneDeep(this.idDetailsName);
-            let selectedItems = _.cloneDeep(this.emailArray);
+            const availableItems = _.cloneDeep(this.idDetailsName);
+            const selectedItems = _.cloneDeep(this.emailArray);
 
             this.availableItems = _.cloneDeep(availableItems);
             this.selectedItems = _.cloneDeep(selectedItems);
@@ -202,11 +329,11 @@ export class ConfigUsersComponent implements OnInit {
           error => {
             this.errorValue = -1;
             this.outerArr = [];
-            this.errorMessage = "apiResponseError";
+            this.errorMessage = 'apiResponseError';
             this.showLoader = false;
-            this.failedTitle = 'Loading Failed'
+            this.failedTitle = 'Loading Failed';
             this.loadingContent = 'Loading';
-            this.highlightName = 'Role Details'
+            this.highlightName = 'Role Details';
             this.isRoleCreationUpdationFailed = true;
             this.roleLoader = false;
           }
@@ -214,139 +341,6 @@ export class ConfigUsersComponent implements OnInit {
     } catch (e) {
       this.logger.log('error', e);
     }
-  }
-
-  roles: any = {
-    roleName: '',
-    description: '',
-    writePermission: false
-  };
-
-  isCreate: boolean = false;
-  successTitle: String = '';
-  failedTitle: string = '';
-  successSubTitle: String = '';
-  isRoleCreationUpdationFailed: boolean = false;
-  isRoleCreationUpdationSuccess: boolean = false;
-  loadingContent: string = '';
-  roleLoader: boolean = false;
-
-  roleId: string = '';
-
-  paginatorSize: number = 25;
-  isLastPage: boolean;
-  isFirstPage: boolean;
-  totalPages: number;
-  pageNumber: number = 0;
-  showLoader: boolean = true;
-  errorMessage: any;
-
-  hideContent: boolean = false;
-
-  filterText: any = {};
-  errorValue: number = 0;
-
-  FullQueryParams: any;
-  queryParamsWithoutFilter: any;
-  urlToRedirect: any = "";
-  mandatory: any;
-
-  public labels: any;
-  private previousUrl: any = "";
-  private pageLevel = 0;
-  public backButtonRequired;
-  private routeSubscription: Subscription;
-  private getKeywords: Subscription;
-  private previousUrlSubscription: Subscription;
-
-  constructor(
-    private activatedRoute: ActivatedRoute,
-    private router: Router,
-    private utils: UtilsService,
-    private logger: LoggerService,
-    private errorHandling: ErrorHandlingService,
-    private uploadService: UploadFileService,
-    private ref: ChangeDetectorRef,
-    private refactorFieldsService: RefactorFieldsService,
-    private workflowService: WorkflowService,
-    private routerUtilityService: RouterUtilityService,
-    private adminService: AdminService,
-    private commonResponseService: CommonResponseService,
-  ) {
-
-    this.routerParam();
-    this.updateComponent();
-  }
-
-  ngOnInit() {
-    this.urlToRedirect = this.router.routerState.snapshot.url;
-    this.backButtonRequired = this.workflowService.checkIfFlowExistsCurrently(
-      this.pageLevel
-    );
-  }
-
-  nextPage() {
-    try {
-      if (!this.isLastPage) {
-        this.pageNumber++;
-        this.showLoader = true;
-        //this.getPolicyDetails();
-      }
-    } catch (error) {
-      this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
-    }
-  }
-
-  prevPage() {
-    try {
-      if (!this.isFirstPage) {
-        this.pageNumber--;
-        this.showLoader = true;
-        //this.getPolicyDetails();
-      }
-
-    } catch (error) {
-      this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
-    }
-  }
-
-
-  availChoosedItems: any = {};
-  availChoosedSelectedItems = {};
-  availChoosedItemsCount = 0;
-
-  selectChoosedItems: any = {};
-  selectChoosedSelectedItems = {};
-  selectChoosedItemsCount = 0;
-
-  availableItems: any = [];
-  selectedItems: any = [];
-
-  availableItemsBackUp: any = [];
-  selectedItemsBackUp: any = [];
-
-  availableItemsCopy: any = [];
-  selectedItemsCopy: any = [];
-
-  searchSelectedUsersTerms: any = '';
-  searchAvailableUsersTerms: any = '';
-
-  onClickAvailableItem(index, availableItem, key) {
-    if (this.availChoosedItems.hasOwnProperty(index)) {
-      this.availChoosedItems[index] = !this.availChoosedItems[index];
-      if (this.availChoosedItems[index]) {
-        this.availChoosedSelectedItems[key] = availableItem;
-      } else {
-        delete this.availChoosedSelectedItems[key];
-      }
-
-    } else {
-      this.availChoosedItems[index] = true;
-      this.availChoosedSelectedItems[key] = availableItem;
-    }
-    this.availChoosedItemsCount = Object.keys(this.availChoosedSelectedItems).length;
   }
 
   onClickSelectedItem(index, selectedItem, key) {
@@ -365,7 +359,7 @@ export class ConfigUsersComponent implements OnInit {
   }
 
   moveAllItemsToLeft() {
-    if (this.searchSelectedUsersTerms.length == 0) {
+    if (this.searchSelectedUsersTerms.length === 0) {
       this.availableItems = _.cloneDeep(this.availableItemsBackUp);
       this.availableItemsCopy = _.cloneDeep(this.availableItemsBackUp);
       this.selectedItems = [];
@@ -388,7 +382,7 @@ export class ConfigUsersComponent implements OnInit {
   }
 
   moveAllItemsToRight() {
-    if (this.searchAvailableUsersTerms.length == 0) {
+    if (this.searchAvailableUsersTerms.length === 0) {
       this.selectedItems = _.cloneDeep(this.availableItemsBackUp);
       this.selectedItemsCopy = _.cloneDeep(this.availableItemsBackUp);
       this.availableItemsCopy = [];
@@ -409,23 +403,23 @@ export class ConfigUsersComponent implements OnInit {
 
   moveItemToRight() {
 
-    let selectedItemsCopy = this.selectedItemsCopy;
-    let availableItemsCopy = this.availableItemsCopy
-    for (let choosedSelectedKey in this.availChoosedSelectedItems) {
+    const selectedItemsCopy = this.selectedItemsCopy;
+    const availableItemsCopy = this.availableItemsCopy;
+    for (const choosedSelectedKey in this.availChoosedSelectedItems) {
       if (this.availChoosedSelectedItems.hasOwnProperty(choosedSelectedKey)) {
         selectedItemsCopy.push(this.availChoosedSelectedItems[choosedSelectedKey]);
-        let filterIndex = availableItemsCopy.indexOf(this.availChoosedSelectedItems[choosedSelectedKey]);
+        const filterIndex = availableItemsCopy.indexOf(this.availChoosedSelectedItems[choosedSelectedKey]);
         availableItemsCopy.splice(filterIndex, 1);
       }
     }
 
     this.availableItems = availableItemsCopy;
-    if (this.searchAvailableUsersTerms.length != 0) {
+    if (this.searchAvailableUsersTerms.length !== 0) {
       this.searchAvailableUsers();
     }
 
     this.selectedItems = selectedItemsCopy;
-    if (this.searchSelectedUsersTerms.length != 0) {
+    if (this.searchSelectedUsersTerms.length !== 0) {
       this.searchSelectedUsers();
     }
 
@@ -435,23 +429,23 @@ export class ConfigUsersComponent implements OnInit {
   }
 
   moveItemToLeft() {
-    let selectedItemsCopy = this.selectedItemsCopy;
-    let availableItemsCopy = this.availableItemsCopy
-    for (let choosedSelectedKey in this.selectChoosedSelectedItems) {
+    const selectedItemsCopy = this.selectedItemsCopy;
+    const availableItemsCopy = this.availableItemsCopy;
+    for (const choosedSelectedKey in this.selectChoosedSelectedItems) {
       if (this.selectChoosedSelectedItems.hasOwnProperty(choosedSelectedKey)) {
         availableItemsCopy.push(this.selectChoosedSelectedItems[choosedSelectedKey]);
-        let filterIndex = selectedItemsCopy.indexOf(this.selectChoosedSelectedItems[choosedSelectedKey]);
+        const filterIndex = selectedItemsCopy.indexOf(this.selectChoosedSelectedItems[choosedSelectedKey]);
         selectedItemsCopy.splice(filterIndex, 1);
       }
     }
 
     this.availableItems = availableItemsCopy;
-    if (this.searchAvailableUsersTerms.length != 0) {
+    if (this.searchAvailableUsersTerms.length !== 0) {
       this.searchAvailableUsers();
     }
 
     this.selectedItems = selectedItemsCopy;
-    if (this.searchSelectedUsersTerms.length != 0) {
+    if (this.searchSelectedUsersTerms.length !== 0) {
       this.searchSelectedUsers();
     }
 
@@ -462,21 +456,19 @@ export class ConfigUsersComponent implements OnInit {
 
 
   searchAvailableUsers() {
-    
-    let term = this.searchAvailableUsersTerms;
+    const term = this.searchAvailableUsersTerms;
     this.availableItems = this.availableItemsCopy.filter(function (tag) {
       return tag.user.toLowerCase().indexOf(term.toLowerCase()) >= 0;
     });
   }
 
   searchSelectedUsers() {
-    let term = this.searchSelectedUsersTerms;
+    const term = this.searchSelectedUsersTerms;
     this.selectedItems = this.selectedItemsCopy.filter(function (tag) {
       return tag.user.toLowerCase().indexOf(term.toLowerCase()) >= 0;
     });
   }
 
-  selectedRoleName: string = '';
   createRole(roleDetails) {
     this.loadingContent = 'creation';
     this.hideContent = true;
@@ -485,8 +477,8 @@ export class ConfigUsersComponent implements OnInit {
     this.isRoleCreationUpdationSuccess = false;
     this.selectedRoleName = roleDetails.roleName;
     this.highlightName = roleDetails.roleName;
-    let url = environment.createRole.url;
-    let method = environment.createRole.method;
+    const url = environment.createRole.url;
+    const method = environment.createRole.method;
     this.adminService.executeHttpAction(url, method, roleDetails, {}).subscribe(reponse => {
       this.successTitle = 'Role Created !!!';
       this.isRoleCreationUpdationSuccess = true;
@@ -501,7 +493,7 @@ export class ConfigUsersComponent implements OnInit {
         this.failedTitle = 'Creation Failed';
         this.roleLoader = false;
         this.isRoleCreationUpdationFailed = true;
-      })
+      });
   }
 
   configureUsers() {
@@ -511,11 +503,12 @@ export class ConfigUsersComponent implements OnInit {
     this.roleLoader = true;
     this.isRoleCreationUpdationFailed = false;
     this.isRoleCreationUpdationSuccess = false;
-    let userRoleConfigRequest:any = {};
-    userRoleConfigRequest.roleId = this.roleId;
-    userRoleConfigRequest.userDetails = this.selectedItems;
-    let url = environment.configUserRolesAllocation.url;
-    let method = environment.configUserRolesAllocation.method;
+    const userRoleConfigRequest = {};
+    userRoleConfigRequest['roleId'] = this.roleId;
+    const userId = [];
+    userRoleConfigRequest['userDetails'] = this.selectedItems;
+    const url = environment.configUserRolesAllocation.url;
+    const method = environment.configUserRolesAllocation.method;
     this.adminService.executeHttpAction(url, method, userRoleConfigRequest, {}).subscribe(reponse => {
       this.successTitle = 'User Roles Configured !!!';
       this.isRoleCreationUpdationSuccess = true;
@@ -527,10 +520,10 @@ export class ConfigUsersComponent implements OnInit {
       };
     },
       error => {
-        this.failedTitle = 'User Roles Updation Failed !!!';
+        this.failedTitle = 'Roles Updation Failed !!!';
         this.roleLoader = false;
         this.isRoleCreationUpdationFailed = true;
-      })
+      });
   }
 
   closeErrorMessage() {
@@ -544,33 +537,33 @@ export class ConfigUsersComponent implements OnInit {
   }
 
   getData() {
-    //this.getAllPolicyIds();
+    // this.getAllPolicyIds();
   }
 
   /*
-    * This function gets the urlparameter and queryObj 
+    * This function gets the urlparameter and queryObj
     *based on that different apis are being hit with different queryparams
     */
   routerParam() {
     try {
       // this.filterText saves the queryparam
-      let currentQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(this.router.routerState.snapshot.root);
+      const currentQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(this.router.routerState.snapshot.root);
       if (currentQueryParams) {
 
         this.FullQueryParams = currentQueryParams;
         this.queryParamsWithoutFilter = JSON.parse(JSON.stringify(this.FullQueryParams));
         this.roleId = this.queryParamsWithoutFilter.roleId;
-        let selectedRoleName = this.queryParamsWithoutFilter.roleName;
+        const selectedRoleName = this.queryParamsWithoutFilter.roleName;
         delete this.queryParamsWithoutFilter['filter'];
         if (this.roleId) {
-          this.pageTitle = "Config Users";
-          this.breadcrumbPresent = "Config Users";
+          this.pageTitle = 'Config Users';
+          this.breadcrumbPresent = 'Config Users';
           this.isCreate = false;
           this.highlightName = selectedRoleName;
           this.getRoleDetails();
         } else {
-          this.pageTitle = "Create New Role";
-          this.breadcrumbPresent = "Create Role";
+          this.pageTitle = 'Create New Role';
+          this.breadcrumbPresent = 'Create Role';
           this.isCreate = true;
         }
 
@@ -583,7 +576,7 @@ export class ConfigUsersComponent implements OnInit {
           this.FullQueryParams
         );
 
-        //check for mandatory filters.
+        // check for mandatory filters.
         if (this.FullQueryParams.mandatory) {
           this.mandatory = this.FullQueryParams.mandatory;
         }
@@ -591,46 +584,40 @@ export class ConfigUsersComponent implements OnInit {
       }
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
-  highlightName: string = '';
-  allRDetails: any = [];
-  allCategoryDetails: any = [];
-  allAllocatedUsers: any = [];
   getRoleDetails() {
     this.hideContent = true;
     this.roleLoader = true;
     this.loadingContent = 'loading';
     this.isRoleCreationUpdationFailed = false;
     this.isRoleCreationUpdationSuccess = false;
-    let url = environment.getRoleById.url;
-    let method = environment.getRoleById.method;
+    const url = environment.getRoleById.url;
+    const method = environment.getRoleById.method;
     this.adminService.executeHttpAction(url, method, {}, {roleId: this.roleId}).subscribe(userRoleReponse => {
       if (!this.isCreate) {
-        let userNames = userRoleReponse[0].users.map(user => user.userId); 
+        const userNames = userRoleReponse[0].users.map(user => user.userId);
         this.allAllocatedUsers = _.uniq(userNames);
         this.getUsers();
         this.highlightName = userRoleReponse[0].roleName;
         this.roles.roleName = userRoleReponse[0].roleName;
         this.roles.description = userRoleReponse[0].roleDesc;
         this.roles.writePermission = userRoleReponse[0].writePermission;
-      } else {
-       
       }
     },
       error => {
         this.errorValue = -1;
         this.outerArr = [];
-        this.errorMessage = "apiResponseError";
+        this.errorMessage = 'apiResponseError';
         this.showLoader = false;
-        this.failedTitle = 'Loading Failed'
+        this.failedTitle = 'Loading Failed';
         this.loadingContent = 'Loading';
-        this.highlightName = 'Role Details'
+        this.highlightName = 'Role Details';
         this.isRoleCreationUpdationFailed = true;
         this.roleLoader = false;
-      })
+      });
   }
   /**
    * This function get calls the keyword service before initializing
@@ -649,7 +636,7 @@ export class ConfigUsersComponent implements OnInit {
     try {
       this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root);
     } catch (error) {
-      this.logger.log("error", error);
+      this.logger.log('error', error);
     }
   }
 
@@ -662,7 +649,7 @@ export class ConfigUsersComponent implements OnInit {
         this.previousUrlSubscription.unsubscribe();
       }
     } catch (error) {
-      this.logger.log("error", "--- Error while unsubscribing ---");
+      this.logger.log('error', '--- Error while unsubscribing ---');
     }
   }
 }

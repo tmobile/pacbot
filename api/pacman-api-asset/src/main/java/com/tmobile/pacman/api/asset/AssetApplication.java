@@ -19,12 +19,13 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
-import org.springframework.cloud.netflix.hystrix.EnableHystrix;
-import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.util.UrlPathHelper;
 
 /**
  * The Spring boot application class
@@ -38,7 +39,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableCaching
 @ComponentScan(basePackages = "com.tmobile.pacman")
 @EnableResourceServer
-public class AssetApplication /*extends WebMvcConfigurerAdapter*/ { //Commented the WebMvcConfigurerAdapter since API Security was not working properly
+public class AssetApplication implements WebMvcConfigurer {  
 
     /**
      * The main method.
@@ -54,10 +55,10 @@ public class AssetApplication /*extends WebMvcConfigurerAdapter*/ { //Commented 
      * Configures the PathMatchConfigurer with  UrlPathHelper
      * @param configurer PathMatchConfigurer
      */
-    /*@Override
+    @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
         UrlPathHelper urlPathHelper = new UrlPathHelper();
         urlPathHelper.setUrlDecode(false);
         configurer.setUrlPathHelper(urlPathHelper);
-    }*/
+    }
 }

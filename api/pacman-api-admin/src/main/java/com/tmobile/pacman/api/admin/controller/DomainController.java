@@ -16,13 +16,16 @@
 package com.tmobile.pacman.api.admin.controller;
 import static com.tmobile.pacman.api.admin.common.AdminConstants.UNEXPECTED_ERROR_OCCURRED;
 
+import java.security.Principal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,18 +51,17 @@ public class DomainController {
 
 	/** The Constant logger. */
 	private static final Logger log = LoggerFactory.getLogger(DomainController.class);
-
+	
 	@Autowired
 	private DomainService domainService;
 
 	/**
      * API to get all domains
-     *
+     * 
      * @author Nidhish
      * @return All Domains in List
      */
 	@ApiOperation(httpMethod = "GET", value = "API to get all domains", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getAllDomains() {
 		try {
@@ -69,10 +71,10 @@ public class DomainController {
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
 		}
 	}
-
+	
 	/**
      * API to get all domains details
-     *
+     * 
      * @author Nidhish
      * @param page - zero-based page index.
      * @param size - the size of the page to be returned.
@@ -80,7 +82,6 @@ public class DomainController {
      * @return All Domains Details
      */
 	@ApiOperation(httpMethod = "GET", value = "API to get all domain details", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/list-details", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getAllDomainDetails(
 		@ApiParam(value = "provide valid page number", required = true) @RequestParam("page") Integer page,
@@ -93,16 +94,15 @@ public class DomainController {
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
 		}
 	}
-
+	
 	/**
      * API to get domain details by name
-     *
+     * 
      * @author Nidhish
      * @param domainName - name of the domain
      * @return Domains Details
      */
 	@ApiOperation(httpMethod = "GET", value = "API to get domain details by name", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/list-by-domain-name", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getDomainByName(
 		@ApiParam(value = "provide valid domain name", required = true) @RequestParam(name = "domainName", required = true) String domainName) {
@@ -113,56 +113,53 @@ public class DomainController {
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
 		}
 	}
-
+	
 	/**
      * API to create new domain
-     *
+     * 
      * @author Nidhish
      * @param createUpdateDomainDetails - details for creating new domain
      * @return Success or Failure response
      */
 	@ApiOperation(httpMethod = "POST", value = "API to create new domain", response = Response.class, consumes = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/create", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> createDomain(
+	public ResponseEntity<Object> createDomain(@AuthenticationPrincipal Principal user,
 			@ApiParam(value = "provide valid domain details", required = true) @RequestBody(required = true) CreateUpdateDomain createUpdateDomainDetails) {
 		try {
-			return ResponseUtils.buildSucessResponse(domainService.createDomain(createUpdateDomainDetails));
+			return ResponseUtils.buildSucessResponse(domainService.createDomain(createUpdateDomainDetails, user.getName()));
 		} catch (Exception exception) {
 			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
 		}
-	}
-
-
+	}	
+	
+	
 	/**
      * API to update domain
-     *
+     * 
      * @author Nidhish
      * @param createUpdateDomainDetails - details for updating existing domain
      * @return Success or Failure response
      */
 	@ApiOperation(httpMethod = "POST", value = "API to update domain", response = Response.class, consumes = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/update", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Object> updateDomain(
+	public ResponseEntity<Object> updateDomain(@AuthenticationPrincipal Principal user,
 			@ApiParam(value = "provide valid domain details", required = true) @RequestBody(required = true) CreateUpdateDomain createUpdateDomainDetails) {
 		try {
-			return ResponseUtils.buildSucessResponse(domainService.updateDomain(createUpdateDomainDetails));
+			return ResponseUtils.buildSucessResponse(domainService.updateDomain(createUpdateDomainDetails, user.getName()));
 		} catch (Exception exception) {
 			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
 		}
-	}
-
+	}	
+	
 	/**
      * API to get all domain names
-     *
+     * 
      * @author Nidhish
      * @return All Domain Names
      */
 	@ApiOperation(httpMethod = "GET", value = "API to get all domain names", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
-	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/domain-names", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getAllDomainNames() {
 		try {

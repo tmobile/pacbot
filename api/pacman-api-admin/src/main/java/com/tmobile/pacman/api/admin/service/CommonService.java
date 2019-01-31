@@ -95,6 +95,9 @@ public class CommonService {
 		if (payLoad != null) {
             entity = new NStringEntity(payLoad, ContentType.APPLICATION_JSON);
         }
+		if(!endpoint.startsWith("/")) {
+        	endpoint = "/"+endpoint;
+        }
         try {
             return getRestClient().performRequest(method, endpoint, Collections.<String, String>emptyMap(), entity);
         } catch (IOException exception) {

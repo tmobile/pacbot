@@ -31,7 +31,7 @@
 }
 
 .widget-wrapper {
-    min-height: 17em;
+    padding-bottom: 4px;
 }
 
 .data-table-desc {
@@ -46,34 +46,6 @@
 
 .admin-widgets-header h1 {
     text-transform: capitalize;
-}
-
-.issue-listing-wrapper /deep/ .data-table-wrap {
-    min-height: calc( 100vh - 24em);
-}
-
-.issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 32em);
-}
-
-.issue-listing-wrapper /deep/ .data-table-inner-wrap {
-    max-height: calc(100vh - 35em)
-}
-
-.issue-listing-wrapper /deep/ .data-table-wrap.loading {
-    min-height: calc( 100vh - 24em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-wrap {
-    min-height: calc(100vh - 20em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 28em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
-    max-height: calc(100vh - 31em)
 }
 
 .details-bar[_ngcontent-c14] {
@@ -310,9 +282,6 @@ li.list-inputs:hover {
     border: 1px solid #ed0295;
 }
 
-
-/*    /////////////////////////////////                 */
-
 .sub-head {
     padding: 0.6em 0.8em;
     background-color: #ffffff;
@@ -328,6 +297,8 @@ li.list-inputs:hover {
     box-shadow: 0 1px 7px -1px #0000001e, 0 2px 4px 0 #00000023;
     font-size: 1em;
     overflow: hidden;
+    max-height: calc( 100vh - 21em) !important;
+    min-height: calc( 100vh - 21em) !important;
 }
 
 .data-table-wrap.loading {
@@ -362,6 +333,10 @@ li.list-inputs:hover {
 .data-table-content:hover {
     overflow-x: auto;
     overflow-x: overlay;
+}
+
+.floating-widgets-section /deep/ .data-table-content {
+    min-height: calc( 100vh - 28em);
 }
 
 .data-table-head-outer {
@@ -714,8 +689,8 @@ li.list-inputs:hover {
 }
 
 .data-content {
-    max-height: calc(100vh - 26em);
-    min-height: calc(100vh - 26em);
+    max-height: calc(100vh - 29em);
+    min-height: calc(100vh - 29em);
     overflow: auto;
 }
 
@@ -1910,7 +1885,7 @@ html body {
     border: none;
     display: block;
     margin: 0 auto;
-    padding: 20px 30px;
+    padding: 0px 0px;
 }
 
 .asset-formctn h1 {
@@ -2415,7 +2390,7 @@ div.exchange {
 .list-select>ul {
     position: relative;
     overflow: auto;
-    height: calc(100vh - 39em);
+    height: calc(100vh - 40em);
     width: 100%;
 }
 
@@ -2593,4 +2568,13 @@ div.exchange {
     .popup {
         width: 80%;
     }
+}
+
+.floating-widgets-section /deep/ .data-table-wrap.loading {
+    max-height: calc( 100vh - 21em) !important;
+    min-height: calc( 100vh - 21em) !important;
+}
+
+.floating-widgets-section /deep/ .data-table-inner-wrap {
+    height: auto;
 }

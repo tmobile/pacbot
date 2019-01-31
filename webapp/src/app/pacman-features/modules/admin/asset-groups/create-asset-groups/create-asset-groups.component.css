@@ -31,7 +31,8 @@
 }
 
 .widget-wrapper {
-    min-height: 17em;
+    padding: 0 1.25em 1em 1.25em;
+    padding-bottom: 4px;
 }
 
 .data-table-desc {
@@ -46,34 +47,6 @@
 
 .admin-widgets-header h1 {
     text-transform: capitalize;
-}
-
-.issue-listing-wrapper /deep/ .data-table-wrap {
-    min-height: calc( 100vh - 24em);
-}
-
-.issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 32em);
-}
-
-.issue-listing-wrapper /deep/ .data-table-inner-wrap {
-    max-height: calc(100vh - 35em)
-}
-
-.issue-listing-wrapper /deep/ .data-table-wrap.loading {
-    min-height: calc( 100vh - 24em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-wrap {
-    min-height: calc(100vh - 20em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 28em);
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
-    max-height: calc(100vh - 31em)
 }
 
 .details-bar[_ngcontent-c14] {
@@ -189,10 +162,10 @@ input.inputarea-container {
     border: 1px solid #aaa !important;
     padding-bottom: 5px;
     border-radius: 0.3em !important;
-    height: 2.3em !important;
     display: inline-block;
     border: none;
     width: 100%;
+    height: 2.5em !important;
     padding: 0.6em !important;
 }
 
@@ -200,7 +173,6 @@ input.inputarea-container {
     border: 1px solid #aaa !important;
     padding-bottom: 5px;
     border-radius: 0.3em !important;
-    height: 2.3em !important;
     display: inline-block;
     border: none;
     width: 100%;
@@ -325,6 +297,7 @@ li.list-inputs:hover {
 }
 
 .data-table-wrap {
+    min-height: calc(100vh - 20em);
     border-radius: 3px;
     background-color: #ffffff;
     box-shadow: 0 1px 7px -1px #0000001e, 0 2px 4px 0 #00000023;
@@ -712,9 +685,13 @@ li.list-inputs:hover {
 }
 
 .data-content {
-    min-height: calc(100vh - 26em);
-    max-height: calc(100vh - 26em);
+    min-height: calc(100vh - 30em);
+    max-height: calc(100vh - 30em);
     overflow: auto;
+}
+
+.data-content-attr {
+    max-height: inherit !important;
 }
 
 .app-button {
@@ -1059,7 +1036,7 @@ a.tmbutton,
 button.tmbutton {
     width: auto;
     padding: 0 10px 0 10px;
-    height: 30px;
+    height: 2.5em;
     border-radius: 7px;
     background-color: #fff;
     border: solid 2px #ed027d;
@@ -1208,6 +1185,9 @@ button.tmbutton:disabled:hover {
 :host ::ng-deep ng-select .ui-disabled {
     height: 2.6em !important;
     top: auto;
+    margin-top: 1px;
+    width: 14em;
+    left: auto;
 }
 
 :host ::ng-deep ng-select .drop-search-box .ui-select-choices-row>a {

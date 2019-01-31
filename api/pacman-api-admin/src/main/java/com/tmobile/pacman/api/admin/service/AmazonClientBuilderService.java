@@ -15,26 +15,15 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.admin.service;
 
-import static com.tmobile.pacman.api.admin.common.AdminConstants.DEFAULT_SESSION_NAME;
-import static com.tmobile.pacman.api.admin.common.AdminConstants.TEMPORARY_CREDS_VALID_SECONDS;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.amazonaws.auth.AWSCredentialsProvider;
-import com.amazonaws.auth.AWSStaticCredentialsProvider;
-import com.amazonaws.auth.BasicSessionCredentials;
-import com.amazonaws.auth.DefaultAWSCredentialsProviderChain;
 import com.amazonaws.services.cloudwatchevents.AmazonCloudWatchEvents;
 import com.amazonaws.services.cloudwatchevents.AmazonCloudWatchEventsClientBuilder;
 import com.amazonaws.services.lambda.AWSLambda;
 import com.amazonaws.services.lambda.AWSLambdaClientBuilder;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.securitytoken.AWSSecurityTokenService;
-import com.amazonaws.services.securitytoken.AWSSecurityTokenServiceClientBuilder;
-import com.amazonaws.services.securitytoken.model.AssumeRoleRequest;
-import com.amazonaws.services.securitytoken.model.AssumeRoleResult;
 
 /**
  * Amazon Client Builder Service
@@ -49,10 +38,11 @@ public class AmazonClientBuilderService {
      * Service function to get RuleAmazonS3 Client
      *
      * @author Nidhish
+	 * @param region 
      * @return AmazonS3 Client
      */
-	public AmazonS3 getRuleAmazonS3() {
-		return AmazonS3ClientBuilder.standard().withCredentials(buildCredentials()).build();
+	public AmazonS3 getAmazonS3(final String region) {
+		return AmazonS3ClientBuilder.standard().withRegion(region).build();
 	}
 
 	/**
@@ -61,8 +51,8 @@ public class AmazonClientBuilderService {
      * @author Nidhish
      * @return AmazonCloudWatchEvents Client
      */
-	public AmazonCloudWatchEvents getRuleAmazonCloudWatchEvents() {
-		return AmazonCloudWatchEventsClientBuilder.standard().withCredentials(buildCredentials()).build();
+	public AmazonCloudWatchEvents getAmazonCloudWatchEvents(final String region) {
+		return AmazonCloudWatchEventsClientBuilder.standard().withRegion(region).build();
 	}
 
 	/**
@@ -71,30 +61,7 @@ public class AmazonClientBuilderService {
      * @author Nidhish
      * @return AWSLambda Client
      */
-	public AWSLambda getRuleAWSLambdaClient() {
-		return AWSLambdaClientBuilder.standard().withCredentials(buildCredentials()).build();
-	}
-
-	private AWSCredentialsProvider buildCredentials() {
-		AWSCredentialsProvider acp = new DefaultAWSCredentialsProviderChain();
-		String baseAccountRoleArn = System.getenv("ROLE_ARN");
-        BasicSessionCredentials temporaryCredentials = getTempCredentialsUsingCredProvider(baseAccountRoleArn, acp, TEMPORARY_CREDS_VALID_SECONDS);
-		return new AWSStaticCredentialsProvider(temporaryCredentials);
-	}
-
-	private BasicSessionCredentials getTempCredentialsUsingCredProvider(String roleArnWithAdequateAccess, AWSCredentialsProvider acp, Integer validForSeconds) {
-		AWSSecurityTokenServiceClientBuilder stsBuilder = AWSSecurityTokenServiceClientBuilder.standard().withCredentials(acp);
-		AWSSecurityTokenService sts = stsBuilder.build();
-		AssumeRoleRequest assumeRequest = new AssumeRoleRequest()
-											.withRoleArn(roleArnWithAdequateAccess)
-											.withDurationSeconds(validForSeconds)
-											.withRoleSessionName(DEFAULT_SESSION_NAME);
-		AssumeRoleResult assumeResult = sts.assumeRole(assumeRequest);
-		BasicSessionCredentials temporaryCredentials = new BasicSessionCredentials(
-				assumeResult.getCredentials().getAccessKeyId(),
-				assumeResult.getCredentials().getSecretAccessKey(),
-				assumeResult.getCredentials().getSessionToken());
-
-		return temporaryCredentials;
+	public AWSLambda getAWSLambdaClient(final String region) {
+		return AWSLambdaClientBuilder.standard().withRegion(region).build();
 	}
 }

@@ -1,7 +1,9 @@
 server:
-  context-path: /api/auth
-  
+  servlet:
+    context-path: /api/auth
+    
 pacman:
   api:
     oauth2:
-      client-id: ${OAUTH2_CLIENT_ID}
+      client-id: 22e14922-87d7-4ee4-a470-da0bb10d45d3
+      client-secret: csrWpc5p7JFF4vEZBkwGCAh67kGQGwXv46qug7v5ZwtKg

@@ -36,6 +36,8 @@ public class CreateUpdateRuleDetails {
 	private String dataSource;
 	private Boolean isFileChanged;
 	private Boolean  isAutofixEnabled;
+	private String severity;
+	private String category;
 
 	public String getRuleId() {
 		return ruleId;
@@ -171,5 +173,21 @@ public class CreateUpdateRuleDetails {
 
 	public void setDataSource(String dataSource) {
 		this.dataSource = dataSource;
+	}
+	
+	public String getSeverity() {
+		return severity;
+	}
+
+	public void setSeverity(String severity) {
+		this.severity = severity;
+	}
+
+	public String getCategory() {
+		return category;
+	}
+
+	public void setCategory(String category) {
+		this.category = category;
 	}
 }

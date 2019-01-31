@@ -92,13 +92,14 @@ public interface TargetTypesService {
 
 	/**
      * Service to add new target type
-     *
+     * 
      * @author Nidhish
      * @param targetTypeDetailsRequest - details for creating new targetType
+     * @param userId - valid user id
      * @return Success or Failure response
      * @throws PacManException
      */
-	public String addTargetTypeDetails(final CreateUpdateTargetTypeDetailsRequest targetTypeDetailsRequest) throws PacManException;
+	public String addTargetTypeDetails(final CreateUpdateTargetTypeDetailsRequest targetTypeDetailsRequest, final String userId) throws PacManException;
 
 	/**
      * Service to add new target type
@@ -114,20 +115,21 @@ public interface TargetTypesService {
      * @author Nidhish
      * @param targetTypeName - valid targetType name
      * @return TargetTypes details
-     * @throws PacManExceptio
+     * @throws PacManException
      */
 	public TargetTypes getTargetTypesByName(final String targetTypeName) throws PacManException;
 
 
 	/**
      * Service to update existing target type
-     *
+     * 
      * @author Nidhish
      * @param targetTypesDetails - details for updating existing targetType
+     * @param userId - valid user id
      * @return Success or Failure response
-     * @throws PacManExceptio
+     * @throws PacManException
      */
-	public String updateTargetTypeDetails(CreateUpdateTargetTypeDetailsRequest targetTypesDetails) throws PacManException;
+	public String updateTargetTypeDetails(CreateUpdateTargetTypeDetailsRequest targetTypesDetails, final String userId) throws PacManException;
 
 	/**
      * Service to get all target types details by selected asset group targetTypes

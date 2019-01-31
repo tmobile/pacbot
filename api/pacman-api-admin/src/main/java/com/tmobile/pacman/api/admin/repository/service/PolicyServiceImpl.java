@@ -40,7 +40,7 @@ public class PolicyServiceImpl implements PolicyService, Constants {
 
 	@Override
 	public Page<Object[]> getPolicies(final int page, final int size, final String searchTerm) {
-		return policyRepository.getAllPolicyDetails(searchTerm.toLowerCase(), new PageRequest(page, size));
+		return policyRepository.getAllPolicyDetails(searchTerm.toLowerCase(), PageRequest.of(page, size));
 	}
 
 	@Override
@@ -50,9 +50,9 @@ public class PolicyServiceImpl implements PolicyService, Constants {
 
 	@Override
 	public String updatePolicies(final UpdatePolicyDetails policyDetails) throws Exception {
-		boolean isPolicyExits = policyRepository.exists(policyDetails.getPolicyId());
+		boolean isPolicyExits = policyRepository.existsById(policyDetails.getPolicyId());
 		if(isPolicyExits) {
-			Policy policyToUpdate = policyRepository.findOne(policyDetails.getPolicyId());
+			Policy policyToUpdate = policyRepository.findById(policyDetails.getPolicyId()).get();
 			policyToUpdate.setPolicyDesc(policyDetails.getPolicyDesc());
 			policyToUpdate.setPolicyUrl(policyDetails.getPolicyUrl());
 			policyToUpdate.setPolicyVersion(policyDetails.getPolicyVersion());
@@ -67,7 +67,7 @@ public class PolicyServiceImpl implements PolicyService, Constants {
 
 	@Override
 	public String createPolicies(final CreatePolicyDetails policyDetails) throws Exception {
-		boolean isPolicyExits = policyRepository.exists(policyDetails.getPolicyId());
+		boolean isPolicyExits = policyRepository.existsById(policyDetails.getPolicyId());
 		if(!isPolicyExits) {
 			Date date = new Date();
 			Policy newPolicy = new Policy();
