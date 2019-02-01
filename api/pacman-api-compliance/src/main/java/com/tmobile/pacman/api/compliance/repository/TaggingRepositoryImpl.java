@@ -151,15 +151,6 @@ public class TaggingRepositoryImpl implements TaggingRepository, Constants {
         return aggsJson.getAsJsonObject("apps").getAsJsonArray(BUCKETS);
     }
 
-    /* (non-Javadoc)
-     * @see com.tmobile.pacman.api.compliance.repository.TaggingRepository#getRuleParamsFromDbByPolicyId(java.lang.String)
-     */
-    public List<Map<String, Object>> getRuleParamsFromDbByPolicyId(
-            String policyId) throws DataException {
-        String ruleIdQuery = "SELECT rule.ruleParams FROM cf_RuleInstance rule LEFT JOIN cf_Policy policy ON rule.policyId = policy.policyId WHERE rule.status = 'ENABLED' AND policy.policyId ='"
-                + policyId + "' GROUP BY rule.policyId";
-        return rdsepository.getDataFromPacman(ruleIdQuery);
-    }
 
     /* (non-Javadoc)
      * @see com.tmobile.pacman.api.compliance.repository.TaggingRepository#getUntaggedIssues(java.lang.String, java.lang.String)

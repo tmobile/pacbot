@@ -161,21 +161,4 @@ public class TaggingRepositoryImplTest {
                 .isInstanceOf(DataException.class);
     }
 
-    @Test
-    public void getRuleParamsFromDbByPolicyId() throws Exception {
-        List<Map<String, Object>> ruleParams = new ArrayList<>();
-        List<Map<String, Object>> response;
-        Map<String, Object> ruleParamMap = new HashMap<>();
-        ruleParamMap.put("assetGroup", "aws");
-        ruleParamMap.put("targetType", "ec2");
-        ruleParamMap.put("policyId", "PacMan_TaggingRule_version-1");
-        ruleParams.add(ruleParamMap);
-        when(rdsepository.getDataFromPacman(anyString())).thenReturn(ruleParams);
-        response = taggingRepositoryImpl.getRuleParamsFromDbByPolicyId("PacMan_TaggingRule_version-1");
-        assertTrue(response.size() > 0);
-        when(rdsepository.getDataFromPacman(anyString())).thenReturn(ruleParams);
-        response = taggingRepositoryImpl.getRuleTargetTypesFromDbByPolicyId("PacMan_TaggingRule_version-1");
-        assertTrue(response.size() > 0);
-    }
-
 }

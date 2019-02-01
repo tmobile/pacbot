@@ -84,7 +84,7 @@ public class TaggingServiceImpl implements TaggingService, Constants {
         LinkedHashMap<String, Object> app;
         JsonArray buckets;
         try {
-            buckets = repository.getUntaggedIssuesByapplicationFromES(assetGroup, getMandatoryTags(), searchText, from,
+            buckets = repository.getUntaggedIssuesByapplicationFromES(assetGroup, mandatoryTags, searchText, from,
                     size);
         } catch (DataException e) {
             throw new ServiceException(e);
@@ -151,8 +151,8 @@ public class TaggingServiceImpl implements TaggingService, Constants {
      */
     public Map<String, Object> getTaggingSummary(String assetGroup) throws ServiceException {
         List<String> mandatoryTagsList = new ArrayList<>();
-        if (!StringUtils.isEmpty(getMandatoryTags())) {
-            mandatoryTagsList = Arrays.asList(getMandatoryTags().split(","));
+        if (!StringUtils.isEmpty(mandatoryTags)) {
+            mandatoryTagsList = Arrays.asList(mandatoryTags.split(","));
         }
         Map<String, Object> totalMap = new HashMap<>();
         List<Map<String, Object>> unTagsList = new ArrayList<>();
@@ -284,41 +284,6 @@ public class TaggingServiceImpl implements TaggingService, Constants {
         return taggsApplication;
     }
 
-    /**
-     * Gets the mandatory tags.
-     *
-     * @return the mandatory tags
-     * @throws ServiceException the service exception
-     */
-    private String getMandatoryTags() throws ServiceException {
-        String mand = "mandatoryTags";
-        char ch = '"';
-        String mandTags = ch + "" + mand + "" + ch; 
-        JsonObject paramObj = null;
-        JsonObject paramDet = null;
-        JsonArray array = null;
-        JsonParser parser = new JsonParser();
-        List<Map<String, Object>> ruleParams;
-        try {
-            ruleParams = repository.getRuleParamsFromDbByPolicyId(TAGGIG_POLICY);
-        } catch (DataException e) {
-            throw new ServiceException(e);
-        }
-        for (Map<String, Object> params : ruleParams) {
-            String rParams = params.get("ruleParams").toString();
-            paramObj = parser.parse(rParams).getAsJsonObject();
-            array = paramObj.get("params").getAsJsonArray();
-
-            for (JsonElement jsonElement : array) {
-
-                paramDet = jsonElement.getAsJsonObject();
-                if (paramDet.get("key").toString().equals(mandTags)) {
-                    mandatoryTags = paramDet.get("value").getAsString();
-                }
-            }
-        }
-        return mandatoryTags;
-    }
 
     /**
      * Gets the untagged asset.
