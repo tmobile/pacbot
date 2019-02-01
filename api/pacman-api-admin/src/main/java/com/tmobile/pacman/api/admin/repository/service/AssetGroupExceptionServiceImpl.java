@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpHost;
 import org.apache.http.client.config.RequestConfig;
@@ -89,7 +90,7 @@ public class AssetGroupExceptionServiceImpl implements AssetGroupExceptionServic
 	
 	@Override
 	public Page<AssetGroupExceptionProjections> getAllAssetGroupExceptions(String searchTerm, int page, int size) {
-		return assetGroupExceptionRepository.findAllAssetGroupExceptions(searchTerm.toLowerCase(), new PageRequest(page, size));
+		return assetGroupExceptionRepository.findAllAssetGroupExceptions(searchTerm.toLowerCase(), PageRequest.of(page, size));
 	}
 	
 	@Override
@@ -104,20 +105,25 @@ public class AssetGroupExceptionServiceImpl implements AssetGroupExceptionServic
 		for (int index = 0; index<exceptionSize; index++) {
 			AssetGroupExceptionProjections assetGroupException = allAssetGroupExceptions.get(index);
 			String targetType = assetGroupException.getTargetType();
-			selectedTargetTypes.add(targetType);
-			targetTypeRuleDetails.setTargetName(assetGroupException.getTargetType());
-			targetTypeRuleDetails.setAdded(true);
-			ruleIdList.add(assetGroupException.getRuleId());
-			if(isNotLast(index, exceptionSize)) {
-				if(!allAssetGroupExceptions.get(1+index).getTargetType().equals(targetType)){
+			if(StringUtils.isNotBlank(assetGroupException.getRuleId())) {
+				ruleIdList.add(assetGroupException.getRuleId());
+			}
+
+			if(StringUtils.isNotBlank(targetType)) {
+				selectedTargetTypes.add(targetType);
+				targetTypeRuleDetails.setTargetName(assetGroupException.getTargetType());
+				targetTypeRuleDetails.setAdded(true);
+				if(isNotLast(index, exceptionSize)) {
+					if(!allAssetGroupExceptions.get(1+index).getTargetType().equals(targetType)){
+						allTargetTypeRuleDetails.add(getTargetTypeRuleDetails(ruleIdList, targetTypeRuleDetails, targetType));
+						ruleIdList.clear();
+						targetTypeRuleDetails = new TargetTypeRuleViewDetails();
+					}
+				} else {
 					allTargetTypeRuleDetails.add(getTargetTypeRuleDetails(ruleIdList, targetTypeRuleDetails, targetType));
 					ruleIdList.clear();
 					targetTypeRuleDetails = new TargetTypeRuleViewDetails();
 				}
-			} else {
-				allTargetTypeRuleDetails.add(getTargetTypeRuleDetails(ruleIdList, targetTypeRuleDetails, targetType));
-				ruleIdList.clear();
-				targetTypeRuleDetails = new TargetTypeRuleViewDetails();
 			}
 		}
 		
@@ -126,7 +132,7 @@ public class AssetGroupExceptionServiceImpl implements AssetGroupExceptionServic
 		stickyExceptionResponse.setExpiryDate(allAssetGroupExceptions.get(0).getExpiryDate());
 		stickyExceptionResponse.setDataSource(allAssetGroupExceptions.get(0).getDataSource());
 		
-		List<String> allSelectedTargetTypes = Lists.newArrayList();
+		Set<String> allSelectedTargetTypes = Sets.newHashSet();
 		allSelectedTargetTypes.addAll(selectedTargetTypes);
 		
 		List<TargetTypeRuleViewDetails> remainingTargetTypeDetails = assetGroupTargetDetailsService.getTargetTypesByAssetGroupIdAndTargetTypeNotIn(allAssetGroupExceptions.get(0).getAssetGroup(), allSelectedTargetTypes);
@@ -138,10 +144,12 @@ public class AssetGroupExceptionServiceImpl implements AssetGroupExceptionServic
 	}
 
 	private TargetTypeRuleViewDetails getTargetTypeRuleDetails(List<String> ruleIdList, TargetTypeRuleViewDetails targetTypeRuleDetails, String targetType) {
-		List<RuleProjection> allRules = ruleService.getAllRulesByTargetTypeAndNotInRuleIdList(targetType, ruleIdList);
-		List<RuleProjection> rules = ruleService.getAllRulesByTargetTypeAndRuleIdList(targetType, ruleIdList);
-		targetTypeRuleDetails.setAllRules(allRules);
-		targetTypeRuleDetails.setRules(rules);
+		if(StringUtils.isNotBlank(targetType)) {
+			List<RuleProjection> allRules = ruleService.getAllRulesByTargetTypeAndNotInRuleIdList(targetType, ruleIdList);
+			List<RuleProjection> rules = ruleService.getAllRulesByTargetTypeAndRuleIdList(targetType, ruleIdList);
+			targetTypeRuleDetails.setAllRules(allRules);
+			targetTypeRuleDetails.setRules(rules);
+		}
 		return targetTypeRuleDetails;
 	}
 
@@ -154,8 +162,11 @@ public class AssetGroupExceptionServiceImpl implements AssetGroupExceptionServic
 		List<String> ruleIds = Lists.newArrayList();
 		try {
 			List<TargetTypeRuleDetails> targetTypes = assetGroupExceptionDetails.getTargetTypes();
+			deleteAssetGroupExceptions(new DeleteAssetGroupExceptionRequest(assetGroupExceptionDetails.getExceptionName().trim(), assetGroupExceptionDetails.getAssetGroup().trim()), userId);	
 			if (updateExceptionToES(assetGroupExceptionDetails)) {
 				try {
+					boolean haveNoRules = true;
+					List<AssetGroupException> allAssetGroupExceptions = Lists.newArrayList();
 					for (int targetIndex = 0; targetIndex < targetTypes.size(); targetIndex++) {
 						List<RuleDetails> rules = targetTypes.get(targetIndex).getRules();
 						for (int ruleIndex = 0; ruleIndex < rules.size(); ruleIndex++) {
@@ -169,10 +180,29 @@ public class AssetGroupExceptionServiceImpl implements AssetGroupExceptionServic
 							assetGroupException.setRuleId(rules.get(ruleIndex).getId().trim());
 							assetGroupException.setRuleName(rules.get(ruleIndex).getText().trim());
 							ruleIds.add(rules.get(ruleIndex).getId().trim());
-							assetGroupExceptionRepository.save(assetGroupException);
+							allAssetGroupExceptions.add(assetGroupException);
+							haveNoRules = false;
 						}
+						
 					}
-					return invokeAllRules(ruleIds);
+					if(targetTypes.size()==0 || haveNoRules) {
+						AssetGroupException assetGroupException = new AssetGroupException();
+						assetGroupException.setGroupName(assetGroupExceptionDetails.getAssetGroup().trim());
+						assetGroupException.setTargetType(StringUtils.EMPTY);
+						assetGroupException.setDataSource(assetGroupExceptionDetails.getDataSource().trim());
+						assetGroupException.setExceptionName(assetGroupExceptionDetails.getExceptionName().trim());
+						assetGroupException.setExceptionReason(assetGroupExceptionDetails.getExceptionReason().trim());
+						assetGroupException.setExpiryDate(AdminUtils.getFormatedDate("dd/MM/yyyy", assetGroupExceptionDetails.getExpiryDate()));
+						assetGroupException.setRuleId(StringUtils.EMPTY);
+						assetGroupException.setRuleName(StringUtils.EMPTY);
+						allAssetGroupExceptions.add(assetGroupException);
+					}
+
+					assetGroupExceptionRepository.saveAll(allAssetGroupExceptions);
+					if(targetTypes.size()!=0 && !haveNoRules) {
+						invokeAllRules(ruleIds);
+					}
+					return CONFIG_STICKY_EXCEPTION_SUCCESS;
 				} catch (Exception e) {
 					invokeAPI("DELETE", "/exceptions/sticky_exceptions/"+ assetGroupExceptionDetails.getExceptionName().replaceAll(" ", "_"), null);
 					throw new PacManException("Exception while updating to table " + e.getMessage());
@@ -186,12 +216,11 @@ public class AssetGroupExceptionServiceImpl implements AssetGroupExceptionServic
 		}
 	}
 
-	private String invokeAllRules(List<String> ruleIds) throws PacManException {
+	private void invokeAllRules(List<String> ruleIds) {
 		try {	
 			ruleService.invokeAllRules(ruleIds);
-			return CONFIG_STICKY_EXCEPTION_SUCCESS;
 		} catch (Exception exception) {
-			throw new PacManException("Unexpected Error Occurred");
+			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
 		}
 	}
 

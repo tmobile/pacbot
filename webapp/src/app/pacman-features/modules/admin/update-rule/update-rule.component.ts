@@ -112,7 +112,7 @@ export class UpdateRuleComponent implements OnInit, OnDestroy {
   queryParamsWithoutFilter: any;
   urlToRedirect: any = '';
   mandatory: any;
-  allRuleParamKeys: any = ["severity","ruleCategory"];
+  allRuleParamKeys: any = [];
   allEnvParamKeys: any = [];
   activePolicy: any = [];
   parametersInput: any = { ruleKey: '', ruleValue: '', envKey: '', envValue: '' };

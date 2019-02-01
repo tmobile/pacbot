@@ -1253,7 +1253,7 @@ button.tmbutton:disabled:hover {
 .parameters {
     float: left;
     margin-right: 5px;
-    width: 14em;
+    width: 25em;
     margin-bottom: 0px;
 }
 
@@ -2206,13 +2206,6 @@ p.inputnote {
     padding-bottom: 0px;
 }
 
-
-/*
-.md-stepper-horizontal .md-step:hover,
-.md-stepper-horizontal .md-step:active {
-    background-color: #fff;
-}*/
-
 .md-stepper-horizontal .md-step:active {
     border-radius: 15% / 75%;
 }
@@ -2984,29 +2977,11 @@ div.exchange {
     box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.32);
 }
 
-
-/*
-.sticky-exceptions-wrapper /deep/ .ngx-datepicker-container .ngx-datepicker-calendar-container .main-calendar-container .main-calendar-days .day-unit.is-today,
-.sticky-exceptions-wrapper /deep/ .ngx-datepicker-container .ngx-datepicker-calendar-container .main-calendar-container .main-calendar-days .day-unit:hover,
-.sticky-exceptions-wrapper /deep/ .ngx-datepicker-container .ngx-datepicker-calendar-container .main-calendar-container .main-calendar-days .year-unit.is-today,
-.sticky-exceptions-wrapper /deep/ .ngx-datepicker-container .ngx-datepicker-calendar-container .main-calendar-container .main-calendar-days .year-unit:hover,
-.sticky-exceptions-wrapper /deep/ .ngx-datepicker-container .ngx-datepicker-calendar-container .main-calendar-container .main-calendar-years .day-unit.is-today,
-.sticky-exceptions-wrapper /deep/ .ngx-datepicker-container .ngx-datepicker-calendar-container .main-calendar-container .main-calendar-years .day-unit:hover,
-.sticky-exceptions-wrapper /deep/ .ngx-datepicker-container .ngx-datepicker-calendar-container .main-calendar-container .main-calendar-years .year-unit.is-today,
-.sticky-exceptions-wrapper /deep/ .ngx-datepicker-container .ngx-datepicker-calendar-container .main-calendar-container .main-calendar-years .year-unit:hover {
-    background: #e20074 !important;
-}
-*/
-
 .sticky-exceptions-wrapper /deep/ .ngx-datepicker-container .ngx-datepicker-calendar-container .main-calendar-container .main-calendar-days .day-unit.is-selected,
 .sticky-exceptions-wrapper /deep/ .ngx-datepicker-container .ngx-datepicker-calendar-container .main-calendar-container .main-calendar-days .year-unit.is-selected,
 .sticky-exceptions-wrapper /deep/ .ngx-datepicker-container .ngx-datepicker-calendar-container .main-calendar-container .main-calendar-years .day-unit.is-selected,
 .sticky-exceptions-wrapper /deep/ .ngx-datepicker-container .ngx-datepicker-calendar-container .main-calendar-container .main-calendar-years .year-unit.is-selected {
     background: #e20074 !important;
-}
-
-:host ::ng-deep ng-select .ui-select-choices {
-    width: auto !important;
 }
 
 .added-target-types {
@@ -3072,4 +3047,8 @@ div.exchange {
     color: green;
     font-style: bold;
     display: inline-block;
+}
+
+.rules /deep/ .ui-select-choices {
+    width: 25em !important;
 }

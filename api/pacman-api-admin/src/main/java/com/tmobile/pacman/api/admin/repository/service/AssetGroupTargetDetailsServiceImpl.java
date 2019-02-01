@@ -16,6 +16,7 @@
 package com.tmobile.pacman.api.admin.repository.service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -65,10 +66,15 @@ public class AssetGroupTargetDetailsServiceImpl implements AssetGroupTargetDetai
 	};
 
 	@Override
-	public List<TargetTypeRuleViewDetails> getTargetTypesByAssetGroupIdAndTargetTypeNotIn(String assetGroupName, List<String> targetTypeNames) throws PacManException {
+	public List<TargetTypeRuleViewDetails> getTargetTypesByAssetGroupIdAndTargetTypeNotIn(String assetGroupName, Set<String> targetTypeNames) throws PacManException {
 		AssetGroupDetails assetGroupDetails = assetGroupService.findByGroupName(assetGroupName);
+		List<AssetGroupTargetDetails> allAssetGroupTargetDetails = Lists.newArrayList();
 		if (assetGroupDetails != null) {
-			List<AssetGroupTargetDetails> allAssetGroupTargetDetails = assetGroupTargetDetailsRepository.findByGroupIdAndTargetTypeNotIn(assetGroupDetails.getGroupId(), targetTypeNames);
+			if(targetTypeNames.isEmpty()) {
+				allAssetGroupTargetDetails = assetGroupTargetDetailsRepository.findByGroupId(assetGroupDetails.getGroupId());
+			} else {
+				allAssetGroupTargetDetails = assetGroupTargetDetailsRepository.findByGroupIdAndTargetTypeNotIn(assetGroupDetails.getGroupId(), targetTypeNames);
+			}
 			List<TargetTypeRuleViewDetails> allStudentsDetails = allAssetGroupTargetDetails.parallelStream().map(fetchStickyExceptionTargetTypeRuleDetails).collect(Collectors.toList());
 			return allStudentsDetails;
 		} else {

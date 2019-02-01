@@ -20,12 +20,14 @@ package com.tmobile.pacman.api.statistics;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.hystrix.EnableHystrix;
-import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
+import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.util.UrlPathHelper;
 
 
 /**
@@ -34,11 +36,12 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @SpringBootApplication
 @EnableFeignClients
 @Configuration
-@EnableHystrix
-@EnableHystrixDashboard
+@EnableCaching	
+/*@EnableHystrix
+@EnableHystrixDashboard*/
 @EnableResourceServer
 @ComponentScan(basePackages = "com.tmobile.pacman")
-public class StatisticsApplication {
+public class StatisticsApplication implements WebMvcConfigurer {
 
     /**
      * The main method.
@@ -47,5 +50,16 @@ public class StatisticsApplication {
      */
     public static void main(String[] args) {
         SpringApplication.run(StatisticsApplication.class, args);
+    }
+    
+    /**
+     * Configures the PathMatchConfigurer with  UrlPathHelper
+     * @param configurer PathMatchConfigurer
+     */
+    @Override
+    public void configurePathMatch(PathMatchConfigurer configurer) {
+        UrlPathHelper urlPathHelper = new UrlPathHelper();
+        urlPathHelper.setUrlDecode(false);
+        configurer.setUrlPathHelper(urlPathHelper);
     }
 }

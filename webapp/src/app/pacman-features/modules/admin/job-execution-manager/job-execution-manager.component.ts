@@ -372,20 +372,20 @@ export class JobExecutionManagerComponent implements OnInit, OnDestroy {
 
   goToDetails(row) {
     if (row.col === 'Actions') {
-      try {
-        this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
-        this.router.navigate(['../create-edit-policy'], {
-          relativeTo: this.activatedRoute,
-          queryParamsHandling: 'merge',
-          queryParams: {
-            policyId: row.row['Policy Id'].text
-          }
-        });
-      } catch (error) {
-        this.errorMessage = this.errorHandling.handleJavascriptError(error);
-        this.logger.log('error', error);
+        try {
+          this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
+          this.router.navigate(['../update-job-execution-manager'], {
+            relativeTo: this.activatedRoute,
+            queryParamsHandling: 'merge',
+            queryParams: {
+              jobId: row.row['jobId'].text
+            }
+          });
+        } catch (error) {
+          this.errorMessage = this.errorHandling.handleJavascriptError(error);
+          this.logger.log('error', error);
+        }
       }
-    }
   }
 
   searchCalled(search) {

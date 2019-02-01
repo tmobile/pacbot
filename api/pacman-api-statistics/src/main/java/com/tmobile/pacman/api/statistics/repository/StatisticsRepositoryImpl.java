@@ -113,7 +113,10 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
         String ttypesTemp;
         String ttypes = null;
         try{
+        LOGGER.info("before the client call {}",assetServiceClient.toString());
+        LOGGER.info("before the client call "+assetServiceClient.toString());
         AssetApi assetApi = assetServiceClient.getTargetTypeList(assetGroup, domain);
+        LOGGER.info("after the client call {}",assetServiceClient.toString());
         AssetApiData data = assetApi.getData();
         AssetApiName[] targetTypes = data.getTargettypes();
         for (AssetApiName name : targetTypes) {
@@ -126,6 +129,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
         }
         }catch(Exception e){
         	LOGGER.error("error proccessing fiegnclien assetServiceClient",e.getMessage());
+        	LOGGER.error("error proccessing fiegnclien assetServiceClient",e);
         	return "";
         }
         return ttypes;

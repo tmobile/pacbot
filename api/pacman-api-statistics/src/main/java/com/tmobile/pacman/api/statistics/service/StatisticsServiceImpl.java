@@ -259,20 +259,23 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
      */
     private Map<String, Long> getIssueDistribution() {
         Long totalViolations = 0l;
+        Long critical = 0l;
+		Long high = 0l;
+		Long low = 0l;
+		Long medium = 0l;
         Map<String, Long> violationsMap = new HashMap<>();
         JsonParser parser = new JsonParser();
         try {
+        LOGGER.info("before the client call {}",complianceClient.toString());
+        LOGGER.info("before the client call "+complianceClient.toString());
         String distributionStr = complianceClient.getDistributionAsJson(AWS, null);
+        LOGGER.info("after the client call {}",complianceClient.toString());
         if (!Strings.isNullOrEmpty(distributionStr)) {
             JsonObject responseDetailsjson = parser.parse(distributionStr).getAsJsonObject();
             JsonObject dataJson = responseDetailsjson.get("data").getAsJsonObject();
             JsonObject distributionJson = dataJson.get("distribution").getAsJsonObject();
             totalViolations = distributionJson.get("total_issues").getAsLong();
             JsonObject severityJson = distributionJson.get("distribution_by_severity").getAsJsonObject();
-				Long critical = 0l;
-				Long high = 0l;
-				Long low = 0l;
-				Long medium = 0l;
 
 				if (severityJson.has("critical")) {
 					critical = severityJson.get("critical").getAsLong();
@@ -294,6 +297,12 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         }
     } catch (Exception e) {
 		LOGGER.error("error processing compliance fiegnclient", e);
+		LOGGER.debug("the client call is having error",e);
+		violationsMap.put("critical", critical);
+        violationsMap.put("high", high);
+        violationsMap.put("low", low);
+        violationsMap.put("medium", medium);
+        violationsMap.put("totalViolations", totalViolations);
 		return violationsMap;
 	}
         return violationsMap;
@@ -345,7 +354,9 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         totalAssetCountMap.put(TOTAL, 0l);
         JsonParser parser = new JsonParser();
         try{
+        	LOGGER.debug("before the client call",assetClient.toString());
         Map<String, Object> assetCounts = assetClient.getTypeCounts(AWS, null, null);
+        LOGGER.debug("after the client call",assetClient.toString());
         // Get Total Asset Count
         assetCounts.entrySet().stream().forEach(entry->{
 
@@ -356,13 +367,17 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
             for (int i = 0; i < assetcounts.size(); i++) {
                 totalAssets += assetcounts.get(i).getAsJsonObject().get("count").getAsLong();
             }
-            totalAssetCountMap.put(TOTAL, totalAssets);
+            synchronized (totalAssetCountMap) {
+            	totalAssetCountMap.put(TOTAL, totalAssets);
+			}
         }
 
         });
         }catch(Exception e){
 	    	LOGGER.error("error processing fiegn assetClienr", e.getMessage());
+	    	LOGGER.debug("the client call is having error",e);
 	    	return totalAssetCountMap.get(TOTAL);
+	    	
 	    }
 
         return totalAssetCountMap.get(TOTAL);
@@ -391,7 +406,10 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
                     .get("RESOURCEID");
             List<Map<String, Object>> resourceIdMap = (List<Map<String, Object>>) resources
                     .get(BUCKETS);
-                autoFixActionUniqueCountMap.put(TOTAL, resourceIdMap.size()+autoFixActionUniqueCountMap.get(TOTAL));
+            synchronized (autoFixActionUniqueCountMap) {
+            	autoFixActionUniqueCountMap.put(TOTAL, resourceIdMap.size()+autoFixActionUniqueCountMap.get(TOTAL));
+			}
+                
         });
 
             actionInfo.put("action", "autoFixed");
