@@ -83,10 +83,10 @@ class RuleEngineCloudWatchEventTargets(CloudWatchEventTargetResource):
 
 
 class EventRulesLambdaPermissions(LambdaPermission):
-    count = RulesListVariable.length()
+    statement_id = "sid-" + Settings.AWS_ACCOUNT_ID
     action = "lambda:InvokeFunction"
     function_name = RuleEngineLambdaFunction.get_output_attr('function_name')
     principal = "events.amazonaws.com"
-    source_arn = RuleEngineEventRules.get_output_attr(key='arn', index=True)
+    # source_arn = RuleEngineEventRules.get_output_attr(key='arn', index=True) #Not required since there are huge list of rules
 
     DEPENDS_ON = [RuleEngineCloudWatchEventTargets]
