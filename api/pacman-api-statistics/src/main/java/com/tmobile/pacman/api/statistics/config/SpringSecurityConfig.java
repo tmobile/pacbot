@@ -31,6 +31,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.provider.authentication.OAuth2AuthenticationDetails;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
+import org.springframework.security.web.firewall.DefaultHttpFirewall;
+import org.springframework.security.web.firewall.HttpFirewall;
 
 import com.tmobile.pacman.api.statistics.repository.StatisticsRepositoryImpl;
 
@@ -59,6 +61,18 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		super(true);
 	}
 	
+	 /**
+     * Allow url encoded slash http firewall.
+     *
+     * @return the http firewall
+     */
+    @Bean
+    public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
+        DefaultHttpFirewall firewall = new DefaultHttpFirewall();
+        firewall.setAllowUrlEncodedSlash(true);
+        return firewall;
+    }
+	
 	@Bean
 	public RequestInterceptor requestTokenBearerInterceptor() {
 	    return new RequestInterceptor() {
@@ -74,6 +88,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     
 	@Override
 	public void configure(WebSecurity web) throws Exception {
+		web.httpFirewall(allowUrlEncodedSlashHttpFirewall());
 		web.ignoring().antMatchers(AUTH_WHITELIST);
 		web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
 	}
