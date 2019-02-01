@@ -155,7 +155,7 @@
   },
   {
     "ruleId": "PacMan_Ec2WithPublicAccessNonWebPorts80_version-1_Ec2WithPublicAccessNonWebPort80_ec2",
-    "ruleUUID": "aws_EC2_should_not_be_publicly_accessible_on_port80,
+    "ruleUUID": "aws_EC2_should_not_be_publicly_accessible_on_port80",
     "policyId": "PacMan_Ec2WithPublicAccessNonWebPorts80_version-1",
     "ruleName": "Ec2WithPublicAccessNonWebPort80",
     "targetType": "ec2",
