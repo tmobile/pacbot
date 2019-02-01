@@ -87,7 +87,7 @@ public class AssetGroupTargetDetailsServiceImplTest {
 		AssetGroupDetails assetGroupDetails = getAssetGroupDetails();
 		List<AssetGroupTargetDetails> allAssetGroupTargetDetails =  getAllAssetGroupTargetDetails();
 		when(assetGroupService.findByGroupName("assetGroupName123")).thenReturn(assetGroupDetails);
-		List<String> targetTypeNames = Lists.newArrayList();
+		Set<String> targetTypeNames = Sets.newHashSet();
 		when(assetGroupTargetDetailsRepository.findByGroupIdAndTargetTypeNotIn(assetGroupDetails.getGroupId(), targetTypeNames)).thenReturn(allAssetGroupTargetDetails);
 		assertThat(assetGroupTargetDetailsService.getTargetTypesByAssetGroupIdAndTargetTypeNotIn("assetGroupName123", targetTypeNames).size(), is(1));
 	}
@@ -97,7 +97,7 @@ public class AssetGroupTargetDetailsServiceImplTest {
 		AssetGroupDetails assetGroupDetails = getAssetGroupDetails();
 		List<AssetGroupTargetDetails> allAssetGroupTargetDetails =  getAllAssetGroupTargetDetails();
 		when(assetGroupService.findByGroupName("assetGroupName123")).thenReturn(null);
-		List<String> targetTypeNames = Lists.newArrayList();
+		Set<String> targetTypeNames = Sets.newHashSet();
 		when(assetGroupTargetDetailsRepository.findByGroupIdAndTargetTypeNotIn(assetGroupDetails.getGroupId(), targetTypeNames)).thenReturn(allAssetGroupTargetDetails);
 		assertThatThrownBy(() -> assetGroupTargetDetailsService.getTargetTypesByAssetGroupIdAndTargetTypeNotIn("assetGroupName123", targetTypeNames)).isInstanceOf(PacManException.class);
 	}
