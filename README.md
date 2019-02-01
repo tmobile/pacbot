@@ -116,7 +116,7 @@ Detailed installation instructions are available [here](https://github.com/tmobi
 The installer will launch required AWS services listed in the [installation instructions](https://github.com/tmobile/pacbot/wiki/Install). After successful installation hit the UI load balancer URL. Login into the application using the credentials supplied during the installation. The results from the policy evaluation will start getting populated within an hour. Trendline widgets will be populated when there are at least two data points.
 
 
-When you install PacBot, the AWS account where you install is the base account. PacBot installed on the base account can monitor other target AWS accounts. Refer to the instructions [here](https://github.com/tmobile/pacbot/wiki/Install) to add new accounts to PacBot. By default base account will be monitored by PacBot.
+When you install PacBot, the AWS account where you install is the base account. PacBot installed on the base account can monitor other target AWS accounts. Refer to the instructions [here](https://github.com/tmobile/pacbot/wiki/Install#adding-new-aws-accounts-to-pacbot-to-monitor) to add new accounts to PacBot. By default base account will be monitored by PacBot.
 
 
 Login as Admin user and go to the Admin page from the top menu. In the Admin section, you can 
