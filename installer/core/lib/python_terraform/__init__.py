@@ -303,6 +303,7 @@ class Terraform(object):
                       err: The captured stderr, or None if not captured
         :return: ret_code, out, err
         """
+        synchronous = kwargs.pop('synchronous', True)
         capture_output = kwargs.pop('capture_output', True)
         raise_on_error = kwargs.pop('raise_on_error', False)
         if capture_output is True:
@@ -324,10 +325,12 @@ class Terraform(object):
         p = subprocess.Popen(cmds, stdout=stdout, stderr=stderr,
                              cwd=working_folder, env=environ_vars)
 
-        synchronous = kwargs.pop('synchronous', True)
         if not synchronous:
             return p, None, None
 
+        return self.return_process_result(p, capture_output, raise_on_error)
+
+    def return_process_result(self, p, capture_output=True, raise_on_error=False):
         out, err = p.communicate()
         ret_code = p.returncode
         log.debug('output: {o}'.format(o=out))
@@ -346,12 +349,7 @@ class Terraform(object):
             out = None
             err = None
 
-        if ret_code != 0 and raise_on_error:
-            raise TerraformCommandError(
-                ret_code, ' '.join(cmds), out=out, err=err)
-
         return ret_code, out, err
-
 
     def output(self, *args, **kwargs):
         """
