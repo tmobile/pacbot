@@ -61,7 +61,9 @@ class RuleEngineBatchJobEnv(BatchComputeEnvironmentResource):
     def pre_terraform_destroy(self):
         warn_msg = "Batch Jobs are running, please try after it gets completed OR manually cancel the jobs"
         if self.check_batch_jobs_running():
-            raise Exception(warn_msg)
+            message = "\n\t ** %s **\n" % warn_msg
+            print(MsgMixin.BERROR_ANSI + message + MsgMixin.RESET_ANSI)
+            sys.exit()
 
     def post_terraform_destroy(self):
         ec2_client = get_ec2_client(self.input.aws_access_key, self.input.aws_secret_key, self.input.aws_region)
