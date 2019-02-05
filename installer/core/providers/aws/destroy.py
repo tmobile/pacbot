@@ -27,11 +27,11 @@ class Destroy(BaseAction):
 
     def execute_terraform(self, resources, terraform_with_targets, dry_run):
         self.show_step_heading(K.TERRAFORM_DESTROY_STARTED, write_log=False)
-        start_time = datetime.now()
 
         if not dry_run:
             self.run_pre_destoy(resources)
-            self.destroy_resources(resources, terraform_with_targets)
+            start_time = datetime.now()
+            self.destroy_resources(resources, terraform_with_targets, start_time)
             self.run_post_destoy(resources)
         else:
             self.show_step_finish(K.TERRAFORM_DESTROY_DRY_RUN)
@@ -43,15 +43,26 @@ class Destroy(BaseAction):
     def _cleanup_destroy(self):
         self._delete_terraform_provider_file()
 
-    def destroy_resources(self, resources, terraform_with_targets):
+    def destroy_resources(self, resources, terraform_with_targets, start_time):
         destroy_resources = resources if terraform_with_targets else None
-        exception = None
         terraform = PyTerraform()
-
         p = terraform.terraform_destroy(destroy_resources)
 
+        self.resource_count = len(resources)
+        output_count = self._get_terraform_output_count(self.resource_count)
+        real_resource_count = str(output_count)
+
+        invoke_output = True
         while p.poll() is None:
-            self.show_progress_message(K.TERRAFORM_DESTROY_RUNNING, 1.5)
+            # Invoke output only if invoke_output variable is True
+            invoke_output = False if invoke_output else True
+            output_count = self._get_terraform_output_count(output_count) if invoke_output else output_count
+
+            rsource_progress_metric = self.BGREEN_ANSI + str(output_count) + "/" + real_resource_count + self.END_ANSI
+            duration = self.CYAN_ANSI + self.get_duration(datetime.now() - start_time) + self.END_ANSI
+            message = "%s (%s) Time elapsed: %s" % (K.TERRAFORM_DESTROY_RUNNING, rsource_progress_metric, duration)
+            self.show_progress_message(message, 1.5)
+
         self.erase_printed_line()
 
         terraform.process_destroy_result(p)

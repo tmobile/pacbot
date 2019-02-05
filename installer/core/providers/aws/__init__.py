@@ -11,6 +11,7 @@ import os
 
 class BaseAction(MsgMixin):
     check_dependent_resources = True
+    resource_count = 0
 
     def __init__(self, input=None):
         self.input = input
@@ -107,3 +108,10 @@ class BaseAction(MsgMixin):
 
     def _get_depends_key(self, resource):
         return str(resource.get_resource_id())
+
+    def _get_terraform_output_count(self, prev_count):
+        try:
+            output = PyTerraform.load_terraform_output()
+            return len(output)
+        except:
+            return prev_count
