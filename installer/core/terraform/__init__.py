@@ -78,6 +78,7 @@ class PyTerraform():
         if exists_teraform_lock():
             raise Exception(K.ANOTHER_PROCESS_RUNNING)
 
+        CMD = Settings.get('running_command', "Terraform Destroy")
         terraform = Terraform(
             working_dir=Settings.TERRAFORM_DIR,
             targets=self.get_target_resources(resources),
@@ -85,10 +86,16 @@ class PyTerraform():
         )
 
         self.log_obj.write_terraform_destroy_log_header()
-        kwargs = {"auto_approve": True, 'synchronous': False}  # To run destroy on background
-        p, out, err = terraform.destroy(**kwargs)
+        kwargs = {"auto_approve": True}
+        response = terraform.destroy(**kwargs)
 
-        return p
+        if response[0] == 1:
+            self.log_obj.write_debug_log(K.TERRAFORM_DESTROY_ERROR)
+            self.write_current_status(CMD, K.DESTROY_STATUS_ERROR, response[2])
+            raise Exception(response[2])
+
+        self.write_current_status(CMD, K.DESTROY_STATUS_COMPLETED, K.TERRAFORM_DESTROY_COMPLETED)
+        return response
 
     def process_destroy_result(self, p):
         response = Terraform().return_process_result(p)
