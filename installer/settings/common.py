@@ -14,7 +14,7 @@ RESOURCES_FOLDER = 'resources'  # Provide only relative path
 TOOLS_REQUIRED = {
     'Maven': "mvn --version",
     'Git': "git --version",
-    'MySQL Client': "mysql --version",
+    'MySQL client': "mysql --version",
     'Terraform': "terraform --version",
     'Nodejs': "node --version",
     'npm': "npm --version",
