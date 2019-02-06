@@ -45,7 +45,7 @@ class Executor(MsgMixin):
 
         for tool_name, command in tools_required.items():
             error, msg, errmsg = run_command(command)
-            display_message = "Tool: %s, Checking" % tool_name
+            display_message = "Tool: %s, checking" % tool_name
             status = K.NOT_FOUND if error or errmsg else K.FOUND
             tools_available = False if error or errmsg else tools_available
             self.show_step_inner_messaage(display_message, status, errmsg)
@@ -67,7 +67,7 @@ class Executor(MsgMixin):
             if not success:
                 error = True
             display_msg = "Package: %s, Module: %s" % (item[0], item[1]) if type(item) is tuple else "Module: %s" % item
-            display_msg += ", Checking"
+            display_msg += ", checking"
             self.show_step_inner_messaage(display_msg, status_msg, err_msg)
 
         if error:
