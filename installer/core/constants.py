@@ -26,6 +26,9 @@ TOOLS_CHECK_COMPLETED = "Required tools are available!!!"
 INPUT_READING_STARTED = "Reading required inputs from user"
 INPUT_READING_COMPLETED = "Required inputs are available!!!"
 
+AWS_ACCESS_KEY_INPUT = "Please enter AWS access key: "
+AWS_SECRET_KEY_INPUT = "Please enter AWS secret key: "
+AWS_REGION_INPUT = "Please enter region: "
 INVALID_KEY = "Entered invalid Key!!!"
 SETTINGS_CHECK_STARTED = "Checking settings and inputs"
 VPC_CHECK_STARTED = "Checking VPC and CIDR Blocks"
@@ -77,7 +80,7 @@ TERRAFORM_OUTPUT_STORED = "Terraform output is stored"
 
 TERRAFORM_DESTROY_STARTED = "Terraform destroy started"
 TERRAFORM_DESTROY_RUNNING = "Destroying resources"
-TERRAFORM_DESTROY_ERROR = "Terraform destroy encountered an error. Please check error log for more details"
+TERRAFORM_DESTROY_ERROR = "Terraform destroy encountered an error"
 TERRAFORM_DESTROY_COMPLETED = "Terraform destroy executed successfully!!! Please check destroy log for more details"
 TERRAFORM_DESTROY_DRY_RUN = "Terraform destroy is not executed as dry-run is enabled"
 

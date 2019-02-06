@@ -17,10 +17,10 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
     def read_aws_access_key(self):
         settings_access_key = getattr(Settings, 'AWS_ACCESS_KEY', None)
         if settings_access_key is None or settings_access_key == '':
-            self.aws_access_key = input("\n\tPlease enter AWS access key: ")
+            self.aws_access_key = input("\n\t%s" % K.AWS_ACCESS_KEY_INPUT)
             if len(self.aws_access_key) < 20:
                 self.show_step_inner_error("\n\t" + K.INVALID_KEY)
-                raise Exception("Invalid AWS access key")
+                raise Exception(K.INVALID_KEY)
             Settings.set('AWS_ACCESS_KEY', self.aws_access_key)
         else:
             self.aws_access_key = settings_access_key
@@ -28,11 +28,11 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
     def read_aws_secret_key(self):
         settings_secret_key = getattr(Settings, 'AWS_SECRET_KEY', None)
         if settings_secret_key is None or settings_secret_key == '':
-            self.aws_secret_key = input("\n\tPlease enter AWS secret key: ")
+            self.aws_secret_key = input("\n\t%s" % K.AWS_SECRET_KEY_INPUT)
 
             if len(self.aws_secret_key) < 25:
                 self.show_step_inner_error("\n\t" + K.INVALID_KEY)
-                raise Exception("Invalid AWS Secret Key")
+                raise Exception(K.INVALID_KEY)
 
             Settings.set('AWS_SECRET_KEY', self.aws_secret_key)
         else:
@@ -41,7 +41,7 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
     def read_aws_region(self):
         settings_region = getattr(Settings, 'AWS_REGION', None)
         if settings_region is None or settings_region == '':
-            self.aws_region = input("\n\tPlease enter region: ")
+            self.aws_region = input("\n\t%s" % K.AWS_REGION_INPUT)
             Settings.set('AWS_REGION', self.aws_region)
         else:
             self.aws_region = settings_region

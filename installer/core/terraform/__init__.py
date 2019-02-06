@@ -97,6 +97,17 @@ class PyTerraform():
         self.write_current_status(CMD, K.DESTROY_STATUS_COMPLETED, K.TERRAFORM_DESTROY_COMPLETED)
         return response
 
+    def process_destroy_result(self, p):
+        response = Terraform().return_process_result(p)
+        CMD = Settings.get('running_command', "Terraform Destroy")
+
+        if response[0] == 1:
+            self.log_obj.write_debug_log(K.TERRAFORM_DESTROY_ERROR)
+            self.write_current_status(CMD, K.DESTROY_STATUS_ERROR, response[2])
+            raise Exception(response[2])
+
+        self.write_current_status(CMD, K.DESTROY_STATUS_COMPLETED, K.TERRAFORM_DESTROY_COMPLETED)
+
     def terraform_taint(self, resources):
         if exists_teraform_lock():
             raise Exception(K.ANOTHER_PROCESS_RUNNING)

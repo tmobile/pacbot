@@ -181,7 +181,7 @@ class MsgMixin(metaclass=ABCMeta):
 
     def get_duration(self, time_delta):
         duration = datetime(1, 1, 1) + time_delta
-        return "%sM %sS" % (duration.minute, duration.second)
+        return "%sm %ss" % (duration.minute, duration.second)
 
     def display_process_duration(self, start_time, end_time, step=True):
         time_delta = end_time - start_time
