@@ -109,8 +109,11 @@ public class TaggingRepositoryImpl implements TaggingRepository, Constants {
     public JsonArray getUntaggedIssuesByapplicationFromES(String assetGroup,
             String mandatoryTags, String searchText, int from, int size)
             throws DataException {
-        List<String> mandatoryTagsList = Arrays
+    	List<String> mandatoryTagsList = new ArrayList<>();
+    	if(!com.amazonaws.util.StringUtils.isNullOrEmpty(mandatoryTags)){
+         mandatoryTagsList = Arrays
                 .asList(mandatoryTags.split(","));
+    	}
         String responseJson = null;
         JsonParser jsonParser;
         JsonObject resultJson;
@@ -259,5 +262,15 @@ public class TaggingRepositoryImpl implements TaggingRepository, Constants {
             throw new DataException(e);
         }
         return responseJson;
+    }
+    
+    /* (non-Javadoc)
+     * @see com.tmobile.pacman.api.compliance.repository.TaggingRepository#getRuleParamsFromDbByPolicyId(java.lang.String)
+     */
+    public List<Map<String, Object>> getRuleParamsFromDbByPolicyId(
+            String policyId) throws DataException {
+        String ruleIdQuery = "SELECT rule.ruleParams FROM cf_RuleInstance rule LEFT JOIN cf_Policy policy ON rule.policyId = policy.policyId WHERE rule.status = 'ENABLED' AND policy.policyId ='"
+                + policyId + "' GROUP BY rule.policyId";
+        return rdsepository.getDataFromPacman(ruleIdQuery);
     }
 }

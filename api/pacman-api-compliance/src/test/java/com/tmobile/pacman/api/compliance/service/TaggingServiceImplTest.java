@@ -128,8 +128,8 @@ public class TaggingServiceImplTest {
         mainRuleParamsList.add(mainRuleParams);
         when(complainceRepository.getTagging(anyString(), anyString()))
                 .thenReturn(tagMap);
-        ReflectionTestUtils.setField(taggingServiceImpl, "mandatoryTags",
-                "Application,Environment");
+        when(repository.getRuleParamsFromDbByPolicyId(anyString())).thenReturn(
+                mainRuleParamsList);
         assertThat(taggingServiceImpl.getTaggingSummary("test"),
                 is(notNullValue())); 
           //test service Exception when it throws DataException

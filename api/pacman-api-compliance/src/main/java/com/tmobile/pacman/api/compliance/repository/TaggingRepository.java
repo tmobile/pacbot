@@ -93,4 +93,14 @@ public interface TaggingRepository {
      */
     public String getTaggingByApplication(String ag, String targetType)
             throws DataException;
+    
+    /**
+     * Gets the rule params from DB by policy id.
+     *
+     * @param policyId the policy id
+     * @return List<Map<String, Object>>
+     * @throws DataException the data exception
+     */
+    public List<Map<String, Object>> getRuleParamsFromDbByPolicyId(
+            String policyId) throws DataException;
 }
