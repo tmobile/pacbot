@@ -3,13 +3,15 @@ import os
 import sys
 
 
-# This is commonn configuration should be used in all setup
-SETUP_TITLE = "PACBOT"
-SETUP_DESCRIPTION = "INFRA SETUP AND DEPLOYMENT"
 PROVIDER = 'AWS'
 CURRENT_FILE_PATH = Path(os.path.join(os.path.abspath(os.path.dirname(__file__))))
 BASE_APP_DIR = str(CURRENT_FILE_PATH.parent)
 RESOURCES_FOLDER = 'resources'  # Provide only relative path
+
+# This is commonn configuration should be used in all setup
+SETUP_TITLE = "PACBOT"
+SETUP_DESCRIPTION = "INFRA SETUP AND DEPLOYMENT"
+LOADER_FILE_PATH = os.path.join(str(CURRENT_FILE_PATH), "loader")
 
 TOOLS_REQUIRED = {
     'Maven': "mvn --version",
@@ -94,7 +96,8 @@ PACBOT_LOGIN_CREDENTIALS = {
     'Admin': "admin@pacbot.org / pacman",
     'User': "user@pacbot.org / user"
 }
-LOADER_FILE_PATH = os.path.join(str(CURRENT_FILE_PATH), "loader")
+
+MAKE_ALB_INTERNAL = True
 
 try:
     from settings.local import *
