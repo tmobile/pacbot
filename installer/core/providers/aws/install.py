@@ -186,7 +186,7 @@ class Install(BaseAction):
             start_time = datetime.now()
             self.show_step_heading(K.TERRAFORM_APPLY_STARTED, write_log=False)
             py_terraform = PyTerraform()
-            output_count = output_count = 0
+            output_count = prev_output_count = 0
             total_resources_count = len(resources)
             while self.install_statuses.get('execution_finished') > self.current_install_status and self.terraform_thread.isAlive():
                 counter = False if counter else True
