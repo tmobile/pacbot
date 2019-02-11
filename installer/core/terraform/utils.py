@@ -59,3 +59,10 @@ def get_terraform_latest_output_file():
 
 def get_terraform_status_file():
     return os.path.join(Settings.OUTPUT_DIR, 'status.json')
+
+
+def get_resource_status_op_file(resource_id):
+    filename = "op." + resource_id + ".pyterr"
+    file_path = os.path.join(Settings.OUTPUT_DIR, filename)
+
+    return str(file_path)

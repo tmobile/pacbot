@@ -1,6 +1,6 @@
 from core.config import Settings
 from core.terraform.utils import get_terraform_resource_path
-from core.terraform.utils import get_formatted_resource_attr_value
+from core.terraform.utils import get_formatted_resource_attr_value, get_resource_status_op_file
 from core.log import SysLog
 from abc import ABCMeta
 import json
@@ -158,7 +158,7 @@ class BaseTerraformResource(metaclass=ABCMeta):
         if len(dependency_list) > 0:
             terraform_args_dict['depends_on'] = dependency_list
 
-        provisioners = self.get_provisioners()
+        provisioners = self.get_provisioners() + self.get_mandatory_provisioners()
         if provisioners:
             terraform_args_dict['provisioner'] = provisioners
 
@@ -201,6 +201,12 @@ class BaseTerraformResource(metaclass=ABCMeta):
     def set_default_available_arguments(self):
         # Set count argument to all resources and use it if requires. So making it optional
         self.available_args['count'] = {'required': False}
+
+    def get_provisioners(self):
+        return []
+
+    def get_mandatory_provisioners(self):
+        return []
 
     def pre_generate_terraform(self):
         pass
@@ -246,25 +252,22 @@ class TerraformResource(BaseTerraformResource, metaclass=ABCMeta):
 
         return outputs
 
-    def get_provisioners(self):
-        return self.get_mandatory_local_exec()
+    def get_mandatory_provisioners(self):
+        id_reference = self.get_output_attr('id')
+        resource_status_file = get_resource_status_op_file(self.get_resource_id())
 
-    def get_mandatory_local_exec(self):
-        local_execs = []
-        # local_execs = [{
-        #     'local-exec': {
-        #         'command': self._get_install_start_local_exec_command(),
-        #         'environment': {'action': "install", 'resource': 'gvvgvvg'}
-
-        #     }
-        #     # ,
-        #     # {
-        #     #     'command': _get_install_start_local_exec_command
-        #     #     'working_dir': Settings.TERRAFORM_STATUS_DIR,
-        #     #     'interpreter': "python"
-
-        #     # },
-        # }]
+        local_execs = [
+            {
+                'local-exec': {
+                    'command': "echo 0 > %s" % resource_status_file
+                },
+            },
+            {
+                'local-exec': {
+                    'command': "echo ${self.id} > %s" % resource_status_file
+                }
+            }
+        ]
 
         return local_execs
 
@@ -279,9 +282,6 @@ class TerraformData(BaseTerraformResource, metaclass=ABCMeta):
 
     def get_terraform_output_list(self):
         return None
-
-    def get_provisioners(self):
-        return []
 
 
 class BaseTerraformVariable(BaseTerraformResource):
