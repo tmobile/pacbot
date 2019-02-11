@@ -187,7 +187,7 @@ class Install(BaseAction):
             self.show_step_heading(K.TERRAFORM_APPLY_STARTED, write_log=False)
             py_terraform = PyTerraform()
             output_count = prev_output_count = 0
-            total_resources_count = len(resources)
+
             while self.install_statuses.get('execution_finished') > self.current_install_status and self.terraform_thread.isAlive():
                 counter = False if counter else True
                 duration = self.CYAN_ANSI + self.get_duration(datetime.now() - start_time) + self.END_ANSI
@@ -201,7 +201,7 @@ class Install(BaseAction):
                 else:
                     output_count = prev_output_count
 
-                message = message + ", Resources created: " + str(output_count) + "/" + str(total_resources_count)
+                message = message + ", Resources created: " + str(output_count) + "/" + str(self.total_resources_count)
                 self.show_progress_message(message, 1.5)
 
             self._render_step_trail_message(K.TERRAFORM_APPLY_COMPLETED, K.EXECUTED_WITH_ERROR, start_time)
