@@ -204,6 +204,7 @@ class Install(BaseAction):
                 message = message + ", Resources created: " + str(output_count) + "/" + str(self.total_resources_count)
                 self.show_progress_message(message, 1.5)
 
+            self.clear_status_dir_files()
             self._render_step_trail_message(K.TERRAFORM_APPLY_COMPLETED, K.EXECUTED_WITH_ERROR, start_time)
 
     def _render_step_trail_message(self, success_msg, error_msg, start_time):
