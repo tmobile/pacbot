@@ -61,8 +61,16 @@ def get_terraform_status_file():
     return os.path.join(Settings.OUTPUT_DIR, 'status.json')
 
 
-def get_resource_status_op_file(resource_id):
-    filename = "op." + resource_id + ".pyterr"
+def _get_resource_status_file_name(resource_id, status):
+    filename = "op." + resource_id + ".pyform." + str(status)
     file_path = os.path.join(Settings.OUTPUT_DIR, filename)
 
     return str(file_path)
+
+
+def get_resource_creating_status_op_file(resource_id):
+    return _get_resource_status_file_name(resource_id, '0')
+
+
+def get_resource_created_status_op_file(resource_id):
+    return _get_resource_status_file_name(resource_id, '1')

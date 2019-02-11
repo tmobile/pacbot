@@ -1,6 +1,6 @@
 from core.config import Settings
 from core.terraform.utils import get_terraform_resource_path
-from core.terraform.utils import get_formatted_resource_attr_value, get_resource_status_op_file
+from core.terraform.utils import get_formatted_resource_attr_value, get_resource_creating_status_op_file, get_resource_created_status_op_file
 from core.log import SysLog
 from abc import ABCMeta
 import json
@@ -254,17 +254,18 @@ class TerraformResource(BaseTerraformResource, metaclass=ABCMeta):
 
     def get_mandatory_provisioners(self):
         id_reference = self.get_output_attr('id')
-        resource_status_file = get_resource_status_op_file(self.get_resource_id())
+        resource_creating_status_file = get_resource_creating_status_op_file(self.get_resource_id())
+        resource_created_status_file = get_resource_created_status_op_file(self.get_resource_id())
 
         local_execs = [
             {
                 'local-exec': {
-                    'command': "echo 0 > %s" % resource_status_file
+                    'command': "echo 0 > %s" % resource_creating_status_file
                 },
             },
             {
                 'local-exec': {
-                    'command': "echo ${self.id} > %s" % resource_status_file
+                    'command': "echo ${self.id} > %s" % resource_created_status_file
                 }
             }
         ]
