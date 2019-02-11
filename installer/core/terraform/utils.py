@@ -63,7 +63,7 @@ def get_terraform_status_file():
 
 def _get_resource_status_file_name(resource_id, status):
     filename = "op." + resource_id + ".pyform." + str(status)
-    file_path = os.path.join(Settings.OUTPUT_DIR, filename)
+    file_path = os.path.join(Settings.OUTPUT_STATUS_DIR, filename)
 
     return str(file_path)
 
