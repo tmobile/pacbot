@@ -23,6 +23,11 @@ class BaseAction(MsgMixin):
             for f in files:
                 os.unlink(os.path.join(root, f))
 
+    def files_count_in_output_status_dir(self):
+        path, dirs, files = os.walk(Settings.OUTPUT_STATUS_DIR).__next__()
+
+        return len(files)
+
     def _create_terraform_provider_file(self):
         terraform_provider_file = get_terraform_provider_file()
         provider_script = {
