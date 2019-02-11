@@ -79,7 +79,6 @@ class Install(BaseAction):
         self._delete_terraform_provider_file()
         self.current_install_status = self.install_statuses.get('execution_finished')
 
-
     def generate_terraform_files(self, resources, terraform_with_targets):
         if exists_teraform_lock():
             self.warn_another_process_running()
@@ -191,17 +190,19 @@ class Install(BaseAction):
             while self.install_statuses.get('execution_finished') > self.current_install_status and self.terraform_thread.isAlive():
                 counter = False if counter else True
                 duration = self.CYAN_ANSI + self.get_duration(datetime.now() - start_time) + self.END_ANSI
-                message = "Time elapsed: %s" % duration
                 if counter:
                     try:
-                        output_count = len(py_terraform.load_terraform_output())
+                        # output_count = len(py_terraform.load_terraform_output())  # This uses terraform output command
+                        output_count = self.files_count_in_output_status_dir()
                         prev_output_count = output_count
                     except:
                         output_count = prev_output_count
                 else:
                     output_count = prev_output_count
 
-                message = message + ", Resources created: " + str(output_count) + "/" + str(self.total_resources_count)
+                duration_msg = ", Time elapsed: %s" % duration
+                count_msg = self.GREEN_ANSI + str(output_count) + "/" + str(self.total_resources_count) + self.END_ANSI
+                message = "Resources created: " + count_msg + duration_msg
                 self.show_progress_message(message, 1.5)
 
             self.clear_status_dir_files()
