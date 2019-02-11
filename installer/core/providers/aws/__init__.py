@@ -16,6 +16,12 @@ class BaseAction(MsgMixin):
     def __init__(self, input=None):
         self.input = input
         self.tf_outputs = PyTerraform.load_terraform_output_from_json_file()
+        self.clear_status_dir_files()
+
+    def clear_status_dir_files(self):
+        for root, dirs, files in os.walk(Settings.OUTPUT_STATUS_DIR):
+            for f in files:
+                os.unlink(os.path.join(root, f))
 
     def _create_terraform_provider_file(self):
         terraform_provider_file = get_terraform_provider_file()
