@@ -3,7 +3,7 @@ from core.config import Settings
 from core import constants as K
 from threading import Thread
 from core.terraform import PyTerraform
-from core.providers.aws.boto3.ecs import stop_all_services_in_a_cluster
+from core.providers.aws.boto3.ecs import stop_all_tasks_in_a_cluster
 import time
 import importlib
 import sys
@@ -50,7 +50,7 @@ class Redeploy(BaseCommand):
         )
 
     # def stop_ecs_tasks(self):
-    #     stop_all_services_in_a_cluster(
+    #     stop_all_tasks_in_a_cluster(
     #         Settings.RESOURCE_NAME_PREFIX,
     #         Settings.AWS_ACCESS_KEY,
     #         Settings.AWS_SECRET_KEY,

@@ -8,7 +8,6 @@ from resources.vpc.security_group import InfraSecurityGroupResource
 from resources.pacbot_app import alb_listener_rules as alr
 from resources.pacbot_app.build_ui_and_api import BuildUiAndApis
 from resources.pacbot_app.import_db import ImportDbSql
-from core.providers.aws.boto3.ecs import stop_all_services_in_a_cluster
 import os
 
 
