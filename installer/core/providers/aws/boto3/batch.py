@@ -26,14 +26,20 @@ def check_compute_env_exists(compute_env, access_key, secret_key, region):
         return False
 
 
+def get_job_definitions(job_def_name, access_key, secret_key, region):
+    response = client.describe_job_definitions(
+        jobDefinitionName=job_def_name,
+        status='ACTIVE'
+    )
+
+    return response['jobDefinitions']
+
+
 def check_job_definition_exists(job_def_name, access_key, secret_key, region):
     client = get_batch_client(access_key, secret_key, region)
     try:
-        response = client.describe_job_definitions(
-            jobDefinitionName=job_def_name,
-            status='ACTIVE'
-        )
-        return True if len(response['jobDefinitions']) else False
+        job_definitions = get_job_definitions(job_def_name, access_key, secret_key, region)
+        return True if len(job_definitions) else False
     except:
         return False
 
