@@ -9,8 +9,10 @@ import os
 
 
 class ReplaceSQLPlaceHolder(NullResource):
-    DEPENDS_ON = [MySQLDatabase, ESDomain]
     dest_file = os.path.join(get_terraform_scripts_and_files_dir(), 'DB_With_Values.sql')
+    triggers = {'version': "1.1"}
+
+    DEPENDS_ON = [MySQLDatabase, ESDomain]
 
     def get_provisioners(self):
         script = os.path.join(get_terraform_scripts_dir(), 'sql_replace_placeholder.py')
@@ -41,6 +43,8 @@ class ReplaceSQLPlaceHolder(NullResource):
 
 
 class ImportDbSql(NullResource):
+    triggers = {'version': "1.1"}
+
     DEPENDS_ON = [MySQLDatabase, ReplaceSQLPlaceHolder]
 
     def get_provisioners(self):
