@@ -18,7 +18,7 @@
             <div class="loader-ghost"></div>
         </div>
         <div class="sidemenu">
-            <img class='absolute close-button' src='../assets/png/delete.png'>
+            <img class='absolute close-button' (click)='closeSidemenu($event)' src='../assets/png/delete.png'>
             <div class="space1"></div>
             <div class="form">
                 <h2 *ngIf="content.login.heading">{{content.login.heading}}</h2>
