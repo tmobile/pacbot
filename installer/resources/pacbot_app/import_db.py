@@ -24,10 +24,10 @@ class ReplaceSQLPlaceHolder(NullResource):
                 'local-exec': {
                     'command': script,
                     'environment': {
-                        'AWS_REGION': AwsRegion.get_output_attr('name'),
-                        'AWS_ACCOUNT_ID': AwsAccount.get_output_attr('account_id'),
-                        'ES_HOST': ESDomain.get_http_url(),
-                        'ES_PORT': ESDomain.get_es_port(),
+                        'ENV_region': AwsRegion.get_output_attr('name'),
+                        'ENV_account': AwsAccount.get_output_attr('account_id'),
+                        'ENV_eshost': ESDomain.get_http_url(),
+                        'ENV_esport': ESDomain.get_es_port(),
                         'SQL_FILE_PATH': self.dest_file
                     },
                     'interpreter': [Settings.PYTHON_INTERPRETER]
