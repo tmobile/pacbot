@@ -10,7 +10,16 @@ import sys
 
 
 class Executor(MsgMixin):
+    """
+    This executes the the command which is provided in the CLI
+    """
     def execute(self, command_class_instance):
+        """
+        Initialize and execute the command using the command class object
+
+        Args:
+            command_class_instance (Command obj): This object is decides the logic behind running the command
+        """
         self.initialize()
         self.execute_command(command_class_instance)
 
@@ -18,9 +27,21 @@ class Executor(MsgMixin):
         pass
 
     def execute_command(self, command_class_instance):
+        """
+        Execute the command using the command class object
+
+        Args:
+            command_class_instance (Command obj): This object is decides the logic behind running the command
+        """
         command_class_instance.execute(self.provider)
 
     def do_pre_requisite_check(self):
+        """
+        Before the execution starts, it checks for the pre-requisite. It would return either true or false
+
+        Returns:
+            Boolean: If the pre-requisite check passes then returns True else False
+        """
         if self.is_another_process_running():
             return False
 
@@ -32,6 +53,12 @@ class Executor(MsgMixin):
         return False
 
     def is_another_process_running(self):
+        """
+        This method checks whether another Command is running currently
+
+        Returns:
+            Boolean: If another process is running then it returns True else False
+        """
         if exists_teraform_lock():
             self.warn_another_process_running()
             return True
@@ -39,6 +66,12 @@ class Executor(MsgMixin):
         return False
 
     def _check_tools_are_available(self):
+        """
+        Based on the settings variable TOOLS_REQUIRED, this method do validate all the tools
+
+        Returns:
+            Boolean: Return True if all tools are available else False
+        """
         self.show_step_heading(K.TOOLS_CHECK_STARTED)
         tools_required = Settings.TOOLS_REQUIRED
         tools_available = True
@@ -59,6 +92,12 @@ class Executor(MsgMixin):
         return True
 
     def _check_python_packages_are_available(self):
+        """
+        Based on the settings variable PYTHON_PACKAGES_REQUIRED, this method do validate all the python packages
+
+        Returns:
+            Boolean: Return True if all python packages are available else False
+        """
         self.show_step_heading(K.PIP_CHECK_STARTED)
         error = False
         for item in Settings.PYTHON_PACKAGES_REQUIRED:
@@ -78,6 +117,12 @@ class Executor(MsgMixin):
         return True
 
     def _module_available(self, item):
+        """
+        Based on the settings variable PYTHON_PACKAGES_REQUIRED, this method do validate all the python modules inside a package
+
+        Returns:
+            Boolean: Return True if all python modules are available else False
+        """
         module_name = item
         try:
             if type(item) is tuple:
@@ -94,9 +139,22 @@ class Executor(MsgMixin):
 
 
 class Kernel(Command, Executor):
+    """
+    Kernel module where the actual execution begins. Here system validation is done and settings/configurations are loaded.
+    Starts running command if everything is successful
+
+    Attributes:
+        provider (Provider obj): The provider object which can be AWS, Azure etc
+    """
     errors = []
 
     def __init__(self, config_path):
+        """
+        Constructor for the Kernel class, which do system validations and initialises Object attributes
+
+        Args:
+            config_path (str): This is the path to the main configuration/settings file
+        """
         self.load_settings(config_path)
         provider_name = Settings.get('PROVIDER', None)
         self.provider = Provider(provider_name)
@@ -104,10 +162,17 @@ class Kernel(Command, Executor):
         super().__init__()
 
     def do_system_validation(self):
+        """Here the check for valid provider is done and passes the check if it is validelse exit the execution"""
         if not self.provider.valid:
             self.exit_with_provider_not_found()
 
     def run(self, sys_args):
+        """
+        Actual execution of the command is started from here
+
+        Args:
+            sys_args (dict): CLI Arguments supplied to the command
+        """
         self.show_loading_messsage()
         Settings.set('running_command', ' '.join(sys_args))
         try:
@@ -120,4 +185,10 @@ class Kernel(Command, Executor):
             SysLog().write_error_log(str(e))
 
     def load_settings(self, config_path):
+        """
+        Load all the main and local configurations into the system
+
+        Args:
+            config_path (str): This is the path to the main configuration/settings file
+        """
         Settings.load_setings(config_path)
