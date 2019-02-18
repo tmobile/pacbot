@@ -106,15 +106,12 @@ export class IssuesTrendHistoryComponent implements OnInit, OnDestroy {
             if (this.issuesSubscription) {
                 this.issuesSubscription.unsubscribe();
             }
-            const today = new Date();
-            let fromDay;
             const url = environment.issueOverviewTrend.url;
             const method = environment.issueOverviewTrend.method;
-            if (today.getMonth() === 0) {
-                fromDay = (today.getFullYear() - 1) + '-' + 12 + '-' + today.getDate();
-            } else {
-                fromDay = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
-            }
+            const prevDate = new Date();
+            prevDate.setMonth(prevDate.getMonth() - 1);
+            let fromDay;
+            fromDay = prevDate.toISOString().split('T')[0];
 
             const payload = {
                 'ag': this.selectedAssetGroup,
