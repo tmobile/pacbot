@@ -111,7 +111,9 @@ export class IssuesTrendHistoryComponent implements OnInit, OnDestroy {
             const url = environment.issueOverviewTrend.url;
             const method = environment.issueOverviewTrend.method;
             if (today.getMonth() === 0) {
-                fromDay = (today.getFullYear() - 1) + '-' + 12 + '-' + today.getDate();
+                today.setYear(today.FullYear() - 1);
+                today.setMonth(11);
+                fromDay = today.toISOString().substring(0, 10);
             } else {
                 today.setMonth(today.getMonth() - 1);
                 fromDay = today.toISOString().substring(0, 10);
