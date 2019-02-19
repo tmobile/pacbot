@@ -104,9 +104,9 @@ export class PolicyTrendComponent implements OnInit, OnChanges, OnDestroy {
       const today = new Date();
       let fromDay;
       if (today.getMonth() === 0) {
-            today.setYear(today.FullYear() - 1);
-            today.setMonth(11);
-            fromDay = today.toISOString().substring(0, 10);
+        today.setFullYear(today.getFullYear() - 1);
+        today.setMonth(11);
+        fromDay = today.toISOString().substring(0, 10);
       } else {
           today.setMonth(today.getMonth() - 1);
           fromDay = today.toISOString().substring(0, 10);
