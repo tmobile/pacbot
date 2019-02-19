@@ -73,6 +73,8 @@ class Destroy(BaseAction):
 
         # May be timeout causes first destroy to be a failure hence attempt as many times as the value in the setting
         for attempt in range(Settings.DESTROY_NUM_ATTEMPTS):
+            self.executed_with_error = False
+            self.exception = None
             try:
                 PyTerraform().terraform_destroy(destroy_resources)
                 self.run_post_destoy(resources)
