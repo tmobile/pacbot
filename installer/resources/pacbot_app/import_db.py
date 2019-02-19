@@ -4,6 +4,17 @@ from core.config import Settings
 from resources.datastore.db import MySQLDatabase
 from resources.datastore.es import ESDomain
 from resources.data.aws_info import AwsAccount, AwsRegion
+from resources.pacbot_app.cloudwatch_log_groups import UiCloudWatchLogGroup, ApiCloudWatchLogGroup
+from resources.pacbot_app.ecr import APIEcrRepository, UIEcrRepository
+from resources.data.aws_info import AwsRegion
+from resources.pacbot_app.alb import ApplicationLoadBalancer
+from resources.datastore.es import ESDomain
+from resources.datastore.redshift import RedshiftCluster
+from resources.iam.ecs_role import ECSRole
+from resources.lambda_submit.function import SubmitJobLambdaFunction
+from resources.lambda_rule_engine.function import RuleEngineLambdaFunction
+from resources.s3.bucket import BucketStorage
+
 from shutil import copy2
 import os
 
