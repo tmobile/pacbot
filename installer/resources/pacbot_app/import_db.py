@@ -24,11 +24,56 @@ class ReplaceSQLPlaceHolder(NullResource):
                 'local-exec': {
                     'command': script,
                     'environment': {
+                        'SQL_FILE_PATH': self.dest_file,
                         'ENV_region': AwsRegion.get_output_attr('name'),
                         'ENV_account': AwsAccount.get_output_attr('account_id'),
                         'ENV_eshost': ESDomain.get_http_url(),
                         'ENV_esport': ESDomain.get_es_port(),
-                        'SQL_FILE_PATH': self.dest_file
+                        'ENV_LOGGING_ES_HOST_NAME': ESDomain.get_output_attr('endpoint'),
+                        'ENV_LOGGING_ES_PORT': str(ESDomain.get_es_port()),
+                        'ENV_ES_HOST_NAME': ESDomain.get_output_attr('endpoint'),
+                        'ENV_ES_PORT': str(ESDomain.get_es_port()),
+                        'ENV_ES_CLUSTER_NAME': ESDomain.get_input_attr('domain_name'),
+                        'ENV_ES_PORT_ADMIN': ESDomain.get_input_attr('domain_name'),  ## TODO: this is not actual value,
+                        'ENV_ES_HEIMDALL_HOST_NAME': ESDomain.get_output_attr('endpoint'),
+                        'ENV_ES_HEIMDALL_PORT': str(ESDomain.get_es_port()),
+                        'ENV_ES_HEIMDALL_CLUSTER_NAME': ESDomain.get_input_attr('domain_name'),  ## TODO: this is not actual value,
+                        'ENV_ES_HEIMDALL_PORT_ADMIN': ESDomain.get_input_attr('domain_name'),  ## TODO: this is not actual value,
+                        'ENV_ES_UPDATE_HOST': ESDomain.get_output_attr('endpoint'),
+                        'ENV_ES_UPDATE_PORT': str(ESDomain.get_es_port()),
+                        'ENV_ES_UPDATE_CLUSTER_NAME': ESDomain.get_input_attr('domain_name'),
+                        'ENV_LDAP_AD_PROVIDER_URL': "http://localhost", ## TODO: this is not actual value
+                        'ENV_LDAP_AD_DOMAIN': "http://localhost", ## TODO: this is not actual value
+                        'ENV_LDAP_AD_SEARCH_BASE': "http://localhost", ## TODO: this is not actual value
+                        'ENV_LDAP_NT_PROVIDER_URL': "http://localhost", ## TODO: this is not actual value
+                        'ENV_LDAP_NT_DOMAIN': "http://localhost", ## TODO: this is not actual value
+                        'ENV_LDAP_NT_SEARCH_BASE': "http://localhost", ## TODO: this is not actual value
+                        'ENV_REDSHIFT_URL': RedshiftCluster.get_redshift_url(),
+                        'ENV_REDSHIFT_USER_NAME': RedshiftCluster.get_input_attr('master_username'),
+                        'ENV_REDSHIFT_PASSWORD': RedshiftCluster.get_input_attr('master_password'),
+                        'ENV_PACMAN_HOST_NAME': ApplicationLoadBalancer.get_http_url(),
+                        'ENV_RDS_URL': MySQLDatabase.get_rds_db_url(),
+                        'ENV_RDS_USERNAME': MySQLDatabase.get_input_attr('username'),
+                        'ENV_RDS_PASSWORD': MySQLDatabase.get_input_attr('password'),
+                        'ENV_JOB_BUCKET_REGION': AwsRegion.get_output_attr('name'),
+                        'ENV_RULE_JOB_BUCKET_NAME': BucketStorage.get_output_attr('bucket'),
+                        'ENV_JOB_LAMBDA_REGION': AwsRegion.get_output_attr('name'),
+                        'ENV_JOB_FUNCTION_NAME': SubmitJobLambdaFunction.get_input_attr('function_name'),
+                        'ENV_JOB_FUNCTION_ARN': SubmitJobLambdaFunction.get_output_attr('arn'),
+                        'ENV_RULE_BUCKET_REGION': AwsRegion.get_output_attr('name'),
+                        'ENV_RULE_JOB_BUCKET_NAME': BucketStorage.get_output_attr('bucket'),
+                        'ENV_RULE_LAMBDA_REGION': AwsRegion.get_output_attr('name'),
+                        'ENV_RULE_FUNCTION_NAME': RuleEngineLambdaFunction.get_input_attr('function_name'),
+                        'ENV_RULE_FUNCTION_ARN': RuleEngineLambdaFunction.get_output_attr('arn'),
+                        'ENV_CLOUD_INSIGHTS_TOKEN_URL': "http://localhost",
+                        'ENV_CLOUD_INSIGHTS_COST_URL': "http://localhost",
+                        'ENV_SVC_CORP_USER_ID': "testid",
+                        'ENV_SVC_CORP_PASSWORD': "password",
+                        'ENV_CERTIFICATE_FEATURE_ENABLED': "false",
+                        'ENV_PATCHING_FEATURE_ENABLED': "false",
+                        'ENV_VULNERABILITY_FEATURE_ENABLED': "false",
+                        'ENV_MAIL_SERVER': "http://localhost", ## TODO: this is not actual value
+                        'ENV_PACMAN_S3': BucketStorage.get_output_attr('bucket')  ## TODO: this is not actual value
                     },
                     'interpreter': [Settings.PYTHON_INTERPRETER]
                 }
