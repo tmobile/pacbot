@@ -3,13 +3,13 @@ from core.terraform.utils import get_terraform_scripts_and_files_dir, get_terraf
 from core.config import Settings
 from resources.datastore.db import MySQLDatabase
 from resources.datastore.es import ESDomain
+from resources.datastore.redshift import RedshiftCluster
 from resources.data.aws_info import AwsAccount, AwsRegion
 from resources.pacbot_app.cloudwatch_log_groups import UiCloudWatchLogGroup, ApiCloudWatchLogGroup
 from resources.pacbot_app.ecr import APIEcrRepository, UIEcrRepository
 from resources.data.aws_info import AwsRegion
 from resources.pacbot_app.alb import ApplicationLoadBalancer
 from resources.datastore.es import ESDomain
-from resources.datastore.redshift import RedshiftCluster
 from resources.iam.ecs_role import ECSRole
 from resources.lambda_submit.function import SubmitJobLambdaFunction
 from resources.lambda_rule_engine.function import RuleEngineLambdaFunction
@@ -45,20 +45,20 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_ES_HOST_NAME': ESDomain.get_output_attr('endpoint'),
                         'ENV_ES_PORT': str(ESDomain.get_es_port()),
                         'ENV_ES_CLUSTER_NAME': ESDomain.get_input_attr('domain_name'),
-                        'ENV_ES_PORT_ADMIN': ESDomain.get_input_attr('domain_name'),  ## TODO: this is not actual value,
+                        'ENV_ES_PORT_ADMIN': str(ESDomain.get_es_port()),  ## TODO: this is not actual value,
                         'ENV_ES_HEIMDALL_HOST_NAME': ESDomain.get_output_attr('endpoint'),
                         'ENV_ES_HEIMDALL_PORT': str(ESDomain.get_es_port()),
                         'ENV_ES_HEIMDALL_CLUSTER_NAME': ESDomain.get_input_attr('domain_name'),  ## TODO: this is not actual value,
-                        'ENV_ES_HEIMDALL_PORT_ADMIN': ESDomain.get_input_attr('domain_name'),  ## TODO: this is not actual value,
+                        'ENV_ES_HEIMDALL_PORT_ADMIN': str(ESDomain.get_es_port()),  ## TODO: this is not actual value,
                         'ENV_ES_UPDATE_HOST': ESDomain.get_output_attr('endpoint'),
                         'ENV_ES_UPDATE_PORT': str(ESDomain.get_es_port()),
                         'ENV_ES_UPDATE_CLUSTER_NAME': ESDomain.get_input_attr('domain_name'),
                         'ENV_LDAP_AD_PROVIDER_URL': "http://localhost", ## TODO: this is not actual value
                         'ENV_LDAP_AD_DOMAIN': "http://localhost", ## TODO: this is not actual value
-                        'ENV_LDAP_AD_SEARCH_BASE': "http://localhost", ## TODO: this is not actual value
+                        'ENV_LDAP_AD_SEARCH_BASE': "", ## TODO: this is not actual value
                         'ENV_LDAP_NT_PROVIDER_URL': "http://localhost", ## TODO: this is not actual value
-                        'ENV_LDAP_NT_DOMAIN': "http://localhost", ## TODO: this is not actual value
-                        'ENV_LDAP_NT_SEARCH_BASE': "http://localhost", ## TODO: this is not actual value
+                        'ENV_LDAP_NT_DOMAIN': "localhost", ## TODO: this is not actual value
+                        'ENV_LDAP_NT_SEARCH_BASE': "", ## TODO: this is not actual value
                         'ENV_REDSHIFT_URL': RedshiftCluster.get_redshift_url(),
                         'ENV_REDSHIFT_USER_NAME': RedshiftCluster.get_input_attr('master_username'),
                         'ENV_REDSHIFT_PASSWORD': RedshiftCluster.get_input_attr('master_password'),
@@ -84,7 +84,7 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_PATCHING_FEATURE_ENABLED': "false",
                         'ENV_VULNERABILITY_FEATURE_ENABLED': "false",
                         'ENV_MAIL_SERVER': "http://localhost", ## TODO: this is not actual value
-                        'ENV_PACMAN_S3': BucketStorage.get_output_attr('bucket')  ## TODO: this is not actual value
+                        'ENV_PACMAN_S3': 'pacman-email-templates'  ## TODO: this is not actual value
                     },
                     'interpreter': [Settings.PYTHON_INTERPRETER]
                 }
