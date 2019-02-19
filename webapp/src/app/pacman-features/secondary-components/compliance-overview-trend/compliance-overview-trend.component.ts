@@ -134,7 +134,8 @@ export class ComplianceOverviewTrendComponent implements OnInit, OnDestroy, Afte
           if (today.getMonth() === 0) {
               fromDay = (today.getFullYear() - 1) + '-' + 12 + '-' + today.getDate();
           } else {
-              fromDay = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
+              today.setMonth(today.getMonth() - 1);
+              fromDay = today.toISOString().substring(0, 10);
           }
 
           const payload = {
