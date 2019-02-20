@@ -23,6 +23,46 @@ SET @region='$region';
 SET @account='$account';
 SET @eshost='$eshost';
 SET @esport='$esport';
+SET @LOGGING_ES_HOST_NAME='$LOGGING_ES_HOST_NAME';
+SET @LOGGING_ES_PORT='$LOGGING_ES_PORT';
+SET @ES_HOST_NAME='$ES_HOST_NAME';
+SET @ES_PORT='$ES_PORT';
+SET @ES_CLUSTER_NAME='$ES_CLUSTER_NAME';
+SET @ES_PORT_ADMIN='$ES_PORT_ADMIN';
+SET @ES_HEIMDALL_HOST_NAME='$ES_HEIMDALL_HOST_NAME';
+SET @ES_HEIMDALL_PORT='$ES_HEIMDALL_PORT';
+SET @ES_HEIMDALL_CLUSTER_NAME='$ES_HEIMDALL_CLUSTER_NAME';
+SET @ES_HEIMDALL_PORT_ADMIN='$ES_HEIMDALL_PORT_ADMIN';
+SET @ES_UPDATE_HOST='$ES_UPDATE_HOST';
+SET @ES_UPDATE_PORT='$ES_UPDATE_PORT';
+SET @ES_UPDATE_CLUSTER_NAME='$ES_UPDATE_CLUSTER_NAME';
+SET @REDSHIFT_URL='$REDSHIFT_URL';
+SET @REDSHIFT_USER_NAME='$REDSHIFT_USER_NAME';
+SET @REDSHIFT_PASSWORD='$REDSHIFT_PASSWORD';
+SET @PACMAN_HOST_NAME='$PACMAN_HOST_NAME';
+SET @RDS_URL='$RDS_URL';
+SET @RDS_USERNAME='$RDS_USERNAME';
+SET @RDS_PASSWORD='$RDS_PASSWORD';
+SET @JOB_BUCKET_REGION='$JOB_BUCKET_REGION';
+SET @RULE_JOB_BUCKET_NAME='$RULE_JOB_BUCKET_NAME';
+SET @JOB_LAMBDA_REGION='$JOB_LAMBDA_REGION';
+SET @JOB_FUNCTION_NAME='$JOB_FUNCTION_NAME';
+SET @JOB_FUNCTION_ARN='$JOB_FUNCTION_ARN';
+SET @RULE_BUCKET_REGION='$RULE_BUCKET_REGION';
+SET @RULE_JOB_BUCKET_NAME='$RULE_JOB_BUCKET_NAME';
+SET @RULE_LAMBDA_REGION='$RULE_LAMBDA_REGION';
+SET @RULE_FUNCTION_NAME='$RULE_FUNCTION_NAME';
+SET @RULE_FUNCTION_ARN='$RULE_FUNCTION_ARN';
+SET @CLOUD_INSIGHTS_TOKEN_URL='$CLOUD_INSIGHTS_TOKEN_URL';
+SET @CLOUD_INSIGHTS_COST_URL='$CLOUD_INSIGHTS_COST_URL';
+SET @SVC_CORP_USER_ID='$SVC_CORP_USER_ID';
+SET @SVC_CORP_PASSWORD='$SVC_CORP_PASSWORD';
+SET @CERTIFICATE_FEATURE_ENABLED='$CERTIFICATE_FEATURE_ENABLED';
+SET @PATCHING_FEATURE_ENABLED='$PATCHING_FEATURE_ENABLED';
+SET @VULNERABILITY_FEATURE_ENABLED='$VULNERABILITY_FEATURE_ENABLED';
+SET @MAIL_SERVER='$MAIL_SERVER';
+SET @PACMAN_S3='$PACMAN_S3';
+
 
 DROP TABLE IF EXISTS `OmniSearch_Config`;
 
@@ -1292,3 +1332,349 @@ INSERT INTO pac_v2_ui_download_filters (serviceId,serviceName,serviceEndpoint) V
  (12,'PullRequestAssetsByState','/api/devstandards/v1/pullrequests/asset/bystates'),
  (13,'PullRequestAsstesByAge','/api/devstandards/v1/pullrequests/assets/openstate'),
  (14,'ApplicationOrRepositoryDistribution','/api/devstandards/v1/repositories/assets/repositoryorapplicationdistribution');
+
+ 
+ 
+ DROP TABLE IF EXISTS `pac_config_relation`;
+ 
+CREATE TABLE `pac_config_relation` (
+  `application` varchar(2048) COLLATE utf8_bin NOT NULL,
+  `parent` varchar(2048) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+DROP TABLE IF EXISTS `pac_config_key_metadata`;
+
+CREATE TABLE `pac_config_key_metadata` (
+  `cfkey` varchar(200) COLLATE utf8_bin NOT NULL,
+  `description` varchar(200) COLLATE utf8_bin NOT NULL,
+  UNIQUE KEY `cfkey` (`cfkey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+DROP TABLE IF EXISTS `pac_config_properties`;
+
+CREATE TABLE `pac_config_properties` (
+  `cfkey` text COLLATE utf8_bin,
+  `value` text COLLATE utf8_bin,
+  `application` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+  `profile` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+  `label` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+  `createdBy` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+  `createdDate` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `modifiedBy` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+  `modifiedDate` varchar(20) COLLATE utf8_bin DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('application','root');
+INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('batch','application');
+INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('api','application');
+INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('compliance-service','api');
+INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('asset-service','api');
+INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('notification-service','api');
+INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('statistics-service','api');
+INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('auth-service','api');
+INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('dev-standards-service','api');
+INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('admin-service','api');
+INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('magenta-skill','api');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('admin.api-role','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('admin.push.notification.pollinterval.milliseconds','description');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[0].name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[0].url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[0].version','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[1].name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[1].url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[1].version','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[2].name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[2].url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[2].version','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[3].name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[3].url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[3].version','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[4].name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[4].url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[4].version','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[5].name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[5].url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[5].version','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[6].name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[6].url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[6].version','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('application.cors.allowed.domains','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('auth.active','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('aws.access-key','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('aws.secret-key','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.activedirectory.client-id','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.activedirectory.client-secret','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.activedirectory.scope','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.activedirectory.scopeDesc','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.activedirectory.state','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.activedirectory.tenant-id','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.authorizeEndpoint','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.id-token.claims.email','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.id-token.claims.first-name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.id-token.claims.last-name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.id-token.claims.user-id','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.id-token.claims.user-name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.issuer','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('azure.public-key','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('base.account','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('branch.maxBranchAge','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('cloudinsights.corp-password','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('cloudinsights.corp-user-id','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('cloudinsights.costurl','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('cloudinsights.tokenurl','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('cron.frequency.weekly-report-sync-trigger','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('date.format','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('days-range.age','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('discovery.role','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.admin-host','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.clusterName','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.clusterName-heimdall','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.dev-ingest-host','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.dev-ingest-port','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.host','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.host-heimdall','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.port','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.port-admin','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.port-admin-heimdall','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.port-heimdall','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.update-clusterName','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.update-host','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('elastic-search.update-port','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('endpoints.refresh.sensitive','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('features.certificate.enabled','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('features.patching.enabled','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('features.vulnerability.enabled','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('formats.date','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('hystrix.shareSecurityContext','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('job.lambda.action-disabled','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('job.lambda.action-enabled','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('job.lambda.function-arn','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('job.lambda.function-name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('job.lambda.principal','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('job.lambda.target-id','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('job.s3.bucket-name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.ad.domain','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.ad.provider-url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.ad.search-base','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.baseDn','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.connectionTimeout','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.domain','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.hostList','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.naming.authentication','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.naming.context-factory','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.nt.domain','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.nt.provider-url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.nt.search-base','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.port','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('ldap.responseTimeout','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('logging.config','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('logging.consoleLoggingLevel','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('logging.esHost','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('logging.esLoggingLevel','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('logging.esPort','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('magenta.cache.name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('magenta.default-background','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('magenta.error-background','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('magenta.goodbye-background','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('magenta.goodbye-greeting','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('magenta.welcome-background','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('magenta.welcome-greeting','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('management.endpoints.web.exposure.include','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('management.health.rabbit.enabled','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('management.security.enabled','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('monitoring.contextRootNames','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('pacman.api.oauth2.client-id','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('pacman.api.oauth2.client-secret','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('pacman.service-password','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('pacman.service-user','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('pacman.url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('projections.assetgroups','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('projections.targetTypes','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('redshift.password','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('redshift.url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('redshift.userName','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('remind.cron','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('remind.email.subject','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('remind.email.text','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('rule-engine.invoke.url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('rule.lambda.action-disabled','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('rule.lambda.action-enabled','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('rule.lambda.function-arn','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('rule.lambda.function-name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('rule.lambda.principal','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('rule.lambda.target-id','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('rule.s3.bucket-name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('security.basic.enabled','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('security.oauth2.resource.user-info-uri','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('server.context-path','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('server.contextPath','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('server.servlet.context-path','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('service.dns.name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('service.url.admin','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('service.url.asset','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('service.url.auth','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('service.url.compliance','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('service.url.devstandards','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('service.url.pac_auth','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('service.url.statistics','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.boot.admin.client.instance.health-url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.boot.admin.client.instance.management-url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.boot.admin.client.instance.service-url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.boot.admin.client.password','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.boot.admin.client.url[0]','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.boot.admin.client.username','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.cache.cache-names','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.cache.caffeine.spec','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.cloud.bus.enabled','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.datasource.driver-class-name','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.datasource.password','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.datasource.url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.datasource.username','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.jpa.hibernate.naming.physical-strategy','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.defaultEncoding','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.host','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.port','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.protocol','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.sleuth.sampler.probability','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.zipkin.baseUrl','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.zipkin.sender.type','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('swagger.auth.whitelist','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('tagging.mandatoryTags','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('target-types.categories','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('template.digest-mail.url','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('time.zone','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('vulnerability.summary.severity','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('vulnerability.types','Description PlaceHolder');
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.config','classpath:spring-logback.xml','application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.esLoggingLevel','WARN','application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.consoleLoggingLevel','INFO','application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.esHost',concat(@LOGGING_ES_HOST_NAME,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.esPort',concat(@LOGGING_ES_PORT,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.host',concat(@ES_HOST_NAME,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.port',concat(@ES_PORT,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.clusterName',concat(@ES_CLUSTER_NAME,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.port-admin',concat(@ES_PORT_ADMIN,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.host-heimdall',concat(@ES_HEIMDALL_HOST_NAME,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.port-heimdall',concat(@ES_HEIMDALL_PORT,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.clusterName-heimdall',concat(@ES_HEIMDALL_CLUSTER_NAME,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.port-admin-heimdall',concat(@ES_HEIMDALL_PORT_ADMIN,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.update-host',concat(@ES_UPDATE_HOST,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.update-port',concat(@ES_UPDATE_PORT,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.update-clusterName',concat(@ES_UPDATE_CLUSTER_NAME,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('formats.date','yyyy-MM-dd\'T\'HH:mm:ss.SSSZ','application','prd','latest',NULL,NULL,NULL,NULL);
+
+
+
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('ldap.naming.context-factory','com.sun.jndi.ldap.LdapCtxFactory','application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('ldap.naming.authentication','simple','application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('redshift.url',concat(@REDSHIFT_URL,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('redshift.userName',concat(@REDSHIFT_USER_NAME,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('redshift.password',concat(@REDSHIFT_PASSWORD,''),'application','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('service.dns.name',concat(@PACMAN_HOST_NAME,''),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('service.url.compliance',concat(@PACMAN_HOST_NAME,'/api/compliance'),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('service.url.asset',concat(@PACMAN_HOST_NAME,'/api/asset'),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('service.url.statistics',concat(@PACMAN_HOST_NAME,'/api/statistics'),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('service.url.devstandards',concat(@PACMAN_HOST_NAME,'/api/devstandards'),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('service.url.auth',concat(@PACMAN_HOST_NAME,'/api/auth'),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('service.url.admin',concat(@PACMAN_HOST_NAME,'/api/admin'),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('endpoints.refresh.sensitive','false','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('hystrix.command.default.execution.isolation.thread.timeoutInMilliseconds','100000','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('application.cors.allowed.domains','all','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('monitoring.contextRootNames','asset,compliance,statistics,devstandards,auth,admin','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('auth.active','db','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.cache.cache-names','trends,compliance,assets,trendsvuln','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.cache.caffeine.spec','maximumSize=500, expireAfterWrite=6h','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.datasource.url',concat(@RDS_URL,''),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.datasource.username',concat(@RDS_USERNAME,''),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.datasource.password',concat(@RDS_PASSWORD,''),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.datasource.driver-class-name','com.mysql.jdbc.Driver','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.cloud.bus.enabled','false','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[0].name','Admin Service','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[0].url',concat(@PACMAN_HOST_NAME,''),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[0].version','2','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[1].name','Auth Service','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[1].url',concat(@PACMAN_HOST_NAME,''),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[1].version','2','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[2].name','Asset Service','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[2].url',concat(@PACMAN_HOST_NAME,''),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[2].version','2','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[3].name','Notification Service','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[3].url',concat(@PACMAN_HOST_NAME,''),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[3].version','2','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[4].name','Compliance Service','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[4].url',concat(@PACMAN_HOST_NAME,''),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[4].version','2','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[5].name','Statistics Service','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[5].url',concat(@PACMAN_HOST_NAME,''),'api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[5].version','2','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('tagging.mandatoryTags','Application,Environment','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('vulnerability.types','ec2,onpremserver','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('vulnerability.summary.severity','5','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('swagger.auth.whitelist','/configuration/security,/swagger-ui.html,/api.html,/webjars/**,/user,/public/**,/api.html,/css/styles.js,/js/swagger.js,/js/swagger-ui.js,/js/swagger-oauth.js,/images/pacman_logo.svg,/images/favicon-32x32.png,/images/favicon-16x16.png,/images/favicon.ico,/docs/v1/api.html,/v2/api-docs/**,/v2/swagger.json,/webjars/springfox-swagger-ui/css/**,/webjars/springfox-swagger-ui/js/**,/configuration/ui,/swagger-resources/**,/configuration/**,/imgs/**,/css/**,/css/font/**,/proxy*/**,/hystrix/monitor/**,/hystrix/**/images/pacman_logo.svg,/images/favicon-32x32.png,/images/favicon-16x16.png,/images/favicon.ico,/docs/v1/api.html,/v2/api-docs/**,/v2/swagger.json,/webjars/springfox-swagger-ui/css/**,/webjars/springfox-swagger-ui/js/**,/configuration/ui,/swagger-resources/**,/configuration/**,/imgs/**,/css/**,/css/font/**,/proxy*/**,/hystrix/monitor/**,/hystrix/**,/refresh','api','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('server.servlet.context-path','/api/admin','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('aws.access-key','','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('aws.secret-key','','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('admin.api-role','ROLE_ADMIN2, ROLE_ADMIN','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('job.s3.bucket-region',concat(@JOB_BUCKET_REGION,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('job.s3.bucket-name',concat(@RULE_JOB_BUCKET_NAME,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('job.lambda.region',concat(@JOB_LAMBDA_REGION,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('job.lambda.target-id','jobTargetId','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('job.lambda.function-name',concat(@JOB_FUNCTION_NAME,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('job.lambda.function-arn',concat(@JOB_FUNCTION_ARN,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('job.lambda.principal','events.amazonaws.com','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('job.lambda.action-enabled','lambda:InvokeFunction','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('job.lambda.action-disabled','lambda:DisableInvokeFunction','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('rule.s3.bucket-region',concat(@RULE_BUCKET_REGION,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('rule.s3.bucket-name',concat(@RULE_JOB_BUCKET_NAME,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('rule.lambda.region',concat(@RULE_LAMBDA_REGION,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('rule.lambda.target-id','ruleTargetId','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('rule.lambda.function-name',concat(@RULE_FUNCTION_NAME,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('rule.lambda.function-arn',concat(@RULE_FUNCTION_ARN,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('rule.lambda.principal','events.amazonaws.com','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('rule.lambda.action-enabled','lambda:InvokeFunction','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('rule.lambda.action-disabled','lambda:DisableInvokeFunction','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('management.security.enabled','false','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('security.basic.enabled','false','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('security.oauth2.client.user-authorization-uri',concat(@PACMAN_HOST_NAME,'/api/auth/oauth/authorize'),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.dev-ingest-host',concat(@ES_UPDATE_HOST,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.dev-ingest-port',concat(@ES_UPDATE_PORT,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.port',concat(@ES_UPDATE_PORT,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('elastic-search.host',concat(@ES_UPDATE_HOST,''),'admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('target-types.categories','Compute,Developer Tools,Analytics,Application Services,Storage,Management Tools,Messaging,Artificial Intelligence,Database,Business Productivity,Security,Identity & Compliance,Networking & Content Delivery,Contact Center,Internet Of Things,Desktop & App Streaming,Desktop & App Streaming,Migration,Mobile Services,Game Development,Contact Center,Application Integration','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('pacman.api.oauth2.client-id','22e14922-87d7-4ee4-a470-da0bb10d45d3','admin-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('server.servlet.context-path','/api/asset','asset-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('cloudinsights.tokenurl',concat(@CLOUD_INSIGHTS_TOKEN_URL,''),'asset-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('cloudinsights.costurl',concat(@CLOUD_INSIGHTS_COST_URL,''),'asset-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('cloudinsights.corp-user-id',concat(@SVC_CORP_USER_ID,''),'asset-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('cloudinsights.corp-password',concat(@SVC_CORP_PASSWORD,''),'asset-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('server.servlet.context-path','/api/auth','auth-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('pacman.api.oauth2.client-id','22e14922-87d7-4ee4-a470-da0bb10d45d3','auth-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('pacman.api.oauth2.client-secret','csrWpc5p7JFF4vEZBkwGCAh67kGQGwXv46qug7v5ZwtKg','auth-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('server.servlet.context-path','/api/compliance','compliance-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('rule-engine.invoke.url','submitRuleExecutionJob','compliance-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('projections.assetgroups','cloud-vm,onprem-vm,all-vm','compliance-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('projections.targetTypes','onpremserver,ec2','compliance-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('features.certificate.enabled',concat(@CERTIFICATE_FEATURE_ENABLED,''),'compliance-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('features.patching.enabled',concat(@PATCHING_FEATURE_ENABLED,''),'compliance-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('features.vulnerability.enabled',concat(@VULNERABILITY_FEATURE_ENABLED,''),'compliance-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('server.servlet.context-path','/api/notifications','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('remind.cron','0 0 0 * * *','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('remind.email.text','Hey, {0}! We\'ve missed you here on Pacman. It\'s time to check your compliance, Pacman team','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('remind.email.subject','Pacman reminder','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('backup.cron','0 0 12 * * *','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('backup.email.text','Howdy, {0}. Your account backup is ready.\r\n\r\nCheers,\r\nPiggyMetrics team','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('backup.email.subject','PiggyMetrics account backup','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('backup.email.attachment','backup.json','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.freemarker.suffix','.html','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.host',concat(@MAIL_SERVER,''),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.port','25','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.protocol','smtp','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.defaultEncoding','UTF-8','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('cron.frequency.weekly-report-sync-trigger','0 0 9 ? * MON *','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('template.digest-mail.url',concat('https://s3.amazonaws.com/',@PACMAN_S3,'/index.html'),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('server.servlet.context-path','/api/statistics','statistics-service','prd','latest',NULL,NULL,NULL,NULL);
+
