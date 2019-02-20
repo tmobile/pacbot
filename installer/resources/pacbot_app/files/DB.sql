@@ -36,12 +36,6 @@ SET @ES_HEIMDALL_PORT_ADMIN='$ES_HEIMDALL_PORT_ADMIN';
 SET @ES_UPDATE_HOST='$ES_UPDATE_HOST';
 SET @ES_UPDATE_PORT='$ES_UPDATE_PORT';
 SET @ES_UPDATE_CLUSTER_NAME='$ES_UPDATE_CLUSTER_NAME';
-SET @LDAP_AD_PROVIDER_URL='$LDAP_AD_PROVIDER_URL';
-SET @LDAP_AD_DOMAIN='$LDAP_AD_DOMAIN';
-SET @LDAP_AD_SEARCH_BASE='$LDAP_AD_SEARCH_BASE';
-SET @LDAP_NT_PROVIDER_URL='$LDAP_NT_PROVIDER_URL';
-SET @LDAP_NT_DOMAIN='$LDAP_NT_DOMAIN';
-SET @LDAP_NT_SEARCH_BASE='$LDAP_NT_SEARCH_BASE';
 SET @REDSHIFT_URL='$REDSHIFT_URL';
 SET @REDSHIFT_USER_NAME='$REDSHIFT_USER_NAME';
 SET @REDSHIFT_PASSWORD='$REDSHIFT_PASSWORD';
@@ -1577,12 +1571,6 @@ INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`labe
 
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('ldap.naming.context-factory','com.sun.jndi.ldap.LdapCtxFactory','application','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('ldap.naming.authentication','simple','application','prd','latest',NULL,NULL,NULL,NULL);
-INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('ldap.ad.provider-url',concat(@LDAP_AD_PROVIDER_URL,''),'application','prd','latest',NULL,NULL,NULL,NULL);
-INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('ldap.ad.domain',concat(@LDAP_AD_DOMAIN,''),'application','prd','latest',NULL,NULL,NULL,NULL);
-INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('ldap.ad.search-base',concat(@LDAP_AD_SEARCH_BASE,''),'application','prd','latest',NULL,NULL,NULL,NULL);
-INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('ldap.nt.provider-url',concat(@LDAP_NT_PROVIDER_URL,''),'application','prd','latest',NULL,NULL,NULL,NULL);
-INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('ldap.nt.domain',concat(@LDAP_NT_DOMAIN,''),'application','prd','latest',NULL,NULL,NULL,NULL);
-INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('ldap.nt.search-base',concat(@LDAP_NT_SEARCH_BASE,''),'application','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('redshift.url',concat(@REDSHIFT_URL,''),'application','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('redshift.userName',concat(@REDSHIFT_USER_NAME,''),'application','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('redshift.password',concat(@REDSHIFT_PASSWORD,''),'application','prd','latest',NULL,NULL,NULL,NULL);
