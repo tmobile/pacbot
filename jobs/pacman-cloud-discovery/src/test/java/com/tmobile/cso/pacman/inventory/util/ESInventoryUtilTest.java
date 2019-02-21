@@ -115,7 +115,7 @@ public class ESInventoryUtilTest {
         when(awsEsClient.listTags(anyObject())).thenReturn(listTagsResult);
         
         assertThat(esInventoryUtil.fetchESInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -129,7 +129,7 @@ public class ESInventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(esInventoryUtil.fetchESInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**

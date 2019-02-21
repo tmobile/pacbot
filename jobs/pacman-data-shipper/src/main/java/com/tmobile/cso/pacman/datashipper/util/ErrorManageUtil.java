@@ -15,10 +15,10 @@ public class ErrorManageUtil implements Constants{
 
     public static Map<String,Object> formErrorCode(String job, List<Map<String,String>> errorList) {
         Map<String,Object> errorCode = new HashMap<>();
-        errorCode.put("job", job);
+        errorCode.put("jobName", job);
         
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        errorCode.put("date", sdf.format(new Date()));
+        errorCode.put("executionEndDate", sdf.format(new Date()));
         
         String status = "";
         

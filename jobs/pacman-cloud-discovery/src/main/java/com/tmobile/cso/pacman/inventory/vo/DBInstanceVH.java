@@ -32,15 +32,38 @@ public class DBInstanceVH {
 	/** The tags. */
 	private List<Tag> tags;
 	
+	/** Subnets associated with the instance */
+	private String subnets;
+	
+	private String securityGroups;
+	
+	public String getSecurityGroups() {
+		return securityGroups;
+	}
+
+	public void setSecurityGroups(String securityGroups) {
+		this.securityGroups = securityGroups;
+	}
+
+	public String getSubnets() {
+		return subnets;
+	}
+
+	public void setSubnets(String subnets) {
+		this.subnets = subnets;
+	}
+
 	/**
 	 * Instantiates a new DB instance VH.
 	 *
 	 * @param dbinstance the dbinstance
 	 * @param tags the tags
 	 */
-	public DBInstanceVH(DBInstance  dbinstance, List<Tag> tags){
+	public DBInstanceVH(DBInstance  dbinstance, List<Tag> tags,String subnets,String securityGroups){
 		this.setDbinst(dbinstance);
 		this.setTags(tags);
+		this.subnets =subnets;
+		this.securityGroups = securityGroups;
 	}
 	
 	/**
