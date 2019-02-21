@@ -15,20 +15,23 @@
  ******************************************************************************/
 package com.tmobile.cso.pacman.inventory;
 
-import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import com.tmobile.cso.pacman.inventory.dao.DBLoader;
+import com.tmobile.cso.pacman.inventory.dao.RDSDBManager;
 import com.tmobile.cso.pacman.inventory.file.AssetFileGenerator;
+import com.tmobile.cso.pacman.inventory.file.ErrorManageUtil;
 import com.tmobile.cso.pacman.inventory.file.S3Uploader;
 
 /**
@@ -36,99 +39,103 @@ import com.tmobile.cso.pacman.inventory.file.S3Uploader;
  */
 @Component
 public class InventoryFetchOrchestrator {
+	
+	
+	/** The target types. */
+	@Value("${accountinfo:}")
+	private String accountInfo;
+	
+	@Value("${region.ignore}")
+    private String skipRegions;
+	
+	@Value("${s3}")
+	private String s3Bucket ;
+	
+	@Value("${s3.data}")
+	private String s3Data ;
+	
+	@Value("${s3.processed}")
+	private String s3Processed ;
+	
+	@Value("${s3.region}")
+	private String s3Region ;
+	
+	@Value("${file.path}")
+	private String filePath ;
 
 	/** The accounts. */
-	private Set<String> accounts;
-	
-	/** The skip regions. */
-	@Value("${region-ignore}")
-	private String skipRegions;
-	
-	
-	/** The s 3 bucket. */
-	@Value("${s3}")
-	private String s3Bucket;
-	
-	/** The s 3 data. */
-	@Value("${s3-data}")
-	private String s3Data;
-	
-	/** The s 3 processed. */
-	@Value("${s3-processed}")
-	private String s3Processed;
-	
-	/** The s 3 region. */
-	@Value("${s3-region}")
-	private String s3Region;
-	
-	/** The file path. */
-	@Value("${file-path}")
-	private String filePath;
+	private List<Map<String,String>> accounts;
 	
 	/** The file generator. */
 	@Autowired
 	AssetFileGenerator fileGenerator;
 	
-	/** The db loader. */
-	@Autowired
-	DBLoader dbLoader;
-
 	/** The s 3 uploader. */
 	@Autowired
 	S3Uploader s3Uploader;
 	
+	/** The s 3 uploader. */
+	@Autowired
+	RDSDBManager rdsDBManager;
+	
 	/** The log. */
-	private static Logger log = LogManager.getLogger(InventoryFetchOrchestrator.class);
+	private static Logger log = LoggerFactory.getLogger(InventoryFetchOrchestrator.class);
 	
 	/**
 	 * Instantiates a new inventory fetch orchestrator.
 	 *
 	 * @param accountInfo the account info
 	 */
-	@Autowired
-	public InventoryFetchOrchestrator(@Value("${accountinfo}") String accountInfo){
-		String[] accntNames = accountInfo.split(",");
-		accounts = new HashSet<>();
-		for(String accnt : accntNames){
-			accounts.add(accnt);
+	
+	private void fetchAccountInfo() {
+		String accountQuery = "SELECT accountId,accountName,STATUS FROM cf_Aws_Accounts where status = 'onboarded'";
+		
+		// Check DB if account information is available in DB.
+		
+		if( accountInfo == null || "".equals(accountInfo)){
+			accounts = rdsDBManager.executeQuery(accountQuery);
+		}else{
+			String accountlist = Arrays.asList(accountInfo.split(",")).stream().collect(Collectors.joining("','"));
+			accounts = rdsDBManager.executeQuery(accountQuery +" WHERE accountid IN ('"+ accountlist+ "')");	
+		}
+		// No info from DB. Okay lets use what parameter we get.
+		if(accounts.isEmpty()){
+			String[] accountArray = accountInfo.split(",");
+			for(String account : accountArray){
+				Map<String,String> accountMap = new HashMap<>();
+				accountMap.put(InventoryConstants.ACCOUNT_ID,account);
+				accountMap.put(InventoryConstants.ACCOUNT_NAME,"");
+				accounts.add(accountMap);
+			}
 		}
 	}
 
 	/**
 	 * Orchestrate.
+	 * @return 
 	 */
-	public void orchestrate(){
+	public Map<String, Object> orchestrate(){
+	    
 		try{
-		    log.info("Start : Create all missing tables in RedShift");
-            dbLoader.runScriptFromFile("inventory-tables.sql");
-            log.info("End : Create all missing tables in RedShift");
-            
-            log.info("Start : Create all missing views in RedShift");
-            dbLoader.runScriptFromFile("inventory-views.sql");
-            log.info("End : Create all missing views in RedShift");
-            
+			fetchAccountInfo();
+			log.info("Inventory Fetch requested for Accounts {}",accounts);
 			log.info("Start : Asset Discovery and File Creation");
 			fileGenerator.generateFiles(accounts,skipRegions,filePath);
 			log.info("End : Asset Discovery and File Creation");
-	
+			
 			log.info("Start : Backup Current Files");
-			s3Uploader.backUpFiles(s3Bucket, s3Region, s3Data, s3Processed+ File.separator+ new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()));
+			s3Uploader.backUpFiles(s3Bucket, s3Region, s3Data, s3Processed+ "/"+ new SimpleDateFormat("yyyyMMdd-HHmmss").format(new Date()));
 			log.info("End : Backup Current Files");
 		
 			log.info("Start : Upload Files to S3");
 			s3Uploader.uploadFiles(s3Bucket,s3Data,s3Region,filePath);
 			log.info("End : Upload Files to S3");
-		
-			log.info("Start : Load Redshift Tables");
-			dbLoader.loadFilesToRedshift(s3Bucket,s3Data);
-			log.info("End : Load Redshift Tables");
-			
-			
+		    
 		}catch(Exception e){
-			log.fatal("Asset Discovery Failed" + e);
+			log.error("Asset Discovery Failed" , e);
 		}
+		
+		return ErrorManageUtil.formErrorCode();
 	}
-	
-	
 	
 }

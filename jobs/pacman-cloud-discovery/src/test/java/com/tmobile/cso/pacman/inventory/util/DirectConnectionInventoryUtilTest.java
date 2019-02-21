@@ -97,7 +97,7 @@ public class DirectConnectionInventoryUtilTest {
         describeConnectionsResult.setConnections(connections);
         when(amazonDirectConnectClient.describeConnections()).thenReturn(describeConnectionsResult);
         assertThat(directConnectionInventoryUtil.fetchDirectConnections(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -111,7 +111,7 @@ public class DirectConnectionInventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(directConnectionInventoryUtil.fetchDirectConnections(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -139,7 +139,7 @@ public class DirectConnectionInventoryUtilTest {
         describeVirtualInterfacesResult.setVirtualInterfaces(virtualInterfaces);
         when(amazonDirectConnectClient.describeVirtualInterfaces()).thenReturn(describeVirtualInterfacesResult);
         assertThat(directConnectionInventoryUtil.fetchDirectConnectionsVirtualInterfaces(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -153,7 +153,7 @@ public class DirectConnectionInventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(directConnectionInventoryUtil.fetchDirectConnectionsVirtualInterfaces(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**

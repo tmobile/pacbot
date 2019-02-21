@@ -20,8 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicSessionCredentials;
@@ -46,7 +46,7 @@ import com.tmobile.cso.pacman.inventory.vo.ElasticsearchDomainVH;
 public class ESInventoryUtil {
 	
 	/** The log. */
-	private static Logger log = LogManager.getLogger(ESInventoryUtil.class);
+	private static Logger log = LoggerFactory.getLogger(ESInventoryUtil.class);
 	
 	/** The delimiter. */
 	private static String delimiter = FileGenerator.DELIMITER;
@@ -62,14 +62,14 @@ public class ESInventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<ElasticsearchDomainVH>> fetchESInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+	public static Map<String,List<ElasticsearchDomainVH>> fetchESInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		Map<String,List<ElasticsearchDomainVH>> esDomainMap = new LinkedHashMap<>();
 		AWSElasticsearch awsEsClient ;
-		String expPrefix = "{\"errcode\": \"NO_RES_REG\" ,\"account\": \""+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"elasticsearch\" , \"region\":\"" ;
+		String expPrefix = "{\"errcode\": \"NO_RES_REG\" ,\"accountId\": \""+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"elasticsearch\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){ 
 			try{
 				if(!skipRegions.contains(region.getName())){ //!skipRegions
@@ -103,13 +103,13 @@ public class ESInventoryUtil {
 					}
 					
 					if(!elasticSearchDomains.isEmpty() ) {
-						log.debug("Account : " + account + " Type : ES Domain "+ region.getName()+" >> " + elasticSearchDomains.size());
-						esDomainMap.put(account+delimiter+region.getName(), elasticSearchDomains);
+						log.debug("Account : " + accountId + " Type : ES Domain "+ region.getName()+" >> " + elasticSearchDomains.size());
+						esDomainMap.put(accountId+delimiter+accountName+delimiter+region.getName(), elasticSearchDomains);
 					}
 				}
 			}catch(Exception e){
 				log.warn(expPrefix+ region.getName()+"\", \"cause\":\"" +e.getMessage()+"\"}");
-				ErrorManageUtil.uploadError(account,region.getName(),"elasticsearch",e.getMessage());
+				ErrorManageUtil.uploadError(accountId,region.getName(),"elasticsearch",e.getMessage());
 			}
 		}
 		return esDomainMap;

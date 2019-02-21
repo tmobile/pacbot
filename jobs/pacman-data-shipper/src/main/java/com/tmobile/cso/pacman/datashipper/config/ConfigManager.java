@@ -42,6 +42,12 @@ public class ConfigManager {
         if (null != commaSepTargetTypes && !"".equals(commaSepTargetTypes)) {
             targetTypesList = Arrays.asList(commaSepTargetTypes.split(","));
         }
+        String outscopeTypes = System.getProperty(Constants.TARGET_TYPE_OUTSCOPE);
+        List<String> targetTypesOutScopeList = new ArrayList<>();
+        if (null != outscopeTypes && !"".equals(outscopeTypes)) {
+        	targetTypesOutScopeList = Arrays.asList(outscopeTypes.split(","));
+        }
+        
         if (typeInfo == null) {
             typeInfo = new HashMap<>();
             List<Map<String, String>> typeList = RDSDBManager.executeQuery(System.getProperty(Constants.CONFIG_QUERY));
@@ -49,7 +55,7 @@ public class ConfigManager {
                 for (Map<String, String> _type : typeList) {
                     String typeName =  _type.get("targetName");
                     Map<String, String> config =  new ObjectMapper().readValue(_type.get("targetConfig"),new TypeReference<Map<String,String>>() {});
-                    if (targetTypesList.isEmpty() || targetTypesList.contains(typeName)) {
+                    if ( (targetTypesList.isEmpty() || targetTypesList.contains(typeName) ) && !targetTypesOutScopeList.contains(typeName)) {
                         typeInfo.put(typeName, config);
                     }
                 }

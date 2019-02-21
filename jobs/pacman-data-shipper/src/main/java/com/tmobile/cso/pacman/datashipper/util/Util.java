@@ -16,6 +16,7 @@ import java.util.stream.Collectors;
 
 import javax.xml.bind.annotation.adapters.HexBinaryAdapter;
 
+import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -146,6 +147,17 @@ public class Util {
             LOGGER.error("Error in encodeUrl",e1);
         }
         return encoded;
+    }
+    
+    public static String base64Encode(String str) {
+        return Base64.getEncoder().encodeToString(str.getBytes());
+    }
+    
+    public static Map<String,Object> getHeader(String base64Creds){
+        Map<String,Object> authToken = new HashMap<>();
+        authToken.put("Content-Type", ContentType.APPLICATION_JSON.toString());
+        authToken.put("Authorization", "Basic "+base64Creds);
+        return authToken;
     }
 
 }

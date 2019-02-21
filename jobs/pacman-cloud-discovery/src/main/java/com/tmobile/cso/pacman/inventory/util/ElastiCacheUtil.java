@@ -21,8 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicSessionCredentials;
@@ -32,15 +32,20 @@ import com.amazonaws.services.elasticache.AmazonElastiCache;
 import com.amazonaws.services.elasticache.AmazonElastiCacheClientBuilder;
 import com.amazonaws.services.elasticache.model.CacheCluster;
 import com.amazonaws.services.elasticache.model.CacheNode;
+import com.amazonaws.services.elasticache.model.CacheSubnetGroup;
 import com.amazonaws.services.elasticache.model.DescribeCacheClustersRequest;
 import com.amazonaws.services.elasticache.model.DescribeCacheClustersResult;
+import com.amazonaws.services.elasticache.model.DescribeCacheSubnetGroupsRequest;
 import com.amazonaws.services.elasticache.model.DescribeReplicationGroupsRequest;
 import com.amazonaws.services.elasticache.model.DescribeReplicationGroupsResult;
 import com.amazonaws.services.elasticache.model.Endpoint;
 import com.amazonaws.services.elasticache.model.ReplicationGroup;
+import com.amazonaws.services.elasticache.model.Subnet;
+import com.amazonaws.services.elasticache.model.Tag;
 import com.tmobile.cso.pacman.inventory.InventoryConstants;
 import com.tmobile.cso.pacman.inventory.file.ErrorManageUtil;
 import com.tmobile.cso.pacman.inventory.file.FileGenerator;
+import com.tmobile.cso.pacman.inventory.vo.ElastiCacheNodeVH;
 import com.tmobile.cso.pacman.inventory.vo.ElastiCacheVH;
 
 /**
@@ -49,7 +54,7 @@ import com.tmobile.cso.pacman.inventory.vo.ElastiCacheVH;
 public class ElastiCacheUtil {
     
     /** The log. */
-    private static Logger log = LogManager.getLogger(ElastiCacheUtil.class);
+    private static Logger log = LoggerFactory.getLogger(ElastiCacheUtil.class);
     
     /** The delimiter. */
     private static String delimiter = FileGenerator.DELIMITER;
@@ -59,15 +64,14 @@ public class ElastiCacheUtil {
      *
      * @param temporaryCredentials the temporary credentials
      * @param skipRegions the skip regions
-     * @param account the account
+     * @param accountId the accountId
      * @return the map
      */
-    public static Map<String,List<ElastiCacheVH>> fetchElastiCacheInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String account) {
+    public static Map<String,List<ElastiCacheVH>> fetchElastiCacheInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
         
         Map<String,List<ElastiCacheVH>> elastiCache = new LinkedHashMap<>();
-       
         
-        String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource \" ,\"type\": \"ElastiCache\"" ;
+        String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource \" ,\"type\": \"ElastiCache\"" ;
         String arnTemplate = "arn:aws:elasticache:%s:%s:cluster:%s";
         for(Region region : RegionUtils.getRegions()) { 
             try{
@@ -103,28 +107,81 @@ public class ElastiCacheUtil {
                       
                     }while(marker!=null);
                     
+                    Map<String,List<CacheCluster>> cacheMap = cacheClusterList.stream().collect(Collectors.groupingBy(cluster-> cluster.getReplicationGroupId()!=null?cluster.getReplicationGroupId():cluster.getCacheClusterId()));
+                    Map<String,ReplicationGroup> replGrpMap = replicationGroupList.stream().collect(Collectors.toMap(rplGrp -> rplGrp.getReplicationGroupId(),rplGrp->rplGrp));
+                  
                     
-                    List<ElastiCacheVH> elasticacheList = populateVH(cacheClusterList,replicationGroupList);
-                
+                    List<ElastiCacheVH> elasticacheList = populateVH(cacheMap,replGrpMap);
+                 
+                    String engine;
+                    String arn ;
                     for(ElastiCacheVH cacheVH :elasticacheList){
-                        cacheVH.setArn(String.format(arnTemplate, region.getName(),account,cacheVH.getClusterName()));
-                        cacheVH.setTags(amazonElastiCache.listTagsForResource(new com.amazonaws.services.elasticache.model.ListTagsForResourceRequest().
-                                withResourceName(String.format(arnTemplate, region.getName(),account,cacheVH.getCluster().getCacheClusterId() ))).getTagList());             
+                    	engine = cacheVH.getCluster().getEngine();
+                    	arn = String.format(arnTemplate, region.getName(),accountId,cacheVH.getCluster().getCacheClusterId()); 	
+                        cacheVH.setArn(String.format(arnTemplate, region.getName(),accountId,cacheVH.getClusterName()));
+     
+                        if("memcached".equalsIgnoreCase(engine)){
+                        	cacheVH.setTags(amazonElastiCache.listTagsForResource(new com.amazonaws.services.elasticache.model.ListTagsForResourceRequest().
+                                    withResourceName(arn)).getTagList());   
+                        }
+                        List<CacheSubnetGroup> subnetGroups = amazonElastiCache.describeCacheSubnetGroups( new DescribeCacheSubnetGroupsRequest().withCacheSubnetGroupName(cacheVH.getCluster().getCacheSubnetGroupName())).getCacheSubnetGroups();
+                        subnetGroups.forEach(cacheGroup-> {
+                            cacheVH.setVpc(cacheGroup.getVpcId());
+                            cacheVH.setSubnets(cacheGroup.getSubnets().stream().map(Subnet::getSubnetIdentifier).collect(Collectors.toList()));
+                        });
+                           
+                        List<ElastiCacheNodeVH> nodeDetails = getNodeDetails(cacheMap,replGrpMap,accountId, arnTemplate, region,
+								amazonElastiCache, cacheVH);
+                        cacheVH.setNodes(nodeDetails);
                     }
           
                     if(!elasticacheList.isEmpty()) {
-                        log.debug(InventoryConstants.ACCOUNT + account +" Type : ElastiCache "+region.getName() + " >> "+elasticacheList.size());
-                        elastiCache.put(account+delimiter+region.getName(), elasticacheList);
+                        log.debug(InventoryConstants.ACCOUNT + accountId +" Type : ElastiCache "+region.getName() + " >> "+elasticacheList.size());
+                        elastiCache.put(accountId+delimiter+accountName+delimiter+region.getName(), elasticacheList);
                     }
                 }
             }catch(Exception e){
-                e.printStackTrace();
                 log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
-                ErrorManageUtil.uploadError(account,"","elastiCache",e.getMessage());
+                ErrorManageUtil.uploadError(accountId,"","elastiCache",e.getMessage());
             }
         }
         return elastiCache;
     }
+
+
+	private static List<ElastiCacheNodeVH> getNodeDetails(Map<String,List<CacheCluster>> cacheClusterMap,Map<String,ReplicationGroup> replGroupMap ,String accountId, String arnTemplate, Region region,
+			AmazonElastiCache amazonElastiCache, ElastiCacheVH cacheVH) {
+		
+		List<ElastiCacheNodeVH> nodeDetails = new ArrayList<>();
+		String clusterName = cacheVH.getClusterName();
+    	String engine = cacheVH.getCluster().getEngine();
+		List<CacheCluster> cacheClusters = cacheClusterMap.get(clusterName);
+		cacheClusters.forEach(cacheCluster -> {
+			String clusterId = cacheCluster.getCacheClusterId();
+			List<CacheNode> nodes = cacheCluster.getCacheNodes();
+			if(!nodes.isEmpty()){
+	    		for(CacheNode node : nodes){
+	    			ElastiCacheNodeVH nodeVH = new ElastiCacheNodeVH();
+	    			nodeVH.setNode(node);
+	    			if("memcached".equalsIgnoreCase(engine)){
+	    				nodeVH.setNodeName(node.getCacheNodeId());
+	    			}else{
+	    				nodeVH.setNodeName(cacheCluster.getCacheClusterId());
+	    				try {
+	    					List<Tag> tags = amazonElastiCache.listTagsForResource(new com.amazonaws.services.elasticache.model.ListTagsForResourceRequest().
+	    		                withResourceName(String.format(arnTemplate, region.getName(),accountId,clusterId))).getTagList();
+	    					nodeVH.setTags(tags.stream().map(tag->tag.getKey()+":"+tag.getValue()).collect(Collectors.joining(",")));
+	    				} catch (Exception e) {
+	    					
+	    				}
+	    			}
+	    			nodeDetails.add(nodeVH);
+	    		}
+			}
+		});
+		
+    	return nodeDetails;
+	}
     
 
     /**
@@ -134,12 +191,9 @@ public class ElastiCacheUtil {
      * @param replicationGroupList the replication group list
      * @return the list
      */
-    private static List<ElastiCacheVH> populateVH(List<CacheCluster> cacheClusterList,List<ReplicationGroup> replicationGroupList  ){
+    private static List<ElastiCacheVH> populateVH(Map<String,List<CacheCluster>> cacheMap,Map<String,ReplicationGroup> replGrpMap  ){
         
         List<ElastiCacheVH> elasticacheList = new ArrayList<>();
-        
-        Map<String,List<CacheCluster>> cacheMap = cacheClusterList.stream().collect(Collectors.groupingBy(cluster-> cluster.getReplicationGroupId()!=null?cluster.getReplicationGroupId():cluster.getCacheClusterId()));
-        Map<String,ReplicationGroup> replGrpMap = replicationGroupList.stream().collect(Collectors.toMap(rplGrp -> rplGrp.getReplicationGroupId(),rplGrp->rplGrp));
         
         cacheMap.forEach((k,v)->{
             String clusterName = k;
@@ -152,7 +206,7 @@ public class ElastiCacheUtil {
             elastiCacheVH.setParameterGroup(cluster.getCacheParameterGroup().getCacheParameterGroupName()+"("+cluster.getCacheParameterGroup().getParameterApplyStatus()+")");
             elastiCacheVH.setCluster(cluster);
             String engine = cluster.getEngine();
-            
+              	
             if("memcached".equalsIgnoreCase(engine)){
                 elastiCacheVH.setNoOfNodes(cluster.getNumCacheNodes());
                 elastiCacheVH.setPrimaryOrConfigEndpoint(cluster.getConfigurationEndpoint().getAddress()+":"+cluster.getConfigurationEndpoint().getPort());
@@ -169,6 +223,7 @@ public class ElastiCacheUtil {
                 }else{
                     elastiCacheVH.setNoOfNodes(cluster.getNumCacheNodes());
                     endPoint = cluster.getCacheNodes().stream().map(CacheNode::getEndpoint).findAny().get();
+                    
                 }
                 elastiCacheVH.setPrimaryOrConfigEndpoint(endPoint.getAddress().replaceAll(cluster.getCacheClusterId(), clusterName)+":"+endPoint.getPort());
             }
