@@ -351,14 +351,13 @@ export class ComplianceDashboardComponent implements OnInit, OnDestroy {
                 innerArr = {};
                 for (let col = 0; col < getCols.length; col++) {
                     if (getCols[col] && getCols[col].toLowerCase() === 'compliance') {
-                        if (getData[row][getCols[col]] && getData[row][getCols[col]].toLowerCase() === 'compliant') {
+                        if (getData[row][getCols[col]] && getData[row][getCols[col]].toLowerCase() === 'full_compliance') {
                             cellObj = {
 
                                 'link': '',
                                 'properties':
                                     {
                                         'color': '#000',
-                                        'font-family': 'ex2-medium',
                                         'justify-content': 'center'
 
                                     },
@@ -375,14 +374,13 @@ export class ComplianceDashboardComponent implements OnInit, OnDestroy {
                                 'valText': 1
                             };
 
-                        } else if (getData[row][getCols[col]] && getData[row][getCols[col]].toLowerCase() === 'high') {
+                        } else if (getData[row][getCols[col]] && getData[row][getCols[col]].toLowerCase() === 'good_compliance') {
                             cellObj = {
 
                                 'link': '',
                                 'properties':
                                     {
                                         'color': '#000',
-                                        'font-family': 'ex2-medium',
                                         'justify-content': 'center'
                                     },
                                     'textProp':
@@ -392,7 +390,7 @@ export class ComplianceDashboardComponent implements OnInit, OnDestroy {
                                 'colName': getCols[col],
                                 'imgProp': { 'height': '1.2em' },
                                 'hasPreImg': true,
-                                'imgLink': '../assets/icons/high.svg',
+                                'imgLink': '../assets/icons/good-compliance.svg',
                                 'text': 'Not Compliant',
                                 'valText': 3
                             };
@@ -403,7 +401,6 @@ export class ComplianceDashboardComponent implements OnInit, OnDestroy {
                                 'properties':
                                     {
                                         'color': '#000',
-                                        'font-family': 'ex2-medium',
                                         'justify-content': 'center'
                                     },
                                     'textProp':
@@ -413,7 +410,7 @@ export class ComplianceDashboardComponent implements OnInit, OnDestroy {
                                 'colName': getCols[col],
                                 'imgProp': { 'height': '1.2em' },
                                 'hasPreImg': true,
-                                'imgLink': '../assets/icons/medium.svg',
+                                'imgLink': '../assets/icons/bad-compliance.svg',
                                 'text': 'Not Compliant',
                                 'valText': 2
                             };
@@ -441,7 +438,6 @@ export class ComplianceDashboardComponent implements OnInit, OnDestroy {
                                 'properties':
                                     {
                                         'color': '#000',
-                                        'font-family': 'ex2-medium',
                                         'text-transform' : 'capitalize'
                                     },
                                 'colName': getCols[col],
@@ -456,7 +452,6 @@ export class ComplianceDashboardComponent implements OnInit, OnDestroy {
                                 'properties':
                                     {
                                         'color': '#000',
-                                        'font-family': 'ex2-medium',
                                         'text-transform' : 'capitalize'
                                     },
                                 'colName': getCols[col],
@@ -471,7 +466,6 @@ export class ComplianceDashboardComponent implements OnInit, OnDestroy {
                                 'properties':
                                     {
                                         'color': '#000',
-                                        'font-family': 'ex2-medium',
                                         'text-transform' : 'capitalize'
                                     },
                                 'colName': getCols[col],
@@ -486,7 +480,6 @@ export class ComplianceDashboardComponent implements OnInit, OnDestroy {
                                 'properties':
                                     {
                                         'color': '#000',
-                                        'font-family': 'ex2-medium',
                                         'text-transform' : 'capitalize'
                                     },
                                 'colName': getCols[col],
@@ -504,7 +497,6 @@ export class ComplianceDashboardComponent implements OnInit, OnDestroy {
                                 'properties':
                                     {
                                         'color': '#000',
-                                        'font-family': 'ex2-medium',
                                         'font-size': '1.04em'
                                     },
                                 'colName': getCols[col],
@@ -519,8 +511,7 @@ export class ComplianceDashboardComponent implements OnInit, OnDestroy {
                             'link': '',
                             'properties':
                                 {
-                                    'color': '#000',
-                                    'font-family': 'ex2-medium',
+                                    'color': '#000'
                                 },
                             'colName': getCols[col],
                             'hasPreImg': false,
@@ -566,11 +557,11 @@ export class ComplianceDashboardComponent implements OnInit, OnDestroy {
     addCompliance(data) {
         for ( let i = 0; i < data.length; i++ ) {
             if (data[i]['Compliance %'] === 100 ) {
-                data[i].compliance = 'compliant';
+                data[i].compliance = 'full_compliance';
             } else if ( data[i]['Compliance %'] < 100 && data[i]['Compliance %'] > 49 ) {
-                data[i].compliance = 'low';
+                data[i].compliance = 'bad_compliance';
             }  else {
-                data[i].compliance = 'high';
+                data[i].compliance = 'good_compliance';
             }
         }
         return data;
