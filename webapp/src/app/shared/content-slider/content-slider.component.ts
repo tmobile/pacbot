@@ -36,7 +36,7 @@ export class ContentSliderComponent implements OnInit {
     this.isClose = !this.isClose;
   }
   uppercasefirst(value) {
-    if (value === null) {
+    if (!value) {
       return 'Not assigned';
     }
     return value.charAt(0).toUpperCase() + value.slice(1);
