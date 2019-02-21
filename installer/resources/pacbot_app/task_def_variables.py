@@ -2,14 +2,8 @@ from resources.pacbot_app.cloudwatch_log_groups import UiCloudWatchLogGroup, Api
 from resources.pacbot_app.ecr import APIEcrRepository, UIEcrRepository
 from resources.data.aws_info import AwsRegion
 from resources.pacbot_app.alb import ApplicationLoadBalancer
-from resources.datastore.es import ESDomain
 from resources.datastore.db import MySQLDatabase
-from resources.datastore.redshift import RedshiftCluster
-from resources.iam.ecs_role import ECSRole
-from resources.lambda_submit.function import SubmitJobLambdaFunction
-from resources.lambda_rule_engine.function import RuleEngineLambdaFunction
 from core.config import Settings
-from resources.s3.bucket import BucketStorage
 import json
 
 
@@ -20,29 +14,10 @@ class ContainerDefinitions:
     api_cw_log_group = ApiCloudWatchLogGroup.get_output_attr('name')
     CONFIG_PASSWORD = "pacman"
     CONFIG_SERVER_URL = ApplicationLoadBalancer.get_api_server_url('config')
-    ES_CLUSTER_NAME = ESDomain.get_input_attr('domain_name')
-    ES_HEIMDALL_HOST_NAME = ESDomain.get_output_attr('endpoint')
-    ES_HEIMDALL_PORT = str(ESDomain.get_es_port())
-    ES_HOST_NAME = ESDomain.get_output_attr('endpoint')
-    ES_PORT = str(ESDomain.get_es_port())
-    LOGGING_ES_HOST_NAME = ESDomain.get_output_attr('endpoint')
-    LOGGING_ES_PORT = str(ESDomain.get_es_port())
     PACMAN_HOST_NAME = ApplicationLoadBalancer.get_http_url()
     RDS_USERNAME = MySQLDatabase.get_input_attr('username')
     RDS_PASSWORD = MySQLDatabase.get_input_attr('password')
     RDS_URL = MySQLDatabase.get_rds_db_url()
-    REDSHIFT_URL = RedshiftCluster.get_redshift_url()
-    REDSHIFT_USER_NAME = RedshiftCluster.get_input_attr('master_username')
-    REDSHIFT_PASSWORD = RedshiftCluster.get_input_attr('master_password')
-    ES_UPDATE_HOST = ESDomain.get_output_attr('endpoint')
-    ES_UPDATE_PORT = str(ESDomain.get_es_port())
-    ES_UPDATE_CLUSTER_NAME = ESDomain.get_input_attr('domain_name')
-    LDAP_DOMAIN = "http://localhost"
-    LDAP_PORT = "389"
-    LDAP_BASEDN = "http://localhost"
-    LDAP_HOSTLIST = "http://localhost"
-    LDAP_RESPONSETIMEOUT = "60"
-    LDAP_CONNECTIONTIMEOUT = "60"
 
     def get_container_definitions_without_env_vars(self, container_name):
         return {

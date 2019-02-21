@@ -40,7 +40,6 @@ PROCESS_RESOURCES = {
     'vpc.security_group': {'tags': ["security"]},
     'datastore.db': {'tags': ["rds"]},
     'datastore.es': {'tags': ["es"]},
-    'datastore.redshift': {'tags': ["redshift"]},
     'pacbot_app.alb': {'tags': ["infra"]},
     'pacbot_app.alb_target_groups': {'tags': ["infra"]},
     'pacbot_app.alb_listener_rules': {'tags': ["infra"]},
