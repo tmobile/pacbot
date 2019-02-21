@@ -21,7 +21,8 @@ class BaseAction(MsgMixin):
     def clear_status_dir_files(self):
         for root, dirs, files in os.walk(Settings.OUTPUT_STATUS_DIR):
             for f in files:
-                os.unlink(os.path.join(root, f))
+                if str(f) != ".gitignore":
+                    os.unlink(os.path.join(root, f))
 
     def files_count_in_output_status_dir(self):
         path, dirs, files = os.walk(Settings.OUTPUT_STATUS_DIR).__next__()
