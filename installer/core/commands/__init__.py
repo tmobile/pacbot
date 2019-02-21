@@ -22,10 +22,26 @@ class BaseCommand(metaclass=ABCMeta):
 
         self.dry_run = True if any([x[1] for x in args if x[0] == "dry-run"]) else self.dry_run
 
-    def get_resources_to_process(self, input_instance, need_instance=True):
-        resources_to_process = []
-        resource_keys_to_process = self.get_resource_keys_to_process()
+    def get_complete_resources(self, input_instance, need_instance=True):
+        """
+        This returns all the resources present in the common configurations
 
+        Returns:
+            resources_to_process (list): List of all resources
+        """
+        resource_keys_to_process = self.get_resource_keys_to_process(None, None)
+        resources_to_process = self.get_resources_from_the_keys(resource_keys_to_process, input_instance, need_instance)
+
+        return resources_to_process
+
+    def get_resources_to_process(self, input_instance, need_instance=True):
+        resource_keys_to_process = self.get_resource_keys_to_process(self.resource_tags_list, self.category_field_name)
+        resources_to_process = self.get_resources_from_the_keys(resource_keys_to_process, input_instance, need_instance)
+
+        return resources_to_process
+
+    def get_resources_from_the_keys(self, resource_keys_to_process, input_instance, need_instance):
+        resources_to_process = []
         for resource in resource_keys_to_process:
             try:
                 resource = Settings.RESOURCES_FOLDER + '.' + resource
@@ -47,13 +63,13 @@ class BaseCommand(metaclass=ABCMeta):
 
         return resources_to_process
 
-    def get_resource_keys_to_process(self):
+    def get_resource_keys_to_process(self, resource_tags_list, category_field_name):
         resource_keys_to_process = []
-        if self.resource_tags_list:
+        if resource_tags_list:
             for resource, attrs in Settings.PROCESS_RESOURCES.items():
                 for attr, val in attrs.items():
-                    if attr == self.category_field_name:
-                        if any(x in val for x in self.resource_tags_list):
+                    if attr == category_field_name:
+                        if any(x in val for x in resource_tags_list):
                             resource_keys_to_process.append(resource)
         else:
             resource_keys_to_process = Settings.PROCESS_RESOURCES.keys()
