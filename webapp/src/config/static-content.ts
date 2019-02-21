@@ -99,7 +99,7 @@ export const CONTENT = {
         }
     },
     'login': {
-        'heading': 'Login with your PacMan ID',
+        'heading': 'Login with your ' + APP_NAME + ' ID',
         'usernamePlaceholder': PLACEHOLDER_USERNAME,
         'passwordPlaceholder': PLACEHOLDER_PASSWORD
     },

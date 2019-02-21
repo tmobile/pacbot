@@ -100,19 +100,16 @@ export class TaggingComplianceTrendComponent implements OnInit, OnDestroy {
           const complianceOverviewUrl = environment.taggingComplianceTrend.url;
           const method = environment.taggingComplianceTrend.method;
 
-          const today = new Date();
-          let  fromDay;
-          if (today.getMonth() === 0) {
-            fromDay = (today.getFullYear() - 1) + '-' + 12 + '-' + today.getDate();
-          } else {
-              fromDay = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
-          }
+        const prevDate = new Date();
+        prevDate.setMonth(prevDate.getMonth() - 1);
+        let fromDay;
+        fromDay = prevDate.toISOString().split('T')[0];
 
-          const queryParameters = {
-              'ag': this.selectedAssetGroup,
-              'from': fromDay,
-              'filters': {}
-          };
+        const queryParameters = {
+            'ag': this.selectedAssetGroup,
+            'from': fromDay,
+            'filters': {}
+        };
 
           this.issuesSubscription = this.complianceOverviewService.getWeeklyData(complianceOverviewUrl, method, queryParameters).subscribe(
               response => {
