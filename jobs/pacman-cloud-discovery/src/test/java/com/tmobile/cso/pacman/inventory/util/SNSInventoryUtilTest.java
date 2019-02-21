@@ -96,7 +96,7 @@ public class SNSInventoryUtilTest {
         listSubscriptionDefinitionsResult.setSubscriptions(subscriptionList);
         when(snsClient.listSubscriptions( new ListSubscriptionsRequest())).thenReturn(listSubscriptionDefinitionsResult);
         assertThat(snsInventoryUtil.fetchSNSTopics(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -110,7 +110,7 @@ public class SNSInventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(snsInventoryUtil.fetchSNSTopics(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**

@@ -1,5 +1,7 @@
 package com.tmobile.cso.pacman.datashipper.entity;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,8 +16,15 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tmobile.cso.pacman.datashipper.config.ConfigManager;
-import com.tmobile.cso.pacman.datashipper.dao.DBManager;
+import com.tmobile.cso.pacman.datashipper.config.CredentialProvider;
 import com.tmobile.cso.pacman.datashipper.dao.RDSDBManager;
 import com.tmobile.cso.pacman.datashipper.es.ESManager;
 import com.tmobile.cso.pacman.datashipper.util.Constants;
@@ -32,7 +41,11 @@ public class EntityManager implements Constants {
     private static final String FIRST_DISCOVERED = "firstdiscoveredon";
     private static final String DISCOVERY_DATE = "discoverydate";
     private static final String PAC_OVERRIDE = "pac_override_";
-  
+	private String s3Account = System.getProperty("base.account");
+	private String s3Region = System.getProperty("base.region");
+	private String s3Role =  System.getProperty("s3.role");
+	private String bucketName =  System.getProperty("s3");
+	private String dataPath =  System.getProperty("s3.data");
     
     /**
      * Upload entity data.
@@ -41,51 +54,78 @@ public class EntityManager implements Constants {
      *            the datasource
      */
     public List<Map<String, String>> uploadEntityData(String datasource) {
-        List<Map<String,String>> errorList = new ArrayList<>();
+    	
+    	ObjectMapper objectMapper = new ObjectMapper();
+    	List<Map<String,String>> errorList = new ArrayList<>();
+    	
+    	AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(new CredentialProvider().getCredentials(s3Account,s3Role))).withRegion(s3Region).build();
+    	
         Set<String> types = ConfigManager.getTypes(datasource);
         Iterator<String> itr = types.iterator();
         String type = "";
         LOGGER.info("*** Start Colleting Entity Info ***");
         List<String> filters = Arrays.asList("_docid", FIRST_DISCOVERED);
+        EntityAssociationManager childTypeManager = new EntityAssociationManager();
         while (itr.hasNext()) {
-
             try {
                 type = itr.next();
                 Map<String, Object> stats = new LinkedHashMap<>();
+            	String loaddate = new SimpleDateFormat("yyyy-MM-dd HH:mm:00Z").format(new java.util.Date());
                 stats.put("datasource", datasource);
                 stats.put("type", type);
-                stats.put("start_time", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(new java.util.Date()));
-
-                //if(type.equals("s3")){
-
+                stats.put("start_time",  new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(new java.util.Date()));
                 LOGGER.info("Fetching {}" , type);
                 String indexName = datasource + "_" + type;
-
                 Map<String, Map<String, String>> currentInfo = ESManager.getExistingInfo(indexName, type, filters);
                 LOGGER.info("Existing no of docs : {}" , currentInfo.size());
-
-                List<Map<String, String>> entities = DBManager.executeQuery("select * from " + datasource + "_" + type);
-                List<Map<String, String>> tags = DBManager
-                        .executeQuery("select * from " + datasource + "_" + type + "_tags");
+                S3Object entitiesData = null ;
+                S3Object tagsData = null;
+                List<Map<String, String>> entities = new ArrayList<>();
+                List<Map<String, String>> tags = new ArrayList<>();
+                try {
+                	entitiesData = s3Client.getObject(new GetObjectRequest(bucketName, dataPath+"/"+datasource + "-" + type+".data"));
+                	try (BufferedReader reader = new BufferedReader(new InputStreamReader(entitiesData.getObjectContent()))) {
+                    	entities = objectMapper.readValue(reader.lines().collect(Collectors.joining("\n")),new TypeReference<List<Map<String, String>>>() {});
+                    }
+                } catch (Exception e) {
+                	 LOGGER.error("Exception in collecting data for {}" ,type,e);
+                     Map<String,String> errorMap = new HashMap<>();
+                     errorMap.put(ERROR, "Exception in collecting data for "+type);
+                     errorMap.put(ERROR_TYPE, WARN);
+                     errorMap.put(EXCEPTION, e.getMessage());
+                     errorList.add(errorMap);
+                }
+                
+                try {
+                	tagsData = s3Client.getObject(new GetObjectRequest(bucketName, dataPath+"/"+datasource + "-" + type+"-tags.data"));
+                	try (BufferedReader reader = new BufferedReader(new InputStreamReader(tagsData.getObjectContent()))) {
+                    	tags = objectMapper.readValue(reader.lines().collect(Collectors.joining("\n")),new TypeReference<List<Map<String, String>>>() {});
+                    }
+                } catch (Exception e) {
+                	 // Do Nothing as there may not a tag file.
+                }
+                LOGGER.info("Fetched from S3");
                 List<Map<String, String>> overridableInfo = RDSDBManager.executeQuery(
                         "select updatableFields  from cf_pac_updatable_fields where resourceType ='" + type + "'");
-                List<Map<String, String>> overrides = DBManager.executeQuery(
+                List<Map<String, String>> overrides = RDSDBManager.executeQuery(
                         "select _resourceid,fieldname,fieldvalue from pacman_field_override where resourcetype = '"
                                 + type + "'");
                 Map<String, List<Map<String, String>>> overridesMap = overrides.parallelStream()
                         .collect(Collectors.groupingBy(obj -> obj.get("_resourceid")));
-
-                String keys = ConfigManager.getKeyForType(datasource, type);
+                
+                String keys = ConfigManager.getKeyForType(datasource, type); 
                 String idColumn = ConfigManager.getIdForType(datasource, type);
-                String[] _keys = keys.split(",");
-                LOGGER.info("Fetched from Redshift");
-                String _type = type;
-                prepareDocs(currentInfo, entities, tags, overridableInfo, overridesMap, idColumn, _keys, _type);
-                LOGGER.info("Docs are prepared");
+                String[] keysArray = keys.split(",");
+                
+                AWSErrorManager.getInstance().handleError(datasource,indexName,type,loaddate,errorList,true);
+                prepareDocs(currentInfo, entities, tags, overridableInfo, overridesMap, idColumn, keysArray, type);
                 stats.put("total_docs", entities.size());
-                Map<String, Object> uploadInfo = ESManager.uploadData(indexName, type, entities);
+              
+                Map<String, Object> uploadInfo = ESManager.uploadData(indexName, type, entities, loaddate);
                 stats.putAll(uploadInfo);
-                //}
+                
+                errorList.addAll(childTypeManager.uploadAssociationInfo(datasource, type)) ;
                 stats.put("end_time", new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ").format(new java.util.Date()));
 
                 String statsJson = ESManager.createESDoc(stats);
@@ -195,9 +235,9 @@ public class EntityManager implements Constants {
                                                              // field exists in
                                                              // source, we need
                                                              // to add
-                        String oringalValue = entity.get(originalField);
+                        String originalValue = entity.get(originalField);
                         if ("".equals(value)) {
-                            entity.put(finalField, oringalValue);
+                            entity.put(finalField, originalValue);
                         } else {
                             entity.put(finalField, value);
                         }
@@ -206,7 +246,9 @@ public class EntityManager implements Constants {
                 }
             }
         }
-
     }
 
+   
+    
+    
 }

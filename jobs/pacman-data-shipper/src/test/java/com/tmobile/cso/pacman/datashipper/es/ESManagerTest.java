@@ -83,7 +83,7 @@ public class ESManagerTest {
         when(sl.getStatusCode()).thenReturn(200);
         when(response.getStatusLine()).thenReturn(sl);
         
-        esManager.uploadData("index", "type", docs);
+        esManager.uploadData("index", "type", docs, "date");
     }
     
     @SuppressWarnings({ "unchecked", "static-access" })
