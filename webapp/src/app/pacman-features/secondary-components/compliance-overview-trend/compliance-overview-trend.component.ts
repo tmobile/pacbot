@@ -129,21 +129,18 @@ export class ComplianceOverviewTrendComponent implements OnInit, OnDestroy, Afte
           const complianceOverviewUrl = environment.complianceOverview.url;
           const method = environment.complianceOverview.method;
 
-          const today = new Date();
-          let fromDay;
-          if (today.getMonth() === 0) {
-              fromDay = (today.getFullYear() - 1) + '-' + 12 + '-' + today.getDate();
-          } else {
-              fromDay = today.getFullYear() + '-' + today.getMonth() + '-' + today.getDate();
-          }
+        const prevDate = new Date();
+        prevDate.setMonth(prevDate.getMonth() - 1);
+        let fromDay;
+        fromDay = prevDate.toISOString().split('T')[0];
 
-          const payload = {
-              'ag': this.selectedAssetGroup,
-              'from': fromDay,
-              'filters': {
-                  'domain': this.selectedDomain
-              }
-          };
+        const payload = {
+            'ag': this.selectedAssetGroup,
+            'from': fromDay,
+            'filters': {
+                'domain': this.selectedDomain
+            }
+        };
 
           this.issuesSubscription = this.complianceOverviewService.getDailyData(complianceOverviewUrl, method, payload, {}).subscribe(
               response => {

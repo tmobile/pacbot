@@ -117,15 +117,15 @@ export const  DOMAIN_MAPPING = [
                     {
                         'route': 'roles',
                         'sequence': 7
-                    },
-                    {
+                    }
+                    /*{
                         'route': 'account-management',
                         'sequence': 8
                     },
                     {
                         'route': 'plugin-management',
                         'sequence': 9
-                    }
+                    }*/
                 ]
             }
         ],
