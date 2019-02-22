@@ -74,13 +74,12 @@ class ComplianceEcsService(BaseEcsService, ECSServiceResource):
     DEPENDS_ON = [alr.ComplianceALBListenerRule, WaitConfigServiceToUp]
 
 
-# TODO: Commenting this out to use it in future
-# class NotificationsEcsService(ECSServiceResource, BaseEcsService):
-#     name = "notifications"
-#     task_definition = td.NotificationsEcsTaskDefinition.get_output_attr('arn')
-#     load_balancer_target_group_arn = tg.NotificationsALBTargetGroup.get_output_attr('arn')
-#     load_balancer_container_name = "notifications"
-#     DEPENDS_ON = [alr.NotificationsALBListenerRule, WaitConfigServiceToUp]
+class NotificationsEcsService(ECSServiceResource, BaseEcsService):
+    name = "notifications"
+    task_definition = td.NotificationsEcsTaskDefinition.get_output_attr('arn')
+    load_balancer_target_group_arn = tg.NotificationsALBTargetGroup.get_output_attr('arn')
+    load_balancer_container_name = "notifications"
+    DEPENDS_ON = [alr.NotificationsALBListenerRule, WaitConfigServiceToUp]
 
 
 class StatisticsEcsService(BaseEcsService, ECSServiceResource):
