@@ -28,7 +28,7 @@ class Status(BaseCommand, MsgMixin):
         if not status and not terraform_outputs:
             print(K.NO_STATUS_OUTPUT)
         else:
-            print(self.BCYAN_ANSI +"\n%s" % K.CURRENT_STATUS_MSG + self.RESET_ANSI)
+            print(self.BCYAN_ANSI + "\n%s" % K.CURRENT_STATUS_MSG + self.RESET_ANSI)
             if terraform_outputs:
                 print("\t%s" % K.CURRENTLY_INSTALLED_RESOURCES)
                 for item in terraform_outputs:

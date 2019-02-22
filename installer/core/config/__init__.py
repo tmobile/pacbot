@@ -28,6 +28,7 @@ class Settings:
     def set_system_required_settings(cls):
         setattr(cls, 'TERRAFORM_DIR', os.path.join(cls.DATA_DIR, 'terraform'))
         setattr(cls, 'OUTPUT_DIR', os.path.join(cls.DATA_DIR, 'output'))
+        setattr(cls, 'OUTPUT_STATUS_DIR', os.path.join(cls.DATA_DIR, 'output', 'status'))
         setattr(cls, 'PYTHON_INTERPRETER', sys.executable)
 
     @classmethod

@@ -29,6 +29,7 @@ class Install(BaseAction):
     }
     current_install_status = 1
     terraform_outputs = {}
+    terraform_thread = None
 
     def __init__(self, args, input_obj, check_dependent_resources=True):
         self.args = args
@@ -51,14 +52,14 @@ class Install(BaseAction):
                 raise self.exception
 
     def run_tf_execution_and_status_threads(self, resources, terraform_with_targets, dry_run):
-        thread1 = Thread(target=self.execute_terraform, args=(list(resources), terraform_with_targets, dry_run))
-        thread2 = Thread(target=self.show_progress_status, args=(list(resources), terraform_with_targets, dry_run))
+        self.terraform_thread = Thread(target=self.execute_terraform, args=(list(resources), terraform_with_targets, dry_run))
+        progressbar_thread = Thread(target=self.show_progress_status, args=(list(resources), terraform_with_targets, dry_run))
 
-        thread1.start()
-        thread2.start()
+        self.terraform_thread.start()
+        progressbar_thread.start()
 
-        thread1.join()
-        thread2.join()
+        self.terraform_thread.join()
+        progressbar_thread.join()
 
     def execute_terraform(self, resources, terraform_with_targets, dry_run):
         try:
@@ -77,7 +78,6 @@ class Install(BaseAction):
 
         self._delete_terraform_provider_file()
         self.current_install_status = self.install_statuses.get('execution_finished')
-
 
     def generate_terraform_files(self, resources, terraform_with_targets):
         if exists_teraform_lock():
@@ -154,50 +154,67 @@ class Install(BaseAction):
     def show_progress_status(self, resources, terraform_with_targets, dry_run):
         self.render_terraform_init_progress()
         self.render_terraform_plan_progress()
-        self.render_terraform_apply_progress(resources, terraform_with_targets, dry_run)
+        if not dry_run:
+            self.render_terraform_apply_progress(resources, terraform_with_targets)
+        else:
+            message = "\n" + self.WARN_ANSI + K.TERRAFORM_APPLY_DRY_RUN + self.END_ANSI + "\n"
+            self.show_step_finish(message, write_log=False)
 
     def render_terraform_init_progress(self):
         start_time = datetime.now()
         self.show_step_heading(K.TERRAFORM_INIT_STARTED, write_log=False)
-        while self.install_statuses.get('tf_init_complete') >= self.current_install_status:
+        while self.install_statuses.get('tf_init_complete') >= self.current_install_status and self.terraform_thread.isAlive():
             self.show_progress_message(K.TERRAFORM_INIT_RUNNING, 0.5)
-        self.erase_printed_line()
-        if self.executed_with_error:
-            self.show_step_finish(K.EXECUTED_WITH_ERROR, color=self.ERROR_ANSI)
-        else:
-            self.show_step_finish(K.TERRAFORM_INIT_COMPLETED, write_log=False, color=self.GREEN_ANSI)
-        end_time = datetime.now()
-        self.display_process_duration(start_time, end_time)
+
+        self._render_step_trail_message(K.TERRAFORM_INIT_COMPLETED, K.EXECUTED_WITH_ERROR, start_time)
 
     def render_terraform_plan_progress(self):
         # If Init doesn't end up in error
-        if not self.executed_with_error:
+        if not self.executed_with_error and self.terraform_thread.isAlive():
             start_time = datetime.now()
             self.show_step_heading(K.TERRAFORM_PLAN_STARTED, write_log=False)
-            while self.install_statuses.get('tf_plan_complete') >= self.current_install_status:
+            while self.install_statuses.get('tf_plan_complete') >= self.current_install_status and self.terraform_thread.isAlive():
                 self.show_progress_message(K.TERRAFORM_PLAN_RUNNING, 0.7)
-            self.erase_printed_line()
-            if self.executed_with_error:
-                self.show_step_finish(K.EXECUTED_WITH_ERROR, color=self.ERROR_ANSI)
-            else:
-                self.show_step_finish(K.TERRAFORM_PLAN_COMPLETED, write_log=False, color=self.GREEN_ANSI)
-            end_time = datetime.now()
-            self.display_process_duration(start_time, end_time)
 
-    def render_terraform_apply_progress(self, resources, terraform_with_targets, dry_run):
+            self._render_step_trail_message(K.TERRAFORM_PLAN_COMPLETED, K.EXECUTED_WITH_ERROR, start_time)
+
+    def render_terraform_apply_progress(self, resources, terraform_with_targets):
+        counter = False
         # If Plan doesn't end up in error
-        if not self.executed_with_error:
+        if not self.executed_with_error and self.terraform_thread.isAlive():
             start_time = datetime.now()
             self.show_step_heading(K.TERRAFORM_APPLY_STARTED, write_log=False)
-            if dry_run:
-                self.show_step_finish(K.TERRAFORM_APPLY_DRY_RUN, write_log=False)
-            else:
-                while self.install_statuses.get('execution_finished') > self.current_install_status:
-                    self.show_progress_message(K.TERRAFORM_APPLY_RUNNING, 1.5)
-                self.erase_printed_line()
-                if self.executed_with_error:
-                    self.show_step_finish(K.EXECUTED_WITH_ERROR, color=self.ERROR_ANSI)
+            py_terraform = PyTerraform()
+            output_count = prev_output_count = 0
+
+            while self.install_statuses.get('execution_finished') > self.current_install_status and self.terraform_thread.isAlive():
+                counter = False if counter else True
+                duration = self.CYAN_ANSI + self.get_duration(datetime.now() - start_time) + self.END_ANSI
+                if counter:
+                    try:
+                        # output_count = len(py_terraform.load_terraform_output())  # This uses terraform output command
+                        output_count = self.files_count_in_output_status_dir()
+                        prev_output_count = output_count
+                    except:
+                        output_count = prev_output_count
                 else:
-                    self.show_step_finish(K.TERRAFORM_APPLY_COMPLETED, write_log=False, color=self.GREEN_ANSI)
-            end_time = datetime.now()
-            self.display_process_duration(start_time, end_time)
+                    output_count = prev_output_count
+
+                duration_msg = ", Time elapsed: %s" % duration
+                count_msg = self.GREEN_ANSI + str(output_count) + "/" + str(self.total_resources_count) + self.END_ANSI
+                message = "Resources created: " + count_msg + duration_msg
+                self.show_progress_message(message, 1.5)
+
+            self.clear_status_dir_files()
+            self._render_step_trail_message(K.TERRAFORM_APPLY_COMPLETED, K.EXECUTED_WITH_ERROR, start_time)
+
+    def _render_step_trail_message(self, success_msg, error_msg, start_time):
+        if self.executed_with_error:
+            mesage, color, write_log = error_msg, self.ERROR_ANSI, True
+        else:
+            mesage, color, write_log = success_msg, self.GREEN_ANSI, False
+
+        self.erase_printed_line()
+        self.show_step_finish(mesage, write_log=write_log, color=color)
+        end_time = datetime.now()
+        self.display_process_duration(start_time, end_time)
