@@ -35,10 +35,9 @@ class ComplianceALBTargetGroup(ALBTargetGroupResource, BaseTG):
     path = PATH_PREFIX + "compliance/api.html"
 
 
-# TODO: Commenting this out to use it in future
-# class NotificationsALBTargetGroup(ALBTargetGroupResource, BaseTG):
-#     name = "notifications"
-#     path = PATH_PREFIX + "notifications/api.html"
+class NotificationsALBTargetGroup(ALBTargetGroupResource, BaseTG):
+    name = "notifications"
+    path = PATH_PREFIX + "notifications/api.html"
 
 
 class StatisticsALBTargetGroup(ALBTargetGroupResource, BaseTG):
