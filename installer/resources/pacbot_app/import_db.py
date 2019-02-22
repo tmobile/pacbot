@@ -74,7 +74,7 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_PATCHING_FEATURE_ENABLED': "false",
                         'ENV_VULNERABILITY_FEATURE_ENABLED': "false",
                         'ENV_MAIL_SERVER': "http://localhost", ## TODO: this is not actual value
-                        'ENV_PACMAN_S3': 'pacman-email-templates'  ## TODO: this is not actual value,
+                        'ENV_PACMAN_S3': 'pacman-email-templates',  ## TODO: this is not actual value,
                         'ENV_DATA_IN_DIR': Settings.RESOURCE_NAME_PREFIX,
                         'ENV_DATA_BKP_DIR': Settings.RESOURCE_NAME_PREFIX,
                         'ENV_PAC_ROLE': BaseRole.get_input_attr('name'),
