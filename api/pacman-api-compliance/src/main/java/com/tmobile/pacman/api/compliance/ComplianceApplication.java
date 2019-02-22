@@ -34,8 +34,6 @@ import org.springframework.web.util.UrlPathHelper;
 @EnableFeignClients
 @Configuration
 @EnableCaching
-/*@EnableHystrix
-@EnableHystrixDashboard*/
 @ComponentScan(basePackages = "com.tmobile.pacman")
 public class ComplianceApplication implements WebMvcConfigurer {  
 

@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.commons.Constants;
 import com.tmobile.pacman.api.commons.exception.ServiceException;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
@@ -63,7 +62,7 @@ public class CertificateController implements Constants {
      * @throws ServiceException the service exception
      */
     @RequestMapping(path = "/v1/certificates/expirybyapplication", method = RequestMethod.GET)
-    @HystrixCommand
+    
     public ResponseEntity<Object> getCerticatesExpiryByApplication(
             @RequestParam(name = "ag", required = true) String assetGroup)
             throws ServiceException {
@@ -91,7 +90,7 @@ public class CertificateController implements Constants {
      * @return the certificates details
      */
     @RequestMapping(path = "/v1/certificates/detail", method = RequestMethod.POST)
-    @HystrixCommand
+    
     public ResponseEntity<Object> getCertificatesDetails(
             @RequestBody(required = true) Request request) {
 
@@ -158,7 +157,7 @@ public class CertificateController implements Constants {
      * @throws ServiceException the service exception
      */
     @RequestMapping(path = "/v1/certificates/summary", method = RequestMethod.GET)
-    @HystrixCommand
+    
     public ResponseEntity<Object> getCertificatesSummary(
             @RequestParam(name = "ag", required = true) String assetGroup)
             throws ServiceException {

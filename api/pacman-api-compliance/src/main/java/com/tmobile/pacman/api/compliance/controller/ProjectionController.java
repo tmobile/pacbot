@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.compliance.controller;
 
-import io.swagger.annotations.ApiOperation;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.commons.Constants;
 import com.tmobile.pacman.api.commons.exception.ServiceException;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
@@ -40,6 +37,8 @@ import com.tmobile.pacman.api.compliance.domain.ProjectionRequest;
 import com.tmobile.pacman.api.compliance.domain.ProjectionResponse;
 import com.tmobile.pacman.api.compliance.domain.Request;
 import com.tmobile.pacman.api.compliance.service.ProjectionService;
+
+import io.swagger.annotations.ApiOperation;
 
 /**
  * The Class ProjectionController.
@@ -66,7 +65,7 @@ public class ProjectionController implements Constants {
      * @param quarter the quarter
      * @return the projection data
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/getprojection", method = RequestMethod.GET)
     public ResponseEntity<Object> getProjectionData(
             @RequestParam(name = "targettype", required = true) String targetType,
@@ -104,7 +103,7 @@ public class ProjectionController implements Constants {
      * @return the response entity
      * @throws ServiceException the service exception
      */
-    @HystrixCommand
+    
     @ApiOperation(httpMethod = "POST", value = "Save or Update Projection Details")
     @PostMapping(value = "/v1/updateprojection")
     public ResponseEntity<Object> updateProjectionData(@RequestBody ProjectionRequest projectionRequest)
@@ -142,7 +141,7 @@ public class ProjectionController implements Constants {
      * @param assetGroup the asset group
      * @return the patching and projection progress
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/getPatchingAndProjectionProgress", method = RequestMethod.GET)
     public ResponseEntity<Object> getPatchingAndProjectionProgress(
             @RequestParam(name = "ag", required = true) String assetGroup) {
@@ -170,7 +169,7 @@ public class ProjectionController implements Constants {
      * @param request the request
      * @return the response entity
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/getPatchingProgressByDirector", method = RequestMethod.POST)
     public ResponseEntity<Object> patchingProgressByDirector(@RequestBody(required = false) Request request) {
         String assetGroup = request.getAg();
@@ -194,7 +193,7 @@ public class ProjectionController implements Constants {
      * @param request the request
      * @return the response entity
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/getPatchingProgressByExecutiveSponsor", method = RequestMethod.POST)
     public ResponseEntity<Object> patchingProgressByExecutiveSponser(@RequestBody(required = false) Request request) {
         String assetGroup = request.getAg();

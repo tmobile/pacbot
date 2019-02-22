@@ -22,14 +22,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.admin.domain.CreatePolicyDetails;
 import com.tmobile.pacman.api.admin.domain.Response;
 import com.tmobile.pacman.api.admin.domain.UpdatePolicyDetails;
@@ -67,7 +66,6 @@ public class PolicyController {
 	@ApiOperation(httpMethod = "GET", value = "API to get all policies", response = Page.class, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-	@HystrixCommand
 	public ResponseEntity<Object> getPolicies(
 			@ApiParam(value = "provide valid page number", required = true) @RequestParam("page") Integer page,
 			@ApiParam(value = "provide valid page size", required = true) @RequestParam("size") Integer size,
@@ -109,7 +107,6 @@ public class PolicyController {
 	@ApiOperation(httpMethod = "GET", value = "API to get all policy ids", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/list-ids", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
-	@HystrixCommand
 	public ResponseEntity<Object> getAllPolicyIds() {
 		try {
 			return ResponseUtils.buildSucessResponse(policyService.getAllPolicyIds());
@@ -129,7 +126,6 @@ public class PolicyController {
 	@ApiOperation(httpMethod = "POST", value = "API to update existing policy", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/update", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@HystrixCommand
 	public ResponseEntity<Object> updatePolicies(
 			@ApiParam(value = "provide valid policy details", required = true) @RequestBody(required = true) UpdatePolicyDetails policyDetails) {
 		try {
@@ -150,7 +146,6 @@ public class PolicyController {
 	@ApiOperation(httpMethod = "POST", value = "API to create new policy", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("@securityService.hasPermission(authentication)")
 	@RequestMapping(path = "/create", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@HystrixCommand
 	public ResponseEntity<Object> createPolicies(
 			@ApiParam(value = "provide valid policy details", required = true) @RequestBody(required = true) CreatePolicyDetails policyDetails) {
 		try {
