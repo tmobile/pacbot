@@ -19,6 +19,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.tmobile.cso.pacman.inventory.config.ConfigUtil;
+import com.tmobile.cso.pacman.inventory.file.ErrorManageUtil;
 import com.tmobile.pacman.commons.jobs.PacmanJob;
 
 /**
@@ -27,6 +32,8 @@ import com.tmobile.pacman.commons.jobs.PacmanJob;
 @PacmanJob(methodToexecute="execute",jobName="AWS Data Collector", desc="Job to fetch aws info and load to Redshift" ,priority=5)
 public class InventoryCollectionJob {
 	
+	/** The log. */
+	private static Logger log = LoggerFactory.getLogger(InventoryCollectionJob.class);
 	/**
 	 * The main method.
 	 *
@@ -35,10 +42,8 @@ public class InventoryCollectionJob {
 	public static void main(String[] args){
 		Map<String,String> params = new HashMap<>();
 		Arrays.asList(args).stream().forEach(obj-> {
-			 for(String param :obj.split("[*]")){
-				String[] paramTemp = param.split("=");
-				params.put(paramTemp[0], paramTemp[1]);
-			 }
+			String[] keyValue = obj.split("[:]");
+			params.put(keyValue[0], keyValue[1]);
 		});
 		execute(params);
 	}
@@ -47,11 +52,19 @@ public class InventoryCollectionJob {
 	 * Execute.
 	 *
 	 * @param params the params
+	 * @return 
 	 */
-	public static void execute(Map<String,String> params){
+	public static Map<String, Object> execute(Map<String,String> params){
 		if( !(params==null || params.isEmpty())){
 			params.forEach((k,v) -> System.setProperty(k, v));
 		}
-		InventoryFetchApplication.main( new String[]{});
+		try {
+			ConfigUtil.setConfigProperties();
+		} catch (Exception e) {
+			log.error("Error fetching config", e);
+			ErrorManageUtil.uploadError("all", "all", "all", "Error fetching config "+ e.getMessage());
+			return ErrorManageUtil.formErrorCode();
+		}
+		return InventoryFetchApplication.main( new String[]{});
 	}
 }

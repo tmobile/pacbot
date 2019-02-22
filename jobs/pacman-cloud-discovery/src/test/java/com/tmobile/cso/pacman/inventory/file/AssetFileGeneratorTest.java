@@ -23,8 +23,8 @@ import static org.powermock.api.mockito.PowerMockito.when;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -39,6 +39,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import com.amazonaws.auth.BasicSessionCredentials;
+import com.tmobile.cso.pacman.inventory.InventoryConstants;
 import com.tmobile.cso.pacman.inventory.auth.CredentialProvider;
 import com.tmobile.cso.pacman.inventory.util.ASGInventoryUtil;
 import com.tmobile.cso.pacman.inventory.util.DirectConnectionInventoryUtil;
@@ -101,156 +102,159 @@ public class AssetFileGeneratorTest {
         mockStatic(ESInventoryUtil.class);
         mockStatic(SNSInventoryUtil.class);
         
-        when(InventoryUtil.fetchInstances(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchInstances(anyObject(), anyString(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateInstanceFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchAsg(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchAsg(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateAsgFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchCloudFormationStack(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchCloudFormationStack(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateCloudFormationStackFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchDynamoDBTables(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchDynamoDBTables(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateDynamoDbFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchEFSInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchEFSInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateEfsFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchEMRInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchEMRInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateEmrFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchLambdaInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchLambdaInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateLamdaFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchClassicElbInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchClassicElbInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateClassicElbFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchElbInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchElbInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateApplicationElbFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchTargetGroups(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchTargetGroups(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateTargetGroupFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchNATGatewayInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchNATGatewayInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateNatGatewayFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchRDSInstanceInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchRDSInstanceInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateRDSInstanceFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchRDSClusterInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchRDSClusterInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateRDSClusterFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchS3Info(anyObject(), anyString(), anyString())).thenReturn(new ArrayList());
+        when(InventoryUtil.fetchS3Info(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap());
         PowerMockito.doNothing().when(FileManager.class,"generateS3Files",new HashMap<>());
         
-        when(InventoryUtil.fetchNetworkIntefaces(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchNetworkIntefaces(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateNwInterfaceFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchSecurityGroups(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchSecurityGroups(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateSecGroupFile",new HashMap<>());
         
-        when(InventoryUtil.fetchSubnets(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchSubnets(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateSubnetFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchTrusterdAdvisorsChecks(anyObject(), anyString())).thenReturn(new ArrayList<>());
+        when(InventoryUtil.fetchTrusterdAdvisorsChecks(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateTrustedAdvisorFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchRedshiftInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchRedshiftInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateRedshiftFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchVolumetInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchVolumetInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generatefetchVolumeFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchSnapshots(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchSnapshots(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateSnapshotFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchVpcInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchVpcInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateVpcFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchApiGateways(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchApiGateways(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateApiGatewayFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchIAMUsers(anyObject(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchIAMUsers(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateIamUserFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchRDSDBSnapshots(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchRDSDBSnapshots(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateRDSSnapshotFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchIAMRoles(anyObject(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchIAMRoles(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateIamRoleFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchKMSKeys(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchKMSKeys(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateKMSFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchCloudFrontInfo(anyObject(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchCloudFrontInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateCloudFrontFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchEBSInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchEBSInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateEBSFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchPHDInfo(anyObject(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchPHDInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generatePHDFiles",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchRouteTables(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchRouteTables(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateEC2RouteTableFiles",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchNetworkACL(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchNetworkACL(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateNetworkAclFiles",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchElasticIPAddresses(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchElasticIPAddresses(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateElasticIPFiles",new HashMap<>());
         
-        when(ASGInventoryUtil.fetchLaunchConfigurations(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(ASGInventoryUtil.fetchLaunchConfigurations(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateLaunchConfigurationsFiles",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchInternetGateway(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchInternetGateway(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateInternetGatewayFiles",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchVPNGateway(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchVPNGateway(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateVPNGatewayFiles",new HashMap<>());
         
-        when(ASGInventoryUtil.fetchScalingPolicies(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(ASGInventoryUtil.fetchScalingPolicies(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateScalingPolicies",new HashMap<>());
         
-        when(SNSInventoryUtil.fetchSNSTopics(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(SNSInventoryUtil.fetchSNSTopics(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateSNSTopics",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchEgressGateway(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchEgressGateway(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateEgressGateway",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchDHCPOptions(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchDHCPOptions(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateDhcpOptions",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchPeeringConnections(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchPeeringConnections(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generatePeeringConnections",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchCustomerGateway(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchCustomerGateway(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateCustomerGateway",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchVPNConnections(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchVPNConnections(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateVpnConnection",new HashMap<>());
         
-        when(DirectConnectionInventoryUtil.fetchDirectConnections(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(DirectConnectionInventoryUtil.fetchDirectConnections(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateDirectConnection",new HashMap<>());
         
-        when(DirectConnectionInventoryUtil.fetchDirectConnectionsVirtualInterfaces(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(DirectConnectionInventoryUtil.fetchDirectConnectionsVirtualInterfaces(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateDirectConnectionVirtualInterfaces",new HashMap<>());
         
-        when(ESInventoryUtil.fetchESInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(ESInventoryUtil.fetchESInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateESDomain",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchReservedInstances(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchReservedInstances(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateReservedInstances",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchSSMInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchSSMInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doNothing().when(FileManager.class,"generateSsmFiles",new HashMap<>());
         
-        List<String> accounts = new ArrayList<>();
-        accounts.add("account");
-        assetFileGenerator.generateFiles(new HashSet(accounts) , "skipRegions", "filePath");
+        List<Map<String,String>> accounts = new ArrayList<>();
+        Map<String,String> account = new HashMap<>();
+        account.put(InventoryConstants.ACCOUNT_ID, "account");
+        account.put(InventoryConstants.ACCOUNT_NAME, "accountName");
+        accounts.add(account);
+        assetFileGenerator.generateFiles(accounts , "skipRegions", "filePath");
         
         ReflectionTestUtils.setField(assetFileGenerator, "targetTypes", "targetType");
-        assetFileGenerator.generateFiles(new HashSet(accounts) , "skipRegions", "filePath");
+        assetFileGenerator.generateFiles(accounts , "skipRegions", "filePath");
     }
     
     /**
@@ -281,153 +285,156 @@ public class AssetFileGeneratorTest {
         
         PowerMockito.doNothing().when(ErrorManageUtil.class,"uploadError",anyString(),anyString(),anyString(),anyString());
         
-        when(InventoryUtil.fetchInstances(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchInstances(anyObject(), anyString(), anyString(), anyString(),anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateInstanceFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchAsg(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchAsg(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateAsgFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchCloudFormationStack(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchCloudFormationStack(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateCloudFormationStackFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchDynamoDBTables(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchDynamoDBTables(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateDynamoDbFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchEFSInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchEFSInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateEfsFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchEMRInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchEMRInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateEmrFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchLambdaInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchLambdaInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateLamdaFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchClassicElbInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchClassicElbInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateClassicElbFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchElbInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchElbInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateApplicationElbFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchTargetGroups(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchTargetGroups(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateTargetGroupFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchNATGatewayInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchNATGatewayInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateNatGatewayFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchRDSInstanceInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchRDSInstanceInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateRDSInstanceFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchRDSClusterInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchRDSClusterInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateRDSClusterFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchS3Info(anyObject(), anyString(), anyString())).thenReturn(new ArrayList());
+        when(InventoryUtil.fetchS3Info(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateS3Files",new HashMap<>());
         
-        when(InventoryUtil.fetchNetworkIntefaces(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchNetworkIntefaces(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateNwInterfaceFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchSecurityGroups(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchSecurityGroups(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateSecGroupFile",new HashMap<>());
         
-        when(InventoryUtil.fetchSubnets(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchSubnets(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateSubnetFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchTrusterdAdvisorsChecks(anyObject(), anyString())).thenReturn(new ArrayList<>());
+        when(InventoryUtil.fetchTrusterdAdvisorsChecks(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateTrustedAdvisorFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchRedshiftInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchRedshiftInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateRedshiftFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchVolumetInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchVolumetInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generatefetchVolumeFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchSnapshots(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchSnapshots(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateSnapshotFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchVpcInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchVpcInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateVpcFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchApiGateways(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchApiGateways(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateApiGatewayFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchIAMUsers(anyObject(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchIAMUsers(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateIamUserFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchRDSDBSnapshots(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchRDSDBSnapshots(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateRDSSnapshotFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchIAMRoles(anyObject(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchIAMRoles(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateIamRoleFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchKMSKeys(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchKMSKeys(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateKMSFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchCloudFrontInfo(anyObject(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchCloudFrontInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateCloudFrontFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchEBSInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchEBSInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateEBSFiles",new HashMap<>());
         
-        when(InventoryUtil.fetchPHDInfo(anyObject(), anyString())).thenReturn(new HashMap<>());
+        when(InventoryUtil.fetchPHDInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generatePHDFiles",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchRouteTables(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchRouteTables(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateEC2RouteTableFiles",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchNetworkACL(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchNetworkACL(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateNetworkAclFiles",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchElasticIPAddresses(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchElasticIPAddresses(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateElasticIPFiles",new HashMap<>());
         
-        when(ASGInventoryUtil.fetchLaunchConfigurations(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(ASGInventoryUtil.fetchLaunchConfigurations(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateLaunchConfigurationsFiles",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchInternetGateway(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchInternetGateway(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateInternetGatewayFiles",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchVPNGateway(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchVPNGateway(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateVPNGatewayFiles",new HashMap<>());
         
-        when(ASGInventoryUtil.fetchScalingPolicies(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(ASGInventoryUtil.fetchScalingPolicies(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateScalingPolicies",new HashMap<>());
         
-        when(SNSInventoryUtil.fetchSNSTopics(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(SNSInventoryUtil.fetchSNSTopics(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateSNSTopics",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchEgressGateway(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchEgressGateway(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateEgressGateway",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchDHCPOptions(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchDHCPOptions(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateDhcpOptions",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchPeeringConnections(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchPeeringConnections(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generatePeeringConnections",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchCustomerGateway(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchCustomerGateway(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateCustomerGateway",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchVPNConnections(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchVPNConnections(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateVpnConnection",new HashMap<>());
         
-        when(DirectConnectionInventoryUtil.fetchDirectConnections(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(DirectConnectionInventoryUtil.fetchDirectConnections(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateDirectConnection",new HashMap<>());
         
-        when(DirectConnectionInventoryUtil.fetchDirectConnectionsVirtualInterfaces(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(DirectConnectionInventoryUtil.fetchDirectConnectionsVirtualInterfaces(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateDirectConnectionVirtualInterfaces",new HashMap<>());
         
-        when(ESInventoryUtil.fetchESInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(ESInventoryUtil.fetchESInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateESDomain",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchReservedInstances(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchReservedInstances(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateReservedInstances",new HashMap<>());
         
-        when(EC2InventoryUtil.fetchSSMInfo(anyObject(), anyString(), anyString())).thenReturn(new HashMap<>());
+        when(EC2InventoryUtil.fetchSSMInfo(anyObject(), anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
         PowerMockito.doThrow(new IOException()).when(FileManager.class,"generateSsmFiles",new HashMap<>());
         
-        List<String> accounts = new ArrayList<>();
-        accounts.add("account");
-        assetFileGenerator.generateFiles(new HashSet(accounts) , "skipRegions", "filePath");
+        List<Map<String,String>> accounts = new ArrayList<>();
+        Map<String,String> account = new HashMap<>();
+        account.put(InventoryConstants.ACCOUNT_ID, "account");
+        account.put(InventoryConstants.ACCOUNT_NAME, "accountName");
+        accounts.add(account);
+        assetFileGenerator.generateFiles(accounts , "skipRegions", "filePath");
         
     }
 }

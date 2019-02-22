@@ -108,7 +108,7 @@ public class ASGInventoryUtilTest {
         launchConfigurationsResult.setLaunchConfigurations(launchConfigurations);
         when(asgClient.describeLaunchConfigurations(anyObject())).thenReturn(launchConfigurationsResult);
         assertThat(asgInventoryUtil.fetchLaunchConfigurations(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
     }
     
@@ -123,7 +123,7 @@ public class ASGInventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(asgInventoryUtil.fetchLaunchConfigurations(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -160,7 +160,7 @@ public class ASGInventoryUtilTest {
         policiesResult.setScalingPolicies(scalingPolicies);
         when(asgClient.describePolicies(anyObject())).thenReturn(policiesResult);
         assertThat(asgInventoryUtil.fetchScalingPolicies(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -174,7 +174,7 @@ public class ASGInventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(asgInventoryUtil.fetchScalingPolicies(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**

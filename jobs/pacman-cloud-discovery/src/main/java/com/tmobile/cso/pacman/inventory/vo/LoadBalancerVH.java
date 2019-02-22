@@ -40,6 +40,10 @@ public class LoadBalancerVH {
 	/** The tags. */
 	private List<Tag> tags;
 	
+	/** The availability zones. */
+    private List<String> subnets;
+
+    
 	/**
 	 * Instantiates a new load balancer VH.
 	 *
@@ -49,8 +53,10 @@ public class LoadBalancerVH {
 		lb = elb;
 		availabilityZones = new ArrayList<>();
 		this.instances = new ArrayList<>();
-		if(lb.getAvailabilityZones()!=null)
-			lb.getAvailabilityZones().forEach(e->availabilityZones.add(e.getZoneName()));
+		if(lb.getAvailabilityZones()!=null){
+		    lb.getAvailabilityZones().forEach(e-> { availabilityZones.add(e.getZoneName());
+            subnets.add(e.getSubnetId());});
+		}
 	}
 	
 	/**
@@ -63,9 +69,13 @@ public class LoadBalancerVH {
 		lb = elb;
 		this.tags = tags;
 		availabilityZones = new ArrayList<>();
+		subnets = new ArrayList<>();
 		this.instances = new ArrayList<>();
-		if(lb.getAvailabilityZones()!=null)
-			lb.getAvailabilityZones().forEach(e->availabilityZones.add(e.getZoneName()));
+		if(lb.getAvailabilityZones()!=null){
+		    lb.getAvailabilityZones().forEach(e-> { availabilityZones.add(e.getZoneName());
+			                                        subnets.add(e.getSubnetId());});
+		}
+		
 	}
 	
 	/**

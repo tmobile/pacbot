@@ -20,8 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicSessionCredentials;
@@ -45,7 +45,7 @@ import com.tmobile.cso.pacman.inventory.file.FileGenerator;
 public class ASGInventoryUtil {
 	
 	/** The log. */
-	private static Logger log = LogManager.getLogger(InventoryUtil.class);
+	private static Logger log = LoggerFactory.getLogger(InventoryUtil.class);
 	
 	/** The delimiter. */
 	private static String delimiter = FileGenerator.DELIMITER;
@@ -64,16 +64,16 @@ public class ASGInventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<LaunchConfiguration>> fetchLaunchConfigurations(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+	public static Map<String,List<LaunchConfiguration>> fetchLaunchConfigurations(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		AmazonAutoScaling asgClient;
 		Map<String,List<LaunchConfiguration>> launchConfigurationList = new LinkedHashMap<>();
 		List<String> launchConfigurationNames = new ArrayList<>();
 		
-		String expPrefix = "{\"errcode\": \"NO_RES_REG\" ,\"account\": \""+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"ASG\" , \"region\":\"" ;
+		String expPrefix = "{\"errcode\": \"NO_RES_REG\" ,\"accountId\": \""+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"ASG\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){ 
 			try{
 				if(!skipRegions.contains(region.getName())){ //!skipRegions
@@ -100,13 +100,13 @@ public class ASGInventoryUtil {
 					}
 					
 					if(!launchConfigurationListTemp.isEmpty() ){
-						log.debug("Account : " + account + " Type : ASG Launch Configurations "+region.getName()+" >> " + launchConfigurationListTemp.size());
-						launchConfigurationList.put(account+delimiter+region.getName(), launchConfigurationListTemp);
+						log.debug("Account : " + accountId + " Type : ASG Launch Configurations "+region.getName()+" >> " + launchConfigurationListTemp.size());
+						launchConfigurationList.put(accountId+delimiter+accountName+delimiter+region.getName(), launchConfigurationListTemp);
 					}
 			   	}
 			}catch(Exception e){
 				log.warn(expPrefix+ region.getName()+"\", \"cause\":\"" +e.getMessage()+"\"}");
-				ErrorManageUtil.uploadError(account,region.getName(),"launchconfig",e.getMessage());
+				ErrorManageUtil.uploadError(accountId,region.getName(),"launchconfig",e.getMessage());
 			}
 		}
 		return launchConfigurationList;
@@ -117,15 +117,15 @@ public class ASGInventoryUtil {
  *
  * @param temporaryCredentials the temporary credentials
  * @param skipRegions the skip regions
- * @param account the account
+ * @param accountId the accountId
  * @return the map
  */
-public static Map<String,List<ScalingPolicy>> fetchScalingPolicies(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+public static Map<String,List<ScalingPolicy>> fetchScalingPolicies(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		AmazonAutoScaling asgClient;
 		Map<String,List<ScalingPolicy>> scalingPolicyList = new LinkedHashMap<>();
 		
-		String expPrefix = "{\"errcode\": \"NO_RES_REG\" ,\"account\": \""+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"ASG\" , \"region\":\"" ;
+		String expPrefix = "{\"errcode\": \"NO_RES_REG\" ,\"accountId\": \""+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"ASG\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){ 
 			try{
 				if(!skipRegions.contains(region.getName())){ //!skipRegions
@@ -142,13 +142,13 @@ public static Map<String,List<ScalingPolicy>> fetchScalingPolicies(BasicSessionC
 					}while(nextToken!=null);
 					
 					if(!_scalingPolicyList.isEmpty() ){
-						log.debug("Account : " + account + " Type : ASG Scaling Policy "+region.getName()+" >> " + _scalingPolicyList.size());
-						scalingPolicyList.put(account+delimiter+region.getName(), _scalingPolicyList);
+						log.debug("Account : " + accountId + " Type : ASG Scaling Policy "+region.getName()+" >> " + _scalingPolicyList.size());
+						scalingPolicyList.put(accountId+delimiter+accountName+delimiter+region.getName(), _scalingPolicyList);
 					}
 			   	}
 			}catch(Exception e){
 				log.warn(expPrefix+ region.getName()+"\", \"cause\":\"" +e.getMessage()+"\"}");
-				ErrorManageUtil.uploadError(account,region.getName(),"asgpolicy",e.getMessage());
+				ErrorManageUtil.uploadError(accountId,region.getName(),"asgpolicy",e.getMessage());
 			}
 		}
 		return scalingPolicyList;

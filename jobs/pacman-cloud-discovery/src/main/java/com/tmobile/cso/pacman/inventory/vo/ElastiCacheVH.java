@@ -56,6 +56,17 @@ public class ElastiCacheVH {
     /** The parameter group. */
     String parameterGroup;
     
+    /** Subenets associated with the Cache Subnet Group **/
+    
+    List <String> subnets;
+    /** vpc associaged with the cache subnet Group **/
+    
+    String vpc ;
+    
+    List<ElastiCacheNodeVH> nodes;
+    
+    List<String> nodeNames;
+    
     /**
      * Gets the arn.
      *
@@ -235,4 +246,37 @@ public class ElastiCacheVH {
     public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
+
+    public List<String> getSubnets() {
+        return subnets;
+    }
+
+    public void setSubnets(List<String> subnets) {
+        this.subnets = subnets;
+    }
+
+    public String getVpc() {
+        return vpc;
+    }
+
+    public void setVpc(String vpc) {
+        this.vpc = vpc;
+    }
+    
+	public List<ElastiCacheNodeVH> getNodes() {
+		return nodes;
+	}
+
+	public void setNodes(List<ElastiCacheNodeVH> nodes) {
+		this.nodes = nodes;
+	}
+
+	public List<String> getNodeNames() {
+		return nodeNames;
+	}
+
+	public void setNodeNames(List<String> nodeNames) {
+		this.nodeNames = nodeNames;
+	}
+    
 }

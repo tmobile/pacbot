@@ -861,6 +861,79 @@ CREATE TABLE `task` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 
+
+DROP TABLE IF EXISTS `pac_config_relation`;
+ 
+CREATE TABLE `pac_config_relation` (
+  `application` varchar(2048) COLLATE utf8_bin NOT NULL,
+  `parent` varchar(2048) COLLATE utf8_bin NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+DROP TABLE IF EXISTS `pac_config_key_metadata`;
+
+CREATE TABLE `pac_config_key_metadata` (
+  `cfkey` varchar(200) COLLATE utf8_bin NOT NULL,
+  `description` varchar(200) COLLATE utf8_bin NOT NULL,
+  UNIQUE KEY `cfkey` (`cfkey`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+DROP TABLE IF EXISTS `pac_config_properties`;
+
+CREATE TABLE `pac_config_properties` (
+  `cfkey` text COLLATE utf8_bin,
+  `value` text COLLATE utf8_bin,
+  `application` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+  `profile` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+  `label` varchar(50) COLLATE utf8_bin DEFAULT NULL,
+  `createdBy` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+  `createdDate` varchar(20) COLLATE utf8_bin DEFAULT NULL,
+  `modifiedBy` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+  `modifiedDate` varchar(20) COLLATE utf8_bin DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+
+
+
+CREATE TABLE pacman_field_override
+(
+   resourcetype varchar(50),
+   _resourceid text,
+   fieldname varchar(100),
+   fieldvalue varchar(200),
+   updatedby varchar(100),
+   updatedon varchar(50)
+)
+;
+
+CREATE TABLE cf_pac_updatable_fields
+(
+   resourceType varchar(100),
+   displayFields longtext,
+   updatableFields longtext
+)
+;
+
+
+CREATE TABLE cf_Aws_Accounts
+(
+   accountName varchar(200),
+   accountId varchar(200),
+   accountDesc longtext,
+   createdBy varchar(100),
+   createdDate varchar(20),
+   modifiedBy varchar(100),
+   modifiedDate varchar(20),
+   id varchar(100) NOT NULL,
+   roleCreated varchar(50),
+   policiesAttached varchar(50),
+   accountTrustUpdate varchar(50),
+   baseAccountPolicyUpdate varchar(50),
+   status varchar(50)
+)
+;
+
+
 /*Insert task to necessary tables*/
 insert  into `task`(`id`,`index`,`mappings`,`data`) values (1,'exceptions','{\"mappings\":{\"sticky_exceptions\":{\"properties\":{\"assetGroup\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"dataSource\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"exceptionName\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"exceptionReason\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"expiryDate\":{\"type\":\"date\"},\"targetTypes\":{\"properties\":{\"name\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"rules\":{\"properties\":{\"ruleId\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"ruleName\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}}}}}}}}}',NULL),(2,'faqs','{\"mappings\":{\"widgetinfo\":{\"properties\":{\"widgetid\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"widgetname\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}}},\"faqinfo\":{\"properties\":{\"answer\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"faqid\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"faqname\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"tag\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}},\"widgetid\":{\"type\":\"text\",\"fields\":{\"keyword\":{\"type\":\"keyword\",\"ignore_above\":256}}}}}}}','{\"index\": {\"_index\": \"faqs\", \"_type\": \"widgetinfo\", \"_id\": \"w1\"}}\r{\"widgetid\":\"w1\",\"widgetname\":\"compliance overview\"}\r{\"index\": {\"_index\": \"faqs\", \"_type\": \"widgetinfo\", \"_id\": \"w2\"}}\r{\"widgetid\":\"w2\",\"widgetname\":\"patching\"}\r{\"index\": {\"_index\": \"faqs\", \"_type\": \"widgetinfo\", \"_id\": \"w3\"}}\r{\"widgetid\":\"w3\",\"widgetname\":\"tagging\"}\r{\"index\": {\"_index\": \"faqs\", \"_type\": \"widgetinfo\", \"_id\": \"w4\"}}\r{\"widgetid\":\"w4\",\"widgetname\":\"vulnerabilities\"}\r{\"index\": {\"_index\": \"faqs\", \"_type\": \"widgetinfo\", \"_id\": \"w5\"}}\r{\"widgetid\":\"w5\",\"widgetname\":\"certificates\"}\r{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w2q7\"}}\r{\"faqid\":\"q7\",\"faqname\":\"How is unpatched count calculated ?\",\"answer\":\"Total assets which does not have updated kernel version.\",\"widgetid\":\"w2\",\"tag\":\"patching\"}\r{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w3q4\"}}\r{\"faqid\":\"q4\",\"faqname\":\"How is tagging compliance % calculated ?\",\"answer\":\"Tagging compliance is calculated by dividing total taggable assets by total tagged assets.\",\"widgetid\":\"w3\",\"tag\":\"tagging\"}\r{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w1q1\"}}\r{\"faqid\":\"q1\",\"faqname\":\"What is shown in this graph?\",\"answer\":\"This multi ring donut represents the overall compliance percentage. Policies are grouped into categories like security, governance, cost optimization and tagging. Rings in the donut represents compliance percentage for each of those categories.  The rolled up percentage value for a given category is calculated by doing a weighted average of compliance percentage values of individual policies in that category. Weights are assigned based on the importance of the policy. Overall rolled up number in the middle of the donut represents uber compliance percentage for the selected asset group. This value is calculated by doing a simple average of compliance percentage values of the four categories.\",\"widgetid\":\"w1\",\"tag\":\"over-all\"}\r{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w4q5\"}}\r{\"faqid\":\"q5\",\"faqname\":\"How is vulnerabilities compliance % calculated ?\",\"answer\":\"Vulnerabilities compliance is calculated by dividing total vulnerable assets by total servers, if an asset is not scanned by qualys , then the asset is considered as vulnerable.\",\"widgetid\":\"w4\",\"tag\":\"vulnerabilities\"}\r{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w5q3\"}}\r{\"faqid\":\"q3\",\"faqname\":\"How is certificates compliance % calculated ?\",\"answer\":\"Total non-expired certificates divided by total certificates\",\"widgetid\":\"w5\",\"tag\":\"certificates\"}\r{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w3q8\"}}\r{\"faqid\":\"q8\",\"faqname\":\"How is untagged count calculated ?\",\"answer\":\"Total assets which is missing either application/environment tags or both tags.\",\"widgetid\":\"w3\",\"tag\":\"tagging\"}\r{\"index\": {\"_index\": \"faqs\", \"_type\": \"faqinfo\", \"_id\": \"w2q2\"}}\r{\"faqid\":\"q2\",\"faqname\":\"How is patching compliance % calculated ?\",\"answer\":\"Total patched resources divided by total running resources\",\"widgetid\":\"w2\",\"tag\":\"patching\"}');
 
@@ -976,6 +1049,11 @@ INSERT INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfi
 INSERT INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('vpngateway','VPN Gateway','Networking & Content Delivery','aws','{"key":"accountid,region,vpngatewayid","id":"vpngatewayid"}','active',920825,concat(@eshost,':',@esport,'/aws_vpngateway/vpngateway'),{d '2017-11-29'},{d '2017-11-29'},'Infra & Platforms');
 INSERT INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('wafdomain','WAF Domains','Other','aws','{"key":"","id":""}','enabled',null,concat(@eshost,':',@esport,'/aws_wafdomain/wafdomain'),{d '2017-11-13'},{d '2017-11-13'},'Infra & Platforms');
 INSERT INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('elasticache','ElastiCache','Database','aws','{"key":"account,region,clustername","id":"arn"}','enabled',null,concat(@eshost,':',@esport,'/aws_elasticache/elasticache'),{d '2017-11-13'},{d '2017-11-13'},'Infra & Platforms');
+
+INSERT INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('datastream','Kinesis Datastream','Analytics','aws','{"key":"streamarn","id":"streamarn"}','enabled','123',concat(@eshost,':',@esport,'/aws_datastream/datastream'),{d '2018-10-30'},{d '2018-10-30'},'Infra & Platforms');
+INSERT INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('deliverystream','Kinesis Fireshose','Analytics','aws','{"key":"deliverystreamarn","id":"deliverystreamarn"}','enabled','123',concat(@eshost,':',@esport,'/aws_deliverystream/deliverystream'),{d '2018-10-30'},{d '2018-10-30'},'Infra & Platforms');
+INSERT INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('videostream','Kinesis Videostream','Analytics','aws','{"key":"streamarn","id":"streamarn"}','enabled','123',concat(@eshost,':',@esport,'/aws_videostream/videostream'),{d '2018-10-30'},{d '2018-10-30'},'Infra & Platforms');
+INSERT INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('reservedinstance','Reserved Instances','Compute','aws','{"key":"instanceid","id":"instanceid"}','','123',concat(@eshost,':',@esport,'/aws_reservedinstance/reservedinstance'),{d '2018-11-01'},{d '2018-11-01'},'Infra & Platforms');
 
 
 
@@ -1334,39 +1412,6 @@ INSERT INTO pac_v2_ui_download_filters (serviceId,serviceName,serviceEndpoint) V
  (14,'ApplicationOrRepositoryDistribution','/api/devstandards/v1/repositories/assets/repositoryorapplicationdistribution');
 
  
- 
- DROP TABLE IF EXISTS `pac_config_relation`;
- 
-CREATE TABLE `pac_config_relation` (
-  `application` varchar(2048) COLLATE utf8_bin NOT NULL,
-  `parent` varchar(2048) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-
-DROP TABLE IF EXISTS `pac_config_key_metadata`;
-
-CREATE TABLE `pac_config_key_metadata` (
-  `cfkey` varchar(200) COLLATE utf8_bin NOT NULL,
-  `description` varchar(200) COLLATE utf8_bin NOT NULL,
-  UNIQUE KEY `cfkey` (`cfkey`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-
-DROP TABLE IF EXISTS `pac_config_properties`;
-
-CREATE TABLE `pac_config_properties` (
-  `cfkey` text COLLATE utf8_bin,
-  `value` text COLLATE utf8_bin,
-  `application` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `profile` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `label` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `createdBy` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `createdDate` varchar(20) COLLATE utf8_bin DEFAULT NULL,
-  `modifiedBy` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `modifiedDate` varchar(20) COLLATE utf8_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
-
 INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('application','root');
 INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('batch','application');
 INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('api','application');
@@ -1378,6 +1423,8 @@ INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('auth-service',
 INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('dev-standards-service','api');
 INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('admin-service','api');
 INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('magenta-skill','api');
+INSERT INTO pac_config_relation (application,parent) VALUES ('data-shipper','batch');
+INSERT INTO pac_config_relation (application,parent) VALUES ('inventory','batch');
 INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('admin.api-role','Description PlaceHolder');
 INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('admin.push.notification.pollinterval.milliseconds','description');
 INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[0].name','Description PlaceHolder');
@@ -1549,6 +1596,15 @@ INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('template.di
 INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('time.zone','');
 INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('vulnerability.summary.severity','Description PlaceHolder');
 INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('vulnerability.types','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('s3.role','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('s3.region','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('s3.processed','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('s3.data','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('s3','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('region.ignore','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('file.path','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('base.region','');
+
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.config','classpath:spring-logback.xml','application','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.esLoggingLevel','WARN','application','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.consoleLoggingLevel','INFO','application','prd','latest',NULL,NULL,NULL,NULL);
@@ -1571,9 +1627,6 @@ INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`labe
 
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('ldap.naming.context-factory','com.sun.jndi.ldap.LdapCtxFactory','application','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('ldap.naming.authentication','simple','application','prd','latest',NULL,NULL,NULL,NULL);
-INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('redshift.url',concat(@REDSHIFT_URL,''),'application','prd','latest',NULL,NULL,NULL,NULL);
-INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('redshift.userName',concat(@REDSHIFT_USER_NAME,''),'application','prd','latest',NULL,NULL,NULL,NULL);
-INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('redshift.password',concat(@REDSHIFT_PASSWORD,''),'application','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('service.dns.name',concat(@PACMAN_HOST_NAME,''),'api','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('service.url.compliance',concat(@PACMAN_HOST_NAME,'/api/compliance'),'api','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('service.url.asset',concat(@PACMAN_HOST_NAME,'/api/asset'),'api','prd','latest',NULL,NULL,NULL,NULL);
@@ -1677,4 +1730,20 @@ INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`labe
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('cron.frequency.weekly-report-sync-trigger','0 0 9 ? * MON *','notification-service','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('template.digest-mail.url',concat('https://s3.amazonaws.com/',@PACMAN_S3,'/index.html'),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('server.servlet.context-path','/api/statistics','statistics-service','prd','latest',NULL,NULL,NULL,NULL);
+
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('region.ignore','us-gov-west-1,cn-north-1,cn-northwest-1','inventory','prd','latest',null,null,null,null);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('file.path','/home/ec2-user/data','inventory','prd','latest',null,null,null,null);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('spring.datasource.url',concat(@RDS_URL,''),'batch','prd','latest',null,null,null,null);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('spring.datasource.username',concat(@RDS_USERNAME,''),'batch','prd','latest',null,null,null,null,);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('spring.datasource.password',concat(@RDS_PASSWORD,''),'batch','prd','latest',null,null,null,null,);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('s3.data',concat(@DATA_IN_DIR,''),'batch','prd','latest',null,null,null,null);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('s3.processed',concat(@DATA_BKP_DIR,''),'batch','prd','latest',null,null,null,null);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('s3.role',concat(@PAC_ROLE,''),'batch','prd','latest',null,null,null,null);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('s3.region',concat(@BASE_REGION,''),'batch','prd','latest',null,null,null,null);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('s3',concat(@DATA_IN_S3,''),'batch','prd','latest',null,null,null,null);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('base.account',concat(@BASE_ACCOUNT,''),'batch','prd','latest',null,null,null,null);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('base.region',concat(@BASE_REGION,''),'batch','prd','latest',null,null,null,null);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('discovery.role',concat(@PAC_RO_ROLE,''),'inventory','prd','latest',null,null,null,null);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('elastic-search.host',concat(@ES_HOST_NAME,''),'batch','prd','latest',null,null,null,null);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('elastic-search.port',concat(@ES_PORT,''),'batch','prd','latest',null,null,null,null);
 

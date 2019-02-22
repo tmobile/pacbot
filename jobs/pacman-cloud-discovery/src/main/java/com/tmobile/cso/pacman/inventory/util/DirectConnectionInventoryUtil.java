@@ -19,8 +19,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicSessionCredentials;
@@ -46,7 +46,7 @@ public class DirectConnectionInventoryUtil {
 	}
 	
 	/** The log. */
-	private static Logger log = LogManager.getLogger(DirectConnectionInventoryUtil.class);
+	private static Logger log = LoggerFactory.getLogger(DirectConnectionInventoryUtil.class);
 	
 	/** The delimiter. */
 	private static String delimiter = FileGenerator.DELIMITER;
@@ -56,13 +56,13 @@ public class DirectConnectionInventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<Connection>> fetchDirectConnections(BasicSessionCredentials temporaryCredentials, String skipRegions,String account) {
+	public static Map<String,List<Connection>> fetchDirectConnections(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
 		
 		Map<String,List<Connection>> connectionMap = new LinkedHashMap<>();
-		String expPrefix = "{\"errcode\": \"NO_RES_REG\" ,\"account\": \""+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Direct Connections\" , \"region\":\"" ;
+		String expPrefix = "{\"errcode\": \"NO_RES_REG\" ,\"accountId\": \""+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Direct Connections\" , \"region\":\"" ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
@@ -71,14 +71,14 @@ public class DirectConnectionInventoryUtil {
 					List<Connection> connectionList = directConnectClient.describeConnections().getConnections();
 					
 					if(!connectionList.isEmpty() ) {
-						log.debug("Account : " + account + " Type : Direct Connections "+ region.getName()+" >> " + connectionList.size());
-						connectionMap.put(account+delimiter+region.getName(), connectionList);
+						log.debug("Account : " + accountId + " Type : Direct Connections "+ region.getName()+" >> " + connectionList.size());
+						connectionMap.put(accountId+delimiter+accountName+delimiter+region.getName(), connectionList);
 					}
 			   	}
 				
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+"\", \"cause\":\"" +e.getMessage()+"\"}");
-				ErrorManageUtil.uploadError(account,region.getName(),"directconnect",e.getMessage());
+				ErrorManageUtil.uploadError(accountId,region.getName(),"directconnect",e.getMessage());
 		   	}
 		}
 		return connectionMap;
@@ -89,13 +89,13 @@ public class DirectConnectionInventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<VirtualInterface>> fetchDirectConnectionsVirtualInterfaces(BasicSessionCredentials temporaryCredentials, String skipRegions,String account) {
+	public static Map<String,List<VirtualInterface>> fetchDirectConnectionsVirtualInterfaces(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
 		
 		Map<String,List<VirtualInterface>> virtualInterfacesMap = new LinkedHashMap<>();
-		String expPrefix = "{\"errcode\": \"NO_RES_REG\" ,\"account\": \""+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Direct Connections\" , \"region\":\"" ;
+		String expPrefix = "{\"errcode\": \"NO_RES_REG\" ,\"accountId\": \""+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Direct Connections\" , \"region\":\"" ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
@@ -103,14 +103,14 @@ public class DirectConnectionInventoryUtil {
 					AmazonDirectConnectClient directConnectClient = (AmazonDirectConnectClient) AmazonDirectConnectClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					List<VirtualInterface> virtualInterfacesList = directConnectClient.describeVirtualInterfaces().getVirtualInterfaces();
 					if(!virtualInterfacesList.isEmpty() ) {
-						log.debug("Account : " + account + " Type : Direct Connections "+ region.getName()+" >> " + virtualInterfacesList.size());
-						virtualInterfacesMap.put(account+delimiter+region.getName(), virtualInterfacesList);
+						log.debug("Account : " + accountId + " Type : Direct Connections "+ region.getName()+" >> " + virtualInterfacesList.size());
+						virtualInterfacesMap.put(accountId+delimiter+accountName+delimiter+region.getName(), virtualInterfacesList);
 					}
 			   	}
 				
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+"\", \"cause\":\"" +e.getMessage()+"\"}");
-				ErrorManageUtil.uploadError(account,region.getName(),"virtualinterface",e.getMessage());
+				ErrorManageUtil.uploadError(accountId,region.getName(),"virtualinterface",e.getMessage());
 		   	}
 		}
 		return virtualInterfacesMap;
