@@ -6,4 +6,5 @@ class NullResource(TerraformResource):
     resource_instance_name = "null_resource"
     setup_time = 60
     available_args = {
+        'triggers': {'required': False},
     }

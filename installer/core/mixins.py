@@ -46,7 +46,6 @@ class MsgMixin(metaclass=ABCMeta):
                 print("%s %s %s" % (surrounding_char * pre_hash_count, Settings.SETUP_DESCRIPTION, surrounding_char * post_hash_count))
             print(surrounding_char * column_length)
 
-
         print(self.RESET_ANSI)
 
     def _get_pre_and_post_char_length(self, message, column_length):
@@ -126,7 +125,7 @@ class MsgMixin(metaclass=ABCMeta):
     def show_step_inner_warning(self, message):
         print_message = "\t%s" % message
         SysLog().write_debug_log(print_message)
-        print(self.WARN_ANSI +  print_message + self.RESET_ANSI)
+        print(self.WARN_ANSI + print_message + self.RESET_ANSI)
 
     def show_progress_start_message(self, message):
         progress_bracket = self.BGREEN_ANSI + "[.   ]" + self.RESET_ANSI
@@ -139,6 +138,7 @@ class MsgMixin(metaclass=ABCMeta):
         sys.stdout.flush()
 
     def show_progress_message(self, message, time_delay):
+        self.erase_printed_line()
         self.show_progress_start_message(message)
         sys.stdout.write(self.BGREEN_ANSI)
         sys.stdout.flush()
