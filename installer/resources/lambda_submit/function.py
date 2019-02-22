@@ -68,19 +68,22 @@ class DataCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
         'jobUuid': "pacman-aws-inventory-jar-with-dependencies",
         'jobType': "jar",
         'jobDesc': "AWS-Data-Collection",
-        'environmentVariables': [],
+        'environmentVariables': [
+            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,inventory/prd/latest"}
+        ],
         'params': [
             {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile.cso.pacman"},
-            {'encrypt': False, 'key': "accountinfo", 'value': AwsAccount.get_output_attr('account_id')},
-            {'encrypt': False, 'key': "base-account", 'value': AwsAccount.get_output_attr('account_id')},
-            {'encrypt': False, 'key': "discovery-role", 'value': BaseRole.get_output_attr('name')},
-            {'encrypt': False, 'key': "s3", 'value': BucketStorage.get_output_attr('bucket')},
-            {'encrypt': False, 'key': "s3-data", 'value': "inventory"},  # TODO: need to be changed with s3obj class
-            {'encrypt': False, 'key': "s3-processed", 'value': "backup"},
-            {'encrypt': False, 'key': "s3-role", 'value': BaseRole.get_output_attr('name')},
-            {'encrypt': False, 'key': "s3-region", 'value': AwsRegion.get_output_attr('name')},
-            {'encrypt': False, 'key': "file-path", 'value': "/home/ec2-user/data"},
-            {'encrypt': False, 'key': "base-region", 'value': AwsRegion.get_output_attr('name')}
+            {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
+            # {'encrypt': False, 'key': "accountinfo", 'value': AwsAccount.get_output_attr('account_id')},
+            # {'encrypt': False, 'key': "base-account", 'value': AwsAccount.get_output_attr('account_id')},
+            # {'encrypt': False, 'key': "discovery-role", 'value': BaseRole.get_output_attr('name')},
+            # {'encrypt': False, 'key': "s3", 'value': BucketStorage.get_output_attr('bucket')},
+            # {'encrypt': False, 'key': "s3-data", 'value': "inventory"},  # TODO: need to be changed with s3obj class
+            # {'encrypt': False, 'key': "s3-processed", 'value': "backup"},
+            # {'encrypt': False, 'key': "s3-role", 'value': BaseRole.get_output_attr('name')},
+            # {'encrypt': False, 'key': "s3-region", 'value': AwsRegion.get_output_attr('name')},
+            # {'encrypt': False, 'key': "file-path", 'value': "/home/ec2-user/data"},
+            # {'encrypt': False, 'key': "base-region", 'value': AwsRegion.get_output_attr('name')}
         ]
     })
 
@@ -95,19 +98,22 @@ class DataShipperCloudWatchEventTarget(CloudWatchEventTargetResource):
         'jobType': "jar",
         'jobDesc': "Ship aws data periodically from redshfit to ES",
         'environmentVariables': [
-            {'name': "ES_HOST", 'value': ESDomain.get_output_attr('endpoint')},
-            {'name': "RDS_DB_URL", 'value': MySQLDatabase.get_rds_db_url()},
-            {'name': "ES_PORT", 'value': "80"},
+            # {'name': "ES_HOST", 'value': ESDomain.get_output_attr('endpoint')},
+            # {'name': "RDS_DB_URL", 'value': MySQLDatabase.get_rds_db_url()},
+            # {'name': "ES_PORT", 'value': "80"},
+            # {'name': "STAT_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('statistics')},
+            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/api/config/batch,data-shipper/prd/latest"},
             {'name': "ASSET_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('asset')},
             {'name': "CMPL_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('compliance')},
-            {'name': "STAT_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('statistics')},
             {'name': "AUTH_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('auth')},
 
         ],
         'params': [
             {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile"},
             {'encrypt': False, 'key': "datasource", 'value': "aws"},
-            {'encrypt': False, 'key': "rdsinfo", 'value': MySQLDatabase.get_rds_info()},
-            {'encrypt': False, 'key': "apiauthinfo", 'value': "MjJlMTQ5MjItODdkNy00ZWU0LWE0NzAtZGEwYmIxMGQ0NWQzOmNzcldwYzVwN0pGRjR2RVpCa3dHQ0FoNjdrR1FHd1h2NDZxdWc3djVad3RLZw=="}
+            # {'encrypt': False, 'key': "rdsinfo", 'value': MySQLDatabase.get_rds_info()},
+            {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
+            {'encrypt': False, 'key': "apiauthinfo",
+                'value': "MjJlMTQ5MjItODdkNy00ZWU0LWE0NzAtZGEwYmIxMGQ0NWQzOmNzcldwYzVwN0pGRjR2RVpCa3dHQ0FoNjdrR1FHd1h2NDZxdWc3djVad3RLZw=="}
         ]
     })
