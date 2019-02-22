@@ -38,5 +38,8 @@ redshift:
   url: ${REDSHIFT_URL}
   userName: ${REDSHIFT_USER_NAME}
   password: ${REDSHIFT_PASSWORD}  
+  
+  notificationSender:
+         fromAddress: ${MAIL_SENDER_ADDRESS}
     
     
