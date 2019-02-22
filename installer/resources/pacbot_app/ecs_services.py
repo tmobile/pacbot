@@ -74,7 +74,7 @@ class ComplianceEcsService(BaseEcsService, ECSServiceResource):
     DEPENDS_ON = [alr.ComplianceALBListenerRule, WaitConfigServiceToUp]
 
 
-class NotificationsEcsService(ECSServiceResource, BaseEcsService):
+class NotificationsEcsService(BaseEcsService, ECSServiceResource):
     name = "notifications"
     task_definition = td.NotificationsEcsTaskDefinition.get_output_attr('arn')
     load_balancer_target_group_arn = tg.NotificationsALBTargetGroup.get_output_attr('arn')
