@@ -1,29 +1,53 @@
 import os
 
 
-def replace_placeholder_with_values(aws_region, aws_account_id, es_host, es_port, sql_file):
+def replace_placeholder_with_values(env_variables, sql_file):
+    """
+    Iterate over each line in the SQL file and replace any variables which is found in the
+    env_variables dict so that all variables values get expanded with correct one
+
+    Args:
+        env_variables (dict): Dict containing only required env variables
+        sql_file (str): File path where the SQL file is present
+    """
     with open(sql_file, 'r') as f:
         lines = f.readlines()
 
     for idx, line in enumerate(lines):
-        if "SET @region='$region';" in line:
-            lines[idx] = line.replace("@region='$region'", "@region='" + aws_region + "'")
-        if "SET @account='$account';" in line:
-            lines[idx] = line.replace("@account='$account'", "@account='" + aws_account_id + "'")
-        if "SET @eshost='$eshost';" in line:
-            lines[idx] = line.replace("@eshost='$eshost'", "@eshost='" + es_host + "'")
-        if "SET @esport='$esport';" in line:
-            lines[idx] = line.replace("@esport='$esport'", "@esport='" + es_port + "'")
+        for key, value in env_variables.items():
+            compare_str = "SET @%s='$%s'" % (key, key)
+            if compare_str in line:
+                replace = compare_str
+                replace_with = "SET @%s='%s'" % (key, value)
+                lines[idx] = line.replace(replace, replace_with)
+                break
 
     with open(sql_file, 'w') as f:
         f.writelines(lines)
 
 
+def get_env_variables_and_values(env_dict):
+    """
+    This method get all the environment variables which starts with ENV_ and create a dict with
+    the key as the name after ENV_ and value as the environment value
+
+    Args:
+        env_dict (dict): This is the real enviorment variable dict
+
+    Returns:
+        env_variables (dict): Dict containing only required env variables
+    """
+    env_variables = {}
+    for key, value in env_dict.items():
+        if key.startswith('ENV_'):
+            var_key = key.split('ENV_')[1]
+            env_variables[var_key] = value
+
+    return env_variables
+
+
 if __name__ == "__main__":
-    aws_region = os.getenv('AWS_REGION')
-    aws_account_id = os.getenv('AWS_ACCOUNT_ID')
-    es_host = os.getenv('ES_HOST')
-    es_port = os.getenv('ES_PORT')
+    env_variables = get_env_variables_and_values(dict(os.environ.items()))
     sql_file = os.getenv('SQL_FILE_PATH')
 
-    replace_placeholder_with_values(aws_region, aws_account_id, es_host, es_port, sql_file)
+    replace_placeholder_with_values(env_variables, sql_file)

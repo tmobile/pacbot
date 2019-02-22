@@ -11,11 +11,23 @@ import os
 
 class BaseAction(MsgMixin):
     check_dependent_resources = True
-    resource_count = 0
+    total_resources_count = 0
 
     def __init__(self, input=None):
         self.input = input
         self.tf_outputs = PyTerraform.load_terraform_output_from_json_file()
+        self.clear_status_dir_files()
+
+    def clear_status_dir_files(self):
+        for root, dirs, files in os.walk(Settings.OUTPUT_STATUS_DIR):
+            for f in files:
+                if str(f) != ".gitignore":
+                    os.unlink(os.path.join(root, f))
+
+    def files_count_in_output_status_dir(self):
+        path, dirs, files = os.walk(Settings.OUTPUT_STATUS_DIR).__next__()
+
+        return len(files)
 
     def _create_terraform_provider_file(self):
         terraform_provider_file = get_terraform_provider_file()
@@ -58,6 +70,7 @@ class BaseAction(MsgMixin):
                 self.show_progress_start_message("Checking resource existence for %s" % resource_class.__name__)
                 exists, checked_details = resource.check_exists_before(self.input, self.tf_outputs)
                 self.erase_printed_line()
+                self.total_resources_count += 1
 
                 if exists:
                     can_continue_installation = False
@@ -70,8 +83,17 @@ class BaseAction(MsgMixin):
             else:
                 self.show_step_finish(K.RESOURCE_EXISTS_CHECK_FAILED, color=self.ERROR_ANSI)
             self.stdout_flush()
+        else:
+            self._load_total_resources_count(resources)
 
         return can_continue_installation
+
+    def _load_total_resources_count(self, resources):
+        self.total_resources_count = 0
+        for resource in resources:
+            resource_class = resource.__class__
+            if TerraformResource in inspect.getmro(resource_class):
+                self.total_resources_count += 1
 
     def validate_arguments(self, resources, terraform_with_targets):
         key_msg = {}
