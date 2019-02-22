@@ -15,9 +15,6 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.compliance.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -35,7 +32,6 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -48,9 +44,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.commons.Constants;
-import com.tmobile.pacman.api.compliance.util.PacHttpUtils;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
 import com.tmobile.pacman.api.compliance.domain.Request;
 import com.tmobile.pacman.api.compliance.repository.DownloadRepository;
@@ -59,6 +53,10 @@ import com.tmobile.pacman.api.compliance.service.ComplianceServiceImpl;
 import com.tmobile.pacman.api.compliance.service.DownloadFileService;
 import com.tmobile.pacman.api.compliance.service.PatchingService;
 import com.tmobile.pacman.api.compliance.service.TaggingService;
+import com.tmobile.pacman.api.compliance.util.PacHttpUtils;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * The Class DownloadController.
@@ -134,7 +132,7 @@ public class DownloadController implements Constants {
      *             the exception
      */
 
-    @HystrixCommand
+    
     @ApiOperation(httpMethod = "POST", value = "Download Service Details in CSV or Excel")
     @RequestMapping(path = "/v1/download/services", method = RequestMethod.POST, produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<Object> getIssuesDownload(final HttpServletRequest servletRequest,
@@ -199,7 +197,7 @@ public class DownloadController implements Constants {
      *            the json
      * @return the service details
      */
-    @HystrixCommand
+    
     private JsonArray getServiceDetails(String json) {
         JsonParser jsonParser;
         JsonObject dataJson = null;
