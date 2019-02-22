@@ -6,40 +6,31 @@ package com.tmobile.cso.pacman.datashipper.util;
  */
 public interface Constants {
 
-    /** The redshift user. */
-    String REDSHIFT_USER = "REDSHIFT-USER-ID";
-
-    /** The redshift pwd. */
-    String REDSHIFT_PWD = "REDSHIFT-PWD";
+	String RDS_DB_URL = "spring.datasource.url";
 
     /** The rds user. */
-    String RDS_USER = "RDS-USER-ID";
+    String RDS_USER = "spring.datasource.username";
 
     /** The rds pwd. */
-    String RDS_PWD = "RDS-PWD";
+    String RDS_PWD = "spring.datasource.password";
 
-    /** The config svc user. */
-    String CONFIG_SVC_USER = "CNFG-SVC-USER-ID";
-
-    /** The config svc pwd. */
-    String CONFIG_SVC_PWD = "CNFG-SVC-USER-PWD";
-
-    /** The redshfit param. */
-    String REDSHFIT_PARAM = "redshiftinfo";
-
-    /** The config svc param. */
-    String CONFIG_SVC_PARAM = "typesvcconfig";
-
-    /** The rds param. */
-    Object RDS_PARAM = "rdsinfo";
-
+   
     /** The target type info. */
     String TARGET_TYPE_INFO = "targetTypes";
+    
+    String CONFIG_CREDS = "config_creds";
+    
+    
+    /** The target type info. */
+    String TARGET_TYPE_OUTSCOPE = "typesNotInScope";
     
     /** The API  User:Password  */
     String API_AUTH_INFO = "apiauthinfo";
     
     String CONFIG_QUERY = "configquery";
+    
+    String CONFIG_URL = "CONFIG_URL";
+    
 
     /** The failed. */
     String FAILED = "failed";
@@ -58,4 +49,10 @@ public interface Constants {
     
     /** The fatal. */
     String FATAL = "fatal";
+    
+    String SOURCE = "source";
+    
+    String NAME = "name";
+    
+   
 }

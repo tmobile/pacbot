@@ -119,7 +119,7 @@ public class EC2InventoryUtilTest {
         describeRouteTablesResult.setRouteTables(routeTableList);
         when(ec2Client.describeRouteTables()).thenReturn(describeRouteTablesResult);
         assertThat(ec2InventoryUtil.fetchRouteTables(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -133,7 +133,7 @@ public class EC2InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(ec2InventoryUtil.fetchRouteTables(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -161,7 +161,7 @@ public class EC2InventoryUtilTest {
         describeNetworkAclsResult.setNetworkAcls(networkAclList);
         when(ec2Client.describeNetworkAcls()).thenReturn(describeNetworkAclsResult);
         assertThat(ec2InventoryUtil.fetchNetworkACL(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -175,7 +175,7 @@ public class EC2InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(ec2InventoryUtil.fetchNetworkACL(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -203,7 +203,7 @@ public class EC2InventoryUtilTest {
         describeAddressesResult.setAddresses(elasticIPList);
         when(ec2Client.describeAddresses()).thenReturn(describeAddressesResult);
         assertThat(ec2InventoryUtil.fetchElasticIPAddresses(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -217,7 +217,7 @@ public class EC2InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(ec2InventoryUtil.fetchElasticIPAddresses(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -245,7 +245,7 @@ public class EC2InventoryUtilTest {
         describeInternetGatewaysResult.setInternetGateways(internetGatewayList);
         when(ec2Client.describeInternetGateways()).thenReturn(describeInternetGatewaysResult);
         assertThat(ec2InventoryUtil.fetchInternetGateway(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -259,7 +259,7 @@ public class EC2InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(ec2InventoryUtil.fetchInternetGateway(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -287,7 +287,7 @@ public class EC2InventoryUtilTest {
         describeVpnGatewaysResult.setVpnGateways(vpnGatewayList);
         when(ec2Client.describeVpnGateways()).thenReturn(describeVpnGatewaysResult);
         assertThat(ec2InventoryUtil.fetchVPNGateway(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -301,7 +301,7 @@ public class EC2InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(ec2InventoryUtil.fetchVPNGateway(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -329,7 +329,7 @@ public class EC2InventoryUtilTest {
         describeEgressOnlyInternetGatewaysResult.setEgressOnlyInternetGateways(egressGatewayList);
         when(ec2Client.describeEgressOnlyInternetGateways(anyObject())).thenReturn(describeEgressOnlyInternetGatewaysResult);
         assertThat(ec2InventoryUtil.fetchEgressGateway(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -343,7 +343,7 @@ public class EC2InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(ec2InventoryUtil.fetchEgressGateway(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -371,7 +371,7 @@ public class EC2InventoryUtilTest {
         describeDhcpOptionsResult.setDhcpOptions(dhcpOptionsList);
         when(ec2Client.describeDhcpOptions()).thenReturn(describeDhcpOptionsResult);
         assertThat(ec2InventoryUtil.fetchDHCPOptions(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -385,7 +385,7 @@ public class EC2InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(ec2InventoryUtil.fetchDHCPOptions(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -413,7 +413,7 @@ public class EC2InventoryUtilTest {
         describeVpcPeeringConnectionsResult.setVpcPeeringConnections(peeringConnectionList);
         when(ec2Client.describeVpcPeeringConnections()).thenReturn(describeVpcPeeringConnectionsResult);
         assertThat(ec2InventoryUtil.fetchPeeringConnections(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -427,7 +427,7 @@ public class EC2InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(ec2InventoryUtil.fetchPeeringConnections(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -455,7 +455,7 @@ public class EC2InventoryUtilTest {
         describeCustomerGatewaysResult.setCustomerGateways(customerGatewayList);
         when(ec2Client.describeCustomerGateways()).thenReturn(describeCustomerGatewaysResult);
         assertThat(ec2InventoryUtil.fetchCustomerGateway(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -469,7 +469,7 @@ public class EC2InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(ec2InventoryUtil.fetchCustomerGateway(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -497,7 +497,7 @@ public class EC2InventoryUtilTest {
         describeVpnConnectionsResult.setVpnConnections(vpnConnectionsList);
         when(ec2Client.describeVpnConnections()).thenReturn(describeVpnConnectionsResult);
         assertThat(ec2InventoryUtil.fetchVPNConnections(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -511,7 +511,7 @@ public class EC2InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(ec2InventoryUtil.fetchVPNConnections(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -539,7 +539,7 @@ public class EC2InventoryUtilTest {
         describeReservedInstancesResult.setReservedInstances(reservedInstancesList);
         when(ec2Client.describeReservedInstances()).thenReturn(describeReservedInstancesResult);
         assertThat(ec2InventoryUtil.fetchReservedInstances(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -553,7 +553,7 @@ public class EC2InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(ec2InventoryUtil.fetchReservedInstances(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -581,7 +581,7 @@ public class EC2InventoryUtilTest {
         describeInstanceInfoRslt.setInstanceInformationList(ssmInstanceListTemp);
         when(ssmClient.describeInstanceInformation(anyObject())).thenReturn(describeInstanceInfoRslt);
         assertThat(ec2InventoryUtil.fetchSSMInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -595,7 +595,7 @@ public class EC2InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(ec2InventoryUtil.fetchSSMInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
