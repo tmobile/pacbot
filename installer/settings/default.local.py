@@ -6,6 +6,8 @@ VPC = {
     "SUBNETS": ["subnet-1", "subnet-2"]
 }
 
+MAKE_ALB_INTERNAL = True
+
 # System reads below data from user if not updated here
 AWS_ACCESS_KEY = ""
 AWS_SECRET_KEY = ""
