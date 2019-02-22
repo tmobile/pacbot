@@ -10,6 +10,7 @@ from resources.data.aws_info import AwsRegion
 from resources.pacbot_app.alb import ApplicationLoadBalancer
 from resources.datastore.es import ESDomain
 from resources.iam.ecs_role import ECSRole
+from resources.iam.base_role import BaseRole
 from resources.lambda_submit.function import SubmitJobLambdaFunction
 from resources.lambda_rule_engine.function import RuleEngineLambdaFunction
 from resources.s3.bucket import BucketStorage
@@ -73,7 +74,14 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_PATCHING_FEATURE_ENABLED': "false",
                         'ENV_VULNERABILITY_FEATURE_ENABLED': "false",
                         'ENV_MAIL_SERVER': "http://localhost", ## TODO: this is not actual value
-                        'ENV_PACMAN_S3': 'pacman-email-templates'  ## TODO: this is not actual value
+                        'ENV_PACMAN_S3': 'pacman-email-templates'  ## TODO: this is not actual value,
+                        'ENV_DATA_IN_DIR': Settings.RESOURCE_NAME_PREFIX,
+                        'ENV_DATA_BKP_DIR': Settings.RESOURCE_NAME_PREFIX,
+                        'ENV_PAC_ROLE': BaseRole.get_input_attr('name'),
+                        'BASE_REGION': AwsRegion.get_output_attr('name'),
+                        'ENV_DATA_IN_S3': BucketStorage.get_output_attr('bucket'),
+                        'ENV_BASE_ACCOUNT': AwsAccount.get_output_attr('account_id'),
+                        'ENV_PAC_RO_ROLE': BaseRole.get_input_attr('name')
                     },
                     'interpreter': [Settings.PYTHON_INTERPRETER]
                 }
