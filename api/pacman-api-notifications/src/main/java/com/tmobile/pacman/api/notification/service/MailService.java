@@ -32,6 +32,8 @@ import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.validator.routines.UrlValidator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.core.io.ClassPathResource;
@@ -49,6 +51,8 @@ import freemarker.template.Template;
 @Service
 public class MailService {
 
+	
+	private final Logger log = LoggerFactory.getLogger(getClass());
     private JavaMailSender mailSender;
     private MailContentBuilderService mailContentBuilderService;
     
@@ -59,14 +63,17 @@ public class MailService {
     }
 
 	public void prepareAndSendMail(String from, List<String> to, String subject, String mailMessageUrlOrBody, Map<String, Object> placeholderValues, final String attachmentUrl, final Boolean isPlainMessage) throws Exception {
+		log.info("prepareAndSendMail {}",mailSender);
 		mailSender.send(buildMimeMessagePreparator(from, to, subject, mailMessageUrlOrBody, placeholderValues, attachmentUrl, isPlainMessage));
 	}
 
 	public void prepareTemplateAndSendMail(String from, List<String> to, String subject, String mailMessageUrlOrBody, Map<String, Object> placeholderValues, final String attachmentUrl, final Boolean isPlainMessage) throws Exception {
+		log.info("prepareTemplateAndSendMail {}",mailSender);
 		mailSender.send(prepareTemplateBuildMimeMessagePreparator(from, to, subject, mailMessageUrlOrBody, placeholderValues, attachmentUrl, isPlainMessage));
 	}
 	
 	public void prepareTemplateAndSendMail(String from, List<String> to, String subject, String mailContent , final String attachmentUrl) throws Exception {
+		log.info("prepareTemplateAndSendMail {}",mailSender);
 		mailSender.send(buildMimeMessagePreparator(from, to, subject, mailContent, attachmentUrl));
 	}
 	
