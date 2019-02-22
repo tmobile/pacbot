@@ -1,11 +1,11 @@
 from core.terraform.resources.aws.batch import BatchComputeEnvironmentResource
-from resources.iam.ecs_role import ECSRoleInstanceProfile
-from resources.iam.batch_role import BatchRole, BatchIAMRolePolicyAttach
-from resources.vpc.security_group import InfraSecurityGroupResource
 from core.config import Settings
 from core.providers.aws.boto3.vpc import get_ec2_client
 from core.providers.aws.boto3.batch import get_compute_environments
 from core.mixins import MsgMixin
+from resources.iam.ecs_role import ECSRoleInstanceProfile
+from resources.iam.batch_role import BatchRole, BatchIAMRolePolicyAttach
+from resources.vpc.security_group import InfraSecurityGroupResource
 import boto3
 import os
 import sys
@@ -53,13 +53,6 @@ class RuleEngineBatchJobEnv(BatchComputeEnvironmentResource):
 
     def pre_generate_terraform(self):
         warn_msg = "Batch Jobs are running, please try after it gets completed."
-        if self.check_batch_jobs_running():
-            message = "\n\t ** %s **\n" % warn_msg
-            print(MsgMixin.BERROR_ANSI + message + MsgMixin.RESET_ANSI)
-            sys.exit()
-
-    def pre_terraform_destroy(self):
-        warn_msg = "Batch Jobs are running, please try after it gets completed OR manually cancel the jobs"
         if self.check_batch_jobs_running():
             message = "\n\t ** %s **\n" % warn_msg
             print(MsgMixin.BERROR_ANSI + message + MsgMixin.RESET_ANSI)
