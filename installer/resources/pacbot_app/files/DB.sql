@@ -62,7 +62,7 @@ SET @PATCHING_FEATURE_ENABLED='$PATCHING_FEATURE_ENABLED';
 SET @VULNERABILITY_FEATURE_ENABLED='$VULNERABILITY_FEATURE_ENABLED';
 SET @MAIL_SERVER='$MAIL_SERVER';
 SET @PACMAN_S3='$PACMAN_S3';
-SET @DATA_IN_DIR ='$DATA_IN_DIR'; 
+SET @DATA_IN_DIR ='$DATA_IN_DIR';
 SET @DATA_BKP_DIR ='$DATA_BKP_DIR';
 SET @PAC_ROLE ='$PAC_ROLE';
 SET @BASE_REGION ='$BASE_REGION';
@@ -870,7 +870,7 @@ CREATE TABLE `task` (
 
 
 DROP TABLE IF EXISTS `pac_config_relation`;
- 
+
 CREATE TABLE `pac_config_relation` (
   `application` varchar(2048) COLLATE utf8_bin NOT NULL,
   `parent` varchar(2048) COLLATE utf8_bin NOT NULL
@@ -901,6 +901,7 @@ CREATE TABLE `pac_config_properties` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
+DROP TABLE IF EXISTS `pacman_field_override`;
 
 CREATE TABLE pacman_field_override
 (
@@ -910,17 +911,20 @@ CREATE TABLE pacman_field_override
    fieldvalue varchar(200),
    updatedby varchar(100),
    updatedon varchar(50)
-)
-;
+);
+
+
+DROP TABLE IF EXISTS `cf_pac_updatable_fields`;
 
 CREATE TABLE cf_pac_updatable_fields
 (
    resourceType varchar(100),
    displayFields longtext,
    updatableFields longtext
-)
-;
+);
 
+
+DROP TABLE IF EXISTS `cf_Aws_Accounts`;
 
 CREATE TABLE cf_Aws_Accounts
 (
@@ -1218,7 +1222,7 @@ INSERT INTO cf_Policy (policyId,policyName,policyDesc,resolution,policyUrl,polic
 INSERT INTO cf_Policy (policyId,policyName,policyDesc,resolution,policyUrl,policyVersion,status,userId,createdDate,modifiedDate) VALUES ('PacMan_sgmandatorytags_version-1','sgmandatorytags','This rule checks for Security Group mandatory tags maintained for given SG in AWS account. If any of the mandatory tags are missing it will create an issue.',null,'','version-1','',1205352,{d '2017-08-10'},{d '2017-08-10'});
 
 /* Rule  Initialisation */
-                                                                                                                                         
+
 INSERT INTO cf_RuleInstance (ruleId,ruleUUID,policyId,ruleName,targetType,assetGroup,alexaKeyword,ruleParams,ruleFrequency,ruleExecutable,ruleRestUrl,ruleType,ruleArn,status,userId,displayName,createdDate,modifiedDate,severity,category) VALUES ('PacMan_VpcFlowLogsEnabled_version-1_VpcFlowLogsEnabled_vpc','aws_account_should_have_vpclogs_enabled','PacMan_VpcFlowLogsEnabled_version-1','VpcFlowLogsEnabled','vpc','aws','VpcFlowLogsEnabled','{"params":[{"encrypt":"false","value":"role/pac_ro","key":"roleIdentifyingString"},{"encrypt":"false","value":"check-for-vpc-flowlog-enabled","key":"ruleKey"},{"encrypt":false,"value":"high","key":"severity"},{"isValueNew":true,"encrypt":false,"value":"security","key":"ruleCategory"}],"environmentVariables":[{"encrypt":false,"value":"123","key":"abc"}],"ruleId":"PacMan_VpcFlowLogsEnabled_version-1_VpcFlowLogsEnabled_vpc","autofix":false,"alexaKeyword":"VpcFlowLogsEnabled","ruleRestUrl":"","targetType":"vpc","pac_ds":"aws","policyId":"PacMan_VpcFlowLogsEnabled_version-1","assetGroup":"aws","ruleUUID":"aws_account_should_have_vpclogs_enabled","ruleType":"ManageRule"}','0 0/12 * * ? *','','','ManageRule',concat('arn:aws:events:',@region,':',@account,':rule/aws_account_should_have_vpclogs_enabled'),'ENABLED','ASGC','VPC flowlogs should be enabled for all VPCs',{d '2017-08-11'},{d '2018-08-31'},null,null);
 INSERT INTO cf_RuleInstance (ruleId,ruleUUID,policyId,ruleName,targetType,assetGroup,alexaKeyword,ruleParams,ruleFrequency,ruleExecutable,ruleRestUrl,ruleType,ruleArn,status,userId,displayName,createdDate,modifiedDate,severity,category) VALUES ('PacMan_Unused-Security-group_version-1_UnusedSecurityGroup_sg','aws_security_groups_should_not_be_unused','PacMan_Unused-Security-group_version-1','UnusedSecurityGroup','sg','aws','UnusedSecurityGroup','{"params":[{"encrypt":false,"value":"check-for-unused-security-group","key":"ruleKey"},{"encrypt":false,"value":"governance","key":"ruleCategory"},{"encrypt":false,"value":"low","key":"severity"},{"encrypt":false,"value":",","key":"splitterChar"},{"key":"fixKey","value":"unused-sg-auto-fix","isValueNew":true,"encrypt":false},{"key":"esServiceWithSgUrl","value":"/aws/ec2_secgroups/_search,/aws/rdsdb_secgroups/_search,/aws/rdscluster_secgroups/_search,/aws/redshift_secgroups/_search,/aws_lambda/lambda_secgroups/_search,/aws_appelb/appelb_secgroups/_search,/aws_classicelb/classicelb_secgroups/_search,/aws/elasticsearch/_search","isValueNew":true,"encrypt":false}],"environmentVariables":[],"ruleId":"PacMan_Unused-Security-group_version-1_UnusedSecurityGroup_sg","autofix":false,"alexaKeyword":"UnusedSecurityGroup","ruleRestUrl":"","targetType":"sg","pac_ds":"aws","policyId":"PacMan_Unused-Security-group_version-1","assetGroup":"aws","ruleUUID":"aws_security_groups_should_not_be_unused","ruleType":"ManageRule"}','0 0/12 * * ? *','','','ManageRule',concat('arn:aws:events:',@region,':',@account,':rule/aws_security_groups_should_not_be_unused'),'ENABLED','ASGC','Security groups should not be in unused state',{d '2017-10-16'},{d '2018-12-18'},null,null);
 INSERT INTO cf_RuleInstance (ruleId,ruleUUID,policyId,ruleName,targetType,assetGroup,alexaKeyword,ruleParams,ruleFrequency,ruleExecutable,ruleRestUrl,ruleType,ruleArn,status,userId,displayName,createdDate,modifiedDate,severity,category) VALUES ('PacMan_UnusedElasticIpRule_version-1_UnusedElasticIpRule_elasticip','aws_elasticip_should_not_be_unused','PacMan_UnusedElasticIpRule_version-1','UnusedElasticIpRule','elasticip','aws-all','UnusedElasticIpRule','{"params":[{"encrypt":false,"value":"check-for-unused-elastic-ip","key":"ruleKey"},{"encrypt":false,"value":"high","key":"severity"},{"encrypt":false,"value":"governance","key":"ruleCategory"},{"key":"esElasticIpUrl","value":"/aws_elasticip/elasticip/_search","isValueNew":true,"encrypt":false}],"environmentVariables":[],"ruleId":"PacMan_UnusedElasticIpRule_version-1_UnusedElasticIpRule_elasticip","autofix":false,"alexaKeyword":"UnusedElasticIpRule","ruleRestUrl":"","targetType":"elasticip","pac_ds":"aws","policyId":"PacMan_UnusedElasticIpRule_version-1","assetGroup":"aws-all","ruleUUID":"aws_elasticip_should_not_be_unused","ruleType":"ManageRule"}','0 0/12 * * ? *','','','ManageRule',concat('arn:aws:events:',@region,':',@account,':rule/aws_elasticip_should_not_be_unused'),'ENABLED','ASGC','Elastic Ip''s should not be in unused state',{d '2018-02-01'},{d '2018-09-19'},null,null);
@@ -1301,7 +1305,7 @@ INSERT INTO cf_RuleInstance (ruleId,ruleUUID,policyId,ruleName,targetType,assetG
 INSERT INTO cf_RuleInstance (ruleId,ruleUUID,policyId,ruleName,targetType,assetGroup,alexaKeyword,ruleParams,ruleFrequency,ruleExecutable,ruleRestUrl,ruleType,ruleArn,status,userId,displayName,createdDate,modifiedDate,severity,category) VALUES ('PacMan_CheckInactiveIamUser_version-1_CheckInactiveIamUser_iamuser','aws_iam_users_should_not_be_inactive_for_than_target_period','PacMan_CheckInactiveIamUser_version-1','CheckInactiveIamUser','iamuser','aws-all','CheckInactiveIamUser','{"assetGroup":"aws-all","policyId":"PacMan_CheckInactiveIamUser_version-1","environmentVariables":[],"ruleUUID":"aws_iam_users_should_not_be_inactive_for_than_target_period","ruleType":"ManageRule","pac_ds":"aws","targetType":"iamuser","params":[{"encrypt":false,"value":"90","key":"pwdInactiveDuration"},{"encrypt":false,"value":"high","key":"severity"},{"encrypt":false,"value":"security","key":"ruleCategory"},{"encrypt":false,"value":"check-for-inactive-iam-users","key":"ruleKey"},{"encrypt":false,"value":"true","key":"threadsafe"}],"ruleId":"PacMan_CheckInactiveIamUser_version-1_CheckInactiveIamUser_iamuser","autofix":false,"alexaKeyword":"CheckInactiveIamUser","ruleRestUrl":""}','0 0/6 * * ? *','','','ManageRule',concat('arn:aws:events:',@region,':',@account,':rule/aws_iam_users_should_not_be_inactive_for_than_target_period'),'ENABLED','710383','IAM users should not be inactive for more than 90 days',{d '2018-02-13'},{d '2018-02-13'},null,null);
 INSERT INTO cf_RuleInstance (ruleId,ruleUUID,policyId,ruleName,targetType,assetGroup,alexaKeyword,ruleParams,ruleFrequency,ruleExecutable,ruleRestUrl,ruleType,ruleArn,status,userId,displayName,createdDate,modifiedDate,severity,category) VALUES ('PacMan_CheckGuardDutyIsEnabledForAllAccount_version-1_CheckGuardDutyIsEnabledForAllAccount_account','aws_guardduty_should_be_enabled','PacMan_CheckGuardDutyIsEnabledForAllAccount_version-1','CheckGuardDutyIsEnabledForAllAccount','account','aws-all','CheckGuardDutyIsEnabledForAllAccount','{"params":[{"encrypt":false,"value":"check-guard-duty-enabled-for-all-accounts","key":"ruleKey"},{"encrypt":false,"value":"role/pac_ro","key":"roleIdentifyingString"},{"encrypt":false,"value":"high","key":"severity"},{"encrypt":false,"value":"security","key":"ruleCategory"}],"environmentVariables":[],"ruleId":"PacMan_CheckGuardDutyIsEnabledForAllAccount_version-1_CheckGuardDutyIsEnabledForAllAccount_account","autofix":false,"alexaKeyword":"CheckGuardDutyIsEnabledForAllAccount","ruleRestUrl":"","targetType":"account","pac_ds":"aws","policyId":"PacMan_CheckGuardDutyIsEnabledForAllAccount_version-1","assetGroup":"aws-all","ruleUUID":"aws_guardduty_should_be_enabled","ruleType":"ManageRule"}','0 0/12 * * ? *','','','ManageRule',concat('arn:aws:events:',@region,':',@account,':rule/aws_guardduty_should_be_enabled'),'ENABLED','ASGC','AWS Guard Duty service should be enabled on all regions of all AWS accounts',{d '2018-01-19'},{d '2018-08-31'},null,null);
 INSERT INTO cf_RuleInstance (ruleId,ruleUUID,policyId,ruleName,targetType,assetGroup,alexaKeyword,ruleParams,ruleFrequency,ruleExecutable,ruleRestUrl,ruleType,ruleArn,status,userId,displayName,createdDate,modifiedDate,severity,category) VALUES ('PacMan_AmazonRDSIdleDBInstancesRule_version-1_AmazonRDSIdleDBInstancesRule_rdsdb','aws_rds_instances_should_not_tbe_idle_state','PacMan_AmazonRDSIdleDBInstancesRule_version-1','AmazonRDSIdleDBInstancesRule','rdsdb','aws-all','AmazonRDSIdleDBInstancesRule','{"params":[{"encrypt":false,"value":"Ti39halfu8","key":"checkId"},{"encrypt":false,"value":"check-for-amazon-RDS-idle-DB-instances","key":"ruleKey"},{"encrypt":false,"value":"low","key":"severity"},{"isValueNew":true,"encrypt":false,"value":"costOptimization","key":"ruleCategory"},{"key":"esServiceURL","value":"/aws_checks/checks_resources/_search","isValueNew":true,"encrypt":false}],"environmentVariables":[],"ruleId":"PacMan_AmazonRDSIdleDBInstancesRule_version-1_AmazonRDSIdleDBInstancesRule_rdsdb","autofix":false,"alexaKeyword":"AmazonRDSIdleDBInstancesRule","ruleRestUrl":"","targetType":"rdsdb","pac_ds":"aws","policyId":"PacMan_AmazonRDSIdleDBInstancesRule_version-1","assetGroup":"aws-all","ruleUUID":"aws_rds_instances_should_not_tbe_idle_state","ruleType":"ManageRule"}','0 0/12 * * ? *','','','ManageRule',concat('arn:aws:events:',@region,':',@account,':rule/aws_rds_instances_should_not_tbe_idle_state'),'ENABLED','ASGC','Amazon RDS DB instances should not be idle',{d '2018-03-15'},{d '2018-09-19'},null,null);
-                                                                                                                                      
+
 /* Omni Seach Configuration */
 
 INSERT INTO OmniSearch_Config (SEARCH_CATEGORY,RESOURCE_TYPE,REFINE_BY_FIELDS,RETURN_FIELDS) VALUES ('Assets','All','accountname,region,tags.Application,tags.Environment,tags.Stack,tags.Role','_resourceid,searchcategory,tags[],accountname,_entitytype');
@@ -1418,7 +1422,7 @@ INSERT INTO pac_v2_ui_download_filters (serviceId,serviceName,serviceEndpoint) V
  (13,'PullRequestAsstesByAge','/api/devstandards/v1/pullrequests/assets/openstate'),
  (14,'ApplicationOrRepositoryDistribution','/api/devstandards/v1/repositories/assets/repositoryorapplicationdistribution');
 
- 
+
 INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('application','root');
 INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('batch','application');
 INSERT INTO pac_config_relation (`application`,`parent`) VALUES ('api','application');
@@ -1741,8 +1745,8 @@ INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`labe
 INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('region.ignore','us-gov-west-1,cn-north-1,cn-northwest-1','inventory','prd','latest',null,null,null,null);
 INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('file.path','/home/ec2-user/data','inventory','prd','latest',null,null,null,null);
 INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('spring.datasource.url',concat(@RDS_URL,''),'batch','prd','latest',null,null,null,null);
-INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('spring.datasource.username',concat(@RDS_USERNAME,''),'batch','prd','latest',null,null,null,null,);
-INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('spring.datasource.password',concat(@RDS_PASSWORD,''),'batch','prd','latest',null,null,null,null,);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('spring.datasource.username',concat(@RDS_USERNAME,''),'batch','prd','latest',null,null,null,null);
+INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('spring.datasource.password',concat(@RDS_PASSWORD,''),'batch','prd','latest',null,null,null,null);
 INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('s3.data',concat(@DATA_IN_DIR,''),'batch','prd','latest',null,null,null,null);
 INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('s3.processed',concat(@DATA_BKP_DIR,''),'batch','prd','latest',null,null,null,null);
 INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('s3.role',concat(@PAC_ROLE,''),'batch','prd','latest',null,null,null,null);

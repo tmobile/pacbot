@@ -35,10 +35,9 @@ class ComplianceALBListenerRule(ALBListenerRuleResource, BaseLR):
     condition_values = [PATH_PREFIX + "compliance*"]
 
 
-# TODO: Commenting this out to use it in future
-# class NotificationsALBListenerRule(ALBListenerRuleResource, BaseLR):
-#     action_target_group_arn = tg.NotificationsALBTargetGroup.get_output_attr('arn')
-#     condition_values = [PATH_PREFIX + "notifications*"]
+class NotificationsALBListenerRule(ALBListenerRuleResource, BaseLR):
+    action_target_group_arn = tg.NotificationsALBTargetGroup.get_output_attr('arn')
+    condition_values = [PATH_PREFIX + "notifications*"]
 
 
 class StatisticsALBListenerRule(ALBListenerRuleResource, BaseLR):
