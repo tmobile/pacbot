@@ -59,13 +59,13 @@ class Destroy(BaseAction):
 
     def destroy_resources_and_show_progress(self, resources, terraform_with_targets):
         self.terraform_thread = Thread(target=self.destroy_resources, args=(list(resources), terraform_with_targets))
-        display_thread = Thread(target=self.show_progress_status, args=(list(resources), terraform_with_targets))
+        progressbar_thread = Thread(target=self.show_progress_status, args=(list(resources), terraform_with_targets))
 
         self.terraform_thread.start()
-        display_thread.start()
+        progressbar_thread.start()
 
         self.terraform_thread.join()
-        display_thread.join()
+        progressbar_thread.join()
 
     def destroy_resources(self, resources, terraform_with_targets):
         destroy_resources = resources if terraform_with_targets else None
@@ -73,6 +73,9 @@ class Destroy(BaseAction):
 
         # May be timeout causes first destroy to be a failure hence attempt as many times as the value in the setting
         for attempt in range(Settings.DESTROY_NUM_ATTEMPTS):
+            self.executed_with_error = False
+            self.exception = None
+
             try:
                 PyTerraform().terraform_destroy(destroy_resources)
                 self.run_post_destoy(resources)
@@ -87,7 +90,7 @@ class Destroy(BaseAction):
         sleep(1)  # To sleep initaially for pre-destroy to process
         while self.destroy_statuses.get('execution_finished') != self.current_destroy_status and self.terraform_thread.isAlive():
             duration = self.CYAN_ANSI + self.get_duration(datetime.now() - self.destroy_start_time) + self.END_ANSI
-            message = "%s. Time elapsed: %s" % (K.TERRAFORM_DESTROY_RUNNING, duration)
+            message = "Time elapsed: %s" % duration
             self.show_progress_message(message, 1.5)
 
         self.erase_printed_line()
