@@ -30,3 +30,21 @@ cron:
 template:
   digest-mail:
     url: https://s3.amazonaws.com/${PACMAN_S3:s3}/index.html
+    
+mail:
+    host: ${MAIL_SERVER:localhost}
+    port: ${MAIL_SERVER_PORT:25}
+    protocol: ${MAIL_PROTOCOL:smtp}
+    defaultEncoding: UTF-8
+    username: ${MAIL_SENDER_ADDRESS}
+    password: ${MAIL_SERVER_PWD}
+    properties:
+      mail:
+        smtp:
+          auth: ${MAIL_SMTP_AUTH:true}
+          ssl: 
+            trust: ${MAIL_SERVER:localhost}
+          starttls:
+            enable: ${MAIL_SMTP_SSL_ENABLE:true}
+    test-connection: ${MAIL_SMTP_SSL_TEST_CONNECTION:false}
+    
