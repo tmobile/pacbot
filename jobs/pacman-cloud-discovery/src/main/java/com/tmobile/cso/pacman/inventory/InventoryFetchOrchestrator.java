@@ -96,7 +96,7 @@ public class InventoryFetchOrchestrator {
 			accounts = rdsDBManager.executeQuery(accountQuery);
 		}else{
 			String accountlist = Arrays.asList(accountInfo.split(",")).stream().collect(Collectors.joining("','"));
-			accounts = rdsDBManager.executeQuery(accountQuery +" WHERE accountid IN ('"+ accountlist+ "')");	
+			accounts = rdsDBManager.executeQuery(accountQuery +" AND accountid IN ('"+ accountlist+ "')");	
 		}
 		// No info from DB. Okay lets use what parameter we get.
 		if(accounts.isEmpty()){
