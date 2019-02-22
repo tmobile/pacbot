@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.compliance.service.AssetGroupService;
 
 /**
@@ -47,7 +46,7 @@ public class AssetGroupController {
      * @return the all asset group apis
      */
     @RequestMapping(path = "/v1/get-all-asset-group-apis", method = RequestMethod.GET)
-    @HystrixCommand
+    
     public ResponseEntity<List<Map<String, Object>>> getAllAssetGroupApis() {
         try {
             List<Map<String, Object>> assetGroupDetails = assetGroupService

@@ -34,7 +34,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.commons.Constants;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
 import com.tmobile.pacman.api.statistics.StatsConstants;
@@ -62,7 +61,7 @@ public class StatisticsController implements Constants {
      *         utilization for last 7 days for given assetGroup.
      */
     @RequestMapping(path = "/v1/cpu-utilization", method = RequestMethod.GET)
-    @HystrixCommand
+    
     public ResponseEntity<Object> getCPUUtilization(@RequestParam("ag") String assetGroup) {
         if (Strings.isNullOrEmpty(assetGroup)) {
             return ResponseUtils.buildFailureResponse(new Exception(StatsConstants.ERR_MSG_AG_MANDATORY));
@@ -87,7 +86,7 @@ public class StatisticsController implements Constants {
      *         utilization for last 7 days for given assetGroup.
      */
     @RequestMapping(path = "/v1/network-utilization", method = RequestMethod.GET)
-    @HystrixCommand
+    
     public ResponseEntity<Object> getNetworkUtilization(@RequestParam("ag") String assetGroup) {
         if (Strings.isNullOrEmpty(assetGroup)) {
             return ResponseUtils.buildFailureResponse(new Exception(StatsConstants.ERR_MSG_AG_MANDATORY));
@@ -112,7 +111,7 @@ public class StatisticsController implements Constants {
      *         utilization for last 7 days for given assetGroup.
      */
     @RequestMapping(path = "/v1/disk-utilization", method = RequestMethod.GET)
-    @HystrixCommand
+    
     public ResponseEntity<Object> getDiskUtilization(@RequestParam("ag") String assetGroup) {
         if (Strings.isNullOrEmpty(assetGroup)) {
             return ResponseUtils.buildFailureResponse(new Exception(StatsConstants.ERR_MSG_AG_MANDATORY));
@@ -135,7 +134,7 @@ public class StatisticsController implements Constants {
      */
     @RequestMapping(path = "/v1/statsdetails", method = RequestMethod.GET)
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> getStatsDetails() {
         ResponseVO response;
         try {
@@ -155,7 +154,7 @@ public class StatisticsController implements Constants {
      */
     @RequestMapping(path = "/v1/autofixstats", method = RequestMethod.GET)
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> getAutofixStats() {
         Map<String, List<Map<String, Object>>> response = new HashMap<>();
         try {

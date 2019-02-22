@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.collect.Maps;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.auth.domain.TokenDetails;
 import com.tmobile.pacman.api.auth.domain.UserLoginCredentials;
 import com.tmobile.pacman.api.auth.services.ApiService;
@@ -90,7 +89,6 @@ public class AuthController {
 	
 	@ApiOperation(httpMethod = "POST", value = "Login to Auth Server", response = Map.class, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(value = "/user/login", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-	@HystrixCommand
 	public Map<String, Object> login(@ApiParam(value = "provide valid username and password details", required = true) @RequestBody final UserLoginCredentials credentials) {
 		Map<String, Object> response = apiService.login(credentials);
 		if (response != null) {
@@ -102,14 +100,12 @@ public class AuthController {
 	
 	@ApiOperation(httpMethod = "GET", value = "Logout User from Auth Server")
 	@RequestMapping(value = "/user/logout-session", method = RequestMethod.GET)
-	@HystrixCommand
 	public void logout(@AuthenticationPrincipal Principal principal) {
 		apiService.logout(principal);
 	}
 
 	@ApiOperation(httpMethod = "GET", value = "Get User Details")
 	@RequestMapping(value = "/user", method = RequestMethod.GET)
-	@HystrixCommand
 	public Principal user(@AuthenticationPrincipal Principal user) {
 		return user;
 	}

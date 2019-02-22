@@ -39,7 +39,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
 import com.tmobile.pacman.api.compliance.service.RuleEngineService;
 
@@ -70,7 +69,7 @@ public class RuleEngineController {
     @ApiOperation(httpMethod = "POST", value = "Invoke PacMan Rule")
     @RequestMapping(path = "/v1/invoke-rule", method = RequestMethod.POST)
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> runRule(
             @ApiParam(value = "Provide valid Rule Id", required = true) @RequestParam("ruleId") String ruleId,
             @ApiParam(value = "Provide valid Rule Runtime Parameters") @RequestBody Map<String, String> runTimeParams) {
@@ -93,7 +92,7 @@ public class RuleEngineController {
     @ApiOperation(httpMethod = "GET", value = "Get Last Action")
     @RequestMapping(path = "/v1/get-last-action", method = RequestMethod.GET)
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> getLastAction(
             @ApiParam(value = "Provide valid Resource Id", required = true) @RequestParam("resourceId") String resourceId) {
         try {
@@ -130,7 +129,7 @@ public class RuleEngineController {
     @ApiOperation(httpMethod = "POST", value = "Post new Resource Action")
     @RequestMapping(path = "/v1/post-action", method = RequestMethod.POST)
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> postAction(
             @ApiParam(value = "Provide valid Resource Id", required = true) @RequestParam("resourceId") String resourceId,
             @ApiParam(value = "Provide a valid Action", required = true) @RequestParam("action") String action) {

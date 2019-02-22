@@ -26,7 +26,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.admin.domain.Response;
 import com.tmobile.pacman.api.admin.repository.service.DatasourceService;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
@@ -57,7 +56,7 @@ public class DatasourceController {
      */
 	@ApiOperation(httpMethod = "GET", value = "API to get all datasource details", response = Response.class,  produces = MediaType.APPLICATION_JSON_VALUE)
 	//@PreAuthorize("@securityService.hasPermission(authentication)")
-	@HystrixCommand
+	
 	@RequestMapping(path = "/list", method = RequestMethod.GET,  produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getAllDatasourceDetails() {
 		try {
