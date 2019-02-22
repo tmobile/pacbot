@@ -1,7 +1,6 @@
 package com.tmobile.cso.pacman.datashipper.es;
 
 import java.io.IOException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +26,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Strings;
 import com.google.gson.Gson;
 import com.tmobile.cso.pacman.datashipper.config.ConfigManager;
 import com.tmobile.cso.pacman.datashipper.util.Constants;
@@ -38,20 +38,20 @@ import com.tmobile.cso.pacman.datashipper.util.Util;
 public class ESManager implements Constants {
 
     /** The es host key name. */
-    private static final String ES_HOST_KEY_NAME = System.getenv("ES_HOST");
+    private static final String ES_HOST_KEY_NAME = System.getProperty("elastic-search.host");
 
     /** The es http port. */
     private static final Integer ES_HTTP_PORT = getESPort();
-
+	
     /** The rest client. */
     private static RestClient restClient;
-
+    
     /** The log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ESManager.class);
     
     private static int getESPort(){
         try{
-            return Integer.parseInt(System.getenv("ES_PORT"));
+            return Integer.parseInt(System.getProperty("elastic-search.port"));
         }catch(Exception e){
             return 0;
         }
@@ -79,12 +79,11 @@ public class ESManager implements Constants {
      *            the docs
      * @return the map
      */
-    public static Map<String, Object> uploadData(String index, String type, List<Map<String, String>> docs) {
+    public static Map<String, Object> uploadData(String index, String type, List<Map<String, String>> docs, String loaddate) {
 
         Map<String, Object> status = new LinkedHashMap<>();
         List<String> errors = new ArrayList<>();
         String actionTemplate = "{ \"index\" : { \"_index\" : \"%s\", \"_type\" : \"%s\", \"_id\" : \"%s\" } }%n";
-        String loaddate = new SimpleDateFormat("yyyy-MM-dd H:mm:00Z").format(new java.util.Date());
 
         LOGGER.info("*********UPLOADING*** {}" ,type);
 
@@ -617,16 +616,13 @@ public class ESManager implements Constants {
                 bulkRequest.append(_doc + "\n");
                 i++;
                 if (i % 1000 == 0 || bulkRequest.toString().getBytes().length / (1024 * 1024) > 5) {
-                    LOGGER.info("Uploading {}", i);
                     bulkUpload(bulkRequest);
                     bulkRequest = new StringBuilder();
                 }
             }
             if (bulkRequest.length() > 0) {
-                LOGGER.info("Uploaded {}", i);
                 bulkUpload(bulkRequest);
             }
-            refresh(index);
         }
     }
     
@@ -645,6 +641,30 @@ public class ESManager implements Constants {
             invokeAPI("POST", index + "/" + type + "/" + "_delete_by_query", deleteJson);
         } catch (IOException e) {
             LOGGER.error("Error deleteOldDocuments ", e);
+        }
+    }
+    
+    public static void updateLoadDate(String index, String type, String accountId, String region, String loaddate,boolean checkLatest) {
+    	LOGGER.info("Error records are handled for Account : {} Type : {} Region: {} ",accountId,type,region );
+    	StringBuilder updateJson = new StringBuilder("{\"script\":{\"inline\":\"ctx._source._loaddate= '");
+    	updateJson.append(loaddate).append("'\"},\"query\":{\"bool\":{\"must\":[");
+    	updateJson.append("{\"match\":{\"accountid\":\"");
+    	updateJson.append(accountId);
+    	updateJson.append("\"}}");
+    	if(!Strings.isNullOrEmpty(region)) {
+    		updateJson.append(",{\"match\":{\"region.keyword\":\"");
+    		updateJson.append(region);
+    		updateJson.append("\"}}");
+    	}
+    	if(checkLatest){
+    		updateJson.append(",{\"match\":{\"latest\":true }}");
+   
+    	}
+    	updateJson.append("]}}}");
+        try {
+            invokeAPI("POST", index + "/" + type + "/" + "_update_by_query", updateJson.toString());
+        } catch (IOException e) {
+            LOGGER.error("Error in updateLoadDate",e);
         }
     }
 }

@@ -5,9 +5,11 @@ import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.Map;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.conn.ssl.NoopHostnameVerifier;
@@ -23,8 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.tmobile.cso.pacman.datashipper.exception.UnAuthorisedException;
-
-import ch.qos.logback.core.net.SyslogOutputStream;
 
 
 /**
@@ -123,5 +123,29 @@ public class HttpUtil {
             LOGGER.error("Error getting getHttpClient " , e);
         }
         return httpClient;
+    }
+    
+    public static String httpGetMethodWithHeaders(String url,Map<String, Object> headers) throws Exception {
+        String json = null;
+        
+        HttpGet get = new HttpGet(url);
+        CloseableHttpClient httpClient = null;
+        if (headers != null && !headers.isEmpty()) {
+            for (Map.Entry<String, Object> entry : headers.entrySet()) {
+                get.setHeader(entry.getKey(), entry.getValue().toString());
+            }
+        }
+        try {
+            httpClient = getHttpClient();
+            CloseableHttpResponse res = httpClient.execute(get);
+            if (res.getStatusLine().getStatusCode() == 200) {
+                json = EntityUtils.toString(res.getEntity());
+            }
+        } finally {
+            if (httpClient != null) {
+                httpClient.close();
+            }
+        }
+        return json;
     }
 }

@@ -15,11 +15,12 @@
  ******************************************************************************/
 package com.tmobile.cso.pacman.inventory;
 
+import java.util.Map;
+
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
 
 
 /**
@@ -27,7 +28,6 @@ import org.springframework.context.annotation.PropertySource;
  */
 @Configuration
 @ComponentScan
-@PropertySource("classpath:inventory.properties")
 public class InventoryFetchApplication {
 		
 	
@@ -35,11 +35,13 @@ public class InventoryFetchApplication {
 	 * The main method.
 	 *
 	 * @param args the arguments
+	 * @return 
 	 */
-	public static void main(String[] args) {	
-	    ApplicationContext context = new AnnotationConfigApplicationContext(InventoryFetchApplication.class);	
+	@SuppressWarnings("resource")
+	public static Map<String, Object> main(String[] args) {	
+	    ApplicationContext context = new AnnotationConfigApplicationContext(InventoryFetchApplication.class);
 		InventoryFetchOrchestrator orchestrator = context.getBean(InventoryFetchOrchestrator.class);
-		orchestrator.orchestrate();
+		return orchestrator.orchestrate();
 	}
 	
 }

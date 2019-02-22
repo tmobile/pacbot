@@ -98,6 +98,7 @@ nav .nav-icon:last-child {
     font-size: 1em;
     color: #ffffff;
     padding: 0 5px 0 0;
+    text-transform: capitalize;
 }
 
 .pacman-menu {

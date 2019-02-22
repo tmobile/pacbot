@@ -2,11 +2,9 @@ package com.tmobile.cso.pacman.datashipper.entity;
 
 import static org.mockito.Matchers.anyList;
 import static org.mockito.Matchers.anyString;
-import static org.powermock.api.mockito.PowerMockito.doNothing;
 import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -19,12 +17,11 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.tmobile.cso.pacman.datashipper.config.ConfigManager;
-import com.tmobile.cso.pacman.datashipper.dao.DBManager;
 import com.tmobile.cso.pacman.datashipper.dao.RDSDBManager;
 import com.tmobile.cso.pacman.datashipper.es.ESManager;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ConfigManager.class,ESManager.class,RDSDBManager.class,DBManager.class})
+@PrepareForTest({ConfigManager.class,ESManager.class,RDSDBManager.class})
 public class EntityManagerTest {
 
     @SuppressWarnings("unchecked")
@@ -41,7 +38,7 @@ public class EntityManagerTest {
         Map<String, Map<String, String>> currentInfo = new HashMap<>();
         currentInfo.put("id",new HashMap<>());
         when(ESManager.getExistingInfo(anyString(),anyString(), anyList())).thenReturn(currentInfo);
-        
+      /*  
         PowerMockito.mockStatic(DBManager.class);
         List<Map<String, String>> entities = new ArrayList<>();
         Map<String,String> entity = new HashMap<>();
@@ -49,7 +46,7 @@ public class EntityManagerTest {
         entity.put("discoverydate", new Date().toString());
         entity.put("u_business_service", "application");
         entity.put("used_for", "environment");
-        entities.add(entity);
+        entities.add(entity);*/
         
         List<Map<String, String>> tags = new ArrayList<>();
         Map<String,String> tag = new HashMap<>();
@@ -67,7 +64,7 @@ public class EntityManagerTest {
         Map<String, String> override = new HashMap<>();
         override.put("_resourceid", "id");
         overrides.add(override);
-        when(DBManager.executeQuery(anyString())).thenReturn(entities,tags,overrides);
+       // when(DBManager.executeQuery(anyString())).thenReturn(entities,tags,overrides);
         
         when(ConfigManager.getKeyForType(anyString(),anyString())).thenReturn("id");
         when(ConfigManager.getIdForType(anyString(),anyString())).thenReturn("id");

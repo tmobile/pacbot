@@ -34,12 +34,12 @@ import com.amazonaws.services.securitytoken.model.AssumeRoleResult;
 public class CredentialProvider {
 	
 	/** The base account. */
-	@Value("${base-account}")
-	private String baseAccount;
+	@Value("${base.account}")
+	private String baseAccount ;
 	
-	@Value("${base-region}")
-    private String baseRegion;
-
+	@Value("${base.region}")
+	private String baseRegion ;
+	
 	/** The dev mode. */
 	private static boolean devMode = System.getProperty("PIC_DEV_MODE")==null?false:true;
 	
@@ -52,7 +52,7 @@ public class CredentialProvider {
 	 */
 	public  BasicSessionCredentials getCredentials(String account,String roleName){
 		
-		BasicSessionCredentials baseAccntCreds = getBaseAccountCredentials(roleName);
+		BasicSessionCredentials baseAccntCreds = getBaseAccountCredentials(baseAccount,baseRegion,roleName);
 		if(baseAccount.equals(account)){
 			return baseAccntCreds;
 		}
@@ -72,7 +72,7 @@ public class CredentialProvider {
 	 * @param roleName the role name
 	 * @return the base account credentials
 	 */
-	private BasicSessionCredentials getBaseAccountCredentials (String roleName){
+	private BasicSessionCredentials getBaseAccountCredentials (String baseAccount, String baseRegion,String roleName){
 		if(devMode){
 			String accessKey = System.getProperty("ACCESS_KEY"); 
 			String secretKey = System.getProperty("SECRET_KEY"); 

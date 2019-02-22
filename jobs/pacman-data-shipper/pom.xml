@@ -1,41 +1,46 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.tmobile.cloud</groupId>
+  <groupId>com.tmobile.cso.pacman</groupId>
   <artifactId>data-shipper</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
-
+  <version>0.0.1-SNAPSHOT</version>
+   
   <properties>
 		<java.version>1.8</java.version>
   </properties>
-
-  <repositories>
-    <repository>
-      <id>redshift</id>
-      <url>http://redshift-maven-repository.s3-website-us-east-1.amazonaws.com/release</url>
-    </repository>
-  </repositories>
+  
   <dependencies>
-	  <dependency>
-		  <groupId>org.powermock</groupId>
-			  <artifactId>powermock-module-junit4</artifactId>
-			  <version>1.7.3</version>
-	        <scope>test</scope>
-	  </dependency>
+  
+   <dependency>
+ 		  <groupId>org.powermock</groupId>
+  		  <artifactId>powermock-module-junit4</artifactId>
+  		  <version>1.7.3</version>
+          <scope>test</scope>
+	   </dependency>
+	   <dependency>
+ 		  <groupId>org.powermock</groupId>
+  		  <artifactId>powermock-api-mockito</artifactId>
+  		  <version>1.7.3</version>
+   		  <scope>test</scope>
+	   </dependency>
+	   <dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-test</artifactId>
+		    <version>4.0.5.RELEASE</version>
+		    <scope>test</scope>
+		</dependency>
+		<dependency>
+		    <groupId>com.amazonaws</groupId>
+		    <artifactId>aws-java-sdk-s3</artifactId>
+		    <version>1.11.490</version>
+		</dependency>
+		<dependency>
+		    <groupId>com.amazonaws</groupId>
+		    <artifactId>aws-java-sdk-sts</artifactId>
+	    	<version>1.11.490</version>
+		</dependency>
 
-	  <dependency>
-		  <groupId>org.powermock</groupId>
-			  <artifactId>powermock-api-mockito</artifactId>
-			  <version>1.7.3</version>
-	 		  <scope>test</scope>
-	  </dependency>
-	  <dependency>
-	    <groupId>org.springframework</groupId>
-	    <artifactId>spring-test</artifactId>
-	    <version>4.0.5.RELEASE</version>
-	    <scope>test</scope>
-	</dependency>
- 	 <dependency>
-            <groupId>com.tmobile.cloud</groupId>
+   		<dependency>
+            <groupId>com.tmobile.pacman</groupId>
             <artifactId>batch-commons</artifactId>
             <version>1.0.0-SNAPSHOT</version>
             <scope>provided</scope>
@@ -125,12 +130,7 @@
             		</artifactId>
             	</exclusion>
             </exclusions>
-  	</dependency>
-	<dependency>
-	   <groupId>com.amazon.redshift</groupId>
-	   <artifactId>redshift-jdbc42</artifactId>
-	   <version>1.2.1.1001</version>
-	</dependency>
+  </dependency>
 	<dependency>
   		<groupId>org.apache.httpcomponents</groupId>
   		<artifactId>httpclient</artifactId>
@@ -144,7 +144,7 @@
 	<dependency>
     	<groupId>com.fasterxml.jackson.core</groupId>
         <artifactId>jackson-databind</artifactId>
-        <version>2.9.7</version>
+        <version>2.8.7</version>
     </dependency>
     <dependency>
 	   <groupId>mysql</groupId>
@@ -186,20 +186,21 @@
                     </execution>
                 </executions>
             </plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.8</version>
+            <plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.7.6.201602180812</version>
 				<executions>
 					<execution>
-						<phase>install</phase>
-						<configuration>
-							<target>
-								<copy file="target/data-shipper-jar-with-dependencies.jar" tofile="../../dist/jobs/data-shipper-jar-with-dependencies.jar"/>
-							</target>
-						</configuration>
 						<goals>
-							<goal>run</goal>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
 						</goals>
 					</execution>
 				</executions>

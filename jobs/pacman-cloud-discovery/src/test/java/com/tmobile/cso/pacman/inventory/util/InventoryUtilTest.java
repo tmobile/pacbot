@@ -240,7 +240,7 @@ public class InventoryUtilTest {
         describeInstancesResult.setReservations(reservations );
         when(ec2Client.describeInstances(anyObject())).thenReturn(describeInstancesResult);
         assertThat(inventoryUtil.fetchInstances(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName","").size(), is(1));
         
     }
     
@@ -255,7 +255,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchInstances(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName","").size(), is(0));
     }
     
     /**
@@ -283,7 +283,7 @@ public class InventoryUtilTest {
         describeNetworkInterfacesResult.setNetworkInterfaces(niList);
         when(ec2Client.describeNetworkInterfaces()).thenReturn(describeNetworkInterfacesResult);
         assertThat(inventoryUtil.fetchNetworkIntefaces(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
     }
     
@@ -298,7 +298,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchNetworkIntefaces(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -326,7 +326,7 @@ public class InventoryUtilTest {
         describeSecurityGroupsResult.setSecurityGroups(secGrpList);
         when(ec2Client.describeSecurityGroups()).thenReturn(describeSecurityGroupsResult);
         assertThat(inventoryUtil.fetchSecurityGroups(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
     }
     
@@ -341,7 +341,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchSecurityGroups(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -369,7 +369,7 @@ public class InventoryUtilTest {
         autoScalingGroupsResult.setAutoScalingGroups(asgList);
         when(asgClient.describeAutoScalingGroups(anyObject())).thenReturn(autoScalingGroupsResult);
         assertThat(inventoryUtil.fetchAsg(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
     }
     
@@ -384,7 +384,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchAsg(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -412,7 +412,7 @@ public class InventoryUtilTest {
         describeStacksResult.setStacks(stacks);
         when(cloudFormClient.describeStacks(anyObject())).thenReturn(describeStacksResult);
         assertThat(inventoryUtil.fetchCloudFormationStack(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
     }
     
@@ -427,7 +427,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchCloudFormationStack(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -463,7 +463,7 @@ public class InventoryUtilTest {
         
         when(awsClient.listTagsOfResource(anyObject())).thenReturn(new ListTagsOfResourceResult());
         assertThat(inventoryUtil.fetchDynamoDBTables(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
     }
     
@@ -477,7 +477,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchDynamoDBTables(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -508,7 +508,7 @@ public class InventoryUtilTest {
         when(efsClient.describeFileSystems(anyObject())).thenReturn(describeFileSystemsResult);
         when(efsClient.describeTags(anyObject())).thenReturn(new DescribeTagsResult());
         assertThat(inventoryUtil.fetchEFSInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
     }
     
@@ -523,7 +523,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchEFSInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -557,7 +557,7 @@ public class InventoryUtilTest {
         describeClusterResult.setCluster(new Cluster());
         when(emrClient.describeCluster(anyObject())).thenReturn(describeClusterResult);
         assertThat(inventoryUtil.fetchEMRInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
     }
     
@@ -572,7 +572,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchEMRInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -606,7 +606,7 @@ public class InventoryUtilTest {
         listTagsResult.setTags(new HashMap<>());
         when(lamdaClient.listTags(anyObject())).thenReturn(listTagsResult);
         assertThat(inventoryUtil.fetchLambdaInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
     }
     
@@ -621,7 +621,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchLambdaInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -660,7 +660,7 @@ public class InventoryUtilTest {
         describeTagsResult.setTagDescriptions(tagsList);
         when(elbClient.describeTags(anyObject())).thenReturn(describeTagsResult);
         assertThat(inventoryUtil.fetchClassicElbInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
     }
     
@@ -675,7 +675,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchClassicElbInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -714,7 +714,7 @@ public class InventoryUtilTest {
         describeTagsResult.setTagDescriptions(tagsList);
         when(elbClient.describeTags(anyObject())).thenReturn(describeTagsResult);
         assertThat(inventoryUtil.fetchElbInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
     }
     
@@ -729,7 +729,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchElbInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -763,7 +763,7 @@ public class InventoryUtilTest {
         describeTargetHealthResult.setTargetHealthDescriptions(new ArrayList<>());
         when(elbClient.describeTargetHealth(anyObject())).thenReturn(describeTargetHealthResult);
         assertThat(inventoryUtil.fetchTargetGroups(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -777,7 +777,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchTargetGroups(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -805,7 +805,7 @@ public class InventoryUtilTest {
         describeNatGatewaysResult.setNatGateways(natGatwayList);
         when(ec2Client.describeNatGateways(anyObject())).thenReturn(describeNatGatewaysResult);
         assertThat(inventoryUtil.fetchNATGatewayInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -819,7 +819,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchNATGatewayInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -853,7 +853,7 @@ public class InventoryUtilTest {
         listTagsForResourceResult.setTagList(new ArrayList<>());
         when(rdsClient.listTagsForResource(anyObject())).thenReturn(listTagsForResourceResult);
         assertThat(inventoryUtil.fetchRDSClusterInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -867,7 +867,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchRDSClusterInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -901,7 +901,7 @@ public class InventoryUtilTest {
         listTagsForResourceResult.setTagList(new ArrayList<>());
         when(rdsClient.listTagsForResource(anyObject())).thenReturn(listTagsForResourceResult);
         assertThat(inventoryUtil.fetchRDSInstanceInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -915,7 +915,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchRDSInstanceInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -958,7 +958,7 @@ public class InventoryUtilTest {
         when(amazonS3Client.getBucketTaggingConfiguration(anyString())).thenReturn(tagConfig);
         
         assertThat(inventoryUtil.fetchS3Info(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -988,7 +988,7 @@ public class InventoryUtilTest {
         
         when(amazonS3Client.getBucketLocation(anyString())).thenThrow(new AmazonServiceException("Error"));
         assertThat(inventoryUtil.fetchS3Info(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -1016,7 +1016,7 @@ public class InventoryUtilTest {
         describeSubnetsResult.setSubnets(subnets);
         when(ec2Client.describeSubnets()).thenReturn(describeSubnetsResult);
         assertThat(inventoryUtil.fetchSubnets(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -1030,7 +1030,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchSubnets(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -1077,7 +1077,7 @@ public class InventoryUtilTest {
         
         when(awsSupportClient.refreshTrustedAdvisorCheck(anyObject())).thenReturn(new RefreshTrustedAdvisorCheckResult());
         assertThat(inventoryUtil.fetchTrusterdAdvisorsChecks(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "account").size(), is(1));
+                "account","accountName").size(), is(1));
     }
     
     /**
@@ -1105,7 +1105,7 @@ public class InventoryUtilTest {
         describeClustersResult.setClusters(redshiftList);
         when(redshiftClient.describeClusters(anyObject())).thenReturn(describeClustersResult);
         assertThat(inventoryUtil.fetchRedshiftInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -1119,7 +1119,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchRedshiftInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -1147,7 +1147,7 @@ public class InventoryUtilTest {
         describeVolumesResult.setVolumes(volumeList);
         when(ec2Client.describeVolumes()).thenReturn(describeVolumesResult);
         assertThat(inventoryUtil.fetchVolumetInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -1161,7 +1161,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchVolumetInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -1189,7 +1189,7 @@ public class InventoryUtilTest {
         describeSnapshotsResult.setSnapshots(snapShotsList);
         when(ec2Client.describeSnapshots(anyObject())).thenReturn(describeSnapshotsResult);
         assertThat(inventoryUtil.fetchSnapshots(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -1203,7 +1203,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchSnapshots(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -1241,7 +1241,7 @@ public class InventoryUtilTest {
         describeVpcEndpointsResult.setVpcEndpoints(vpcEndpoints);
         when(ec2Client.describeVpcEndpoints(anyObject())).thenReturn(describeVpcEndpointsResult);
         assertThat(inventoryUtil.fetchVpcInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
         describeVpcEndpointsResult = new DescribeVpcEndpointsResult();
         vpcEndpoints = new ArrayList<VpcEndpoint>();
@@ -1251,7 +1251,7 @@ public class InventoryUtilTest {
         describeVpcEndpointsResult.setVpcEndpoints(vpcEndpoints);
         when(ec2Client.describeVpcEndpoints(anyObject())).thenReturn(describeVpcEndpointsResult);
         assertThat(inventoryUtil.fetchVpcInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -1265,7 +1265,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchVpcInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -1293,7 +1293,7 @@ public class InventoryUtilTest {
         getRestApisResult.setItems(apiGateWaysList);
         when(apiGatWayClient.getRestApis(anyObject())).thenReturn(getRestApisResult);
         assertThat(inventoryUtil.fetchApiGateways(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -1307,7 +1307,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchApiGateways(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -1371,7 +1371,7 @@ public class InventoryUtilTest {
         when(iamClient.listMFADevices(anyObject())).thenReturn(listMFADevicesResult );
         
         assertThat(inventoryUtil.fetchIAMUsers(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"),
-                "account").size(), is(1));
+                "account","accountName").size(), is(1));
         
         listMFADevicesResult = new ListMFADevicesResult();
         List<MFADevice> mfaDevices = new ArrayList<>();
@@ -1380,7 +1380,7 @@ public class InventoryUtilTest {
         when(iamClient.listMFADevices(anyObject())).thenReturn(listMFADevicesResult );
         
         assertThat(inventoryUtil.fetchIAMUsers(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"),
-                "account").size(), is(1));
+                "account","accountName").size(), is(1));
     }
     
     /**
@@ -1407,7 +1407,7 @@ public class InventoryUtilTest {
         roles.add(new Role());
         listRolesResult.setRoles(roles);
         when(iamClient.listRoles(anyObject())).thenReturn(listRolesResult);
-        assertThat(inventoryUtil.fetchIAMRoles(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"),"account").size(), is(1));
+        assertThat(inventoryUtil.fetchIAMRoles(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"),"account","accountName").size(), is(1));
     }
     
     /**
@@ -1435,7 +1435,7 @@ public class InventoryUtilTest {
         describeDBSnapshotsResult.setDBSnapshots(snapshots);
         when(rdsClient.describeDBSnapshots(anyObject())).thenReturn(describeDBSnapshotsResult);
         assertThat(inventoryUtil.fetchRDSDBSnapshots(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -1449,7 +1449,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchRDSDBSnapshots(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -1499,7 +1499,7 @@ public class InventoryUtilTest {
         getKeyRotationStatusResult.setKeyRotationEnabled(true);
         when(awskms.getKeyRotationStatus(anyObject())).thenReturn(getKeyRotationStatusResult);
         assertThat(inventoryUtil.fetchKMSKeys(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
         listAliasesResult = new ListAliasesResult();
         listAliasesResult.setAliases(new ArrayList<>());
@@ -1513,7 +1513,7 @@ public class InventoryUtilTest {
         
         when(awskms.getKeyRotationStatus(anyObject())).thenThrow(Exception.class );
         assertThat(inventoryUtil.fetchKMSKeys(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
         listAliasesResult = new ListAliasesResult();
         regionKeyAliases = new ArrayList<>();
@@ -1524,7 +1524,7 @@ public class InventoryUtilTest {
         when(awskms.listAliases()).thenReturn(listAliasesResult);
 
         assertThat(inventoryUtil.fetchKMSKeys(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -1538,7 +1538,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchKMSKeys(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -1576,7 +1576,7 @@ public class InventoryUtilTest {
         listTagsForResourceResult.setTags(tags );
         when(amazonCloudFront.listTagsForResource(anyObject())).thenReturn(listTagsForResourceResult );
         assertThat(inventoryUtil.fetchCloudFrontInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "account").size(), is(1));
+                "account","accountName").size(), is(1));
     }
     
     /**
@@ -1590,7 +1590,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchCloudFrontInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "account").size(), is(0));
+                "account","accountName").size(), is(0));
     }
     
     /**
@@ -1632,14 +1632,14 @@ public class InventoryUtilTest {
         describeEnvironmentResourcesResult.setEnvironmentResources(new EnvironmentResourceDescription());
         when(awsElasticBeanstalk.describeEnvironmentResources(anyObject())).thenReturn(describeEnvironmentResourcesResult);
         assertThat(inventoryUtil.fetchEBSInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
         
         describeEnvironmentsResult = new DescribeEnvironmentsResult();
         describeEnvironmentsResult.setEnvironments(new ArrayList<>() );
         when(awsElasticBeanstalk.describeEnvironments(anyObject())).thenReturn(describeEnvironmentsResult );
         
         assertThat(inventoryUtil.fetchEBSInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(1));
+                "skipRegions", "account","accountName").size(), is(1));
     }
     
     /**
@@ -1653,7 +1653,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchEBSInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "skipRegions", "account").size(), is(0));
+                "skipRegions", "account","accountName").size(), is(0));
     }
     
     /**
@@ -1697,7 +1697,7 @@ public class InventoryUtilTest {
         affectedEntitiesResult.setEntities(new ArrayList<>());
         when(awsHealth.describeAffectedEntities(anyObject())).thenReturn(affectedEntitiesResult);
         assertThat(inventoryUtil.fetchPHDInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "account").size(), is(1));
+                "account","accountName").size(), is(1));
     }
     
     /**
@@ -1711,7 +1711,7 @@ public class InventoryUtilTest {
         
         PowerMockito.whenNew(AWSStaticCredentialsProvider.class).withAnyArguments().thenThrow(new Exception());
         assertThat(inventoryUtil.fetchPHDInfo(new BasicSessionCredentials("awsAccessKey", "awsSecretKey", "sessionToken"), 
-                "account").size(), is(0));
+                "account","accountName").size(), is(0));
     }
     
     /**
