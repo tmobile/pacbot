@@ -47,3 +47,4 @@ mail:
           starttls:
             enable: ${MAIL_SMTP_SSL_ENABLE:true}
     test-connection: ${MAIL_SMTP_SSL_TEST_CONNECTION:false}
+    
