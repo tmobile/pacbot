@@ -3,7 +3,6 @@ from core.terraform.utils import get_terraform_scripts_and_files_dir, get_terraf
 from core.config import Settings
 from resources.datastore.db import MySQLDatabase
 from resources.datastore.es import ESDomain
-from resources.datastore.redshift import RedshiftCluster
 from resources.data.aws_info import AwsAccount, AwsRegion
 from resources.pacbot_app.cloudwatch_log_groups import UiCloudWatchLogGroup, ApiCloudWatchLogGroup
 from resources.pacbot_app.ecr import APIEcrRepository, UIEcrRepository
@@ -53,16 +52,6 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_ES_UPDATE_HOST': ESDomain.get_output_attr('endpoint'),
                         'ENV_ES_UPDATE_PORT': str(ESDomain.get_es_port()),
                         'ENV_ES_UPDATE_CLUSTER_NAME': ESDomain.get_input_attr('domain_name'),
-                        'ENV_LDAP_AD_PROVIDER_URL': "http://localhost", ## TODO: this is not actual value
-                        'ENV_LDAP_AD_DOMAIN': "http://localhost", ## TODO: this is not actual value
-                        'ENV_LDAP_AD_SEARCH_BASE': "", ## TODO: this is not actual value
-                        'ENV_LDAP_NT_PROVIDER_URL': "http://localhost", ## TODO: this is not actual value
-                        'ENV_LDAP_NT_DOMAIN': "localhost", ## TODO: this is not actual value
-                        'ENV_LDAP_NT_SEARCH_BASE': "", ## TODO: this is not actual value
-                        'ENV_REDSHIFT_URL': RedshiftCluster.get_redshift_url(),
-                        'ENV_REDSHIFT_USER_NAME': RedshiftCluster.get_input_attr('master_username'),
-                        'ENV_REDSHIFT_PASSWORD': RedshiftCluster.get_input_attr('master_password'),
-                        'ENV_PACMAN_HOST_NAME': ApplicationLoadBalancer.get_http_url(),
                         'ENV_RDS_URL': MySQLDatabase.get_rds_db_url(),
                         'ENV_RDS_USERNAME': MySQLDatabase.get_input_attr('username'),
                         'ENV_RDS_PASSWORD': MySQLDatabase.get_input_attr('password'),
