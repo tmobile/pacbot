@@ -51,7 +51,7 @@ public class NotificationController implements Constants
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
 	/** The from mail address. */
-    @Value("${notificationSender.fromAddress}")
+    @Value("${notificationSender.fromAddress:}")
     private String fromAddress;
 	
 	@Autowired
