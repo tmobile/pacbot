@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.compliance.controller;
 
-import io.swagger.annotations.ApiParam;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,13 +25,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.commons.Constants;
 import com.tmobile.pacman.api.commons.exception.ServiceException;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
 import com.tmobile.pacman.api.compliance.domain.ResponseData;
 import com.tmobile.pacman.api.compliance.service.ComplianceService;
 import com.tmobile.pacman.api.compliance.service.FilterService;
+
+import io.swagger.annotations.ApiParam;
 
 /**
  * The Class FilterController.
@@ -59,7 +58,7 @@ public class FilterController implements Constants {
      * @param domain the domain
      * @return ResponseEntity.
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/filters", method = RequestMethod.GET)
     public ResponseEntity<Object> getFilters(
             @ApiParam(value = "Provide filter 1-issue,2-vulnerability,3-asset,4-compliance", required = false) @RequestParam("filterId") int filterId,
@@ -83,7 +82,7 @@ public class FilterController implements Constants {
      * @param domain the domain
      * @return ResponseEntity<Object>.
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/filters/policies", method = RequestMethod.GET)
     public ResponseEntity<Object> getPolicies(@RequestParam("ag") String assetGroup,
             @RequestParam("domain") String domain) {
@@ -105,7 +104,7 @@ public class FilterController implements Constants {
      * @param assetGroup the asset group
      * @return ResponseEntity<Object>
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/filters/regions", method = RequestMethod.GET)
     public ResponseEntity<Object> getRegions(@RequestParam("ag") String assetGroup) {
         if (Strings.isNullOrEmpty(assetGroup)) {
@@ -126,7 +125,7 @@ public class FilterController implements Constants {
      * @param assetGroup the asset group
      * @return ResponseEntity<Object>
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/filters/accounts", method = RequestMethod.GET)
     public ResponseEntity<Object> getAccounts(@RequestParam("ag") String assetGroup) {
         if (Strings.isNullOrEmpty(assetGroup)) {
@@ -148,7 +147,7 @@ public class FilterController implements Constants {
      * @param domain the domain
      * @return ResponseEntity<Object>
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/filters/rules", method = RequestMethod.GET)
     public ResponseEntity<Object> getRules(@RequestParam("ag") String assetGroup, @RequestParam("domain") String domain) {
         if (Strings.isNullOrEmpty(assetGroup)) {
@@ -171,7 +170,7 @@ public class FilterController implements Constants {
      * @return  ResponseEntity<Object>
      */
 
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/filters/application", method = RequestMethod.GET)
     public ResponseEntity<Object> getListOfApplications(@RequestParam(name = "ag", required = true) String assetGroup,
             @RequestParam(name = "domain", required = false) String domain) {
@@ -198,7 +197,7 @@ public class FilterController implements Constants {
      * @param domain the domain
      * @return the list of environments
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/filters/environment", method = RequestMethod.GET)
     public ResponseEntity<Object> getListOfEnvironments(@RequestParam(name = "ag", required = true) String assetGroup,
             @RequestParam(name = "application", required = false) String application,
@@ -225,7 +224,7 @@ public class FilterController implements Constants {
      * @return ResponseEntity<Object>
      */
 
-    @HystrixCommand
+    
     @GetMapping(value = "/v1/filters/targettype")
     public ResponseEntity<Object> getListOfTargetTypes(@RequestParam(name = "ag", required = true) String assetGroup,
             @RequestParam(name = "domain", required = false) String domain) {

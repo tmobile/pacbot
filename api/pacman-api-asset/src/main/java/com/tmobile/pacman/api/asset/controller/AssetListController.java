@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.asset.controller;
 
-import io.swagger.annotations.ApiOperation;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -39,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.asset.AssetConstants;
 import com.tmobile.pacman.api.asset.domain.Request;
 import com.tmobile.pacman.api.asset.domain.ResponseWithCount;
@@ -49,6 +46,8 @@ import com.tmobile.pacman.api.asset.service.AssetService;
 import com.tmobile.pacman.api.commons.Constants;
 import com.tmobile.pacman.api.commons.utils.CommonUtils;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
+
+import io.swagger.annotations.ApiOperation;
 
 /**
  * The controller layer which has methods to return list of assets.
@@ -77,7 +76,7 @@ public class AssetListController {
      * 
      * @return list of assets and its some details.
      */
-    @HystrixCommand
+    
     @ApiOperation(httpMethod = "POST", value = "Get the list of assets in an asset group. Optional filters -'application','environment','resourceType' ")
     @PostMapping(value = "/v1/list/assets")
     public ResponseEntity<Object> listAssets(@RequestBody(required = true) Request request,
@@ -134,7 +133,7 @@ public class AssetListController {
      * 
      * @return list of assets tagged/untagged.
      */
-    @HystrixCommand
+    
     @ApiOperation(httpMethod = "POST", value = "Get the list of taggble assets in an asset group. Optional filters -'application','environment','resourceType','tagged'{true/false} ,'tagName' {Application/Environment/Stack/Role}")
     @PostMapping(value = "/v1/list/assets/taggable")
     public ResponseEntity<Object> listTaggableAssets(@RequestBody(required = true) Request request) {
@@ -194,7 +193,7 @@ public class AssetListController {
      * 
      * @return list of assets patched/unpatched.
      */
-    @HystrixCommand
+    
     @ApiOperation(httpMethod = "POST", value = "Get the list of patchable assets in an asset group. Optional filters -'application', 'environment', 'resourceType', 'patched'{true/false}, 'executiveSponsor' and 'director'.")
     @PostMapping(value = "/v1/list/assets/patchable")
     public ResponseEntity<Object> listPatchableAssets(@RequestBody(required = true) Request request) {
@@ -255,7 +254,7 @@ public class AssetListController {
      * 
      * @return list of vulnerable assets.
      */
-    @HystrixCommand
+    
     @ApiOperation(httpMethod = "POST", value = "Get the list of vulnerable assets in an asset group for a particualr qid. Mandatory Filter -'qid'. Optional filters -'application','environment','resourceType' ")
     @PostMapping(value = "/v1/list/assets/vulnerable")
     public ResponseEntity<Object> listVulnerableAssets(@RequestBody(required = true) Request request) {
@@ -314,7 +313,7 @@ public class AssetListController {
      * 
      * @return list of assets with open issue status.
      */
-    @HystrixCommand
+    
     @ApiOperation(httpMethod = "POST", value = "Get the list of  assets  scanned by a ruleid in an asset group .  Mandatory Filter -'ruleId'. Optional filters -'application','environment','resourceType','compliant'{true/false}")
     @PostMapping(value = "/v1/list/assets/scanned")
     public ResponseEntity<Object> listScannedAssets(@RequestBody(required = true) Request request,
@@ -372,7 +371,7 @@ public class AssetListController {
      * 
      * @return list of complete asset details.
      */
-    @HystrixCommand
+    
     @ApiOperation(httpMethod = "POST", value = "Get the complete details assets")
     @PostMapping(value = "/v1/listing/assets")
     public ResponseEntity<Object> getAssetLists(@RequestBody(required = true) Request request) {
@@ -438,7 +437,7 @@ public class AssetListController {
      * 
      * @return list of editable fields
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/updateFieldsbyresourceType", method = RequestMethod.GET)
     public ResponseEntity<Object> getEditableFieldsByTargetType(
             @RequestParam(name = "ag", required = true) String assetGroup,
