@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.admin.domain.AttributeValuesRequest;
 import com.tmobile.pacman.api.admin.domain.CreateUpdateTargetTypeDetailsRequest;
 import com.tmobile.pacman.api.admin.domain.Response;
@@ -111,7 +110,6 @@ public class TargetTypesController {
      * @param assetGroupName - valid assetGroup name
      * @return TargetTypes details
      */
-	@HystrixCommand
 	@ApiOperation(httpMethod = "GET", value = "API to get all target types by asset group name", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(path = "/list-by-asset-group-name", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getTargetTypesByAssetGroupName(
@@ -131,7 +129,6 @@ public class TargetTypesController {
      * @param targetTypeName - valid targetType name
      * @return TargetTypes details
      */
-	@HystrixCommand
 	@ApiOperation(httpMethod = "GET", value = "API to get target types details by name", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(path = "/list-by-target-type-name", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getTargetTypesByName(
@@ -206,7 +203,6 @@ public class TargetTypesController {
      * @param dataSourceName - valid dataSourceName
      * @return TargetTypes names
      */
-	@HystrixCommand
 	@ApiOperation(httpMethod = "GET", value = "API to get all target type names by datasource name", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(path = "/list-names-by-datasource", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getTargetTypesNamesByDataSourceName(
@@ -226,7 +222,6 @@ public class TargetTypesController {
      * @param targetTypes - list of target type details
      * @return TargetType Attributes
      */
-	@HystrixCommand
 	@ApiOperation(httpMethod = "POST", value = "API to get all target type attributes", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(path = "/list-target-type-attributes", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getTargetTypeAttributes(
@@ -246,7 +241,6 @@ public class TargetTypesController {
      * @param attributeValuesRequest - valid attribute value request details
      * @return TargetType Attribute Values
      */
-	@HystrixCommand
 	@ApiOperation(httpMethod = "POST", value = "API to get attribute values", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
 	@RequestMapping(path = "/list-target-type-attributes-values", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getAttributeValues(

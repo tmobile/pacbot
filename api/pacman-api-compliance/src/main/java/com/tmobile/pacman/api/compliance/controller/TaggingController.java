@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.commons.Constants;
 import com.tmobile.pacman.api.commons.exception.ServiceException;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
@@ -70,7 +69,7 @@ public class TaggingController implements Constants {
 
     @RequestMapping(path = "/v1/tagging/summarybyapplication", method = RequestMethod.POST)
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> getUntaggedAssetsByApp(@RequestBody(required = false) Request request) {
         String assetGroup = request.getAg();
         if (Strings.isNullOrEmpty(assetGroup)) {
@@ -95,7 +94,7 @@ public class TaggingController implements Constants {
      *            the asset group
      * @return ResponseEntity
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/tagging/compliance", method = RequestMethod.GET)
     public ResponseEntity<Object> taggingSummary(@RequestParam("ag") String assetGroup) {
         if (Strings.isNullOrEmpty(assetGroup)) {
@@ -125,7 +124,7 @@ public class TaggingController implements Constants {
      *            the request
      * @return ResponseEntity .
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/tagging/summarybytargettype", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<Object> untaggingByTargetTypes(@RequestBody UntaggedTargetTypeRequest request) {
@@ -157,7 +156,7 @@ public class TaggingController implements Constants {
      * @return ResponseEntity
      */
 
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/tagging/taggingByApplication", method = RequestMethod.GET)
     public ResponseEntity<Object> taggingByApplication(@RequestParam("ag") String assetGroup,
             @RequestParam(name = "targetType", required = false) String targetType) {

@@ -43,7 +43,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
 import com.tmobile.pacman.api.compliance.service.RecommendedActionService;
 
@@ -73,7 +72,7 @@ public class RecommendedActionController {
      * @param dataSource the data source
      * @return the trend for issues
      */
-    @HystrixCommand
+    
     @ApiOperation(value = "get the list of recommended actions for datasource and targetType", response = Iterable.class)
     @RequestMapping(path = "/v1/recommendations/actions", method = RequestMethod.GET)
     public ResponseEntity<Object> getTrendForIssues(

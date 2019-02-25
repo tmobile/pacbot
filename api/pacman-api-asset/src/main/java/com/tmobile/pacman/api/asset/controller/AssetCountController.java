@@ -28,7 +28,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.asset.AssetConstants;
 import com.tmobile.pacman.api.asset.service.AssetService;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
@@ -56,7 +55,6 @@ public class AssetCountController {
      * 
      * @return list of type and its asset count.
      */
-    @HystrixCommand
     @GetMapping(value = "/v1/count")
     public ResponseEntity<Object> geAssetCount(@RequestParam(name = "ag", required = true) String assetGroup,
             @RequestParam(name = "type", required = false) String type,
@@ -86,7 +84,6 @@ public class AssetCountController {
      * 
      * @return list of applications and its asset count.
      */
-    @HystrixCommand
     @GetMapping(value = "/v1/count/byapplication")
     public ResponseEntity<Object> geAssetCountByTypeAndApplication(
             @RequestParam(name = "ag", required = true) String assetGroup,
@@ -121,7 +118,6 @@ public class AssetCountController {
      * 
      * @return list of environment and its asset count.
      */
-    @HystrixCommand
     @GetMapping(value = "/v1/count/byenvironment")
     public ResponseEntity<Object> geAssetCountByTypeEnvironment(
             @RequestParam(name = "ag", required = true) String assetGroup,

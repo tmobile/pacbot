@@ -28,8 +28,6 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
  * AdminApplication Main Class
  */
 @SpringBootApplication
-/*@EnableHystrix
-@EnableHystrixDashboard*/
 @EnableFeignClients
 @EnableConfigurationProperties
 @Configuration

@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.asset.service.AssetService;
 import com.tmobile.pacman.api.commons.Constants;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
@@ -62,7 +61,7 @@ public class AssetTrendController {
      * 
      * @return list of days with its min/max asset count.
      */
-    @HystrixCommand
+    
     @ApiOperation(value = "View the asset trends(daily min/max) over the period of last 1 month", response = Iterable.class)
     @GetMapping(path = "/v1/trend/minmax")
     public ResponseEntity<Object> getMinMaxAssetCount(@RequestParam(name = "ag", required = true) String assetGroup,

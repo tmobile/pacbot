@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.commons.exception.ServiceException;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
 import com.tmobile.pacman.api.compliance.domain.ResponseDTO;
@@ -63,7 +62,7 @@ public class FAQSController {
      * @param domainId the domain id
      * @return FAQ Details
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/faqs", method = RequestMethod.GET)
     public ResponseEntity<Object> getFAQSByWidget(
             @RequestParam("widgetId") String widgetId,
