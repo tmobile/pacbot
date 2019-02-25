@@ -53,6 +53,7 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_ES_UPDATE_HOST': ESDomain.get_output_attr('endpoint'),
                         'ENV_ES_UPDATE_PORT': str(ESDomain.get_es_port()),
                         'ENV_ES_UPDATE_CLUSTER_NAME': ESDomain.get_input_attr('domain_name'),
+                        'ENV_PACMAN_HOST_NAME': ApplicationLoadBalancer.get_http_url(),
                         'ENV_RDS_URL': MySQLDatabase.get_rds_db_url(),
                         'ENV_RDS_USERNAME': MySQLDatabase.get_input_attr('username'),
                         'ENV_RDS_PASSWORD': MySQLDatabase.get_input_attr('password'),
