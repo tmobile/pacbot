@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.admin.domain.JobDetails;
 import com.tmobile.pacman.api.admin.domain.Response;
 import com.tmobile.pacman.api.admin.repository.service.JobExecutionManagerService;
@@ -68,7 +67,6 @@ public class JobExecutionManagerController {
      * @return All JobExecutionManagers details
      */
 	@ApiOperation(httpMethod = "GET", value = "API to get all Job Execution Managers", response = Page.class, produces = MediaType.APPLICATION_JSON_VALUE)
-	@HystrixCommand
 	@RequestMapping(path = "/list", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getAllJobExecutionManagers(
 			@ApiParam(value = "provide valid page number", required = true) @RequestParam("page") Integer page,
@@ -92,7 +90,6 @@ public class JobExecutionManagerController {
      */
 	@ApiOperation(httpMethod = "POST", value = "API to create new job", response = Response.class, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@RequestMapping(path = "/create", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	@HystrixCommand
 	public ResponseEntity<Object> createJob(@AuthenticationPrincipal Principal user,
 			 @ApiParam(value = "provide valid job details", required = false) @RequestParam(defaultValue = StringUtils.EMPTY, value = "file", required = false) MultipartFile fileToUpload, JobDetails createJobDetails) {
 		try {
@@ -113,7 +110,6 @@ public class JobExecutionManagerController {
      */
 	@ApiOperation(httpMethod = "POST", value = "API to update existing job", response = Response.class, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 	@RequestMapping(path = "/update", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-	@HystrixCommand
 	public ResponseEntity<Object> updateJob(@AuthenticationPrincipal Principal user,
 			 @ApiParam(value = "provide valid job details", required = false) @RequestParam(value = "file", required = false) MultipartFile fileToUpload, JobDetails updateJobDetails) {
 		try {
@@ -131,7 +127,6 @@ public class JobExecutionManagerController {
      * @return All Job Id list
      */
 	@ApiOperation(httpMethod = "GET", value = "API to get all Job Id's", response = Page.class, produces = MediaType.APPLICATION_JSON_VALUE)
-	@HystrixCommand
 	@RequestMapping(path = "/job-ids", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getAllJobIds() {
 		try {
@@ -150,7 +145,6 @@ public class JobExecutionManagerController {
      * @return Job details
      */
 	@ApiOperation(httpMethod = "GET", value = "API to get job by id", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
-	@HystrixCommand
 	@RequestMapping(path = "/details-by-id", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Object> getRulesById(
 			@ApiParam(value = "provide valid job id", required = true) @RequestParam(defaultValue = StringUtils.EMPTY, name = "jobId", required = true) String jobId) {
