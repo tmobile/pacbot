@@ -73,15 +73,15 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_CERTIFICATE_FEATURE_ENABLED': "false",
                         'ENV_PATCHING_FEATURE_ENABLED': "false",
                         'ENV_VULNERABILITY_FEATURE_ENABLED': "false",
-                        'ENV_MAIL_SERVER': "http://localhost", ## TODO: this is not actual value
-                        'ENV_PACMAN_S3': 'pacman-email-templates',  ## TODO: this is not actual value,
-                        'ENV_DATA_IN_DIR': Settings.RESOURCE_NAME_PREFIX,
-                        'ENV_DATA_BKP_DIR': Settings.RESOURCE_NAME_PREFIX,
+                        'ENV_MAIL_SERVER': Settings.MAIL_SERVER,
+                        'ENV_PACMAN_S3': "pacman-email-templates",
+                        'ENV_DATA_IN_DIR': "inventory",
+                        'ENV_DATA_BKP_DIR': "backup",
                         'ENV_PAC_ROLE': BaseRole.get_input_attr('name'),
-                        'BASE_REGION': AwsRegion.get_output_attr('name'),
+                        'ENV_BASE_REGION': AwsRegion.get_output_attr('name'),
                         'ENV_DATA_IN_S3': BucketStorage.get_output_attr('bucket'),
                         'ENV_BASE_ACCOUNT': AwsAccount.get_output_attr('account_id'),
-                        'ENV_PAC_RO_ROLE': BaseRole.get_input_attr('name')
+                        'ENV_PAC_RO_ROLE': BaseRole.get_input_attr('name'),
                     },
                     'interpreter': [Settings.PYTHON_INTERPRETER]
                 }
