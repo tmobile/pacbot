@@ -1058,6 +1058,8 @@ public class AssetRepositoryImpl implements AssetRepository {
                 } catch (Exception e) {
                     LOGGER.error("Error in getListAssetsTaggable", e);
                 }
+            }else{
+            	 assetDetails = getAssetsByAssetGroup(assetGroup, targetType, new HashMap(), null, fieldNames);
             }
         } else {
             ruleIdWithTargetTypeQuery = "SELECT  A.targetType FROM cf_RuleInstance A, cf_Policy B WHERE A.policyId = B.policyId AND A.status = 'ENABLED' AND B.policyId = 'PacMan_TaggingRule_version-1'";
