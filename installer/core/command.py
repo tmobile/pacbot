@@ -7,6 +7,15 @@ import importlib
 
 
 class Command:
+    """
+    This Base class identify and validate a command. If no valid command is found then lists the availabe commands
+
+    Attributes:
+        commands_dir_path (str): System commands directory where system commands are present
+        custom_commands_dir_path (str): Custom commands directory where user defined commands are present
+        mandatory_args (list): Mandatory arguments passed to CLI
+        optional_args (list): Optional arguments passed to CLI
+    """
     base_dir = 'commands'
     valid_arg_keys = ["--" + K.CATEGORY_FIELD_NAME, "--dry-run"]
 
@@ -16,6 +25,18 @@ class Command:
         self.parent_dir_name = self.commands_dir_path.split(os.sep)[-2]
 
     def get_command_class_instance(self, sys_argv):
+        """
+        Based on the command provided in the CLI identify the class instance corresponding to the command
+
+        Args:
+            sys_argv (dict): CLI Arguments supplied to the command
+
+        Returns:
+            command_class_instance (Command Instance):
+                Returns commands/install::Install instance for install command
+                Returns commands/destroy::Destroy instance for destroy command
+                Returns commands/status::Status instance for status command
+        """
         command_class = self.get_command_class_from_cli(sys_argv)
 
         self.mandatory_args = command_class.MANDATORY_ARGS
@@ -27,6 +48,18 @@ class Command:
         return command_class_instance
 
     def get_command_class_from_cli(self, sys_argv):
+        """
+        Based on the command provided in the CLI identify the class corresponding to the command
+
+        Args:
+            sys_argv (dict): CLI Arguments supplied to the command
+
+        Returns:
+            command_class (class):
+                Returns commands/install::Install class for install command
+                Returns commands/destroy::Destroy  class for destroy command
+                Returns commands/status::Status class for status command
+        """
         command_name = sys_argv[1] if len(sys_argv) > 1 else None
 
         valid_command = self.get_and_validate_command(command_name)
@@ -41,6 +74,15 @@ class Command:
         return command_class
 
     def get_optional_args(self, sys_argv):
+        """
+        Identify the optional aruments supplied by the user for the command
+
+        Args:
+            sys_argv (dict): CLI Arguments supplied to the command
+
+        Returns:
+            args_set (list): List of optional arguments supplied to the command
+        """
         args_list = sys_argv[2:]
         args_set = []
 
@@ -60,6 +102,7 @@ class Command:
         return [(arg[0].split('--')[1], arg[1])for arg in args_set]
 
     def exit_system_showing_valid_commands(self):
+        """If the given command is not valid or if no command is supplied then exit execution with displaying the available commands"""
         print("**** Command Not Found *****\nValid Commands are")
         for item in self. get_valid_commands():
             print("   %s" % item)
@@ -72,6 +115,12 @@ class Command:
         return valid_commands.get(command_name, None)
 
     def get_valid_commands(self):
+        """
+        Get all available valid commands
+
+        Returns:
+            commands_dict (dict): Available valid commands
+        """
         core_command_file_names = get_dir_file_names(self.commands_dir_path)
         core_command_names = self.get_filtered_command_names(core_command_file_names)
         commands_dict = {name: {'type': "core"} for name in core_command_names}
@@ -83,6 +132,12 @@ class Command:
         return commands_dict
 
     def get_filtered_command_names(self, file_names):
+        """
+        Get the command names from the files
+
+        Args:
+            file_names (list): List of file names of commands
+        """
         def f1(x):
             return not x.startswith('__')
 
@@ -99,14 +154,25 @@ class Command:
             lambda x: all(f(x) for f in [f1, f2, f3, f4]), file_names)))
 
     def get_core_commands_dir_path(self):
+        """
+        To get absolute path of the system comamnd
+
+        Returns:
+            path (str): Absolute path of the command
+        """
         return os.path.join(os.path.abspath(
             os.path.dirname(__file__)), self.base_dir)
 
     def get_custom_commands_dir_path(self):
+        """
+        To get absolute path of the user based comamnd
+
+        Returns:
+            path (str): Absolute path of the command
+        """
         return os.path.join(Settings.BASE_APP_DIR, "custom", self.base_dir)
 
     def validate_optional_args(self, args_set):
-
         for (key, val) in args_set:
             if not (key.startswith('--') and key in self.valid_arg_keys):
                 return False
@@ -114,6 +180,5 @@ class Command:
         return True
 
     def exit_system_showing_valid_optional_args(self):
-        # TODO- @sajeer
         print("Optional arguments supplied are not valid")
         sys.exit()

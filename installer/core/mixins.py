@@ -10,6 +10,9 @@ import os
 
 
 class MsgMixin(metaclass=ABCMeta):
+    """
+    This is message mixins class used by almost all classes to display message on the command window
+    """
     column_length = 115
     TITLE_ANSI = "\033[95m"
     BOLD_ANSI = "\033[1m"
@@ -27,6 +30,7 @@ class MsgMixin(metaclass=ABCMeta):
     BMAGENTA = "\u001b[35;1m"
 
     def show_loading_messsage(self):
+        """This function is called to display the title/initial message when the execution starts"""
         print(self.BMAGENTA)
         if os.path.exists(Settings.LOADER_FILE_PATH):
             with open(Settings.LOADER_FILE_PATH, "r") as f:
@@ -49,6 +53,16 @@ class MsgMixin(metaclass=ABCMeta):
         print(self.RESET_ANSI)
 
     def _get_pre_and_post_char_length(self, message, column_length):
+        """
+        Find the number fo prefix and suffix characters to be printed to keep that line with same column length
+
+        Args:
+            message (str): Message to be displayed on the ;line
+            column_length (int): Number of characters to be displayed on the line
+
+        Returns:
+             pre_hash_count, post_hash_count (int, int): Number of chars to print
+        """
         pre_hash_count = math.ceil(int(column_length - len(message) - 2) / 2)
         post_hash_count = math.floor(int(column_length - len(message) - 2) / 2)
 
@@ -82,6 +96,12 @@ class MsgMixin(metaclass=ABCMeta):
         print(color + end_heading + self.RESET_ANSI)
 
     def show_step_inner_messaage(self, message, status, error_msg=None):
+        """
+        Show an inner message
+
+        Args:
+            message (str): Message to be displayed on the line
+        """
         dot_len = self.column_length - len(message) - 30
         print_message = "\t%s %s [%s]" % (message, self._get_line_dots_in_color(dot_len), self._get_status_in_color(status))
         SysLog().write_debug_log(print_message)
@@ -115,29 +135,63 @@ class MsgMixin(metaclass=ABCMeta):
         return color + message + self.RESET_ANSI
 
     def _input_message_in_color(self, message):
+        """
+        Show an inner message in pale yellow color
+
+        Args:
+            message (str): Message to be displayed on the line
+        """
         return self.WARN_ANSI + message + self.RESET_ANSI
 
     def show_step_inner_error(self, message):
+        """
+        Show message as sep message i.e with a tab prefix to display error
+
+        Args:
+            message (str): Message to be displayed on the line
+        """
         print_message = "\t%s" % self._get_error_msg_in_color(message)
         SysLog().write_error_log(print_message)
         print(print_message)
 
     def show_step_inner_warning(self, message):
+        """
+        Show message as sep message i.e with a tab prefix to display warning
+
+        Args:
+            message (str): Message to be displayed on the line
+        """
         print_message = "\t%s" % message
         SysLog().write_debug_log(print_message)
         print(self.WARN_ANSI + print_message + self.RESET_ANSI)
 
     def show_progress_start_message(self, message):
+        """
+        Start message when a dot progress process is running
+
+        Args:
+            message (str): Message to be displayed on the line
+        """
         progress_bracket = self.BGREEN_ANSI + "[.   ]" + self.RESET_ANSI
         sys.stdout.write("\r\t%s %s\b\b\b\b" % (message, progress_bracket))
 
     def erase_printed_line(self):
+        """
+        Erase already printed previous line only
+        """
         sys.stdout.flush()
         blank_line = " " * self.column_length
         sys.stdout.write("\r%s\r" % blank_line)
         sys.stdout.flush()
 
     def show_progress_message(self, message, time_delay):
+        """
+        Dot progress message display during the execution
+
+        Args:
+            message (str): Message to be displayed on the line
+            time_delay (int): Number of seconds to make delay to print next dot
+        """
         self.erase_printed_line()
         self.show_progress_start_message(message)
         sys.stdout.write(self.BGREEN_ANSI)
@@ -154,6 +208,12 @@ class MsgMixin(metaclass=ABCMeta):
         sleep(time_delay)
 
     def display_op_msg(self, display_op_list):
+        """
+        Display output message at the end of process execution
+
+        Args:
+            display_op_list (list): List of key, value pairs to be displayed
+        """
         if display_op_list:
             result_title = "OUTPUT"
             column_length = self.column_length - 10
@@ -180,10 +240,26 @@ class MsgMixin(metaclass=ABCMeta):
         sys.stdout.flush()
 
     def get_duration(self, time_delta):
+        """
+        Find the duration as minute and seconds and returns it
+
+        Args:
+            time_delta(delta time): time difference
+
+        Returns:
+             duration (str): Duration in minute and seconds. Ex: 6m 34s
+        """
         duration = datetime(1, 1, 1) + time_delta
         return "%sm %ss" % (duration.minute, duration.second)
 
     def display_process_duration(self, start_time, end_time, step=True):
+        """
+        Display how much time required to execute the process
+
+        Args:
+            Start ttime (int): Starting timestamp of the process
+            end_time (int): Ending timestamp of the process
+        """
         time_delta = end_time - start_time
         duration = self.get_duration(time_delta)
         message = "\t" if step else ""
@@ -191,6 +267,7 @@ class MsgMixin(metaclass=ABCMeta):
         print(message)
 
     def warn_another_process_running(self):
+        """Warn the userr if already another process is running and user tries to execute anothe command"""
         message = self.BERROR_ANSI + K.ANOTHER_PROCESS_RUNNING + self.RESET_ANSI
 
         print("\t%s\n" % message)
