@@ -110,8 +110,8 @@ class Buildpacbot(object):
             "pacman-api-auth.jar"
         ]
         jobs_folder = [
-            # "pacman-aws-inventory-jar-with-dependencies.jar",
-            # "data-shipper-jar-with-dependencies.jar",
+            "pacman-aws-inventory-jar-with-dependencies.jar",
+            "data-shipper-jar-with-dependencies.jar",
             "rule-engine.jar",
             "pac-managed-rules.jar"
         ]

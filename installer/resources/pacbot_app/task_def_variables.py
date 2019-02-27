@@ -20,6 +20,7 @@ class ContainerDefinitions:
     RDS_URL = MySQLDatabase.get_rds_db_url()
 
     def get_container_definitions_without_env_vars(self, container_name):
+        memory = 1024 if container_name == "nginx" else 3072
         return {
             'name': container_name,
             "image": self.ui_image if container_name == 'nginx' else self.api_image,
@@ -32,7 +33,7 @@ class ContainerDefinitions:
                     "hostPort": 80
                 }
             ],
-            "memory": 1024,
+            "memory": memory,
             "networkMode": "awsvpc",
             "logConfiguration": {
                 "logDriver": "awslogs",
