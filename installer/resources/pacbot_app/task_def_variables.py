@@ -75,7 +75,8 @@ class ContainerDefinitions:
             {'name': "JAR_FILE", 'value': "pacman-api-admin.jar"},
             {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
             {'name': "CONFIG_SERVER_URL", 'value': self.CONFIG_SERVER_URL},
-            {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME}
+            {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
+            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('admin')}
         ]
 
     def get_compliance_container_env_vars(self):
@@ -84,6 +85,7 @@ class ContainerDefinitions:
             {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
             {'name': "CONFIG_SERVER_URL", 'value': self.CONFIG_SERVER_URL},
             {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
+            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('compliance')}
         ]
 
     def get_notifications_container_env_vars(self):
@@ -91,7 +93,8 @@ class ContainerDefinitions:
             {'name': "JAR_FILE", 'value': "pacman-api-notification.jar"},
             {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
             {'name': "CONFIG_SERVER_URL", 'value': self.CONFIG_SERVER_URL},
-            {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME}
+            {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
+            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('notifications')}
         ]
 
     def get_statistics_container_env_vars(self):
@@ -99,7 +102,8 @@ class ContainerDefinitions:
             {'name': "JAR_FILE", 'value': "pacman-api-statistics.jar"},
             {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
             {'name': "CONFIG_SERVER_URL", 'value': self.CONFIG_SERVER_URL},
-            {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME}
+            {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
+            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('statistics')}
         ]
 
     def get_asset_container_env_vars(self):
@@ -107,7 +111,8 @@ class ContainerDefinitions:
             {'name': "JAR_FILE", 'value': "pacman-api-asset.jar"},
             {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
             {'name': "CONFIG_SERVER_URL", 'value': self.CONFIG_SERVER_URL},
-            {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME}
+            {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
+            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('asset')}
         ]
 
     def get_auth_container_env_vars(self):
@@ -116,4 +121,5 @@ class ContainerDefinitions:
             {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
             {'name': "CONFIG_SERVER_URL", 'value': self.CONFIG_SERVER_URL},
             {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
+            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('auth')}
         ]
