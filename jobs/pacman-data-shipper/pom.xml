@@ -186,25 +186,25 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-				<groupId>org.jacoco</groupId>
-				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.7.6.201602180812</version>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
 				<executions>
 					<execution>
+						<phase>install</phase>
+						<configuration>
+							<target>
+								<copy file="target/data-shipper-jar-with-dependencies.jar" tofile="../../dist/jobs/data-shipper-jar-with-dependencies.jar"/>
+							</target>
+						</configuration>
 						<goals>
-							<goal>prepare-agent</goal>
-						</goals>
-					</execution>
-					<execution>
-						<id>report</id>
-						<phase>test</phase>
-						<goals>
-							<goal>report</goal>
+							<goal>run</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
         </plugins>
    </build>
+
 </project>
