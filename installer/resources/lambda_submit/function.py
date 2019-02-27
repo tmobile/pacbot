@@ -22,7 +22,8 @@ class SubmitJobLambdaFunction(LambdaFunctionResource):
     environment = {
         'variables': {
             'JOB_QUEUE': BatchJobsQueue.get_input_attr('name'),
-            'JOB_DEFINITION': SubmitAndRuleEngineJobDefinition.get_input_attr('name')
+            'JOB_DEFINITION': SubmitAndRuleEngineJobDefinition.get_input_attr('name'),
+            'CONFIG_URL': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,inventory/prd/latest"
         }
     }
 
