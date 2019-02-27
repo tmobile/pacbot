@@ -154,9 +154,8 @@
 		  </dependency>
 	
 	</dependencies>
-
 	<build>
-	
+
 		<plugins>
 		 <plugin>
         <groupId>org.apache.maven.plugins</groupId>
@@ -176,7 +175,7 @@
                             <descriptorRefs>
                                 <descriptorRef>jar-with-dependencies</descriptorRef>
                             </descriptorRefs>
-                            <finalName>pacman-aws-inventory</finalName>
+                            <finalName>pacman-aws-discovery</finalName>
                         </configuration>
                         <phase>package</phase>
                         <goals>
@@ -185,7 +184,25 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<version>1.8</version>
+				<executions>
+					<execution>
+						<phase>install</phase>
+						<configuration>
+							<target>
+								<copy file="target/pacman-aws-discovery-jar-with-dependencies.jar" tofile="../../dist/jobs/pacman-aws-inventory-jar-with-dependencies.jar"/>
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			    <plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
 				<version>0.7.6.201602180812</version>
@@ -206,4 +223,6 @@
 			</plugin>
 		</plugins>
 	</build>
+
+
 </project>
