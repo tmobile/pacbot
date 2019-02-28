@@ -100,36 +100,25 @@ class Buildpacbot(object):
         self.write_to_debug_log("Build Completed...")
 
     def upload_jar_files(self, working_dir, aws_access_key, aws_secret_key, region, bucket, s3_key_prefix):
-        api_folders = [
-            "pacman-api-admin.jar",
-            "pacman-api-asset.jar",
-            "pacman-api-compliance.jar",
-            "config.jar",
-            "pacman-api-notification.jar",
-            "pacman-api-statistics.jar",
-            "pacman-api-auth.jar"
+        folders = [
+            os.path.join(working_dir, "dist", "api"),
+            os.path.join(working_dir, "dist", "jobs"),
         ]
-        jobs_folder = [
-            "pacman-aws-inventory-jar-with-dependencies.jar",
-            "data-shipper-jar-with-dependencies.jar",
-            "rule-engine.jar",
-            "pac-managed-rules.jar"
-        ]
-        s3_client = s3 = boto3.client('s3', region_name=region, aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_key)
+        s3_client = s3 = boto3.client(
+            's3',
+            region_name=region,
+            aws_access_key_id=aws_access_key,
+            aws_secret_access_key=aws_secret_key)
 
-        for jarfile in api_folders:
-            copy_file_from = working_dir + "/dist/api/" + jarfile
-            s3_jar_file_key = str(os.path.join(s3_key_prefix, jarfile))
-            self.write_to_debug_log("JAR File: %s, Uploading to S3..." % s3_jar_file_key)
-            s3_client.upload_file(copy_file_from, bucket, s3_jar_file_key)
-            self.write_to_debug_log("JAR File: %s, Uploaded to S3" % s3_jar_file_key)
-
-        for jarfile in jobs_folder:
-            copy_file_from = working_dir + "/dist/jobs/" + jarfile
-            s3_jar_file_key = str(os.path.join(s3_key_prefix, jarfile))
-            self.write_to_debug_log("JAR File: %s, Uploading to S3..." % s3_jar_file_key)
-            s3_client.upload_file(copy_file_from, bucket, s3_jar_file_key)
-            self.write_to_debug_log("JAR File: %s, Uploaded to S3" % s3_jar_file_key)
+        for folder in folders:
+            if os.path.exists(folder):
+                files = os.walk(folder).__next__()[2]
+                for jarfile in files:
+                    copy_file_from = os.path.join(folder, jarfile)
+                    s3_jar_file_key = str(os.path.join(s3_key_prefix, jarfile))
+                    self.write_to_debug_log("JAR File: %s, Uploading to S3..." % s3_jar_file_key)
+                    s3_client.upload_file(copy_file_from, bucket, s3_jar_file_key)
+                    self.write_to_debug_log("JAR File: %s, Uploaded to S3" % s3_jar_file_key)
 
     def _get_web_app_directory(self):
         return os.path.join(self.codebase_root_dir, "webapp")
