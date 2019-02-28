@@ -75,7 +75,7 @@ class DataCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
         'params': [
             {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile.cso.pacman"},
             {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
-            # {'encrypt': False, 'key': "accountinfo", 'value': AwsAccount.get_output_attr('account_id')},
+            {'encrypt': False, 'key': "accountinfo", 'value': AwsAccount.get_output_attr('account_id')},
             # {'encrypt': False, 'key': "base-account", 'value': AwsAccount.get_output_attr('account_id')},
             # {'encrypt': False, 'key': "discovery-role", 'value': BaseRole.get_output_attr('name')},
             # {'encrypt': False, 'key': "s3", 'value': BucketStorage.get_output_attr('bucket')},
@@ -103,7 +103,7 @@ class DataShipperCloudWatchEventTarget(CloudWatchEventTargetResource):
             # {'name': "RDS_DB_URL", 'value': MySQLDatabase.get_rds_db_url()},
             # {'name': "ES_PORT", 'value': "80"},
             # {'name': "STAT_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('statistics')},
-            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/api/config/batch,data-shipper/prd/latest"},
+            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,data-shipper/prd/latest"},
             {'name': "ASSET_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('asset')},
             {'name': "CMPL_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('compliance')},
             {'name': "AUTH_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('auth')},
@@ -112,7 +112,6 @@ class DataShipperCloudWatchEventTarget(CloudWatchEventTargetResource):
         'params': [
             {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile"},
             {'encrypt': False, 'key': "datasource", 'value': "aws"},
-            # {'encrypt': False, 'key': "rdsinfo", 'value': MySQLDatabase.get_rds_info()},
             {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
             {'encrypt': False, 'key': "apiauthinfo",
                 'value': "MjJlMTQ5MjItODdkNy00ZWU0LWE0NzAtZGEwYmIxMGQ0NWQzOmNzcldwYzVwN0pGRjR2RVpCa3dHQ0FoNjdrR1FHd1h2NDZxdWc3djVad3RLZw=="}
