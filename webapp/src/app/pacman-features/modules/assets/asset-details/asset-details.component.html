@@ -223,7 +223,7 @@
                 </div>
             </article>
             <article class="metaData-wrapper">
-                <div class="sub-head">
+                <div class="sub-head" *ngIf="showEmail || resourceType == 'ec2'">
                     <app-title-burger-head [subHeadTitle]="'Quick Actions'"></app-title-burger-head>
                 </div>
                 <div class="actions-wrappers add-margin" *ngIf="showOppositeEmail">
