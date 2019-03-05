@@ -52,7 +52,7 @@
                                     <app-button *ngIf="!exceptionAdded" (onClickInner)="showOtherDiv()">+ Add Exception</app-button>
                                     <app-button *ngIf="exceptionAdded" (onClickInner)="showOtherDivRevoke();revokeException()"> Revoke Exception</app-button>
                                 </div>
-                                <div class="btn-wrapper-additional-actions" *ngIf="GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL && GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_EMAIL_FROM_ID">
+                                <div class="btn-wrapper-additional-actions" *ngIf="GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL">
                                     <app-button-icon [iconSrc]="emailIcon.icon" (onClickInner)="showOtherDivEmail()">Email Issue
                                     </app-button-icon>
                                 </div>
@@ -173,7 +173,7 @@
                             <div class="actions-wrapper back" [class.after-click-button-opposite]='showOppositeEmail'>
                                 <header class="recommend-flip flex-between flex flex-align-center">
                                     <div class="header-text">
-                                        + Send Email
+                                        Send Email
                                     </div>
                                     <div class="delete-img" [class.showNone]='showNone' (click)="showOtherDivEmail()">
                                         <img style="height: 1.8em;" src="../assets/png/delete.png">
@@ -181,6 +181,20 @@
                                 </header>
                                 <section class="text-wrapper" *ngIf="!showTransactionEmail">
                                     <form novalidate [formGroup]="userEmail" (keydown.enter)="$event.preventDefault()">
+                                        <label>
+                                            <div class="text-wrapper-header">From</div>
+                                            <div class="input-wrapper">
+                                                <input type="text" placeholder="Enter From email" [(ngModel)]='fromEmailID'
+                                                    class="inputarea-container" formControlName="fname"
+                                                    (keydown)="keyDown($event)">
+                                            </div>
+                                        </label>
+                                        <div class="error-reason" *ngIf="!this.emailObj.from.required">
+                                            Email is required
+                                        </div>
+                                        <div class="error-reason" *ngIf="!this.emailObj.from.validFormat">
+                                            Please provide valid Email address
+                                        </div>
                                         <label>
                                             <div class="text-wrapper-header">To</div>
                                             <ul class="input-wrapper">
@@ -199,8 +213,11 @@
                                                 </ul>
                                             </div>
                                         </div>
-                                        <div class="error-reason" *ngIf="!invalid">
+                                        <div class="error-reason" *ngIf="!this.emailObj.to.required">
                                             Email is required
+                                        </div>
+                                        <div class="error-reason" *ngIf="!this.emailObj.to.validFormat">
+                                            Please provide valid Email address
                                         </div>
                                         <div class="textarea-button">
                                             <button class="button-textarea" type="button" (click)='onSubmitemail()'>SEND

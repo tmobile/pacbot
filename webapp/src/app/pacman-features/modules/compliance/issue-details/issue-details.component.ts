@@ -144,7 +144,16 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
   check = false;
   checkEmail = false;
   checkRecommend = false;
-  invalid = true;
+  emailObj = {
+    'to': {
+      'required': true,
+      'validFormat': true
+    },
+    'from': {
+      'required': true,
+      'validFormat': true
+    }
+  };
   showTopSection = false;
   showRecommendantions = false;
   exceptionAdded = false;
@@ -168,7 +177,7 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
   selectedDomain: any = '';
   selectedAssetGroup: string;
   public GLOBAL_CONFIG;
-
+  fromEmailID: any;
   private policyViolationId;
 
   /*Subscription variables*/
@@ -238,7 +247,8 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
   ) {
     try {
       this.elementRef = this.myElement;
-
+      this.GLOBAL_CONFIG = CONFIGURATIONS;
+      this.fromEmailID = this.GLOBAL_CONFIG && this.GLOBAL_CONFIG.optional && this.GLOBAL_CONFIG.optional.pacmanIssue && this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue && this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_EMAIL_FROM_ID;
       this.routeSubscription = this.activatedRoute.params.subscribe(params => {
         this.policyViolationId = params['issueId'];
       });
@@ -265,8 +275,6 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     try {
-      this.GLOBAL_CONFIG = CONFIGURATIONS;
-
       this.adminAccess = this.permissions.checkAdminPermission();
 
       this.dataForm = this.formBuilder.group({
@@ -284,7 +292,8 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
         ename: new FormControl('', [
           Validators.required,
           Validators.minLength(6)
-        ])
+        ]),
+        fname: new FormControl('', [Validators.required, Validators.minLength(6)])
       });
 
       this.breadcrumbPresent = 'Policy Violations Details';
@@ -315,7 +324,16 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
     this.dataTableData = [];
     this.tableDataLoaded = false;
     this.checkRecommend = false;
-    this.invalid = true;
+    this.emailObj = {
+      'to': {
+        'required': true,
+        'validFormat': true
+      },
+      'from': {
+        'required': true,
+        'validFormat': true
+      }
+    };
     this.showTopSection = false;
     this.issueBlocks = false;
     this.showRecommendantions = false;
@@ -487,9 +505,9 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
       this.emailArray.push(item);
       this.queryValue = '';
       if (this.emailArray.length < 1) {
-        this.invalid = false;
+        this.emailObj.to.required = false;
       } else {
-        this.invalid = true;
+        this.emailObj.to.required = true;
       }
     } catch (e) {
       this.logger.log('error', e);
@@ -766,9 +784,9 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
     try {
       this.emailArray.splice(index, 1);
       if (this.emailArray.length < 1) {
-        this.invalid = false;
+        this.emailObj.to.required = false;
       } else {
-        this.invalid = true;
+        this.emailObj.to.required = true;
       }
     } catch (e) {
       this.logger.log('error', e);
@@ -953,9 +971,9 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
           }
           this.queryValue = '';
           if (this.emailArray.length < 1) {
-            this.invalid = false;
+            this.emailObj.to.required = false;
           } else {
-            this.invalid = true;
+            this.emailObj.to.required = true;
           }
       }
     } catch (e) {
@@ -973,9 +991,9 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
           this.emailArray.push(item);
           this.queryValue = '';
           if (this.emailArray.length < 1) {
-            this.invalid = false;
+            this.emailObj.to.required = false;
           } else {
-            this.invalid = true;
+            this.emailObj.to.required = true;
           }
       }
     } catch (e) {
@@ -1059,19 +1077,41 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
 
   onSubmitemail() {
     try {
-      if (this.emailArray.length < 1 && this.queryValue.length < 0) {
-        this.invalid = false;
+      // reset values
+      this.emailObj = {
+        'to': {
+          'required': true,
+          'validFormat': true
+        },
+        'from': {
+          'required': true,
+          'validFormat': true
+        }
+      };
+      // to address validation
+      if (this.emailArray.length < 1 && this.queryValue.length <= 0) {
+        this.emailObj.to.required = false;
         return;
       } else {
-        this.invalid = true;
-        if (this.queryValue.length > 0) {
+        this.emailObj.to.required = true;
+        if (this.emailArray.length < 1 && this.queryValue.length > 0) {
           if (this.validateEmailInput(this.queryValue)) {
             this.emailArray.push(this.queryValue);
           } else {
-            this.invalid = false;
+            this.emailObj.to.validFormat = false;
             return;
           }
         }
+      }
+      // from address validation
+      if (this.fromEmailID.length > 0) {
+        if (!this.validateEmailInput(this.fromEmailID)) {
+          this.emailObj.from.validFormat = false;
+          return;
+        }
+      } else {
+        this.emailObj.from.required = false;
+        return;
       }
 
       this.showTransactionEmail = true;
@@ -1094,7 +1134,7 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
       const emailMethod = environment.email.method;
       const payload = {
         attachmentUrl: this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL,
-        from: this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_EMAIL_FROM_ID,
+        from: this.fromEmailID,
         mailTemplateUrl: this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL,
         placeholderValues: {
           link: locationValue,
@@ -1196,6 +1236,17 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
         this.showLoadcompleteEmail = false;
         this.queryValue = '';
         this.filteredList = [];
+        this.fromEmailID = this.GLOBAL_CONFIG && this.GLOBAL_CONFIG.optional && this.GLOBAL_CONFIG.optional.pacmanIssue && this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue && this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_EMAIL_FROM_ID;
+        this.emailObj = {
+          'to': {
+            'required': true,
+            'validFormat': true
+          },
+          'from': {
+            'required': true,
+            'validFormat': true
+          }
+        };
       }
     } catch (e) {
       this.logger.log('error', e);

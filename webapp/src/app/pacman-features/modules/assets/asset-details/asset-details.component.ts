@@ -96,7 +96,7 @@ export class AssetDetailsComponent implements OnInit, AfterViewInit, OnDestroy {
   labels: any;
   dataObj: any= {};
   genericAttributes: any= {};
-
+  showEmail = false;
   private subscriptionToAssetGroup: Subscription;
   private getPolicyDataSubscription: Subscription;
   private getHostDataSubscription: Subscription;
