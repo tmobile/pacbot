@@ -469,7 +469,7 @@ public class RuleServiceImpl implements RuleService {
 	}
 
 	private boolean createUpdateRuleJartoS3Bucket(MultipartFile fileToUpload, String ruleUUID) {
-		return awsS3BucketService.uploadFile(amazonClient.getAmazonS3(config.getRule().getS3().getBucketRegion()), fileToUpload, config.getJob().getS3().getBucketName(), ruleUUID.concat(".jar"));
+		return awsS3BucketService.uploadFile(amazonClient.getAmazonS3(config.getRule().getS3().getBucketRegion()), fileToUpload, config.getJob().getS3().getBucketName()+"/pacbot", ruleUUID.concat(".jar"));
 	}
 
 	public boolean isRuleIdExits(String ruleId) {
