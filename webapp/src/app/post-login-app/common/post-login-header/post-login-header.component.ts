@@ -148,12 +148,12 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
                 route: 'stats-overlay',
                 name: 'Statistics',
                 overlay: true
-            },
-            {
-                route: 'domain-overlay',
-                name: 'Compliance',
-                overlay: true
             }
+            // {
+            //     route: 'domain-overlay',
+            //     name: 'Compliance',
+            //     overlay: true
+            // }
             // {
             //     route: 'vulnerability-report',
             //     name: 'Vulnerability Report',
