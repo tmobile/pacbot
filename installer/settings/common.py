@@ -97,7 +97,11 @@ PACBOT_LOGIN_CREDENTIALS = {
 }
 
 MAKE_ALB_INTERNAL = True
-MAIL_SERVER = "localhost.local"
+
+MAIL_SERVER = "localhost"
+MAIL_SERVER_PORT = 25
+MAIL_PROTOCOL = "smtp"
+
 try:
     from settings.local import *
 except:
