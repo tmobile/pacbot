@@ -75,6 +75,8 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_PATCHING_FEATURE_ENABLED': "false",
                         'ENV_VULNERABILITY_FEATURE_ENABLED': "false",
                         'ENV_MAIL_SERVER': Settings.MAIL_SERVER,
+                        'ENV_MAIL_SERVER_PORT': Settings.MAIL_SERVER_PORT,
+                        'ENV_MAIL_PROTOCOL': Settings.MAIL_PROTOCOL,
                         'ENV_PACMAN_S3': "pacman-email-templates",
                         'ENV_DATA_IN_DIR': "inventory",
                         'ENV_DATA_BKP_DIR': "backup",
