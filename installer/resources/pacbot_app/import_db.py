@@ -75,8 +75,6 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_PATCHING_FEATURE_ENABLED': "false",
                         'ENV_VULNERABILITY_FEATURE_ENABLED': "false",
                         'ENV_MAIL_SERVER': Settings.MAIL_SERVER,
-                        'ENV_MAIL_SERVER_PORT': Settings.MAIL_SERVER_PORT,
-                        'ENV_MAIL_PROTOCOL': Settings.MAIL_PROTOCOL,
                         'ENV_PACMAN_S3': "pacman-email-templates",
                         'ENV_DATA_IN_DIR': "inventory",
                         'ENV_DATA_BKP_DIR': "backup",
@@ -85,6 +83,13 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_DATA_IN_S3': BucketStorage.get_output_attr('bucket'),
                         'ENV_BASE_ACCOUNT': AwsAccount.get_output_attr('account_id'),
                         'ENV_PAC_RO_ROLE': BaseRole.get_input_attr('name'),
+                        'ENV_MAIL_SERVER_PORT': Settings.MAIL_SERVER_PORT,
+                        'ENV_MAIL_PROTOCOL': Settings.MAIL_PROTOCOL,
+                        'ENV_MAIL_SERVER_USER': Settings.MAIL_SERVER_USER,
+                        'ENV_MAIL_SERVER_PWD': Settings.MAIL_SERVER_PWD,
+                        'ENV_MAIL_SMTP_AUTH': Settings.MAIL_SMTP_AUTH,
+                        'ENV_MAIL_SMTP_SSL_ENABLE': Settings.MAIL_SMTP_SSL_ENABLE,
+                        'ENV_MAIL_SMTP_SSL_TEST_CONNECTION': Settings.MAIL_SMTP_SSL_TEST_CONNECTION,
                     },
                     'interpreter': [Settings.PYTHON_INTERPRETER]
                 }

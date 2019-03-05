@@ -101,6 +101,11 @@ MAKE_ALB_INTERNAL = True
 MAIL_SERVER = "localhost"
 MAIL_SERVER_PORT = 25
 MAIL_PROTOCOL = "smtp"
+MAIL_SERVER_USER = ""
+MAIL_SERVER_PWD = ""
+MAIL_SMTP_AUTH = ""
+MAIL_SMTP_SSL_ENABLE = "true"
+MAIL_SMTP_SSL_TEST_CONNECTION = "false"
 
 try:
     from settings.local import *
