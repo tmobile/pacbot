@@ -69,6 +69,13 @@ SET @BASE_REGION='$BASE_REGION';
 SET @DATA_IN_S3='$DATA_IN_S3';
 SET @BASE_ACCOUNT='$BASE_ACCOUNT';
 SET @PAC_RO_ROLE='$PAC_RO_ROLE';
+SET @MAIL_SERVER_PORT='$MAIL_SERVER_PORT';
+SET @MAIL_PROTOCOL='$MAIL_PROTOCOL';
+SET @MAIL_SERVER_USER='$MAIL_SERVER_USER';
+SET @MAIL_SERVER_PWD='$MAIL_SERVER_PWD';
+SET @MAIL_SMTP_AUTH='$MAIL_SMTP_AUTH';
+SET @MAIL_SMTP_SSL_ENABLE='$MAIL_SMTP_SSL_ENABLE';
+SET @MAIL_SMTP_SSL_TEST_CONNECTION='$MAIL_SMTP_SSL_TEST_CONNECTION';
 
 
 DROP TABLE IF EXISTS `OmniSearch_Config`;
@@ -1615,6 +1622,12 @@ INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('s3','');
 INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('region.ignore','');
 INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('file.path','');
 INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('base.region','');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.username','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.password','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.properties.mail.smtp.auth','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.properties.mail.smtp.ssl.trust','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.properties.mail.smtp.starttls.enable','Description PlaceHolder');
+INSERT INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.test-connection','Description PlaceHolder');
 
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.config','classpath:spring-logback.xml','application','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.esLoggingLevel','WARN','application','prd','latest',NULL,NULL,NULL,NULL);
@@ -1735,8 +1748,8 @@ INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`labe
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('backup.email.attachment','backup.json','notification-service','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.freemarker.suffix','.html','notification-service','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.host',concat(@MAIL_SERVER,''),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
-INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.port','25','notification-service','prd','latest',NULL,NULL,NULL,NULL);
-INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.protocol','smtp','notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.port',concat(@MAIL_SERVER_PORT,'25'),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.protocol',concat(@MAIL_PROTOCOL,'smtp'),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.defaultEncoding','UTF-8','notification-service','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('cron.frequency.weekly-report-sync-trigger','0 0 9 ? * MON *','notification-service','prd','latest',NULL,NULL,NULL,NULL);
 INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('template.digest-mail.url',concat('https://s3.amazonaws.com/',@PACMAN_S3,'/index.html'),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
@@ -1757,4 +1770,11 @@ INSERT INTO pac_config_properties (cfkey,value,application,profile,label,created
 INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('discovery.role',concat(@PAC_RO_ROLE,''),'inventory','prd','latest',null,null,null,null);
 INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('elastic-search.host',concat(@ES_HOST_NAME,''),'batch','prd','latest',null,null,null,null);
 INSERT INTO pac_config_properties (cfkey,value,application,profile,label,createdBy,createdDate,modifiedBy,modifiedDate) VALUES ('elastic-search.port',concat(@ES_PORT,''),'batch','prd','latest',null,null,null,null);
+
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.username',concat(@MAIL_SERVER_USER,''),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.password',concat(@MAIL_SERVER_PWD,''),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.properties.mail.smtp.auth',concat(@MAIL_SMTP_AUTH,'true'),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.properties.mail.smtp.ssl.trust',concat(@MAIL_SERVER,''),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.properties.mail.smtp.starttls.enable',concat(@MAIL_SMTP_SSL_ENABLE,'true'),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.test-connection',concat(@MAIL_SMTP_SSL_TEST_CONNECTION,'false'),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
 
