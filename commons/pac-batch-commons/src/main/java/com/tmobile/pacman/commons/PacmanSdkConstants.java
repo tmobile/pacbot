@@ -78,7 +78,7 @@ public interface PacmanSdkConstants {
 	String Role_IDENTIFYING_STRING="roleIdentifyingString";
 
 	/** The mendetory tags key. */
-	String MENDETORY_TAGS_KEY="mandatoryTags";
+	String MANDATORY_TAGS_KEY="mandatoryTags";
 
 	/** The splitter char. */
 	String SPLITTER_CHAR="splitterChar";
