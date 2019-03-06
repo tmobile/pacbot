@@ -50,9 +50,9 @@ import com.tmobile.pacman.commons.rule.PacmanRule;
 import com.tmobile.pacman.commons.rule.RuleResult;
 
 @PacmanRule(key = "check-for-unprotected-mongodb-access", desc = "Check whether MongoDB is publicly accessible via Internet through port 27017", severity = PacmanSdkConstants.SEV_HIGH, category = PacmanSdkConstants.SECURITY)
-public class UnProtetcedMongoDBAccess extends BaseRule {
+public class UnProtectedMongoDBAccess extends BaseRule {
     private static final Logger logger = LoggerFactory
-            .getLogger(UnProtetcedMongoDBAccess.class);
+            .getLogger(UnProtectedMongoDBAccess.class);
 
     /**
      * The method will get triggered from Rule Engine with following parameters
