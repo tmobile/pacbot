@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width"> <!-- Forcing initial-scale shouldn't be necessary -->
     <meta http-equiv="X-UA-Compatible" content="IE=edge"> <!-- Use the latest (edge) version of IE rendering engine -->
     <meta name="x-apple-disable-message-reformatting">  <!-- Disable auto-scale in iOS 10 Mail entirely -->
+    <title>Issue Details</title>
     <link href="https://fonts.googleapis.com/css?family=Exo+2" rel="stylesheet">
     <!-- Web Font / @font-face : BEGIN -->
     <!-- NOTE: If web fonts are not required, lines 10 - 27 can be safely removed. -->
@@ -123,10 +124,11 @@
         .title{
             margin-bottom: 0.7em;
             font-family: 'Exo 2', sans-serif;
+            font-weight: 700;
         }
 
         .container{
-          width: 16em;
+          width: 100%;
           margin-bottom: 1.5em;
           display: inline-block;
           vertical-align: top;
@@ -155,6 +157,7 @@
         .header{
           font-family: 'Exo 2', sans-serif;
           margin-top: 1.5em;
+          font-weight: 700;
         }
 
         .text{
@@ -227,85 +230,71 @@
 
   <div class="text">Hi</div>
 
-  Please find below the details of the issue requested by you
+  <div class="text">Please find below the details of the issue requested by you</div>
+
   <div class="header-text">
+    <img class="header-image-wrapper" src="${templatePath}/rsz_t-mobile_white.png">
   </div>
   <div class="image-header">
     <div class="issue-blocks-wrapper">
       <div class="header">${statusName}</div>
       <div class="image-container">
+        <img class="image-wrapper" src="${templatePath}/Lock-Open.png">
       </div>
       <div class="footer">${statusFooter}</div>
     </div>
     <div class="issue-blocks-wrapper">
       <div class="header">${severityName}</div>
       <div class="image-container">
+        <img class="image-wrapper" src="${templatePath}/Flag-Critical.png">
       </div>
       <div class="footer">${severityFooter}</div>
     </div>
     <div class="issue-blocks-wrapper">
       <div class="header">${targetTypeName}</div>
       <div class="image-container">
+        <img class="image-wrapper" src="${templatePath}/Character1.png">
       </div>
       <div class="footer">${targetTypeFooter}</div>
     </div>
     <div class="issue-blocks-wrapper">
       <div class="header">${ruleCategoryName}</div>
       <div class="image-container">
+        <img class="image-wrapper" src="${templatePath}/Security.png">
       </div>
       <div class="footer">${ruleCategoryFooter}</div>
     </div>
   </div>
   <div class="desc">
-    <div class="container desc-cont">
-      <li class="title">Description</li>
-      <li class="value">${descname}</li>
-    </div>
     <ul class="desc-details">
       <div class="container">
-          <li class="title">Resource ID</li>
-          <li class="value">${resourceIdname}</li>
+        <li class="title">Policy Violated</li>
+        <li class="value">${policyViolated}</li>
       </div>
       <div class="container">
-        <li class="title">Account ID</li>
-        <li class="value colored">${accountIdname}</li>
+          <li class="title">Policy Description</li>
+          <li class="value">${policyDescription}</li>
       </div>
       <div class="container">
-        <li class="title">Region</li>
-        <li class="value">${regionname}</li>
+        <li class="title">Violation Reason</li>
+        <li class="value">${violationReason}</li>
       </div>
       <div class="container">
-        <li class="title">Severity</li>
-        <li class="value">${sevname}</li>
+        <li class="title">Resource Id</li>
+        <li class="value">${resourceId}</li>
       </div>
       <div class="container">
-        <li class="title">Account Name</li>
-        <li class="value">${accountname}</li>
+        <li class="title">Creation Date</li>
+        <li class="value">${createdOn}</li>
       </div>
       <div class="container">
-        <li class="title">Target Type</li>
-        <li class="value">${targetname}</li>
+        <li class="title">Last Modified Date</li>
+        <li class="value">${lastModifiedDate}</li>
       </div>
-      <div class="container">
-        <li class="title">Rule Category</li>
-        <li class="value">${categoryname}</li>
-      </div>
-      <div class="container">
-        <li class="title">Created On</li>
-        <li class="value">${createdname}</li>
-      </div>
-      <div class="container">
-        <li class="title">Modified On</li>
-        <li class="value">${modifiedname}</li>
-      </div> 
-      <div class="container">
-        <li class="title">Policy Name</li>
-        <li class="value colored">${policyNameVal}</li>
-      </div> 
     </ul>
    </div>
 
-   For more details, please <a href=${link}>click here</a> 
+   For more details on this violation, please <a class="colored" href=${link}>click here</a>
 
 </body>
 </html>
