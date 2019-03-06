@@ -173,6 +173,15 @@ class Command:
         return os.path.join(Settings.BASE_APP_DIR, "custom", self.base_dir)
 
     def validate_optional_args(self, args_set):
+        """
+        Validate optional arguments supplied to the main command name
+
+        Args:
+            args_set (dict): Dict with key as parameter name and value as its value
+
+        Returns:
+            boolean: If valid arguments then True else False
+        """
         for (key, val) in args_set:
             if not (key.startswith('--') and key in self.valid_arg_keys):
                 return False
@@ -180,5 +189,6 @@ class Command:
         return True
 
     def exit_system_showing_valid_optional_args(self):
+        """Exit the execution as the optional parameter supplied is invalid"""
         print("Optional arguments supplied are not valid")
         sys.exit()
