@@ -109,8 +109,11 @@ public class TaggingRepositoryImpl implements TaggingRepository, Constants {
     public JsonArray getUntaggedIssuesByapplicationFromES(String assetGroup,
             String mandatoryTags, String searchText, int from, int size)
             throws DataException {
-        List<String> mandatoryTagsList = Arrays
+    	List<String> mandatoryTagsList  = new ArrayList<>();
+    	if(!com.amazonaws.util.StringUtils.isNullOrEmpty(mandatoryTags)){
+       mandatoryTagsList = Arrays
                 .asList(mandatoryTags.split(","));
+    	}
         String responseJson = null;
         JsonParser jsonParser;
         JsonObject resultJson;
