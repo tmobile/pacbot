@@ -151,8 +151,9 @@ public class TaggingServiceImpl implements TaggingService, Constants {
      */
     public Map<String, Object> getTaggingSummary(String assetGroup) throws ServiceException {
         List<String> mandatoryTagsList = new ArrayList<>();
-        if (!StringUtils.isEmpty(getMandatoryTags())) {
-            mandatoryTagsList = Arrays.asList(getMandatoryTags().split(","));
+        String ruleMandatoryTags = getMandatoryTags();
+        if (!StringUtils.isEmpty(ruleMandatoryTags)) {
+            mandatoryTagsList = Arrays.asList(ruleMandatoryTags.split(","));
         }
         Map<String, Object> totalMap = new HashMap<>();
         List<Map<String, Object>> unTagsList = new ArrayList<>();
@@ -292,6 +293,7 @@ public class TaggingServiceImpl implements TaggingService, Constants {
      */
     private String getMandatoryTags() throws ServiceException {
         String mand = "mandatoryTags";
+        String mandatoryTags = null;
         char ch = '"';
         String mandTags = ch + "" + mand + "" + ch; 
         JsonObject paramObj = null;
