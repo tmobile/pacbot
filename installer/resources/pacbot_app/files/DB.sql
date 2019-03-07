@@ -78,8 +78,6 @@ SET @MAIL_SMTP_SSL_ENABLE='$MAIL_SMTP_SSL_ENABLE';
 SET @MAIL_SMTP_SSL_TEST_CONNECTION='$MAIL_SMTP_SSL_TEST_CONNECTION';
 
 
-DROP TABLE IF EXISTS `OmniSearch_Config`;
-
 CREATE TABLE IF NOT EXISTS `OmniSearch_Config` (
   `SEARCH_CATEGORY` varchar(100) COLLATE utf8_bin NOT NULL,
   `RESOURCE_TYPE` varchar(100) COLLATE utf8_bin NOT NULL,
@@ -144,8 +142,6 @@ CREATE TABLE IF NOT EXISTS `cf_AssetGroupException` (
 
 /*Table structure for table `cf_AssetGroupOwnerDetails` */
 
-DROP TABLE IF EXISTS `cf_AssetGroupOwnerDetails`;
-
 CREATE TABLE IF NOT EXISTS `cf_AssetGroupOwnerDetails` (
   `ownerId` varchar(100) COLLATE utf8_bin NOT NULL,
   `ownnerName` varchar(100) COLLATE utf8_bin DEFAULT NULL,
@@ -155,8 +151,6 @@ CREATE TABLE IF NOT EXISTS `cf_AssetGroupOwnerDetails` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 /*Table structure for table `cf_AssetGroupTargetDetails` */
-
-DROP TABLE IF EXISTS `cf_AssetGroupTargetDetails`;
 
 CREATE TABLE IF NOT EXISTS `cf_AssetGroupTargetDetails` (
   `id_` varchar(75) COLLATE utf8_bin NOT NULL DEFAULT '',
