@@ -17,12 +17,6 @@ backup:
 spring:
   freemarker:
     suffix: .html
-  mail:
-    host: ${MAIL_SERVER:localhost}
-    port: 25
-    protocol: smtp
-    defaultEncoding: UTF-8
-    
 cron:
   frequency:
     weekly-report-sync-trigger: 0 0 9 ? * MON *
