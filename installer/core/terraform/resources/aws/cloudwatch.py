@@ -5,6 +5,13 @@ from core.providers.aws.boto3 import cloudwatch_event
 
 
 class CloudWatchEventRuleResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS Cloudwatch event rule resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_cloudwatch_event_rule"
     available_args = {
         'name': {'required': True, 'prefix': True, 'sep': '-'},
@@ -17,6 +24,17 @@ class CloudWatchEventRuleResource(TerraformResource):
     description = Settings.RESOURCE_DESCRIPTION
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
 
@@ -42,6 +60,13 @@ class CloudWatchEventTargetResource(TerraformResource):
 
 
 class CloudWatchLogGroupResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS Cloudwatch log group resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_cloudwatch_log_group"
     available_args = {
         'name': {'required': True, 'prefix': True, 'sep': '/'},
@@ -51,6 +76,17 @@ class CloudWatchLogGroupResource(TerraformResource):
     }
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
 
@@ -65,6 +101,13 @@ class CloudWatchLogGroupResource(TerraformResource):
 
 
 class CloudWatchLogResourcePolicy(TerraformResource):
+    """
+    Base resource class for Terraform AWS Cloudwatch log policy resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_cloudwatch_log_resource_policy"
     available_args = {
         'policy_name': {'required': True, 'prefix': True, 'sep': '/'},
