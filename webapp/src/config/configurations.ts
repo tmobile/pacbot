@@ -45,7 +45,7 @@ export const CONFIGURATIONS = {
             CREATE_JIRA_TICKET_FOR_PACMAN_ISSUE: false, // Expected values: true || false || ''
             emailPacManIssue: {
                 ISSUE_MAIL_TEMPLATE_URL: '',
-                ISSUE_EMAIL_FROM_ID: '',
+                ISSUE_EMAIL_FROM_ID: 'violations.support@pacbot.org',
             }
         },
         assetDetails: {
