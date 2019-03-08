@@ -10,6 +10,17 @@ import re
 
 
 class BaseTerraformResource(metaclass=ABCMeta):
+    """
+    Abstract Base class for all resource type (terraform resource, data resource etc, variables)
+
+    Attributes:
+        DEPENDS_ON (list): This defines what are the resources on which the current resource depends on
+        OUTPUT_LIST (list): List of attributes to be output in terraform
+        VARIABLES (list): List of variables used in the resource
+        PROCESS (boolean): Whether to create/destroy resource or not. If true then resource will be created else resource will not be created
+                            and is used as dummy resource which doesn't dod anything
+        input (input instacne): Input object for install or destroy
+    """
     DEPENDS_ON = []
     OUTPUT_LIST = []
     VARIABLES = []
@@ -20,11 +31,26 @@ class BaseTerraformResource(metaclass=ABCMeta):
 
     @classmethod
     def get_resource_id(cls):
+        """
+        This method generate the resource id of the current resource from the class name path
+
+        Returns:
+            resource_id (str): Resource ID string generated from the class name
+        """
         # return getattr(cls, 'resource_id', '_'.join(cls.__module__.title().lower().split('.')[1:]) + '_' + cls.__name__)
         return '_'.join(cls.__module__.title().lower().split('.')[1:]) + '_' + cls.__name__
 
     @classmethod
     def get_input_attr(cls, key):
+        """
+        Find the value of the given attribute of a resource
+
+        Args:
+            key (str): Attribute name
+
+        Returns:
+            value (str): Formatted argument value of the given key
+        """
         attrs = cls.available_args.get(key, None)
         arg_value = getattr(cls, key, None)
 
@@ -38,6 +64,16 @@ class BaseTerraformResource(metaclass=ABCMeta):
 
     @classmethod
     def get_output_attr(cls, key, index=False):
+        """
+        Generate terraform output string(reference string) format of the given key. If count is greater than 1 then index is used.
+
+        Args:
+            key (str): Attribute name
+            index (int): Index of the resource if the resource count is greater than 0
+
+        Returns:
+            output_attr_ref (str): Terraform output reference of the given attribute
+        """
         if getattr(cls, "count", None):
             output_attr_ref = "%s.*.%s" % (cls.get_terraform_resource_path(), key)
             output_attr_ref += "" if index is False else "[count.index]"
@@ -49,19 +85,46 @@ class BaseTerraformResource(metaclass=ABCMeta):
 
     @classmethod
     def get_output_attr_name(cls, name):
+        """
+        Output key identifier of the given output attribute name
+
+        Args:
+            name (str): Output Attribute name
+
+        Returns:
+            key (str): Key identifier for the given output name
+        """
         return "-".join([cls.get_resource_id(), name])
 
     @classmethod
     def get_terraform_resource_path(cls):
+        """
+        Get path of the resource class
+
+        Returns:
+            path (str): path of the resource class
+        """
         return get_terraform_resource_path(cls)
 
     def get_resource_terraform_file(self):
+        """
+        Get the path of the terraform file created(to be created) for the current resource
+
+        Returns:
+            path (path): path of terraform file
+        """
         return os.path.join(
             Settings.TERRAFORM_DIR,
             self.get_resource_id() + "." + self.tf_file_extension
         )
 
     def get_resource_dependency_list(self):
+        """
+        Find the dependency resources for the given resource
+
+        Returns:
+            dependency_list (list): dependency resources path list
+        """
         dependency_list = []
 
         for resource_class in self.DEPENDS_ON:
@@ -71,6 +134,15 @@ class BaseTerraformResource(metaclass=ABCMeta):
         return dependency_list
 
     def generate_terraform_script(self, terraform_args_dict):
+        """
+        Build terraform resource configuration as dict to be used to generate json
+
+        Args:
+            terraform_args_dict (dict): Input resource class args dict supplied
+
+        Returns:
+            terraform_script_dict (dict): terraform resource configurations
+        """
         terraform_script_dict = {
             self.terraform_type: {
                 self.resource_instance_name: {
@@ -90,6 +162,12 @@ class BaseTerraformResource(metaclass=ABCMeta):
         return terraform_script_dict
 
     def get_terraform_variables(self):
+        """
+        Find the terraform variables added for the current resource
+
+        Returns:
+            variables (dict): variables as dict
+        """
         variables = {}
 
         for variable_class in self.VARIABLES:
@@ -108,6 +186,7 @@ class BaseTerraformResource(metaclass=ABCMeta):
         return variables
 
     def generate_terraform(self):
+        """This creates terraform resource"""
         if self.PROCESS:  # Generate the resource terraform file only if the resource is to be processed
             try:
                 terraform_args_dict = self.get_terraform_resource_args_dict()
@@ -119,11 +198,22 @@ class BaseTerraformResource(metaclass=ABCMeta):
                 sys.exit()
 
     def remove_terraform(self):
+        """Delete the terraform file of the current resource from terraform directory"""
         file = self.get_resource_terraform_file()
         if os.path.isfile(file):
             os.remove(file)
 
     def _get_resource_argument_value(self, arg, attrs):
+        """
+        Find the terraform resource configuration from the class attributes
+
+        Args:
+            arg (str): Argument name
+            attrs (dict): attributes of the argument
+
+        Returns:
+            value (str/None): Formated resource attr value if exists else None
+        """
         if attrs.get('inline_args', False):
             arg_dict_values = {}
             for inline_arg, inline_arg_attrs in attrs.get('inline_args', {}).items():
@@ -143,9 +233,25 @@ class BaseTerraformResource(metaclass=ABCMeta):
         return None
 
     def _get_terraform_argument_key(self, key, attrs):
+        """
+        Find the terraform configuration key from the class attributes ie. if tf_arg_key is supplied then use that else the given attr
+
+        Args:
+            key (str): Argument name
+            attrs (dict): attributes of the argument
+
+        Returns:
+            value (str): argument name
+        """
         return attrs.get('tf_arg_key', key)
 
     def get_terraform_resource_args_dict(self):
+        """
+        Generate terraform configuration dict. Iterate over each configuration analyse the attributes and create configuration key with value as dict
+
+        Returns:
+            terraform_args_dict (dict): Terraform configuration dict
+        """
         self.set_default_available_arguments()
         terraform_args_dict = {}
         for arg, attrs in self.available_args.items():
@@ -165,12 +271,25 @@ class BaseTerraformResource(metaclass=ABCMeta):
         return terraform_args_dict
 
     def create_terraform_resource_file(self, terraform_args_dict):
+        """
+        This creates terraform resource file in terraform directory and add the configurations as json
+
+        Args:
+            terraform_args_dict (dict): Terraform resource configurations
+        """
         terraform_script_dict = self.generate_terraform_script(terraform_args_dict)
 
         with open(self.get_resource_terraform_file(), "w") as jsonfile:
             json.dump(terraform_script_dict, jsonfile, indent=4)
 
     def validate_input_args(self):
+        """
+        Validate arguments supplied to the terrafomr resource
+
+        Returns:
+            success (boolean): Validation is success or not
+            msg_list (list): List of error messages if there is any error
+        """
         success = True
         msg_list = []
         for arg in self._get_required_arguments():
@@ -185,6 +304,12 @@ class BaseTerraformResource(metaclass=ABCMeta):
         return success, msg_list
 
     def _get_required_arguments(self):
+        """
+        Find all the mandatory configurations required by checking required attribute of attributes dict
+
+        Returns:
+            required_arguments (list): List of arguments/configurations
+        """
         required_arguments = []
 
         for arg, attrs in self.available_args.items():
@@ -203,31 +328,48 @@ class BaseTerraformResource(metaclass=ABCMeta):
         self.available_args['count'] = {'required': False}
 
     def get_provisioners(self):
+        """List of all provisioners hook method for the current resource"""
         return []
 
     def get_mandatory_provisioners(self):
+        """List of all mandatory provisioners hook method for the current resource"""
         return []
 
     def pre_generate_terraform(self):
+        """Hook method called before terraform generation"""
         pass
 
     def pre_terraform_apply(self):
+        """Hook method called before terraform apply"""
         pass
 
     def pre_terraform_destroy(self):
+        """Hook method called before terraform destroy"""
         pass
 
     def post_terraform_apply(self):
+        """Hook method called after terraform apply"""
         pass
 
     def post_terraform_destroy(self):
+        """Hook method called after terraform destroy"""
         pass
 
     def render_output(self, outputs):
+        """Hook method called to render output"""
         pass
 
 
 class TerraformResource(BaseTerraformResource, metaclass=ABCMeta):
+    """
+    Main terraform resource class that is used toc create resource in cloud
+
+    Attributes:
+        terraform_type (str): Terraform resource type
+        MANDATORY_OUTPUT (str): Mandatory output to be generated
+        tf_file_extension (str): File extension for the terraform file
+        tags (list): List of tags to be added
+    """
     terraform_type = 'resource'
     MANDATORY_OUTPUT = 'id'
     tf_file_extension = 'tf'
@@ -236,12 +378,33 @@ class TerraformResource(BaseTerraformResource, metaclass=ABCMeta):
     ]
 
     def check_exists_before(self, input, outputs):
+        """
+        Factory method to check the existence of a resource
+
+        Returns:
+            boolean, dict: True if already exists else false with details
+        """
         return False, {'attr': None, 'value': None}
 
     def resource_in_tf_output(self, tf_outputs):
+        """
+        Check whether the resource is created as part of this installation
+
+        Args:
+            tf_outputs (dict): Dict of terraform output
+
+        Returns:
+            boolean: True if created else False
+        """
         return True if tf_outputs.get(self.get_resource_id(), None) else False
 
     def get_terraform_output_list(self):
+        """
+        Output to be done at the terraform
+
+        Returns:
+            output (dict): Output Dict
+        """
         outputs = {}
         if getattr(self, 'count', 1) != 0:
             self.OUTPUT_LIST.append(self.MANDATORY_OUTPUT)
@@ -253,6 +416,7 @@ class TerraformResource(BaseTerraformResource, metaclass=ABCMeta):
         return outputs
 
     def get_mandatory_provisioners(self):
+        """List of all mandatory provisioners hook method for the current resource"""
         id_reference = self.get_output_attr('id')
         resource_created_status_file = get_resource_created_status_op_file(self.get_resource_id())
 
@@ -268,11 +432,27 @@ class TerraformResource(BaseTerraformResource, metaclass=ABCMeta):
 
 
 class TerraformData(BaseTerraformResource, metaclass=ABCMeta):
+    """
+    Terraform data resource Base class
+
+    Attributes:
+        terraform_type (str): Terraform resource type
+        tf_file_extension (str): File extension for the terraform file
+    """
     terraform_type = 'data'
     tf_file_extension = 'tf'
 
     @classmethod
     def get_output_attr(cls, key):
+        """
+        Generate terraform output string(reference string) format of the given key.
+
+        Args:
+            key (str): Attribute name
+
+        Returns:
+            output_attr_ref (str): Terraform output reference of the given attribute
+        """
         return "${%s.%s.%s}" % ("data", cls.get_terraform_resource_path(), key)
 
     def get_terraform_output_list(self):
@@ -280,14 +460,28 @@ class TerraformData(BaseTerraformResource, metaclass=ABCMeta):
 
 
 class BaseTerraformVariable(BaseTerraformResource):
+    """
+    Terraform variable base class
+
+    Attributes:
+        tf_file_extension (str): File extension for the terraform file
+    """
     tf_file_extension = 'auto.tfvars'
 
     def generate_terraform(self):
+        """This creates terraform variable"""
         if self.variable_dict_input:
             lines = json.dumps(self.variable_dict_input, indent=4).split('\n')
             self.create_terraform_tfvars_file(lines)
 
     def create_terraform_tfvars_file(self, lines):
+        """
+        Create terraform tfavars file from the class definition
+
+        Args:
+            lines (list): List of json content
+
+        """
         file = self.get_resource_terraform_file()
         output_lines = []
         with open(file, "w") as fp:
@@ -300,6 +494,12 @@ class BaseTerraformVariable(BaseTerraformResource):
             fp.writelines(output_lines)
 
     def get_resource_terraform_file(self):
+        """
+        Get the path of the terraform tfvars file created(to be created) for the current variable
+
+        Returns:
+            path (path): path of tfvars file
+        """
         return os.path.join(
             Settings.TERRAFORM_DIR,
             self.get_resource_id() + "." + self.tf_file_extension
@@ -307,8 +507,15 @@ class BaseTerraformVariable(BaseTerraformResource):
 
     @classmethod
     def length(cls):
+        """find the number of items in terraform variable list"""
         return "${length(var.%s)}" % cls.variable_name
 
     @classmethod
     def lookup(cls, key):
+        """
+        Search for the key in the variable with current index
+
+        Args:
+            kye (str): key name in the var
+        """
         return '${lookup(var.%s[count.index], "%s")}' % (cls.variable_name, key)

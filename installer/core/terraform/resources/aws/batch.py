@@ -4,6 +4,13 @@ from core.providers.aws.boto3 import batch
 
 
 class BatchComputeEnvironmentResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS Batch compute environment resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_batch_compute_environment"
     available_args = {
         'compute_environment_name': {'required': True, 'prefix': True, 'sep': '-'},
@@ -28,6 +35,17 @@ class BatchComputeEnvironmentResource(TerraformResource):
     }
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('compute_environment_name')}
         exists = False
 
@@ -42,6 +60,13 @@ class BatchComputeEnvironmentResource(TerraformResource):
 
 
 class BatchJobDefinitionResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS Batch job definition resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_batch_job_definition"
     available_args = {
         'name': {'required': True, 'prefix': True, 'sep': '-'},
@@ -57,6 +82,17 @@ class BatchJobDefinitionResource(TerraformResource):
     }
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
 
@@ -71,6 +107,13 @@ class BatchJobDefinitionResource(TerraformResource):
 
 
 class BatchJobQueueResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS Batch job queue resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_batch_job_queue"
     available_args = {
         'name': {'required': True, 'prefix': True, 'sep': '-'},
@@ -80,6 +123,17 @@ class BatchJobQueueResource(TerraformResource):
     }
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
 
