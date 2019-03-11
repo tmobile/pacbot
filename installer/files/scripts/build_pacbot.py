@@ -70,11 +70,10 @@ class Buildpacbot(object):
         s3_client = s3 = boto3.client('s3', region_name=region, aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_key)
         for file_name in files_to_upload:
             file_path = os.path.join(local_folder_path, file_name)
-            extra_args = {}
+            extra_args = {'ACL': 'public-read'}  # To make this public
             key = folder_to_upload + '/' + file_name
 
             if file_name == 'html.handlebars':
-                extra_args = {'ACL': 'public-read'}  # To make this public
                 self.html_handlebars_uri = '%s/%s/%s' % (s3_client.meta.endpoint_url, bucket, key)  # To be added in config.ts
 
             s3_client.upload_file(file_path, bucket, key, ExtraArgs=extra_args)
