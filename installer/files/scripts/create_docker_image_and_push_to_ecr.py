@@ -5,6 +5,19 @@ import os
 
 
 def build_and_push_docker_image(provider_json_file, ecr_repo, docker_file, docker_file_dir, log_file):
+    """
+    Build docket image and push that to the ECR repo.
+
+    Args:
+        provider_json_file (path): Path of the terraform provider file to get aws credentials
+        docker_file (str): Docker file name
+        ecr_repo (str): AWS ECR repo url
+        docker_file_dir (path): Abs Path of folder where docker file is present
+        log_file (path): Log file path
+
+    Raises:
+        If failed to push image to ECR
+    """
     write_to_debug_log(log_file, "Docker image creation and push to ecr repo: %s is started" % str(ecr_repo))
 
     aws_access_key, aws_secret_key, region_name = get_provider_credentials("aws", provider_json_file)
@@ -23,6 +36,15 @@ def build_and_push_docker_image(provider_json_file, ecr_repo, docker_file, docke
 
 
 def delete_docker_images_from_local(docker_file_abs_path):
+    """
+    Delete docker image from local installer machine
+
+    Args:
+        docker_file_abs_path (path): Abs path of docker file
+
+    Raises:
+        If failed to push image to ECR
+    """
     docker_client = Client(base_url='unix://var/run/docker.sock')
 
     # Delete original image
@@ -46,6 +68,9 @@ def delete_docker_images_from_local(docker_file_abs_path):
 
 
 if __name__ == "__main__":
+    """
+    This script is executed from the provisioner of terraform resource to create docker image and push it
+    """
     provider_json_file = os.getenv('PROVIDER_FILE')
     ecr_repo = os.getenv('ECR_REPOSITORY')
     docker_file = os.getenv('DOCKER_FILE')

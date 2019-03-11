@@ -4,6 +4,13 @@ import os
 
 
 class S3Bucket(TerraformResource):
+    """
+    Base resource class for Terraform AWS S3 bucket resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_s3_bucket"
     available_args = {
         'bucket': {'required': True, 'prefix': True, 'sep': '-'},
@@ -15,6 +22,13 @@ class S3Bucket(TerraformResource):
 
 
 class S3BucketObject(TerraformResource):
+    """
+    Base resource class for Terraform AWS S3 bucket object resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_s3_bucket_object"
     skip_source_exists_check = False
     available_args = {
