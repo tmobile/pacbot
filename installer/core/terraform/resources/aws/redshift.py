@@ -4,6 +4,13 @@ from core.providers.aws.boto3 import redshift
 
 
 class RedshiftClusterResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS Redshift resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_redshift_cluster"
     OUTPUT_LIST = ['endpoint']
     setup_time = 600
@@ -24,6 +31,17 @@ class RedshiftClusterResource(TerraformResource):
     }
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "cluster_identifier", 'value': self.get_input_attr('cluster_identifier')}
         exists = False
 
@@ -38,6 +56,13 @@ class RedshiftClusterResource(TerraformResource):
 
 
 class RedshiftParameterGroupResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS Redshift parameter group resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_redshift_parameter_group"
     setup_time = 60
     available_args = {
@@ -50,6 +75,17 @@ class RedshiftParameterGroupResource(TerraformResource):
     description = Settings.RESOURCE_DESCRIPTION
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
 
@@ -64,6 +100,13 @@ class RedshiftParameterGroupResource(TerraformResource):
 
 
 class RedshiftSubnetGroupResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS Redshift Subnet group resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_redshift_subnet_group"
     setup_time = 60
     available_args = {
@@ -76,6 +119,17 @@ class RedshiftSubnetGroupResource(TerraformResource):
     description = Settings.RESOURCE_DESCRIPTION
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
 

@@ -8,12 +8,17 @@ import boto3
 
 
 class Buildpacbot(object):
+    """
+    Build PacBot services
+
+    Attributes:
+        mvn_build_command (str): Maven build command to be executed
+        mvn_clean_command (str): Maven clean command to be executed
+        archive_type (str): Archive format
+        html_handlebars_uri (str): file to make public after uploading to s3
+    """
     mvn_build_command = "mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
     mvn_clean_command = "mvn clean"
-    npm_install = "npm install"
-    bower_install = "bower install --allow-root"
-    type_script_install = "npm install typescript@'>=2.1.0 <2.4.0'"
-    ng_build = "ng build --env=prod --output-hashing=all"
     archive_type = "zip"  # What type of archive is required
     html_handlebars_uri = ''
 
@@ -41,6 +46,15 @@ class Buildpacbot(object):
         self._clean_up_all()
 
     def upload_ui_files_to_s3(self, aws_access_key, aws_secret_key, region, bucket):
+        """
+        Upload email template files to s3 from codebase
+
+        Args:
+            aws_access_key (str): AWS access key
+            aws_secret_key (str): AWS secret key
+            region (str): AWS region
+            bucket (str): S3 bucket name
+        """
         print("Uploading Email templates to S3...............\n")
         self.write_to_debug_log("Uploading email teamplate files to S3...")
         folder_to_upload = "pacman-v2-email-template"
@@ -56,11 +70,10 @@ class Buildpacbot(object):
         s3_client = s3 = boto3.client('s3', region_name=region, aws_access_key_id=aws_access_key, aws_secret_access_key=aws_secret_key)
         for file_name in files_to_upload:
             file_path = os.path.join(local_folder_path, file_name)
-            extra_args = {}
+            extra_args = {'ACL': 'public-read'}  # To make this public
             key = folder_to_upload + '/' + file_name
 
             if file_name == 'html.handlebars':
-                extra_args = {'ACL': 'public-read'}  # To make this public
                 self.html_handlebars_uri = '%s/%s/%s' % (s3_client.meta.endpoint_url, bucket, key)  # To be added in config.ts
 
             s3_client.upload_file(file_path, bucket, key, ExtraArgs=extra_args)
@@ -69,9 +82,17 @@ class Buildpacbot(object):
         print("Email templates upload to S3 completed!!!\n")
 
     def run_bash_command(self, command, exec_dir):
-        '''
-        This method runs the bash command provided as argument
-        '''
+        """
+        Run bash command supplied to be run
+
+        Args:
+            command (str): Command to run
+            exec_dir (path): from which dir the command to be run
+
+        Returns:
+            stdout (str): Response from command prompt
+            stderr (str): Error occured if any
+        """
         command = command + ' &>>' + self.maven_build_log
         os.chdir(exec_dir)
         p = subprocess.Popen(command, shell=True, stdout=subprocess.PIPE)
@@ -85,6 +106,16 @@ class Buildpacbot(object):
         return stdout, stderr
 
     def build_jar_and_ui_from_code(self, aws_access_key, aws_secret_key, region, bucket, s3_key_prefix):
+        """
+        Build jars and upload to S3
+
+        Args:
+            aws_access_key (str): AWS access key
+            aws_secret_key (str): AWS secret key
+            region (str): AWS region
+            bucket (str): S3 bucket name
+            s3_key_prefix (str): Under which folder this has be uploaded
+        """
         webapp_dir = self._get_web_app_directory()
         self._update_variables_in_ui_config(webapp_dir)
         self.build_api_job_jars(self.codebase_root_dir)
@@ -174,6 +205,9 @@ class Buildpacbot(object):
 
 
 if __name__ == "__main__":
+    """
+    This script is executed from the provisioner of terraform resource to build pacbot app
+    """
     api_domain_url = os.getenv('APPLICATION_DOMAIN')
     pacbot_code_dir = os.getenv('PACBOT_CODE_DIR')
     dist_files_upload_dir = os.getenv('DIST_FILES_UPLOAD_DIR')

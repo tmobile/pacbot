@@ -4,6 +4,13 @@ from core.providers.aws.boto3 import rds
 
 
 class RDSResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS RDS resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_db_instance"
     OUTPUT_LIST = ['endpoint']
     setup_time = 600
@@ -27,6 +34,17 @@ class RDSResource(TerraformResource):
     }
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "identifier", 'value': self.get_input_attr('identifier')}
         exists = False
 
@@ -41,6 +59,13 @@ class RDSResource(TerraformResource):
 
 
 class RDSOptionGroupResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS RDS option group resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_db_option_group"
     setup_time = 60
     available_args = {
@@ -54,6 +79,17 @@ class RDSOptionGroupResource(TerraformResource):
     option_group_description = Settings.RESOURCE_DESCRIPTION
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
 
@@ -68,6 +104,13 @@ class RDSOptionGroupResource(TerraformResource):
 
 
 class RDSParameterGroupResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS parameter group resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_db_parameter_group"
     setup_time = 60
     available_args = {
@@ -80,6 +123,17 @@ class RDSParameterGroupResource(TerraformResource):
     description = Settings.RESOURCE_DESCRIPTION
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
 
@@ -94,6 +148,13 @@ class RDSParameterGroupResource(TerraformResource):
 
 
 class RDSSubnetGroupResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS RDS Subnet group resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_db_subnet_group"
     setup_time = 60
     available_args = {
@@ -106,6 +167,17 @@ class RDSSubnetGroupResource(TerraformResource):
     description = Settings.RESOURCE_DESCRIPTION
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
 
