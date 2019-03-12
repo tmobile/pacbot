@@ -62,25 +62,27 @@ public class MailService {
         this.mailContentBuilderService = mailContentBuilderService;
     }
 
-	public void prepareAndSendMail(String from, List<String> to, String subject, String mailMessageUrlOrBody, Map<String, Object> placeholderValues, final String attachmentUrl, final Boolean isPlainMessage) throws Exception {
-		log.info("prepareAndSendMail {}",mailSender);
-		mailSender.send(buildMimeMessagePreparator(from, to, subject, mailMessageUrlOrBody, placeholderValues, attachmentUrl, isPlainMessage));
+	public void prepareAndSendMail(String cc,String from, List<String> to, String subject, String mailMessageUrlOrBody, Map<String, Object> placeholderValues, final String attachmentUrl, final Boolean isPlainMessage) throws Exception {
+		mailSender.send(buildMimeMessagePreparator(cc,from, to, subject, mailMessageUrlOrBody, placeholderValues, attachmentUrl, isPlainMessage));
 	}
 
 	public void prepareTemplateAndSendMail(String from, List<String> to, String subject, String mailMessageUrlOrBody, Map<String, Object> placeholderValues, final String attachmentUrl, final Boolean isPlainMessage) throws Exception {
-		log.info("prepareTemplateAndSendMail {}",mailSender);
 		mailSender.send(prepareTemplateBuildMimeMessagePreparator(from, to, subject, mailMessageUrlOrBody, placeholderValues, attachmentUrl, isPlainMessage));
 	}
 	
 	public void prepareTemplateAndSendMail(String from, List<String> to, String subject, String mailContent , final String attachmentUrl) throws Exception {
-		log.info("prepareTemplateAndSendMail {}",mailSender);
 		mailSender.send(buildMimeMessagePreparator(from, to, subject, mailContent, attachmentUrl));
 	}
 	
-	private MimeMessagePreparator buildMimeMessagePreparator(String from, List<String> to, String subject, String mailMessageUrlOrBody, Map<String, Object> placeholderValues, final String attachmentUrl, final Boolean isPlainMessage) {
+	private MimeMessagePreparator buildMimeMessagePreparator(String cc,String from, List<String> to, String subject, String mailMessageUrlOrBody, Map<String, Object> placeholderValues, final String attachmentUrl, final Boolean isPlainMessage) {
 		MimeMessagePreparator messagePreparator = mimeMessage -> {
 			MimeMessageHelper messageHelper = new MimeMessageHelper(mimeMessage, true);
 			messageHelper.setFrom(from);
+			
+			if(!StringUtils.isEmpty(cc)){
+			messageHelper.setCc(cc);
+			}
+			
 			String[] toMailList = to.toArray(new String[to.size()]);
 			messageHelper.setTo(toMailList);
 			messageHelper.setSubject(subject);
