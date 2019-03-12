@@ -75,12 +75,12 @@ public class NotificationControllerTest {
 	public void prepareAndSendMailTest() throws Exception {
 		MailMessageRequestBody mailMessageRequestBody = buildMailMessageRequestBody();
 		byte[] mailMessageRequestBodyContent = toJson(mailMessageRequestBody);
-		doNothing().when(mailService).prepareAndSendMail(anyString(), anyList(), anyString(), anyString(), anyMap(),
+		doNothing().when(mailService).prepareAndSendMail(anyString(),anyString(), anyList(), anyString(), anyString(), anyMap(),
 				anyString(), anyBoolean());
 		mockMvc.perform(post("/send-plain-text-mail").content(mailMessageRequestBodyContent)
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 
-		verify(mailService, times(1)).prepareAndSendMail(mailMessageRequestBody.getFrom(),
+		verify(mailService, times(1)).prepareAndSendMail("",mailMessageRequestBody.getFrom(),
 				mailMessageRequestBody.getTo(), mailMessageRequestBody.getSubject(),
 				mailMessageRequestBody.getMailBodyAsString(), mailMessageRequestBody.getPlaceholderValues(),
 				mailMessageRequestBody.getAttachmentUrl(), true);
@@ -91,7 +91,7 @@ public class NotificationControllerTest {
 	public void prepareAndSendMailExceptionTest() throws Exception {
 		MailMessageRequestBody mailMessageRequestBody = buildMailMessageRequestBody();
 		byte[] mailMessageRequestBodyContent = toJson(mailMessageRequestBody);
-		doThrow(Exception.class).when(mailService).prepareAndSendMail(anyString(), anyList(), anyString(), anyString(),
+		doThrow(Exception.class).when(mailService).prepareAndSendMail(anyString(),anyString(), anyList(), anyString(), anyString(),
 				anyMap(), anyString(), anyBoolean());
 		mockMvc.perform(post("/send-plain-text-mail").content(mailMessageRequestBodyContent)
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
@@ -104,12 +104,12 @@ public class NotificationControllerTest {
 	public void sendMailWithTemplateTest() throws Exception {
 		MailTemplateRequestBody mailTemplateRequestBody = buildMailTemplateRequestBody();
 		byte[] mailTemplateRequestBodyContent = toJson(mailTemplateRequestBody);
-		doNothing().when(mailService).prepareAndSendMail(anyString(), anyList(), anyString(), anyString(), anyMap(),
+		doNothing().when(mailService).prepareAndSendMail(anyString(),anyString(), anyList(), anyString(), anyString(), anyMap(),
 				anyString(), anyBoolean());
 		mockMvc.perform(post("/send-mail-with-template").content(mailTemplateRequestBodyContent)
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
 
-		verify(mailService, times(1)).prepareAndSendMail(mailTemplateRequestBody.getFrom(),
+		verify(mailService, times(1)).prepareAndSendMail("",mailTemplateRequestBody.getFrom(),
 				mailTemplateRequestBody.getTo(), mailTemplateRequestBody.getSubject(),
 				mailTemplateRequestBody.getMailBodyAsString(), mailTemplateRequestBody.getPlaceholderValues(),
 				mailTemplateRequestBody.getAttachmentUrl(), false);
@@ -120,7 +120,7 @@ public class NotificationControllerTest {
 	public void sendMailWithTemplateExceptionTest() throws Exception {
 		MailTemplateRequestBody mailTemplateRequestBody = buildMailTemplateRequestBody();
 		byte[] mailTemplateRequestBodyContent = toJson(mailTemplateRequestBody);
-		doThrow(Exception.class).when(mailService).prepareAndSendMail(anyString(), anyList(), anyString(), anyString(),
+		doThrow(Exception.class).when(mailService).prepareAndSendMail(anyString(),anyString(), anyList(), anyString(), anyString(),
 				anyMap(), anyString(), anyBoolean());
 		mockMvc.perform(post("/send-mail-with-template").content(mailTemplateRequestBodyContent)
 				.contentType(MediaType.APPLICATION_JSON).accept(MediaType.APPLICATION_JSON))
