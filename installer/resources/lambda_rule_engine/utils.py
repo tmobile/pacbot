@@ -3,6 +3,12 @@ import json
 
 
 def get_rule_engine_cloudwatch_rules_var():
+    """
+    Read cloudwatch rule details from the json file and build dict with required details
+
+    Returns:
+        variable_dict_input (list): List of dict of rule details used to generate terraform variable file
+    """
     with open("resources/lambda_rule_engine/files/rule_engine_cloudwatch_rules.json", "r") as fp:
         data = fp.read()
     data = data.replace("role/pacman_ro", "role/" + BaseRole.get_input_attr('name'))
