@@ -8,6 +8,7 @@ import json
 
 
 class ContainerDefinitions:
+    """Friend class for getting the container definitions of each service"""
     ui_image = UIEcrRepository.get_output_attr('repository_url') + ":" + "latest"
     api_image = APIEcrRepository.get_output_attr('repository_url') + ":" + "latest"
     ui_cw_log_group = UiCloudWatchLogGroup.get_output_attr('name')
@@ -20,6 +21,12 @@ class ContainerDefinitions:
     RDS_URL = MySQLDatabase.get_rds_db_url()
 
     def get_container_definitions_without_env_vars(self, container_name):
+        """
+        This method returns the basic common container definitioons for all task definitions
+
+        Returns:
+            container_definitions (dict): Container definitions
+        """
         memory = 1024 if container_name == "nginx" else 3072
         return {
             'name': container_name,
@@ -46,6 +53,12 @@ class ContainerDefinitions:
         }
 
     def get_container_definitions(self, container_name):
+        """
+        This method find complete container definitions for a task definiiton and returns it
+
+        Returns:
+            container_definitions (json): Josn data of complete Container definitions
+        """
         definitions = self.get_container_definitions_without_env_vars(container_name)
         env_vars = self._get_env_vars_for_container_service(container_name)
         if env_vars:
@@ -54,6 +67,12 @@ class ContainerDefinitions:
         return json.dumps([definitions])
 
     def _get_env_vars_for_container_service(self, container_name):
+        """
+        Dynamically call the function based on the container name to get all environment variables
+
+        Returns:
+            env_variables (list): List of dict of env variables
+        """
         def function_not_found():
             return None
         fun_name = "get_%s_container_env_vars" % container_name.replace('-', '_')
