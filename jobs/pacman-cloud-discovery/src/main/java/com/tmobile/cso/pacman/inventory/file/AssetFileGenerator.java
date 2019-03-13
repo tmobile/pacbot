@@ -17,21 +17,20 @@ package com.tmobile.cso.pacman.inventory.file;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.auth.BasicSessionCredentials;
+import com.tmobile.cso.pacman.inventory.InventoryConstants;
 import com.tmobile.cso.pacman.inventory.auth.CredentialProvider;
 import com.tmobile.cso.pacman.inventory.util.ASGInventoryUtil;
 import com.tmobile.cso.pacman.inventory.util.DirectConnectionInventoryUtil;
@@ -39,9 +38,8 @@ import com.tmobile.cso.pacman.inventory.util.EC2InventoryUtil;
 import com.tmobile.cso.pacman.inventory.util.ESInventoryUtil;
 import com.tmobile.cso.pacman.inventory.util.ElastiCacheUtil;
 import com.tmobile.cso.pacman.inventory.util.InventoryUtil;
+import com.tmobile.cso.pacman.inventory.util.KinesisInventoryUtil;
 import com.tmobile.cso.pacman.inventory.util.SNSInventoryUtil;
-import com.tmobile.cso.pacman.inventory.vo.BucketVH;
-import com.tmobile.cso.pacman.inventory.vo.CheckVH;
 
 
 /**
@@ -51,19 +49,24 @@ import com.tmobile.cso.pacman.inventory.vo.CheckVH;
 public class AssetFileGenerator {
 	
 	/** The log. */
-	private static Logger log = LogManager.getLogger(AssetFileGenerator.class);
+	private static Logger log = LoggerFactory.getLogger(AssetFileGenerator.class);
 	
 	/** The cred provider. */
 	@Autowired
 	CredentialProvider credProvider;
 	
-	/** The role name. */
-	@Value("${discovery-role}")
-	private String roleName;
-	
 	/** The target types. */
 	@Value("${target-types:}")
 	private String targetTypes;
+	
+	/** The target types. */
+	@Value("${discovery.role}")
+	private  String roleName;
+	
+	/** The target types. */
+	@Value("${ec2.statenames:running,stopped,stopping}")
+	private  String ec2StatenameFilters;
+	
 	
 	/**
 	 * Generate files.
@@ -72,29 +75,33 @@ public class AssetFileGenerator {
 	 * @param skipRegions the skip regions
 	 * @param filePath the file path
 	 */
-	public void generateFiles(Set<String> accounts,String skipRegions,String filePath){
+	public void generateFiles(List<Map<String,String>> accounts,String skipRegions,String filePath){
+		
 		try {
 			FileManager.initialise(filePath);
 			ErrorManageUtil.initialise();
 		} catch (IOException e1) {
-			log.error(e1);
+			log.error("Error initialising File ",e1);
 		}
-		Iterator<String> it = accounts.iterator();
+		Iterator<Map<String, String>> it = accounts.iterator();
 		
 		while(it.hasNext()){
-			String account = it.next();
+			Map<String, String> account = it.next();
+			String accountId = account.get(InventoryConstants.ACCOUNT_ID);
+			String accountName = account.get(InventoryConstants.ACCOUNT_NAME);
 			
-			log.info("Started Discovery for account "+ account);
+			log.info("Started Discovery for account {}", accountId);
 			BasicSessionCredentials tempCredentials = null;
 			try{
-				tempCredentials = credProvider.getCredentials(account,roleName);
+				tempCredentials = credProvider.getCredentials(accountId,roleName);
 			}catch(Exception e){
-				log.fatal("{\"errcode\":\"NO_CRED\" , \"account\":\""+account +"\", \"Message\":\"Error getting credentials for account "+account +"\" , \"cause\":\"" +e.getMessage()+"\"}");
+				log.error("{\"errcode\":\"NO_CRED\" , \"account\":\""+accountId +"\", \"Message\":\"Error getting credentials for account "+accountId +"\" , \"cause\":\"" +e.getMessage()+"\"}");
+				ErrorManageUtil.uploadError(accountId, "all", "all", e.getMessage());
 				continue;
 			}
 			final BasicSessionCredentials temporaryCredentials = tempCredentials;
-			String expPrefix = "{\"errcode\": \"NO_RES\" ,\"account\": \""+account + "\",\"Message\": \"Exception in fetching info for resource\" ,\"type\": \"" ;
-			String infoPrefix = "Fetching for Account : "+account + " Type : ";
+			String expPrefix = "{\"errcode\": \"NO_RES\" ,\"account\": \""+accountId + "\",\"Message\": \"Exception in fetching info for resource\" ,\"type\": \"" ;
+			String infoPrefix = "Fetching for Account : "+accountId + " Type : ";
 			
 			ExecutorService executor = Executors.newCachedThreadPool();
 			
@@ -105,10 +112,10 @@ public class AssetFileGenerator {
 			    }
 				try{
 					log.info(infoPrefix + "EC2");
-					FileManager.generateInstanceFiles(InventoryUtil.fetchInstances(temporaryCredentials,skipRegions,account));
+					FileManager.generateInstanceFiles(InventoryUtil.fetchInstances(temporaryCredentials,skipRegions,accountId,accountName,ec2StatenameFilters));
 				}catch(Exception e){
 					log.error(expPrefix+ "EC2\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "ec2", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "ec2", e.getMessage());
 				}
 			});
 			
@@ -119,10 +126,10 @@ public class AssetFileGenerator {
                 }
 				try{
 					log.info(infoPrefix + "ASG");
-					FileManager.generateAsgFiles(InventoryUtil.fetchAsg(temporaryCredentials,skipRegions,account));
+					FileManager.generateAsgFiles(InventoryUtil.fetchAsg(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "ASG\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "asg", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "asg", e.getMessage());
 				}
 			});
 			
@@ -133,10 +140,10 @@ public class AssetFileGenerator {
                 }
 				try{				
 					log.info(infoPrefix + "Cloud Formation Stack");
-					FileManager.generateCloudFormationStackFiles(InventoryUtil.fetchCloudFormationStack(temporaryCredentials, skipRegions,account));
+					FileManager.generateCloudFormationStackFiles(InventoryUtil.fetchCloudFormationStack(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Stack\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "stack", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "stack", e.getMessage());
 				}
 			});
 			
@@ -147,10 +154,10 @@ public class AssetFileGenerator {
                 }
 				try{
 					log.info(infoPrefix + "DynamoDB");
-					FileManager.generateDynamoDbFiles(InventoryUtil.fetchDynamoDBTables(temporaryCredentials, skipRegions,account));
+					FileManager.generateDynamoDbFiles(InventoryUtil.fetchDynamoDBTables(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "DynamoDB\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "dynamodb", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "dynamodb", e.getMessage());
 				}
 			});
 			
@@ -161,10 +168,10 @@ public class AssetFileGenerator {
 			    }
 				try{
 					log.info(infoPrefix + "EFS");
-					FileManager.generateEfsFiles(InventoryUtil.fetchEFSInfo(temporaryCredentials, skipRegions,account));
+					FileManager.generateEfsFiles(InventoryUtil.fetchEFSInfo(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "EFS\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "efs", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "efs", e.getMessage());
 				}
 			});
 			
@@ -176,10 +183,10 @@ public class AssetFileGenerator {
                 }
 				try{
 					log.info(infoPrefix + "EMR");
-					FileManager.generateEmrFiles(InventoryUtil.fetchEMRInfo(temporaryCredentials, skipRegions,account));
+					FileManager.generateEmrFiles(InventoryUtil.fetchEMRInfo(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "EMR\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "emr", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "emr", e.getMessage());
 				}
 			});
 			
@@ -190,10 +197,10 @@ public class AssetFileGenerator {
                 }
 				try{
 					log.info(infoPrefix + "Lambda");
-					FileManager.generateLamdaFiles(InventoryUtil.fetchLambdaInfo(temporaryCredentials, skipRegions,account));
+					FileManager.generateLamdaFiles(InventoryUtil.fetchLambdaInfo(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Lambda\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "lambda", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "lambda", e.getMessage());
 				}
 			});
 			
@@ -204,10 +211,10 @@ public class AssetFileGenerator {
                 }
 				try{
 					log.info(infoPrefix + "Classic ELB");
-					FileManager.generateClassicElbFiles( InventoryUtil.fetchClassicElbInfo(temporaryCredentials, skipRegions,account));
+					FileManager.generateClassicElbFiles( InventoryUtil.fetchClassicElbInfo(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Classic ELB\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "classicelb", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "classicelb", e.getMessage());
 				}
 			});
 			
@@ -218,10 +225,10 @@ public class AssetFileGenerator {
                 }
 				try{
 					log.info(infoPrefix + "Application ELB");
-					FileManager.generateApplicationElbFiles(InventoryUtil.fetchElbInfo(temporaryCredentials, skipRegions,account));
+					FileManager.generateApplicationElbFiles(InventoryUtil.fetchElbInfo(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Application ELB\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "appelb", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "appelb", e.getMessage());
 				}
 			});
 			
@@ -233,10 +240,10 @@ public class AssetFileGenerator {
                 }
 				try{
 					log.info(infoPrefix + "Target Group");
-					FileManager.generateTargetGroupFiles(InventoryUtil.fetchTargetGroups(temporaryCredentials, skipRegions,account));
+					FileManager.generateTargetGroupFiles(InventoryUtil.fetchTargetGroups(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Target Group\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "targergroup", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "targergroup", e.getMessage());
 				}
 			});
 			
@@ -250,10 +257,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Nat Gateway");
-					FileManager.generateNatGatewayFiles(InventoryUtil.fetchNATGatewayInfo(temporaryCredentials, skipRegions,account));
+					FileManager.generateNatGatewayFiles(InventoryUtil.fetchNATGatewayInfo(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Nat Gateway\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "nat", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "nat", e.getMessage());
 				}
 			});
 			
@@ -265,10 +272,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "RDS Instance");
-					FileManager.generateRDSInstanceFiles(InventoryUtil.fetchRDSInstanceInfo(temporaryCredentials, skipRegions,account));
+					FileManager.generateRDSInstanceFiles(InventoryUtil.fetchRDSInstanceInfo(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "RDS Instance\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "rdsdb", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "rdsdb", e.getMessage());
 				}
 			});
 			
@@ -280,10 +287,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "RDS Cluster");
-					FileManager.generateRDSClusterFiles(InventoryUtil.fetchRDSClusterInfo(temporaryCredentials, skipRegions,account));
+					FileManager.generateRDSClusterFiles(InventoryUtil.fetchRDSClusterInfo(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "RDS Cluster\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "rdscluster", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "rdscluster", e.getMessage());
 				}
 			});
 			
@@ -295,12 +302,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "S3");
-					Map<String,List<BucketVH>> s3Map = new HashMap<>();
-					s3Map.put(account,InventoryUtil.fetchS3Info(temporaryCredentials, skipRegions,account));
-					FileManager.generateS3Files(s3Map);
+					FileManager.generateS3Files(InventoryUtil.fetchS3Info(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "S3\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "s3", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "s3", e.getMessage());
 				}
 			});
 			
@@ -312,10 +317,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Network Interface");
-					FileManager.generateNwInterfaceFiles(InventoryUtil.fetchNetworkIntefaces(temporaryCredentials,skipRegions,account));
+					FileManager.generateNwInterfaceFiles(InventoryUtil.fetchNetworkIntefaces(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Network Interface\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "eni", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "eni", e.getMessage());
 				}
 			});
 			
@@ -327,10 +332,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Security Group");
-					FileManager.generateSecGroupFile(InventoryUtil.fetchSecurityGroups(temporaryCredentials,skipRegions,account));
+					FileManager.generateSecGroupFile(InventoryUtil.fetchSecurityGroups(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Security Group\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "sg", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "sg", e.getMessage());
 				}
 			});
 			
@@ -342,10 +347,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Subnet");
-					FileManager.generateSubnetFiles(InventoryUtil.fetchSubnets(temporaryCredentials,skipRegions,account));
+					FileManager.generateSubnetFiles(InventoryUtil.fetchSubnets(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Subnet\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "subnet", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "subnet", e.getMessage());
 				}
 			});
 			
@@ -357,12 +362,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Trusted Advisor Check");
-					Map<String,List<CheckVH>> checkMap = new HashMap<>();
-					checkMap.put(account,InventoryUtil.fetchTrusterdAdvisorsChecks(temporaryCredentials,account));
-					FileManager.generateTrustedAdvisorFiles(checkMap);
+					FileManager.generateTrustedAdvisorFiles(InventoryUtil.fetchTrusterdAdvisorsChecks(temporaryCredentials,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Trusted Advisor Check\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "checks", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "checks", e.getMessage());
 				}
 			});
 			
@@ -375,10 +378,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Redshift");
-					FileManager.generateRedshiftFiles(InventoryUtil.fetchRedshiftInfo(temporaryCredentials,skipRegions,account));
+					FileManager.generateRedshiftFiles(InventoryUtil.fetchRedshiftInfo(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Redshift\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "redshift", e.getMessage());		}
+					ErrorManageUtil.uploadError(accountId, "", "redshift", e.getMessage());		}
 			});
 		
 			executor.execute(() -> 
@@ -389,10 +392,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Volume");
-					FileManager.generatefetchVolumeFiles(InventoryUtil.fetchVolumetInfo(temporaryCredentials,skipRegions,account));
+					FileManager.generatefetchVolumeFiles(InventoryUtil.fetchVolumetInfo(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Volume\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "volume", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "volume", e.getMessage());
 				}
 			});
 			
@@ -404,10 +407,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Snapshot");
-					FileManager.generateSnapshotFiles(InventoryUtil.fetchSnapshots(temporaryCredentials,skipRegions,account));
+					FileManager.generateSnapshotFiles(InventoryUtil.fetchSnapshots(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Snapshot\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "snapshot", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "snapshot", e.getMessage());
 				}
 			});
 		
@@ -419,10 +422,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "VPC");
-					FileManager.generateVpcFiles(InventoryUtil.fetchVpcInfo(temporaryCredentials,skipRegions,account));
+					FileManager.generateVpcFiles(InventoryUtil.fetchVpcInfo(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "VPC\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "vpc", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "vpc", e.getMessage());
 				}
 			});
 			
@@ -434,10 +437,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "ApiGateway");
-					 FileManager.generateApiGatewayFiles(InventoryUtil.fetchApiGateways(temporaryCredentials,skipRegions,account));
+					 FileManager.generateApiGatewayFiles(InventoryUtil.fetchApiGateways(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "API\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "api", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "api", e.getMessage());
 				}
 			});
 			
@@ -449,10 +452,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "IAM User");
-					FileManager.generateIamUserFiles(InventoryUtil.fetchIAMUsers(temporaryCredentials,account));
+					FileManager.generateIamUserFiles(InventoryUtil.fetchIAMUsers(temporaryCredentials,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "iAM muser\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "iamuser", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "iamuser", e.getMessage());
 				}
 			});
 			
@@ -464,10 +467,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "RDS Snapshot");
-					FileManager.generateRDSSnapshotFiles(InventoryUtil.fetchRDSDBSnapshots(temporaryCredentials,skipRegions,account));
+					FileManager.generateRDSSnapshotFiles(InventoryUtil.fetchRDSDBSnapshots(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "RDS Snapshot\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "rdssnapshot", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "rdssnapshot", e.getMessage());
 				}
 			});
 			
@@ -479,10 +482,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "IAM Roles");
-					FileManager.generateIamRoleFiles(InventoryUtil.fetchIAMRoles(temporaryCredentials,account));
+					FileManager.generateIamRoleFiles(InventoryUtil.fetchIAMRoles(temporaryCredentials,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "IAM Roles\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "iamrole", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "iamrole", e.getMessage());
 				}
 			});
 			
@@ -495,10 +498,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "KMS");
-					FileManager.generateKMSFiles(InventoryUtil.fetchKMSKeys(temporaryCredentials,skipRegions,account));
+					FileManager.generateKMSFiles(InventoryUtil.fetchKMSKeys(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "KMS\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "kms", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "kms", e.getMessage());
 				}
 			});
 			
@@ -510,10 +513,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "CloudFront");
-					FileManager.generateCloudFrontFiles(InventoryUtil.fetchCloudFrontInfo(temporaryCredentials,account));
+					FileManager.generateCloudFrontFiles(InventoryUtil.fetchCloudFrontInfo(temporaryCredentials,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "CloudFront\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "cloudfront", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "cloudfront", e.getMessage());
 				}
 			});
 			
@@ -524,11 +527,11 @@ public class AssetFileGenerator {
                 }
             
 				try{
-					log.info(infoPrefix + "EBS");
-					FileManager.generateEBSFiles(InventoryUtil.fetchEBSInfo(temporaryCredentials,skipRegions,account));
+					log.info(infoPrefix + "beanstalk");
+					FileManager.generateEBSFiles(InventoryUtil.fetchEBSInfo(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
-					log.error(expPrefix+ "EBS\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "beanstalk", e.getMessage());
+					log.error(expPrefix+ "beanstalk\", \"cause\":\"" +e.getMessage()+"\"}");
+					ErrorManageUtil.uploadError(accountId, "", "beanstalk", e.getMessage());
 				}
 			});
 			
@@ -540,10 +543,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "PHD");
-					FileManager.generatePHDFiles(InventoryUtil.fetchPHDInfo(temporaryCredentials,account));
+					FileManager.generatePHDFiles(InventoryUtil.fetchPHDInfo(temporaryCredentials,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "PHD\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "phd", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "phd", e.getMessage());
 				}
 			});
 			
@@ -555,10 +558,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "EC2 Route table");
-					FileManager.generateEC2RouteTableFiles(EC2InventoryUtil.fetchRouteTables(temporaryCredentials,skipRegions,account));
+					FileManager.generateEC2RouteTableFiles(EC2InventoryUtil.fetchRouteTables(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "EC2 Route table\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "routetable", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "routetable", e.getMessage());
 				}
 			});
 			
@@ -570,10 +573,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "EC2 Network Acl");
-					FileManager.generateNetworkAclFiles(EC2InventoryUtil.fetchNetworkACL(temporaryCredentials,skipRegions,account));
+					FileManager.generateNetworkAclFiles(EC2InventoryUtil.fetchNetworkACL(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "EC2 Network Acl\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "networkacl", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "networkacl", e.getMessage());
 				}
 			});
 			
@@ -585,10 +588,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "EC2 Elastic IP");
-					FileManager.generateElasticIPFiles(EC2InventoryUtil.fetchElasticIPAddresses(temporaryCredentials,skipRegions,account));
+					FileManager.generateElasticIPFiles(EC2InventoryUtil.fetchElasticIPAddresses(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "EC2 Elastic IP\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "elasticip", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "elasticip", e.getMessage());
 				}
 			});
 			
@@ -600,10 +603,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "ASG Launch Configurations");
-					FileManager.generateLaunchConfigurationsFiles(ASGInventoryUtil.fetchLaunchConfigurations(temporaryCredentials,skipRegions,account));
+					FileManager.generateLaunchConfigurationsFiles(ASGInventoryUtil.fetchLaunchConfigurations(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "ASG Launch Configurations\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "launchconfig", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "launchconfig", e.getMessage());
 				}
 			});
 			
@@ -615,10 +618,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "EC2 Internet Gateway");
-					FileManager.generateInternetGatewayFiles(EC2InventoryUtil.fetchInternetGateway(temporaryCredentials,skipRegions,account));
+					FileManager.generateInternetGatewayFiles(EC2InventoryUtil.fetchInternetGateway(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "EC2 Internet Gateway\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "internetgw", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "internetgw", e.getMessage());
 				}
 			});
 			
@@ -630,10 +633,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "EC2 Vpn Gateway");
-					FileManager.generateVPNGatewayFiles(EC2InventoryUtil.fetchVPNGateway(temporaryCredentials,skipRegions,account));
+					FileManager.generateVPNGatewayFiles(EC2InventoryUtil.fetchVPNGateway(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "EC2 Vpn Gateway\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "vpngw", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "vpngw", e.getMessage());
 				}
 			});
 			
@@ -645,10 +648,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "ASG Scaling Policy");
-					FileManager.generateScalingPolicies(ASGInventoryUtil.fetchScalingPolicies(temporaryCredentials,skipRegions,account));
+					FileManager.generateScalingPolicies(ASGInventoryUtil.fetchScalingPolicies(temporaryCredentials,skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "ASG Scaling Policy\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "asgpolicy", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "asgpolicy", e.getMessage());
 				}
 			});
 			
@@ -660,10 +663,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "SNS Topics");
-					FileManager.generateSNSTopics(SNSInventoryUtil.fetchSNSTopics(temporaryCredentials, skipRegions, account));
+					FileManager.generateSNSTopics(SNSInventoryUtil.fetchSNSTopics(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "SNS Topics\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "snstopic", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "snstopic", e.getMessage());
 				}
 			});
 			
@@ -675,10 +678,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Egress Gateway");
-					FileManager.generateEgressGateway(EC2InventoryUtil.fetchEgressGateway(temporaryCredentials, skipRegions, account));
+					FileManager.generateEgressGateway(EC2InventoryUtil.fetchEgressGateway(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Egress Gateway\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "egressgateway", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "egressgateway", e.getMessage());
 				}
 			});
 			
@@ -690,10 +693,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Dhcp Options");
-					FileManager.generateDhcpOptions(EC2InventoryUtil.fetchDHCPOptions(temporaryCredentials, skipRegions, account));
+					FileManager.generateDhcpOptions(EC2InventoryUtil.fetchDHCPOptions(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Dhcp Options\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "dhcpoption", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "dhcpoption", e.getMessage());
 				}
 			});
 			
@@ -705,10 +708,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Peering Connections");
-					FileManager.generatePeeringConnections(EC2InventoryUtil.fetchPeeringConnections(temporaryCredentials, skipRegions, account));
+					FileManager.generatePeeringConnections(EC2InventoryUtil.fetchPeeringConnections(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Peering Connections\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "peeringconnection", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "peeringconnection", e.getMessage());
 				}
 			});
 			
@@ -720,10 +723,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Customer Gateway");
-					FileManager.generateCustomerGateway(EC2InventoryUtil.fetchCustomerGateway(temporaryCredentials, skipRegions, account));
+					FileManager.generateCustomerGateway(EC2InventoryUtil.fetchCustomerGateway(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Customer Gateway\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "customergateway", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "customergateway", e.getMessage());
 				}
 			});
 			
@@ -735,10 +738,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "VPN Connection");
-					FileManager.generateVpnConnection(EC2InventoryUtil.fetchVPNConnections(temporaryCredentials, skipRegions, account));
+					FileManager.generateVpnConnection(EC2InventoryUtil.fetchVPNConnections(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "VPN Connection\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "vpnconnection", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "vpnconnection", e.getMessage());
 				}
 			});
 			
@@ -750,10 +753,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Direct Connection");
-					FileManager.generateDirectConnection(DirectConnectionInventoryUtil.fetchDirectConnections(temporaryCredentials, skipRegions, account));
+					FileManager.generateDirectConnection(DirectConnectionInventoryUtil.fetchDirectConnections(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Direct Connection\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "directconnect", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "directconnect", e.getMessage());
 				}
 			});
 			
@@ -765,10 +768,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "Direct Connection Virtual Interfaces");
-					FileManager.generateDirectConnectionVirtualInterfaces(DirectConnectionInventoryUtil.fetchDirectConnectionsVirtualInterfaces(temporaryCredentials, skipRegions, account));
+					FileManager.generateDirectConnectionVirtualInterfaces(DirectConnectionInventoryUtil.fetchDirectConnectionsVirtualInterfaces(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "Direct Connection Virtual Interfaces\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "virtualinterface", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "virtualinterface", e.getMessage());
 				}
 			});
 			
@@ -780,25 +783,25 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "ES Domain");
-					FileManager.generateESDomain(ESInventoryUtil.fetchESInfo(temporaryCredentials, skipRegions, account));
+					FileManager.generateESDomain(ESInventoryUtil.fetchESInfo(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "ES Domain\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "elasticsearch", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "elasticsearch", e.getMessage());
 				}
 			});
 			
 			executor.execute(() -> 
 			{
-			    if(!(isTypeInScope("reservedInstance"))) {
+			    if(!(isTypeInScope("reservedinstance"))) {
                     return;
                 }
             
 				try{
-					log.info(infoPrefix + "reservedInstance");
-					FileManager.generateReservedInstances(EC2InventoryUtil.fetchReservedInstances(temporaryCredentials, skipRegions, account));
+					log.info(infoPrefix + "reservedinstance");
+					FileManager.generateReservedInstances(EC2InventoryUtil.fetchReservedInstances(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
-					log.error(expPrefix+ "reservedInstances\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "reserved instances", e.getMessage());
+					log.error(expPrefix+ "reservedinstance\", \"cause\":\"" +e.getMessage()+"\"}");
+					ErrorManageUtil.uploadError(accountId, "", "reservedinstance", e.getMessage());
 				}
 			});
 			
@@ -811,10 +814,10 @@ public class AssetFileGenerator {
             
 				try{
 					log.info(infoPrefix + "ssm");
-					FileManager.generateSsmFiles(EC2InventoryUtil.fetchSSMInfo(temporaryCredentials, skipRegions,account));
+					FileManager.generateSsmFiles(EC2InventoryUtil.fetchSSMInfo(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
 					log.error(expPrefix+ "SSM\", \"cause\":\"" +e.getMessage()+"\"}");
-					ErrorManageUtil.uploadError(account, "", "ssm", e.getMessage());
+					ErrorManageUtil.uploadError(accountId, "", "ssm", e.getMessage());
 				}
 			});
 			
@@ -826,10 +829,70 @@ public class AssetFileGenerator {
             
                 try{
                     log.info(infoPrefix + "elasticache");
-                    FileManager.generateElastiCacheFiles(ElastiCacheUtil.fetchElastiCacheInfo(temporaryCredentials, skipRegions,account));
+                    FileManager.generateElastiCacheFiles(ElastiCacheUtil.fetchElastiCacheInfo(temporaryCredentials, skipRegions,accountId,accountName));
                 }catch(Exception e){
                     log.error(expPrefix+ "elasticache\", \"cause\":\"" +e.getMessage()+"\"}");
-                    ErrorManageUtil.uploadError(account, "", "elasticache", e.getMessage());
+                    ErrorManageUtil.uploadError(accountId, "", "elasticache", e.getMessage());
+                }
+            });
+			
+			executor.execute(() -> 
+            {
+                if(!(isTypeInScope("datastream"))) {
+                    return;
+                }
+            
+                try{
+                    log.info(infoPrefix + "datastream");
+                    FileManager.generateKinesisDataStreamFiles(KinesisInventoryUtil.fetchDataStreamInfo(temporaryCredentials,skipRegions,accountId,accountName));
+                }catch(Exception e){
+                    log.error(expPrefix+ "datastream\", \"cause\":\"" +e.getMessage()+"\"}");
+                    ErrorManageUtil.uploadError(accountId, "", "datastream", e.getMessage());
+                }
+            });
+			
+			executor.execute(() -> 
+            {
+                if(!(isTypeInScope("sqs"))) {
+                    return;
+                }
+            
+                try{
+                    log.info(infoPrefix + "sqs");
+                    FileManager.generateSQSFiles(InventoryUtil.fetchSQSInfo(temporaryCredentials,skipRegions,accountId,accountName));
+                }catch(Exception e){
+                    log.error(expPrefix+ "sqs\", \"cause\":\"" +e.getMessage()+"\"}");
+                    ErrorManageUtil.uploadError(accountId, "", "sqs", e.getMessage());
+                }
+            });
+			
+			executor.execute(() -> 
+            {
+                if(!(isTypeInScope("deliverystream"))) {
+                    return;
+                }
+            
+                try{
+                    log.info(infoPrefix + "deliverystream");
+                    FileManager.generateKinesisDeliveryStreamFiles(KinesisInventoryUtil.fetchDeliveryStreamInfo(temporaryCredentials,skipRegions,accountId,accountName));
+                }catch(Exception e){
+                    log.error(expPrefix+ "deliverystream\", \"cause\":\"" +e.getMessage()+"\"}");
+                    ErrorManageUtil.uploadError(accountId, "", "deliverystream", e.getMessage());
+                }
+            });
+			
+			executor.execute(() -> 
+            {
+                if(!(isTypeInScope("videostream"))) {
+                    return;
+                }
+            
+                try{
+                    log.info(infoPrefix + "videostream");
+                    FileManager.generateKinesisVideoStreamFiles(KinesisInventoryUtil.fetchVideoStreamInfo(temporaryCredentials,skipRegions,accountId,accountName));
+                }catch(Exception e){
+                    log.error(expPrefix+ "videostream\", \"cause\":\"" +e.getMessage()+"\"}");
+                    ErrorManageUtil.uploadError(accountId, "", "videostream", e.getMessage());
                 }
             });
 			
@@ -838,10 +901,16 @@ public class AssetFileGenerator {
 				 
 			}
 			
-			log.info("Completed Discovery for account "+ account); 
+			log.info("Completed Discovery for accountId "+ accountId); 
 		}
 		
 		ErrorManageUtil.writeErrorFile();
+		try {
+			FileManager.finalise();
+			ErrorManageUtil.finalise();
+		} catch (IOException e) {
+			log.error("Error Writing File",e);
+		}
 	}
 	
 	/**

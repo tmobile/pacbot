@@ -123,7 +123,7 @@ export class StatsOverlayComponent implements OnInit, OnDestroy, AfterViewInit {
       }
       const blob = new Blob([arr]);
       const a = document.createElement('a');
-      a.download = 'PacMan-Statistics.png';
+      a.download = 'PacBot-Statistics.png';
       a.innerHTML = 'download';
       a.href = URL.createObjectURL(blob);
 

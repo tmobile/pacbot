@@ -146,14 +146,14 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
         const statisticsLinks = [
             {
                 route: 'stats-overlay',
-                name: 'PacMan Statistics',
-                overlay: true
-            },
-            {
-                route: 'domain-overlay',
-                name: 'Compliance Summary',
+                name: 'Statistics',
                 overlay: true
             }
+            // {
+            //     route: 'domain-overlay',
+            //     name: 'Compliance',
+            //     overlay: true
+            // }
             // {
             //     route: 'vulnerability-report',
             //     name: 'Vulnerability Report',

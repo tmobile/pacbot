@@ -37,7 +37,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.asset.AssetConstants;
 import com.tmobile.pacman.api.asset.client.ComplianceServiceClient;
 import com.tmobile.pacman.api.asset.domain.PageFilterRequest;
@@ -80,7 +79,7 @@ public class AssetDetailController {
      * 
      * @return list of date and its CPU utilization of the instance id.
      */
-    @HystrixCommand
+    
     @GetMapping(value = "/v1/{assetGroup}/ec2/{resourceId}/cpu-utilization")
     public ResponseEntity<Object> getCPUUtilizationByInstanceId(
             @PathVariable(name = "resourceId", required = true) String instanceId) {
@@ -104,7 +103,6 @@ public class AssetDetailController {
      * 
      * @return list of disk name, size and free space of the instance id.
      */
-    @HystrixCommand
     @RequestMapping(path = "/v1/{assetGroup}/ec2/{resourceId}/disk-utilization", method = RequestMethod.GET)
     public ResponseEntity<Object> getDiskUtilizationByInstanceId(
             @PathVariable(name = "resourceId", required = true) String instanceId) {
@@ -134,7 +132,6 @@ public class AssetDetailController {
      * 
      * @return list of software name and its version installed on the instance id.
      */
-    @HystrixCommand
     @RequestMapping(path = "/v1/{assetGroup}/ec2/{resourceId}/installed-softwares", method = RequestMethod.GET)
     public ResponseEntity<Object> getInstalledSoftwareDetailsByInstanceId(
             @PathVariable(name = "resourceId", required = true) String instanceId,
@@ -197,7 +194,6 @@ public class AssetDetailController {
      * 
      * @return list of open ports.
      */
-    @HystrixCommand
     @RequestMapping(path = "/v1/{assetGroup}/ec2/{resourceId}/open-ports", method = RequestMethod.GET)
     public ResponseEntity<Object> getOpenPortsByInstanceId(
             @PathVariable(name = "resourceId", required = true) String instanceId,
@@ -254,7 +250,7 @@ public class AssetDetailController {
      * 
      * @return list of assets with open,closed and upcoming count.
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/{assetGroup}/ec2/{resourceId}/aws-notifications/summary", method = RequestMethod.GET)
     public ResponseEntity<Object> getAwsNotificationSummary(
             @PathVariable(name = "resourceId", required = true) String instanceId) {
@@ -289,7 +285,7 @@ public class AssetDetailController {
     * 
     * @return list of notification details.
     */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/{assetGroup}/ec2/{resourceId}/aws-notifications/details", method = RequestMethod.POST)
     public ResponseEntity<Object> getAwsNotificationDetails(@RequestBody(required = true) PageFilterRequest request,
             @PathVariable(name = "resourceId", required = true) String instanceId) {
@@ -354,7 +350,6 @@ public class AssetDetailController {
      * 
      * @return created by, creation date and email.
      */
-    @HystrixCommand
     @ApiOperation(httpMethod = "GET", value = "Get the creator details for a particular resource")
     @GetMapping(value = "/v1/{assetGroup}/{resourceType}/{resourceId}/creatordetails")
     public ResponseEntity<Object> getEc2CreatorDetail(
@@ -381,7 +376,7 @@ public class AssetDetailController {
      * 
      * @return list of AD group details.
      */
-    @HystrixCommand
+    
     @ApiOperation(httpMethod = "GET", value = "Get the ad group details for a ec2 instance")
     @GetMapping(value = "/v1/{assetGroup}/ec2/{resourceId}/ad-groups")
     public ResponseEntity<Object> getAdGroupsDetail(@PathVariable(name = "assetGroup", required = true) String ag,
@@ -407,7 +402,7 @@ public class AssetDetailController {
      * 
      * @return details of ec2 resource
      */
-    @HystrixCommand
+    
     @ApiOperation(httpMethod = "GET", value = "Get the details from a particular data source for a particular  resource")
     @GetMapping(value = "v1/{assetGroup}/{resourceType}/{resourceId}/details")
     public ResponseEntity<Object> getEc2ResourceDetail(@PathVariable(name = "assetGroup", required = true) String ag,
@@ -437,7 +432,7 @@ public class AssetDetailController {
      * @return average last week cost and total cost of ec2.
      * @throws DataException when fetching data from ES.
      */
-    @HystrixCommand
+    
     @ApiOperation(httpMethod = "GET", value = "Get the average cost and total cost for an EC2 resource")
     @GetMapping(value = "v1/{assetGroup}/ec2/{resourceId}/cost")
     public ResponseEntity<Object> getEc2ResourceSummary(
@@ -462,7 +457,7 @@ public class AssetDetailController {
      * 
      * @return compliance, statename and attributes
      */
-    @HystrixCommand
+    
     @ApiOperation(httpMethod = "GET", value = "Get the summary from AWS for a particular  resource")
     @GetMapping(value = "v1/{assetGroup}/{resourceType}/{resourceId}/summary")
     public ResponseEntity<Object> getEc2ResourceSummary(@PathVariable(name = "assetGroup", required = true) String ag,

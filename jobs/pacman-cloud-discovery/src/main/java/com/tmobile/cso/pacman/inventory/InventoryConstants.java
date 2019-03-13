@@ -49,4 +49,36 @@ public final class InventoryConstants {
     
     /** The Constant REGION_US_WEST_2. */
     public static final String REGION_US_WEST_2 = "us-west-2";
+    
+    /** The Constant SOURCE. */
+    public static final String SOURCE = "source";
+    
+    /** The Constant NAME. */
+    public static final String NAME = "name";
+    
+    /** The Constant APPLICATION. */
+    public static final String APPLICATION = "application";
+    
+    /** The Constant BATCH. */
+    public static final String BATCH = "batch";
+    
+    /** The Constant INVENTORY. */
+    public static final String INVENTORY = "inventory";
+    
+    public static final String OPEN_ARRAY = "[";
+    
+    public static final String CLOSE_ARRAY = "]";
+    
+    
+    public static final String ACCOUNT_ID = "accountId";
+    
+    public static final String ACCOUNT_NAME = "accountName";
+    
+    public static final String RDS_DB_URL = "spring.datasource.url";
+
+    /** The rds user. */
+    public static final String RDS_USER = "spring.datasource.username";
+
+    /** The rds pwd. */
+    public static final String RDS_PWD = "spring.datasource.password";
 }

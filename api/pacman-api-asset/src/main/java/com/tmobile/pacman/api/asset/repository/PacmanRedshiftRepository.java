@@ -39,13 +39,13 @@ import com.tmobile.pacman.api.asset.AssetConstants;
 @Repository
 public class PacmanRedshiftRepository {
 
-    @Value("${redshift.url}")
+    @Value("${redshift.url:}")
     private String dbURL;
     
-    @Value("${redshift.userName}")
+    @Value("${redshift.userName:}")
     private String userName;
     
-    @Value("${redshift.password}")
+    @Value("${redshift.password:}")
     private String password;
 
     private static final Log LOGGER = LogFactory.getLog(PacmanRedshiftRepository.class);

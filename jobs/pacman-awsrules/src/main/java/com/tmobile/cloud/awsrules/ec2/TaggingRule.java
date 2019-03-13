@@ -70,7 +70,7 @@ public class TaggingRule extends BaseRule {
 
 		logger.debug("========TaggingRule started=========");
 		Set<String> missingTags = new HashSet<>();
-		String mandatoryTags = ruleParam.get(PacmanSdkConstants.MENDETORY_TAGS_KEY);
+		String mandatoryTags = ruleParam.get(PacmanSdkConstants.MANDATORY_TAGS_KEY);
 		String tagsSplitter = ruleParam.get(PacmanSdkConstants.SPLITTER_CHAR);
 		String entityId = ruleParam.get(PacmanSdkConstants.RESOURCE_ID);
 

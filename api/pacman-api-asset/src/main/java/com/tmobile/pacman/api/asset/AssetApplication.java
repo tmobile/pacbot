@@ -34,8 +34,6 @@ import org.springframework.web.util.UrlPathHelper;
 @EnableFeignClients
 @EnableConfigurationProperties
 @Configuration
-/*@EnableHystrix
-@EnableHystrixDashboard*/
 @EnableCaching
 @ComponentScan(basePackages = "com.tmobile.pacman")
 @EnableResourceServer

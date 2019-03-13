@@ -98,8 +98,8 @@ DESTROY_STATUS_COMPLETED = 'DESTROY_STATUS_COMPLETED'
 DESTROY_STATUS_ERROR = 'DESTROY_STATUS_ERROR'
 
 STATUS_CODE_MSGS = {
-    'APPLY_STATUS_COMPLETED' : "All resources are created/uodated successfully!",
-    'APPLY_STATUS_ERROR' : "All resources are not created/uodated successfully. Apply encountered error(s)",
+    'APPLY_STATUS_COMPLETED': "All resources are created/uodated successfully!",
+    'APPLY_STATUS_ERROR': "All resources are not created/uodated successfully. Apply encountered error(s)",
     'DESTROY_STATUS_COMPLETED': "All resources are destroyed successfully!",
     'DESTROY_STATUS_ERROR': "All resources are not destroyed successfully. Destroy encountered error(s)"
 }

@@ -4,6 +4,12 @@ import json
 
 
 def get_terraform_provider_file():
+    """
+    Return terraform provider file path
+
+    Returns:
+        path: terraform provider file path
+    """
     return os.path.join(
         Settings.TERRAFORM_DIR,
         'provider.tf'
@@ -11,6 +17,12 @@ def get_terraform_provider_file():
 
 
 def get_terraform_scripts_and_files_dir():
+    """
+    Return path of the terraform supported scripts & file directory
+
+    Returns:
+        path: Scripts and files directory path
+    """
     return os.path.join(
         Settings.TERRAFORM_DIR,
         'scripts_and_files'
@@ -18,6 +30,12 @@ def get_terraform_scripts_and_files_dir():
 
 
 def get_terraform_scripts_dir():
+    """
+    Return path of the terraform supported scripts directory
+
+    Returns:
+        path: Scripts directory path
+    """
     return os.path.join(
         get_terraform_scripts_and_files_dir(),
         'scripts'
@@ -25,6 +43,15 @@ def get_terraform_scripts_dir():
 
 
 def get_terraform_resource_path(resource_class):
+    """
+    File path without extension of the resource terraform file
+
+    Args:
+        resource_class (class/instance): Resource Base class
+
+    Returns:
+        resource_path (path): terraform file path
+    """
     resource_path = ".".join(
         [resource_class.resource_instance_name, resource_class.get_resource_id()])
 
@@ -32,6 +59,16 @@ def get_terraform_resource_path(resource_class):
 
 
 def get_formatted_resource_attr_value(arg_value, attrs):
+    """
+    Terraform resource attribute formation
+
+    Args:
+        arg_value (str): Attribute name
+        attrs (dict): Attribute dictionary
+
+    Returns:
+        arg_value (str): Value of the resource attribute
+    """
     field_type = attrs.get('type', None)
     if field_type == 'json':
         arg_value = json.dumps(arg_value)
@@ -44,6 +81,16 @@ def get_formatted_resource_attr_value(arg_value, attrs):
 
 
 def get_prefix_added_attr_value(arg_value, attrs):
+    """
+    Prefix added attribute value for resource attribute if required
+
+    Args:
+        arg_value (str): Attribute name
+        attrs (dict): Attribute dictionary
+
+    Returns:
+        arg_value (str): Value of the resource attribute with prefix
+    """
     if attrs.get('prefix', False):
         trail_value = "" if arg_value.strip() == "" else arg_value
         prefix_sep = "" if (Settings.RESOURCE_NAME_PREFIX.strip() == "" or trail_value == "") else attrs.get('sep', "")
@@ -54,8 +101,63 @@ def get_prefix_added_attr_value(arg_value, attrs):
 
 
 def get_terraform_latest_output_file():
+    """
+    Terraform output file where terraform execution output is stored
+
+    Returns:
+        path: Path of the output file
+    """
     return os.path.join(Settings.OUTPUT_DIR, 'output.json')
 
 
 def get_terraform_status_file():
+    """
+    Terraform status file where terraform execution status is stored
+
+    Returns:
+        path: Path of the status file
+    """
     return os.path.join(Settings.OUTPUT_DIR, 'status.json')
+
+
+def _get_resource_status_file_name(resource_id, status):
+    """
+    Resource completion status file name path
+
+    Args:
+        resource_id (str): Resource ID of the resource
+        status (str): Extension to be provided
+
+    Returns:
+        str: Abs path of the status file as string
+    """
+    filename = "op." + resource_id + ".pyform." + str(status)
+    file_path = os.path.join(Settings.OUTPUT_STATUS_DIR, filename)
+
+    return str(file_path)
+
+
+def get_resource_creating_status_op_file(resource_id):
+    """
+    Resource initialization started status file name path
+
+    Args:
+        resource_id (str): Resource ID of the resource
+
+    Returns:
+        str: Abs path of the status file as string
+    """
+    return _get_resource_status_file_name(resource_id, '0')
+
+
+def get_resource_created_status_op_file(resource_id):
+    """
+    Resource creation completed status file name path
+
+    Args:
+        resource_id (str): Resource ID of the resource
+
+    Returns:
+        str: Abs path of the status file as string
+    """
+    return _get_resource_status_file_name(resource_id, '1')

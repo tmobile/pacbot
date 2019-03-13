@@ -32,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.commons.utils.CommonUtils;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
 import com.tmobile.pacman.api.compliance.domain.PolicyScanInfo;
@@ -69,7 +68,7 @@ public class PolicyAssetController {
     @SuppressWarnings("unchecked")
     @GetMapping(path = "/v1/policyevaluations/{assetGroup}/{resourceType}/{resourceId}")
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> getPolicyViolations(
             @PathVariable("resourceId") String resourceId,
             @PathVariable("assetGroup") String ag,
@@ -137,7 +136,7 @@ public class PolicyAssetController {
      */
     @GetMapping(path = "/v1/policyviolations/summary/{assetGroup}/{resourceType}/{resourceId}")
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> getPolicyViolationSummary(
             @PathVariable("resourceId") String resourceId,
             @PathVariable("assetGroup") String ag,

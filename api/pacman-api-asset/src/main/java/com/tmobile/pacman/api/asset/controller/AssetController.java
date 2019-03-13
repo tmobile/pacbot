@@ -15,9 +15,6 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.asset.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,13 +36,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.asset.domain.AssetUpdateRequest;
 import com.tmobile.pacman.api.asset.domain.Response;
 import com.tmobile.pacman.api.asset.model.DefaultUserAssetGroup;
 import com.tmobile.pacman.api.asset.service.AssetService;
 import com.tmobile.pacman.api.commons.exception.DataException;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 
 /**
  * The controller layer for  Assets which has methods to fetch the asset related info.
@@ -68,7 +67,6 @@ public class AssetController {
      * 
      * @return list of target types.
      */
-    @HystrixCommand
     @GetMapping(value = "/v1/list/targettype")
     public ResponseEntity<Object> getListOfTargetTypes(@RequestParam(name = "ag", required = true) String assetGroup,
             @RequestParam(name = "domain", required = false) String domain) {
@@ -119,7 +117,6 @@ public class AssetController {
      * 
      * @return list of environments.
      */
-    @HystrixCommand
     @GetMapping(value = "/v1/list/environment")
     public ResponseEntity<Object> getListOfEnvironments(@RequestParam(name = "ag", required = true) String assetGroup,
             @RequestParam(name = "application", required = false) String application,
@@ -147,7 +144,6 @@ public class AssetController {
      *
      * @return list of asset group details.
      */
-    @HystrixCommand
     @GetMapping(value = "/v1/list/assetgroup")
     public ResponseEntity<Object> getAllAssetGroups() {
         try {
@@ -167,7 +163,6 @@ public class AssetController {
      * 
      * @return asset group info.
      */
-    @HystrixCommand
     @GetMapping(value = "/v1/assetgroup")
     public ResponseEntity<Object> getAssetGroupInfo(@RequestParam(name = "ag", required = true) String assetGroup) {
         Map<String, Object> assetGroupInfo = assetService.getAssetGroupInfo(assetGroup);
@@ -187,7 +182,6 @@ public class AssetController {
      * 
      * @return asset group name.
      */
-    @HystrixCommand
     @ApiOperation(httpMethod = "GET", value = "Get User Default Asset Group")
     @GetMapping(value = "/v1/list/user-default-assetgroup")
     public ResponseEntity<Object> getUserDefaultAssetGroup(
@@ -208,7 +202,6 @@ public class AssetController {
      * 
      * @return boolean as updated status.
      */
-    @HystrixCommand
     @ApiOperation(httpMethod = "POST", value = "Save or Update User Asset Groups")
     @PostMapping(value = "/v1/save-or-update/assetgroup")
     public ResponseEntity<Object> saveOrUpdateAssetGroup(
@@ -230,7 +223,6 @@ public class AssetController {
      * 
      * @return updated list of asset group for the userId.
      */
-    @HystrixCommand
     @ApiOperation(httpMethod = "POST", value = "Save or Append User Recently Viewed Asset Groups")
     @PostMapping(value = "/v1/appendToRecentlyViewedAG")
     public ResponseEntity<Object> appendToRecentlyViewedAG(
@@ -257,7 +249,6 @@ public class AssetController {
      * 
      * @return config details as string.
      */
-    @HystrixCommand
     @ApiOperation(httpMethod = "GET", value = "Retrieve Asset Config for the given resourceId and configType")
     @GetMapping(value = "/v1/retrieve-asset-config")
     public ResponseEntity<Object> retrieveAssetConfig(
@@ -283,7 +274,6 @@ public class AssetController {
      * 
      * @return ResponseEntity.
      */
-    @HystrixCommand
     @ApiOperation(httpMethod = "POST", value = "Save Asset Configuration")
     @PostMapping(value = "/v1/save-asset-config")
     public ResponseEntity<Object> saveAssetConfig(
@@ -307,7 +297,6 @@ public class AssetController {
      * @throws DataException when the update fails. 
      */
     
-    @HystrixCommand
     @ApiOperation(httpMethod = "POST", value = "Update Asset values")
     @PostMapping(value = "/v1/update-asset")
     public ResponseEntity<Object> updateAsset(@RequestBody(required = true) AssetUpdateRequest request)
@@ -343,7 +332,6 @@ public class AssetController {
      * 
      * @return created date as string 
      */
-    @HystrixCommand
     @ApiOperation(httpMethod = "GET", value = "Get Resource Created Date")
     @RequestMapping(path = "/v1/get-resource-created-date", method = RequestMethod.GET)
     @ResponseBody

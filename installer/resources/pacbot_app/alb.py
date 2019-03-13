@@ -5,7 +5,7 @@ from core.config import Settings
 
 class ApplicationLoadBalancer(LoadBalancerResource):
     name = ""
-    internal = True
+    internal = Settings.get('MAKE_ALB_INTERNAL', True)
     load_balancer_type = "application"
     security_groups = [InfraSecurityGroupResource.get_output_attr('id')]
     subnets = Settings.get('VPC')['SUBNETS']

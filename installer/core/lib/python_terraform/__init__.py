@@ -9,7 +9,6 @@ import logging
 import tempfile
 
 
-
 try:  # Python 2.7+
     from logging import NullHandler
 except ImportError:
@@ -31,10 +30,10 @@ class IsNotFlagged:
 
 
 class TerraformCommandError(subprocess.CalledProcessError):
-  def __init__(self, ret_code, cmd, out, err):
-      super(TerraformCommandError, self).__init__(ret_code, cmd)
-      self.out = out
-      self.err = err
+    def __init__(self, ret_code, cmd, out, err):
+        super(TerraformCommandError, self).__init__(ret_code, cmd)
+        self.out = out
+        self.err = err
 
 
 class Tfstate(object):
@@ -139,7 +138,7 @@ class Terraform(object):
         default = kwargs
         default['input'] = input
         default['no_color'] = no_color
-        default['auto-approve'] = (skip_plan == True)
+        default['auto-approve'] = True
         option_dict = self._generate_default_options(default)
         args = self._generate_default_args(dir_or_plan)
         return self.cmd('apply', *args, **option_dict)
@@ -379,7 +378,7 @@ class Terraform(object):
         name_provided = (len(args) > 0)
         kwargs['json'] = IsFlagged
         if not kwargs.get('capture_output', True) is True:
-          raise ValueError('capture_output is required for this method')
+            raise ValueError('capture_output is required for this method')
 
         ret, out, err = self.output_cmd(*args, **kwargs)
 

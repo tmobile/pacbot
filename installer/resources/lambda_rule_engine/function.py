@@ -44,7 +44,7 @@ class RuleEngineEventRules(CloudWatchEventRuleResource):
     VARIABLES = [RulesListVariable]
     DEPENDS_ON = [RuleEngineLambdaFunction]
     available_args = {
-        'name': {'required': True,},
+        'name': {'required': True},
         'schedule_expression': {'required': True},
         'event_pattern': {'required': False},
         'role_arn ': {'required': False},
