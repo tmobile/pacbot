@@ -464,7 +464,7 @@ export const ADMIN_ROUTES = [
             roles: ['ROLE_ADMIN']
         }
     },
-    {
+    /*{
         path: 'account-management',
         component: AccountManagementComponent,
         data: {
@@ -503,5 +503,5 @@ export const ADMIN_ROUTES = [
             title: 'Plugin Management Details',
             roles: ['ROLE_ADMIN']
         }
-    }
+    }*/
 ];

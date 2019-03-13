@@ -30,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.asset.domain.SearchCriteria;
 import com.tmobile.pacman.api.asset.domain.SearchException;
 import com.tmobile.pacman.api.asset.domain.SearchResult;
@@ -58,7 +57,7 @@ public class SearchController {
      * @param criteria the criteria
      * @return the response entity
      */
-    @HystrixCommand
+    
     @PostMapping(value = "/v1/search")
     public ResponseEntity<Object> search(@RequestBody SearchCriteria criteria) {
         long start = System.currentTimeMillis();
@@ -101,7 +100,7 @@ public class SearchController {
      * @param domain the domain
      * @return the search categories
      */
-    @HystrixCommand
+    
     @GetMapping(value = "/v1/search/categories")
     public ResponseEntity<Object> getSearchCategories(@RequestParam(name = "domain", required = false) String domain) {
 

@@ -3,13 +3,15 @@ import os
 import sys
 
 
-# This is commonn configuration should be used in all setup
-SETUP_TITLE = "PACBOT"
-SETUP_DESCRIPTION = "INFRA SETUP AND DEPLOYMENT"
 PROVIDER = 'AWS'
 CURRENT_FILE_PATH = Path(os.path.join(os.path.abspath(os.path.dirname(__file__))))
 BASE_APP_DIR = str(CURRENT_FILE_PATH.parent)
 RESOURCES_FOLDER = 'resources'  # Provide only relative path
+
+# This is commonn configuration should be used in all setup
+SETUP_TITLE = "PACBOT"
+SETUP_DESCRIPTION = "INFRA SETUP AND DEPLOYMENT"
+LOADER_FILE_PATH = os.path.join(str(CURRENT_FILE_PATH), "loader")
 
 TOOLS_REQUIRED = {
     'Maven': "mvn --version",
@@ -38,7 +40,6 @@ PROCESS_RESOURCES = {
     'vpc.security_group': {'tags': ["security"]},
     'datastore.db': {'tags': ["rds"]},
     'datastore.es': {'tags': ["es"]},
-    'datastore.redshift': {'tags': ["redshift"]},
     'pacbot_app.alb': {'tags': ["infra"]},
     'pacbot_app.alb_target_groups': {'tags': ["infra"]},
     'pacbot_app.alb_listener_rules': {'tags': ["infra"]},
@@ -63,7 +64,7 @@ DATA_DIR = os.path.join(BASE_APP_DIR, 'data')
 LOG_DIR = os.path.join(BASE_APP_DIR, 'log')
 PROVISIONER_FILES_DIR_TO_COPY = os.path.join(BASE_APP_DIR, 'files')
 
-DESTROY_NUM_ATTEMPTS = 2
+DESTROY_NUM_ATTEMPTS = 3
 SKIP_RESOURCE_EXISTENCE_CHECK = False
 RESOURCE_NAME_PREFIX = "pacbot"
 RESOURCE_DEFAULT_TAG_NAME = "Application"
@@ -94,7 +95,17 @@ PACBOT_LOGIN_CREDENTIALS = {
     'Admin': "admin@pacbot.org / pacman",
     'User': "user@pacbot.org / user"
 }
-LOADER_FILE_PATH = os.path.join(str(CURRENT_FILE_PATH), "loader")
+
+MAKE_ALB_INTERNAL = True
+
+MAIL_SERVER = "localhost"
+MAIL_SERVER_PORT = 25
+MAIL_PROTOCOL = "smtp"
+MAIL_SERVER_USER = ""
+MAIL_SERVER_PWD = ""
+MAIL_SMTP_AUTH = ""
+MAIL_SMTP_SSL_ENABLE = "true"
+MAIL_SMTP_SSL_TEST_CONNECTION = "false"
 
 try:
     from settings.local import *

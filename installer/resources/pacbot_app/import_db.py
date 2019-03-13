@@ -4,13 +4,26 @@ from core.config import Settings
 from resources.datastore.db import MySQLDatabase
 from resources.datastore.es import ESDomain
 from resources.data.aws_info import AwsAccount, AwsRegion
+from resources.pacbot_app.cloudwatch_log_groups import UiCloudWatchLogGroup, ApiCloudWatchLogGroup
+from resources.pacbot_app.ecr import APIEcrRepository, UIEcrRepository
+from resources.data.aws_info import AwsRegion
+from resources.pacbot_app.alb import ApplicationLoadBalancer
+from resources.datastore.es import ESDomain
+from resources.iam.ecs_role import ECSRole
+from resources.iam.base_role import BaseRole
+from resources.lambda_submit.function import SubmitJobLambdaFunction
+from resources.lambda_rule_engine.function import RuleEngineLambdaFunction
+from resources.s3.bucket import BucketStorage
+
 from shutil import copy2
 import os
 
 
 class ReplaceSQLPlaceHolder(NullResource):
-    DEPENDS_ON = [MySQLDatabase, ESDomain]
     dest_file = os.path.join(get_terraform_scripts_and_files_dir(), 'DB_With_Values.sql')
+    triggers = {'version': "1.1"}
+
+    DEPENDS_ON = [MySQLDatabase, ESDomain]
 
     def get_provisioners(self):
         script = os.path.join(get_terraform_scripts_dir(), 'sql_replace_placeholder.py')
@@ -22,11 +35,61 @@ class ReplaceSQLPlaceHolder(NullResource):
                 'local-exec': {
                     'command': script,
                     'environment': {
-                        'AWS_REGION': AwsRegion.get_output_attr('name'),
-                        'AWS_ACCOUNT_ID': AwsAccount.get_output_attr('account_id'),
-                        'ES_HOST': ESDomain.get_http_url(),
-                        'ES_PORT': ESDomain.get_es_port(),
-                        'SQL_FILE_PATH': self.dest_file
+                        'SQL_FILE_PATH': self.dest_file,
+                        'ENV_region': AwsRegion.get_output_attr('name'),
+                        'ENV_account': AwsAccount.get_output_attr('account_id'),
+                        'ENV_eshost': ESDomain.get_http_url(),
+                        'ENV_esport': ESDomain.get_es_port(),
+                        'ENV_LOGGING_ES_HOST_NAME': ESDomain.get_output_attr('endpoint'),
+                        'ENV_LOGGING_ES_PORT': str(ESDomain.get_es_port()),
+                        'ENV_ES_HOST_NAME': ESDomain.get_output_attr('endpoint'),
+                        'ENV_ES_PORT': str(ESDomain.get_es_port()),
+                        'ENV_ES_CLUSTER_NAME': ESDomain.get_input_attr('domain_name'),
+                        'ENV_ES_PORT_ADMIN': str(ESDomain.get_es_port()),
+                        'ENV_ES_HEIMDALL_HOST_NAME': ESDomain.get_output_attr('endpoint'),
+                        'ENV_ES_HEIMDALL_PORT': str(ESDomain.get_es_port()),
+                        'ENV_ES_HEIMDALL_CLUSTER_NAME': ESDomain.get_input_attr('domain_name'),
+                        'ENV_ES_HEIMDALL_PORT_ADMIN': str(ESDomain.get_es_port()),
+                        'ENV_ES_UPDATE_HOST': ESDomain.get_output_attr('endpoint'),
+                        'ENV_ES_UPDATE_PORT': str(ESDomain.get_es_port()),
+                        'ENV_ES_UPDATE_CLUSTER_NAME': ESDomain.get_input_attr('domain_name'),
+                        'ENV_PACMAN_HOST_NAME': ApplicationLoadBalancer.get_http_url(),
+                        'ENV_RDS_URL': MySQLDatabase.get_rds_db_url(),
+                        'ENV_RDS_USERNAME': MySQLDatabase.get_input_attr('username'),
+                        'ENV_RDS_PASSWORD': MySQLDatabase.get_input_attr('password'),
+                        'ENV_JOB_BUCKET_REGION': AwsRegion.get_output_attr('name'),
+                        'ENV_RULE_JOB_BUCKET_NAME': BucketStorage.get_output_attr('bucket'),
+                        'ENV_JOB_LAMBDA_REGION': AwsRegion.get_output_attr('name'),
+                        'ENV_JOB_FUNCTION_NAME': SubmitJobLambdaFunction.get_input_attr('function_name'),
+                        'ENV_JOB_FUNCTION_ARN': SubmitJobLambdaFunction.get_output_attr('arn'),
+                        'ENV_RULE_BUCKET_REGION': AwsRegion.get_output_attr('name'),
+                        'ENV_RULE_JOB_BUCKET_NAME': BucketStorage.get_output_attr('bucket'),
+                        'ENV_RULE_LAMBDA_REGION': AwsRegion.get_output_attr('name'),
+                        'ENV_RULE_FUNCTION_NAME': RuleEngineLambdaFunction.get_input_attr('function_name'),
+                        'ENV_RULE_FUNCTION_ARN': RuleEngineLambdaFunction.get_output_attr('arn'),
+                        'ENV_CLOUD_INSIGHTS_TOKEN_URL': "http://localhost",
+                        'ENV_CLOUD_INSIGHTS_COST_URL': "http://localhost",
+                        'ENV_SVC_CORP_USER_ID': "testid",
+                        'ENV_SVC_CORP_PASSWORD': "password",
+                        'ENV_CERTIFICATE_FEATURE_ENABLED': "false",
+                        'ENV_PATCHING_FEATURE_ENABLED': "false",
+                        'ENV_VULNERABILITY_FEATURE_ENABLED': "false",
+                        'ENV_MAIL_SERVER': Settings.MAIL_SERVER,
+                        'ENV_PACMAN_S3': "pacman-email-templates",
+                        'ENV_DATA_IN_DIR': "inventory",
+                        'ENV_DATA_BKP_DIR': "backup",
+                        'ENV_PAC_ROLE': BaseRole.get_input_attr('name'),
+                        'ENV_BASE_REGION': AwsRegion.get_output_attr('name'),
+                        'ENV_DATA_IN_S3': BucketStorage.get_output_attr('bucket'),
+                        'ENV_BASE_ACCOUNT': AwsAccount.get_output_attr('account_id'),
+                        'ENV_PAC_RO_ROLE': BaseRole.get_input_attr('name'),
+                        'ENV_MAIL_SERVER_PORT': Settings.MAIL_SERVER_PORT,
+                        'ENV_MAIL_PROTOCOL': Settings.MAIL_PROTOCOL,
+                        'ENV_MAIL_SERVER_USER': Settings.MAIL_SERVER_USER,
+                        'ENV_MAIL_SERVER_PWD': Settings.MAIL_SERVER_PWD,
+                        'ENV_MAIL_SMTP_AUTH': Settings.MAIL_SMTP_AUTH,
+                        'ENV_MAIL_SMTP_SSL_ENABLE': Settings.MAIL_SMTP_SSL_ENABLE,
+                        'ENV_MAIL_SMTP_SSL_TEST_CONNECTION': Settings.MAIL_SMTP_SSL_TEST_CONNECTION,
                     },
                     'interpreter': [Settings.PYTHON_INTERPRETER]
                 }
@@ -41,6 +104,8 @@ class ReplaceSQLPlaceHolder(NullResource):
 
 
 class ImportDbSql(NullResource):
+    triggers = {'version': "1.1"}
+
     DEPENDS_ON = [MySQLDatabase, ReplaceSQLPlaceHolder]
 
     def get_provisioners(self):

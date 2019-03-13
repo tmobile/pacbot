@@ -2,49 +2,32 @@ from resources.pacbot_app.cloudwatch_log_groups import UiCloudWatchLogGroup, Api
 from resources.pacbot_app.ecr import APIEcrRepository, UIEcrRepository
 from resources.data.aws_info import AwsRegion
 from resources.pacbot_app.alb import ApplicationLoadBalancer
-from resources.datastore.es import ESDomain
 from resources.datastore.db import MySQLDatabase
-from resources.datastore.redshift import RedshiftCluster
-from resources.iam.ecs_role import ECSRole
-from resources.lambda_submit.function import SubmitJobLambdaFunction
-from resources.lambda_rule_engine.function import RuleEngineLambdaFunction
 from core.config import Settings
-from resources.s3.bucket import BucketStorage
 import json
 
 
 class ContainerDefinitions:
+    """Friend class for getting the container definitions of each service"""
     ui_image = UIEcrRepository.get_output_attr('repository_url') + ":" + "latest"
     api_image = APIEcrRepository.get_output_attr('repository_url') + ":" + "latest"
     ui_cw_log_group = UiCloudWatchLogGroup.get_output_attr('name')
     api_cw_log_group = ApiCloudWatchLogGroup.get_output_attr('name')
     CONFIG_PASSWORD = "pacman"
     CONFIG_SERVER_URL = ApplicationLoadBalancer.get_api_server_url('config')
-    ES_CLUSTER_NAME = ESDomain.get_input_attr('domain_name')
-    ES_HEIMDALL_HOST_NAME = ESDomain.get_output_attr('endpoint')
-    ES_HEIMDALL_PORT = str(ESDomain.get_es_port())
-    ES_HOST_NAME = ESDomain.get_output_attr('endpoint')
-    ES_PORT = str(ESDomain.get_es_port())
-    LOGGING_ES_HOST_NAME = ESDomain.get_output_attr('endpoint')
-    LOGGING_ES_PORT = str(ESDomain.get_es_port())
     PACMAN_HOST_NAME = ApplicationLoadBalancer.get_http_url()
     RDS_USERNAME = MySQLDatabase.get_input_attr('username')
     RDS_PASSWORD = MySQLDatabase.get_input_attr('password')
     RDS_URL = MySQLDatabase.get_rds_db_url()
-    REDSHIFT_URL = RedshiftCluster.get_redshift_url()
-    REDSHIFT_USER_NAME = RedshiftCluster.get_input_attr('master_username')
-    REDSHIFT_PASSWORD = RedshiftCluster.get_input_attr('master_password')
-    ES_UPDATE_HOST = ESDomain.get_output_attr('endpoint')
-    ES_UPDATE_PORT = str(ESDomain.get_es_port())
-    ES_UPDATE_CLUSTER_NAME = ESDomain.get_input_attr('domain_name')
-    LDAP_DOMAIN = "http://localhost"
-    LDAP_PORT = "389"
-    LDAP_BASEDN = "http://localhost"
-    LDAP_HOSTLIST = "http://localhost"
-    LDAP_RESPONSETIMEOUT = "60"
-    LDAP_CONNECTIONTIMEOUT = "60"
 
     def get_container_definitions_without_env_vars(self, container_name):
+        """
+        This method returns the basic common container definitioons for all task definitions
+
+        Returns:
+            container_definitions (dict): Container definitions
+        """
+        memory = 1024 if container_name == "nginx" else 3072
         return {
             'name': container_name,
             "image": self.ui_image if container_name == 'nginx' else self.api_image,
@@ -57,7 +40,7 @@ class ContainerDefinitions:
                     "hostPort": 80
                 }
             ],
-            "memory": 1024,
+            "memory": memory,
             "networkMode": "awsvpc",
             "logConfiguration": {
                 "logDriver": "awslogs",
@@ -70,6 +53,12 @@ class ContainerDefinitions:
         }
 
     def get_container_definitions(self, container_name):
+        """
+        This method find complete container definitions for a task definiiton and returns it
+
+        Returns:
+            container_definitions (json): Josn data of complete Container definitions
+        """
         definitions = self.get_container_definitions_without_env_vars(container_name)
         env_vars = self._get_env_vars_for_container_service(container_name)
         if env_vars:
@@ -78,6 +67,12 @@ class ContainerDefinitions:
         return json.dumps([definitions])
 
     def _get_env_vars_for_container_service(self, container_name):
+        """
+        Dynamically call the function based on the container name to get all environment variables
+
+        Returns:
+            env_variables (list): List of dict of env variables
+        """
         def function_not_found():
             return None
         fun_name = "get_%s_container_env_vars" % container_name.replace('-', '_')
@@ -88,7 +83,11 @@ class ContainerDefinitions:
     def get_config_container_env_vars(self):
         return [
             {'name': "JAR_FILE", 'value': "config.jar"},
-            {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD}
+            {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
+            {'name': "RDS_PASSWORD", 'value': self.RDS_PASSWORD},
+            {'name': "RDS_URL", 'value': self.RDS_URL},
+            {'name': "RDS_USERNAME", 'value': self.RDS_USERNAME},
+            {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
         ]
 
     def get_admin_container_env_vars(self):
@@ -96,36 +95,8 @@ class ContainerDefinitions:
             {'name': "JAR_FILE", 'value': "pacman-api-admin.jar"},
             {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
             {'name': "CONFIG_SERVER_URL", 'value': self.CONFIG_SERVER_URL},
-            {'name': "ES_CLUSTER_NAME", 'value': self.ES_CLUSTER_NAME},
-            {'name': "ES_HEIMDALL_HOST_NAME", 'value': self.ES_HEIMDALL_HOST_NAME},
-            {'name': "ES_HEIMDALL_PORT", 'value': self.ES_HEIMDALL_PORT},
-            {'name': "ES_HOST_NAME", 'value': self.ES_HOST_NAME},
-            {'name': "ES_PORT", 'value': self.ES_PORT},
-            {'name': "LOGGING_ES_HOST_NAME", 'value': self.LOGGING_ES_HOST_NAME},
-            {'name': "LOGGING_ES_PORT", 'value': self.LOGGING_ES_PORT},
             {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
-            {'name': "RDS_PASSWORD", 'value': self.RDS_PASSWORD},
-            {'name': "RDS_URL", 'value': self.RDS_URL},
-            {'name': "RDS_USERNAME", 'value': self.RDS_USERNAME},
-            {'name': "ES_UPDATE_HOST", 'value': self.ES_UPDATE_HOST},
-            {'name': "ES_UPDATE_PORT", 'value': self.ES_UPDATE_PORT},
-            {'name': "ES_UPDATE_CLUSTER_NAME", 'value': self.ES_UPDATE_CLUSTER_NAME},
-            {'name': "SECURITY_USERNAME", 'value': "admin"},
-            {'name': "SECURITY_PASSWORD", 'value': "admin@123"},
-            {'name': "ACCESS_KEY", 'value': "test_key_1"},
-            {'name': "SECRET_KEY", 'value': "test_key_2"},
-            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('admin')},
-            {'name': "ADMIN_SERVER", 'value': "http://localhost/pacmonitor"},
-            {'name': "ROLE_ARN", 'value': ECSRole.get_output_attr('arn')},
-            {'name': "JOB_FUNCTION_NAME", 'value': SubmitJobLambdaFunction.get_input_attr('function_name')},
-            {'name': "JOB_FUNCTION_ARN", 'value': SubmitJobLambdaFunction.get_output_attr('arn')},
-            {'name': "JOB_LAMBDA_REGION", 'value': AwsRegion.get_output_attr('name')},
-            {'name': "JOB_BUCKET_REGION", 'value': AwsRegion.get_output_attr('name')},
-            {'name': "RULE_FUNCTION_NAME", 'value': RuleEngineLambdaFunction.get_input_attr('function_name')},
-            {'name': "RULE_FUNCTION_ARN", 'value': RuleEngineLambdaFunction.get_output_attr('arn')},
-            {'name': "RULE_BUCKET_REGION", 'value': AwsRegion.get_output_attr('name')},
-            {'name': "RULE_LAMBDA_REGION", 'value': AwsRegion.get_output_attr('name')},
-            {'name': "RULE_JOB_BUCKET_NAME", 'value': BucketStorage.get_output_attr('bucket')}
+            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('admin')}
         ]
 
     def get_compliance_container_env_vars(self):
@@ -133,32 +104,8 @@ class ContainerDefinitions:
             {'name': "JAR_FILE", 'value': "pacman-api-compliance.jar"},
             {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
             {'name': "CONFIG_SERVER_URL", 'value': self.CONFIG_SERVER_URL},
-            {'name': "ES_CLUSTER_NAME", 'value': self.ES_CLUSTER_NAME},
-            {'name': "ES_HEIMDALL_HOST_NAME", 'value': self.ES_HEIMDALL_HOST_NAME},
-            {'name': "ES_HEIMDALL_PORT", 'value': self.ES_HEIMDALL_PORT},
-            {'name': "ES_HOST_NAME", 'value': self.ES_HOST_NAME},
-            {'name': "ES_PORT", 'value': self.ES_PORT},
-            {'name': "LOGGING_ES_HOST_NAME", 'value': self.LOGGING_ES_HOST_NAME},
-            {'name': "LOGGING_ES_PORT", 'value': self.LOGGING_ES_PORT},
             {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
-            {'name': "RDS_PASSWORD", 'value': self.RDS_PASSWORD},
-            {'name': "RDS_URL", 'value': self.RDS_URL},
-            {'name': "RDS_USERNAME", 'value': self.RDS_USERNAME},
-            {'name': "REDSHIFT_URL", 'value': self.REDSHIFT_URL},
-            {'name': "REDSHIFT_USER_NAME", 'value': self.REDSHIFT_USER_NAME},
-            {'name': "REDSHIFT_PASSWORD", 'value': self.REDSHIFT_PASSWORD},
-            {'name': "ES_UPDATE_HOST", 'value': self.ES_UPDATE_HOST},
-            {'name': "ES_UPDATE_PORT", 'value': self.ES_UPDATE_PORT},
-            {'name': "ES_UPDATE_CLUSTER_NAME", 'value': self.ES_UPDATE_CLUSTER_NAME},
-            {'name': "LDAP_DOMAIN", 'value': self.LDAP_DOMAIN},
-            {'name': "LDAP_BASEDN", 'value': self.LDAP_BASEDN},
-            {'name': "LDAP_PORT", 'value': self.LDAP_PORT},
-            {'name': "LDAP_RESPONSETIMEOUT", 'value': self.LDAP_RESPONSETIMEOUT},
-            {'name': "LDAP_CONNECTIONTIMEOUT", 'value': self.LDAP_CONNECTIONTIMEOUT},
-            {'name': "LDAP_HOSTLIST", 'value': self.LDAP_HOSTLIST},
-            {'name': "CERTIFICATE_FEATURE_ENABLED", 'value': "false"},
-            {'name': "PATCHING_FEATURE_ENABLED", 'value': "false"},
-            {'name': "VULNERABILITY_FEATURE_ENABLED", 'value': "false"}
+            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('compliance')}
         ]
 
     def get_notifications_container_env_vars(self):
@@ -166,29 +113,8 @@ class ContainerDefinitions:
             {'name': "JAR_FILE", 'value': "pacman-api-notification.jar"},
             {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
             {'name': "CONFIG_SERVER_URL", 'value': self.CONFIG_SERVER_URL},
-            {'name': "ES_CLUSTER_NAME", 'value': self.ES_CLUSTER_NAME},
-            {'name': "ES_HEIMDALL_HOST_NAME", 'value': self.ES_HEIMDALL_HOST_NAME},
-            {'name': "ES_HEIMDALL_PORT", 'value': self.ES_HEIMDALL_PORT},
-            {'name': "ES_HOST_NAME", 'value': self.ES_HOST_NAME},
-            {'name': "ES_PORT", 'value': self.ES_PORT},
-            {'name': "LOGGING_ES_HOST_NAME", 'value': self.LOGGING_ES_HOST_NAME},
-            {'name': "LOGGING_ES_PORT", 'value': self.LOGGING_ES_PORT},
             {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
-            {'name': "RDS_PASSWORD", 'value': self.RDS_PASSWORD},
-            {'name': "RDS_URL", 'value': self.RDS_URL},
-            {'name': "RDS_USERNAME", 'value': self.RDS_USERNAME},
-            {'name': "REDSHIFT_URL", 'value': self.REDSHIFT_URL},
-            {'name': "REDSHIFT_USER_NAME", 'value': self.REDSHIFT_USER_NAME},
-            {'name': "REDSHIFT_PASSWORD", 'value': self.REDSHIFT_PASSWORD},
-            {'name': "ES_UPDATE_HOST", 'value': self.ES_UPDATE_HOST},
-            {'name': "ES_UPDATE_PORT", 'value': self.ES_UPDATE_PORT},
-            {'name': "ES_UPDATE_CLUSTER_NAME", 'value': self.ES_UPDATE_CLUSTER_NAME},
-            {'name': "LDAP_DOMAIN", 'value': self.LDAP_DOMAIN},
-            {'name': "LDAP_BASEDN", 'value': self.LDAP_BASEDN},
-            {'name': "LDAP_PORT", 'value': self.LDAP_PORT},
-            {'name': "LDAP_RESPONSETIMEOUT", 'value': self.LDAP_RESPONSETIMEOUT},
-            {'name': "LDAP_CONNECTIONTIMEOUT", 'value': self.LDAP_CONNECTIONTIMEOUT},
-            {'name': "LDAP_HOSTLIST", 'value': self.LDAP_HOSTLIST}
+            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('notifications')}
         ]
 
     def get_statistics_container_env_vars(self):
@@ -196,29 +122,8 @@ class ContainerDefinitions:
             {'name': "JAR_FILE", 'value': "pacman-api-statistics.jar"},
             {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
             {'name': "CONFIG_SERVER_URL", 'value': self.CONFIG_SERVER_URL},
-            {'name': "ES_CLUSTER_NAME", 'value': self.ES_CLUSTER_NAME},
-            {'name': "ES_HEIMDALL_HOST_NAME", 'value': self.ES_HEIMDALL_HOST_NAME},
-            {'name': "ES_HEIMDALL_PORT", 'value': self.ES_HEIMDALL_PORT},
-            {'name': "ES_HOST_NAME", 'value': self.ES_HOST_NAME},
-            {'name': "ES_PORT", 'value': self.ES_PORT},
-            {'name': "LOGGING_ES_HOST_NAME", 'value': self.LOGGING_ES_HOST_NAME},
-            {'name': "LOGGING_ES_PORT", 'value': self.LOGGING_ES_PORT},
             {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
-            {'name': "RDS_PASSWORD", 'value': self.RDS_PASSWORD},
-            {'name': "RDS_URL", 'value': self.RDS_URL},
-            {'name': "RDS_USERNAME", 'value': self.RDS_USERNAME},
-            {'name': "REDSHIFT_URL", 'value': self.REDSHIFT_URL},
-            {'name': "REDSHIFT_USER_NAME", 'value': self.REDSHIFT_USER_NAME},
-            {'name': "REDSHIFT_PASSWORD", 'value': self.REDSHIFT_PASSWORD},
-            {'name': "ES_UPDATE_HOST", 'value': self.ES_UPDATE_HOST},
-            {'name': "ES_UPDATE_PORT", 'value': self.ES_UPDATE_PORT},
-            {'name': "ES_UPDATE_CLUSTER_NAME", 'value': self.ES_UPDATE_CLUSTER_NAME},
-            {'name': "LDAP_DOMAIN", 'value': self.LDAP_DOMAIN},
-            {'name': "LDAP_BASEDN", 'value': self.LDAP_BASEDN},
-            {'name': "LDAP_PORT", 'value': self.LDAP_PORT},
-            {'name': "LDAP_RESPONSETIMEOUT", 'value': self.LDAP_RESPONSETIMEOUT},
-            {'name': "LDAP_CONNECTIONTIMEOUT", 'value': self.LDAP_CONNECTIONTIMEOUT},
-            {'name': "LDAP_HOSTLIST", 'value': self.LDAP_HOSTLIST}
+            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('statistics')}
         ]
 
     def get_asset_container_env_vars(self):
@@ -226,33 +131,8 @@ class ContainerDefinitions:
             {'name': "JAR_FILE", 'value': "pacman-api-asset.jar"},
             {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
             {'name': "CONFIG_SERVER_URL", 'value': self.CONFIG_SERVER_URL},
-            {'name': "ES_CLUSTER_NAME", 'value': self.ES_CLUSTER_NAME},
-            {'name': "ES_HEIMDALL_HOST_NAME", 'value': self.ES_HEIMDALL_HOST_NAME},
-            {'name': "ES_HEIMDALL_PORT", 'value': self.ES_HEIMDALL_PORT},
-            {'name': "ES_HOST_NAME", 'value': self.ES_HOST_NAME},
-            {'name': "ES_PORT", 'value': self.ES_PORT},
-            {'name': "LOGGING_ES_HOST_NAME", 'value': self.LOGGING_ES_HOST_NAME},
-            {'name': "LOGGING_ES_PORT", 'value': self.LOGGING_ES_PORT},
             {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
-            {'name': "RDS_PASSWORD", 'value': self.RDS_PASSWORD},
-            {'name': "RDS_URL", 'value': self.RDS_URL},
-            {'name': "RDS_USERNAME", 'value': self.RDS_USERNAME},
-            {'name': "REDSHIFT_URL", 'value': self.REDSHIFT_URL},
-            {'name': "REDSHIFT_USER_NAME", 'value': self.REDSHIFT_USER_NAME},
-            {'name': "REDSHIFT_PASSWORD", 'value': self.REDSHIFT_PASSWORD},
-            {'name': "ES_UPDATE_HOST", 'value': self.ES_UPDATE_HOST},
-            {'name': "ES_UPDATE_PORT", 'value': self.ES_UPDATE_PORT},
-            {'name': "ES_UPDATE_CLUSTER_NAME", 'value': self.ES_UPDATE_CLUSTER_NAME},
-            {'name': "LDAP_DOMAIN", 'value': self.LDAP_DOMAIN},
-            {'name': "LDAP_BASEDN", 'value': self.LDAP_BASEDN},
-            {'name': "LDAP_PORT", 'value': self.LDAP_PORT},
-            {'name': "LDAP_RESPONSETIMEOUT", 'value': self.LDAP_RESPONSETIMEOUT},
-            {'name': "LDAP_CONNECTIONTIMEOUT", 'value': self.LDAP_CONNECTIONTIMEOUT},
-            {'name': "LDAP_HOSTLIST", 'value': self.LDAP_HOSTLIST},
-            {'name': "CLOUD_INSIGHTS_COST_URL", 'value': "http://localhost"},
-            {'name': "CLOUD_INSIGHTS_TOKEN_URL", 'value': "http://localhost"},
-            {'name': "SVC_CORP_PASSWORD", 'value': "password"},
-            {'name': "SVC_CORP_USER_ID", 'value': "testid"}
+            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('asset')}
         ]
 
     def get_auth_container_env_vars(self):
@@ -260,29 +140,6 @@ class ContainerDefinitions:
             {'name': "JAR_FILE", 'value': "pacman-api-auth.jar"},
             {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
             {'name': "CONFIG_SERVER_URL", 'value': self.CONFIG_SERVER_URL},
-            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('auth')},
-            {'name': "ES_CLUSTER_NAME", 'value': self.ES_CLUSTER_NAME},
-            {'name': "ES_HEIMDALL_HOST_NAME", 'value': self.ES_HEIMDALL_HOST_NAME},
-            {'name': "ES_HEIMDALL_PORT", 'value': self.ES_HEIMDALL_PORT},
-            {'name': "ES_HOST_NAME", 'value': self.ES_HOST_NAME},
-            {'name': "ES_PORT", 'value': self.ES_PORT},
-            {'name': "LOGGING_ES_HOST_NAME", 'value': self.LOGGING_ES_HOST_NAME},
-            {'name': "LOGGING_ES_PORT", 'value': self.LOGGING_ES_PORT},
             {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
-            {'name': "RDS_PASSWORD", 'value': self.RDS_PASSWORD},
-            {'name': "RDS_URL", 'value': self.RDS_URL},
-            {'name': "RDS_USERNAME", 'value': self.RDS_USERNAME},
-            {'name': "REDSHIFT_URL", 'value': self.REDSHIFT_URL},
-            {'name': "REDSHIFT_USER_NAME", 'value': self.REDSHIFT_USER_NAME},
-            {'name': "REDSHIFT_PASSWORD", 'value': self.REDSHIFT_PASSWORD},
-            {'name': "ES_UPDATE_HOST", 'value': self.ES_UPDATE_HOST},
-            {'name': "ES_UPDATE_PORT", 'value': self.ES_UPDATE_PORT},
-            {'name': "ES_UPDATE_CLUSTER_NAME", 'value': self.ES_UPDATE_CLUSTER_NAME},
-            {'name': "LDAP_DOMAIN", 'value': self.LDAP_DOMAIN},
-            {'name': "LDAP_BASEDN", 'value': self.LDAP_BASEDN},
-            {'name': "LDAP_PORT", 'value': self.LDAP_PORT},
-            {'name': "LDAP_RESPONSETIMEOUT", 'value': self.LDAP_RESPONSETIMEOUT},
-            {'name': "LDAP_CONNECTIONTIMEOUT", 'value': self.LDAP_CONNECTIONTIMEOUT},
-            {'name': "LDAP_HOSTLIST", 'value': self.LDAP_HOSTLIST},
-            {'name': "OAUTH2_CLIENT_ID", 'value': "22e14922-87d7-4ee4-a470-da0bb10d45d3"}
+            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('auth')}
         ]

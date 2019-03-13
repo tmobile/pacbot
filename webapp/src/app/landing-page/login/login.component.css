@@ -39,13 +39,11 @@ h2 {
 }
 
 .close-button {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 2.3em;
-    font-size: 2em;
-    transition: 0.3s ease;
-    color: #f2425f;
+    right: 0.5em;
+    height: 2.5em;
+    -webkit-transition: .3s ease;
+    transition: .3s ease;
+    cursor: pointer;
 }
 
 .close-button:hover {

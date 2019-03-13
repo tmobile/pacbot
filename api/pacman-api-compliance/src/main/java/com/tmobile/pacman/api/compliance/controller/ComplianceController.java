@@ -15,17 +15,10 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.compliance.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.TimeZone;
 
@@ -42,7 +35,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.commons.Constants;
 import com.tmobile.pacman.api.commons.exception.ServiceException;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
@@ -62,6 +54,11 @@ import com.tmobile.pacman.api.compliance.domain.RevokeIssuesException;
 import com.tmobile.pacman.api.compliance.domain.RuleDetails;
 import com.tmobile.pacman.api.compliance.service.ComplianceService;
 import com.tmobile.pacman.api.compliance.service.VulnerabilityService;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * The Class ComplianceController.
@@ -90,7 +87,7 @@ public class ComplianceController implements Constants {
      * @param request request body
      * @return issues
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/issues", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<Object> getIssues(@RequestBody(required = false) Request request) {
@@ -123,7 +120,7 @@ public class ComplianceController implements Constants {
      * @param ruleId the rule id
      * @return the issues count
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/issues/count", method = RequestMethod.GET)
     public ResponseEntity<Object> getIssuesCount(@RequestParam("ag") String assetGroup,
             @RequestParam("domain") String domain, @RequestParam(name = "ruleId", required = false) String ruleId) {
@@ -150,7 +147,7 @@ public class ComplianceController implements Constants {
      * @param domain the domain
      * @return ResponseEntity
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/issues/distribution", method = RequestMethod.GET)
     public ResponseEntity<Object> getDistribution(@RequestParam("ag") String assetGroup,
             @RequestParam(name = "domain", required = false) String domain) {
@@ -178,7 +175,7 @@ public class ComplianceController implements Constants {
      * @param targetType the target type
      * @return ResponseEntity
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/tagging", method = RequestMethod.GET)
     public ResponseEntity<Object> getTagging(@RequestParam("ag") String assetGroup,
             @RequestParam(name = "targettype", required = false) String targetType) {
@@ -202,7 +199,7 @@ public class ComplianceController implements Constants {
      * @return ResponseEntity
      */
     // @Cacheable("trends")
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/vulnerabilites", method = RequestMethod.GET)
     public ResponseEntity<Object> getVulnerabilities(@RequestParam("ag") String assetGroup) {
         if (Strings.isNullOrEmpty(assetGroup)) {
@@ -232,7 +229,7 @@ public class ComplianceController implements Constants {
      * @param assetGroup name of the asset group
      * @return ResponseEntity
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/certificates", method = RequestMethod.GET)
     public ResponseEntity<Object> getCertificates(@RequestParam("ag") String assetGroup) {
         if (Strings.isNullOrEmpty(assetGroup)) {
@@ -254,7 +251,7 @@ public class ComplianceController implements Constants {
      * @param assetGroup name of the asset group
      * @return ResponseEntity
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/patching", method = RequestMethod.GET)
     public ResponseEntity<Object> getPatching(@RequestParam("ag") String assetGroup) {
         if (Strings.isNullOrEmpty(assetGroup)) {
@@ -282,7 +279,7 @@ public class ComplianceController implements Constants {
      * @param targetType the target type
      * @return ResponseEntity
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/recommendations", method = RequestMethod.GET)
     public ResponseEntity<Object> getRecommendations(@RequestParam("ag") String assetGroup,
             @RequestParam(name = "targettype", required = false) String targetType) {
@@ -309,7 +306,7 @@ public class ComplianceController implements Constants {
      * @param request the request
      * @return the issue audit
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/issueauditlog", method = RequestMethod.POST)
     public ResponseEntity<Object> getIssueAudit(@RequestBody IssueAuditLogRequest request) {
         String issueId = request.getIssueId();
@@ -338,7 +335,7 @@ public class ComplianceController implements Constants {
      * @param resourceId the resource id
      * @return ResponseEntity
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/resourcedetails", method = RequestMethod.GET)
     public ResponseEntity<Object> getResourceDetails(@RequestParam("ag") String assetGroup,
             @RequestParam("resourceId") String resourceId) {
@@ -365,7 +362,7 @@ public class ComplianceController implements Constants {
     @ApiOperation(httpMethod = "PUT", value = "Close Issues by Rule Details")
     @RequestMapping(path = "/v1/issues/close-by-rule-id", method = RequestMethod.PUT)
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> closeIssues(
             @ApiParam(value = "Provide valid Rule Details ", required = true) @RequestBody(required = true) RuleDetails ruleDetails) {
         Map<String, Object> response = complianceService.closeIssuesByRule(ruleDetails);
@@ -390,7 +387,7 @@ public class ComplianceController implements Constants {
             @ApiResponse(code = 401, message = "You are not authorized to Add Issue Exception"),
             @ApiResponse(code = 403, message = "Add Issue Exception is forbidden") })
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> addIssueException(
             @ApiParam(value = "Provide Issue Exception Details", required = true) @RequestBody(required = true) IssueResponse issueException) {
         try {
@@ -417,7 +414,7 @@ public class ComplianceController implements Constants {
             @ApiResponse(code = 401, message = "You are not authorized to Revoke Issue Exception"),
             @ApiResponse(code = 403, message = "Revoke IssueException is forbidden") })
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> revokeIssueException(
             @ApiParam(value = "Provide Issue Id", required = true) @RequestParam(required = true) String issueId) {
         try {
@@ -444,7 +441,7 @@ public class ComplianceController implements Constants {
     // @Cacheable(cacheNames="compliance",unless="#result.status==200")
     // commenting to performance after refacoting
     // @Cacheable(cacheNames="compliance",key="#request.key")
-    @HystrixCommand
+    
     public ResponseEntity<Object> getNonCompliancePolicyByRule(@RequestBody(required = false) Request request) {
         String assetGroup = request.getAg();
 
@@ -478,7 +475,7 @@ public class ComplianceController implements Constants {
 
     @RequestMapping(path = "/v1/policydetailsbyapplication", method = RequestMethod.GET)
     // @Cacheable(cacheNames="compliance",unless="#result.status==200")
-    @HystrixCommand
+    
     public ResponseEntity<Object> getPolicydetailsbyApplication(@RequestParam("ag") String assetGroup,
             @RequestParam("ruleId") String ruleId,
             @RequestParam(name = "searchText", required = false) String searchText) {
@@ -510,7 +507,7 @@ public class ComplianceController implements Constants {
      */
 
     @RequestMapping(path = "/v1/policydetailsbyenvironment", method = RequestMethod.GET)
-    @HystrixCommand
+    
     public ResponseEntity<Object> getpolicydetailsbyEnvironment(@RequestParam("ag") String assetGroup,
             @RequestParam("application") String application, @RequestParam("ruleId") String ruleId,
             @RequestParam(name = "searchText", required = false) String searchText) {
@@ -537,7 +534,7 @@ public class ComplianceController implements Constants {
      */
 
     @RequestMapping(path = "/v1/policydescription", method = RequestMethod.GET)
-    @HystrixCommand
+    
     public ResponseEntity<Object> getPolicyDescription(@RequestParam("ruleId") String ruleId) {
 
         if (Strings.isNullOrEmpty(ruleId)) {
@@ -561,7 +558,7 @@ public class ComplianceController implements Constants {
      * @return ResponseEntity<Object> 
      */
     @RequestMapping(path = "/v1/kernelcompliancebyinstanceid", method = RequestMethod.GET)
-    @HystrixCommand
+    
     public ResponseEntity<Object> getKernelComplianceByInstanceId(@RequestParam("instanceId") String instanceId) {
 
         if (Strings.isNullOrEmpty(instanceId)) {
@@ -588,7 +585,7 @@ public class ComplianceController implements Constants {
     @ApiOperation(httpMethod = "PUT", value = "Update Kernel Version by InstanceId")
     @RequestMapping(path = "/v1/update-kernel-version", method = RequestMethod.PUT)
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> updateKernelVersion(
             @ApiParam(value = "Provide valid Rule Details ", required = true) @RequestBody(required = true) KernelVersion kernelVersion) {
         Map<String, Object> response = complianceService.updateKernelVersion(kernelVersion);
@@ -604,7 +601,7 @@ public class ComplianceController implements Constants {
      * @return ResponseEntity<Object> .
      */
     @RequestMapping(path = "/v1/overallcompliance", method = RequestMethod.GET)
-    @HystrixCommand
+    
     public ResponseEntity<Object> getOverallCompliance(@RequestParam("ag") String assetGroup,
             @RequestParam(name = "domain") String domain) {
         if (Strings.isNullOrEmpty(assetGroup) || Strings.isNullOrEmpty(domain)) {
@@ -629,7 +626,7 @@ public class ComplianceController implements Constants {
      */
 
     @RequestMapping(path = "/v1/targetType", method = RequestMethod.GET)
-    @HystrixCommand
+    
     public ResponseEntity<Object> getTargetType(@RequestParam("ag") String assetgroup,
             @RequestParam(name = "domain", required = false) String domain) {
 
@@ -696,7 +693,7 @@ public class ComplianceController implements Constants {
             @ApiResponse(code = 401, message = "You are not authorized to Add Issue Exception"),
             @ApiResponse(code = 403, message = "Add Issue Exception is forbidden") })
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> addIssuesException(
             @ApiParam(value = "Provide Issue Exception Details", required = true) @RequestBody(required = true) IssuesException issuesException) {
         try {
@@ -738,7 +735,7 @@ public class ComplianceController implements Constants {
             @ApiResponse(code = 401, message = "You are not authorized to Revoke Issue Exception"),
             @ApiResponse(code = 403, message = "Revoke IssueException is forbidden") })
     @ResponseBody
-    @HystrixCommand
+    
     public ResponseEntity<Object> revokeIssuesException(
             @ApiParam(value = "Provide Issue Id", required = true) @RequestBody(required = true) RevokeIssuesException revokeIssuesException) {
         try {

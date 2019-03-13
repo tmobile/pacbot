@@ -17,9 +17,11 @@ package com.tmobile.pacman.api.notification.controller;
 
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -48,6 +50,10 @@ public class NotificationController implements Constants
 {
 	private final Logger log = LoggerFactory.getLogger(getClass());
 	
+	/** The from mail address. */
+    @Value("${spring.mail.username}")
+    private String fromAddress;
+	
 	@Autowired
 	private MailService mailService;
 	
@@ -68,15 +74,31 @@ public class NotificationController implements Constants
 	@RequestMapping(value = "/send-plain-text-mail", method = RequestMethod.POST, consumes = "application/json")
 	public ResponseEntity<Void> sendTextMail(@ApiParam(value = "Provide Mail Message Request Body", required = true) final @RequestBody MailMessageRequestBody mailMessageRequestBody) {
 		try {
-			mailService.prepareAndSendMail(mailMessageRequestBody.getFrom(), 
+			log.info("fromAddress==sendMailWithTemplate from config {}",fromAddress);
+			log.info("mailTemplateRequestBody.getFrom()===sendMailWithTemplate from param {}",mailMessageRequestBody.getFrom());
+			
+			mailService.prepareAndSendMail("",mailMessageRequestBody.getFrom(), 
 					mailMessageRequestBody.getTo(),
 					mailMessageRequestBody.getSubject(), 
 					mailMessageRequestBody.getMailBodyAsString(),
 					mailMessageRequestBody.getPlaceholderValues(), mailMessageRequestBody.getAttachmentUrl(), true);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception exception) {
-			log.error(EXE_EMAIL_SEND, exception.getMessage());
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			log.error(EXE_EMAIL_SEND, exception);
+			try {
+				log.info("fromAddress==sendMailWithTemplate from catch block from config {}",fromAddress);
+				log.info("mailTemplateRequestBody.getFrom() from catch block===sendMailWithTemplate from param {}",mailMessageRequestBody.getFrom());
+				
+				mailService.prepareAndSendMail(mailMessageRequestBody.getFrom(),fromAddress, 
+						mailMessageRequestBody.getTo(),
+						mailMessageRequestBody.getSubject(), 
+						mailMessageRequestBody.getMailBodyAsString(),
+						mailMessageRequestBody.getPlaceholderValues(), mailMessageRequestBody.getAttachmentUrl(), true);
+				return new ResponseEntity<>(HttpStatus.OK);
+			} catch (Exception e) {
+				log.error(EXE_EMAIL_SEND, e);
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
 		}
 	}
 	
@@ -84,15 +106,33 @@ public class NotificationController implements Constants
 	@RequestMapping(value = "/send-mail-with-template", method = RequestMethod.POST)
 	public ResponseEntity<Void> sendMailWithTemplate(@ApiParam(value = "Provide Mail Template Request Body", required = true) final @RequestBody MailTemplateRequestBody mailTemplateRequestBody) {
 		try {
-			mailService.prepareAndSendMail(mailTemplateRequestBody.getFrom(), 
+			
+			log.info("fromAddress==sendMailWithTemplate from config {}",fromAddress);
+			log.info("mailTemplateRequestBody.getFrom()===sendMailWithTemplate from param {}",mailTemplateRequestBody.getFrom());
+			
+			mailService.prepareAndSendMail("",mailTemplateRequestBody.getFrom(), 
 					mailTemplateRequestBody.getTo(),
 					mailTemplateRequestBody.getSubject(), 
 					mailTemplateRequestBody.getMailBodyAsString(),
 					mailTemplateRequestBody.getPlaceholderValues(), mailTemplateRequestBody.getAttachmentUrl(), false);
 			return new ResponseEntity<>(HttpStatus.OK);
 		} catch (Exception exception) {
-			log.error(EXE_EMAIL_SEND , exception.getMessage());
-			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			log.error(EXE_EMAIL_SEND , exception);
+			try {
+				
+				log.info("fromAddress in catch block==sendMailWithTemplate from config {}",fromAddress);
+				log.info("mailTemplateRequestBody.getFrom() in catch block===sendMailWithTemplate from param {}",mailTemplateRequestBody.getFrom());
+				
+				mailService.prepareAndSendMail(mailTemplateRequestBody.getFrom(),fromAddress, 
+						mailTemplateRequestBody.getTo(),
+						mailTemplateRequestBody.getSubject(), 
+						mailTemplateRequestBody.getMailBodyAsString(),
+						mailTemplateRequestBody.getPlaceholderValues(), mailTemplateRequestBody.getAttachmentUrl(), false);
+				return new ResponseEntity<>(HttpStatus.OK);
+			} catch (Exception e) {
+				log.error(EXE_EMAIL_SEND , e);
+				return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			}
 		}
 	}
 	

@@ -356,6 +356,7 @@ app-issue-blocks {
 .text-wrapper-header {
     color: #566d9b;
     margin-bottom: 0.6em;
+    margin-top: 1em;
 }
 
 .showNone {
@@ -376,6 +377,7 @@ app-issue-blocks {
 .error-reason {
     color: red;
     margin-bottom: 0.5em;
+    margin-top: 0.3em;
 }
 
 .textarea-button {
@@ -582,7 +584,7 @@ input.inputarea-container {
     width: 100%;
 }
 
-ul.input-wrapper {
+.input-wrapper {
     border: 1px solid #aaa;
     border-radius: 0.3em;
     background-color: #fff;

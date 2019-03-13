@@ -15,7 +15,7 @@ spring:
       maximum-pool-size: 10
       connection-timeout: 5000
   profiles:
-    active: ${CONFIG_SOURCE:native}          
+    active: ${CONFIG_SOURCE:jdbc}          
   security:
     user:
       name: user

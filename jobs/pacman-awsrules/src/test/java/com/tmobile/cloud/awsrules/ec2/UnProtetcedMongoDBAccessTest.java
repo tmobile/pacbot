@@ -61,7 +61,7 @@ import com.tmobile.pacman.commons.exception.InvalidInputException;
 public class UnProtetcedMongoDBAccessTest {
 
     @InjectMocks
-    UnProtetcedMongoDBAccess unProtetcedMongoDBAccess;
+    UnProtectedMongoDBAccess unProtetcedMongoDBAccess;
     
    HttpClientBuilder httpClientBuilder;
    

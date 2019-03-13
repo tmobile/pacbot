@@ -4,6 +4,13 @@ from core.providers.aws.boto3 import es
 
 
 class ElasticsearchDomainResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS ES Domain resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_elasticsearch_domain"
     OUTPUT_LIST = ['endpoint', 'kibana_endpoint']
     setup_time = 600
@@ -53,6 +60,17 @@ class ElasticsearchDomainResource(TerraformResource):
     }
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "domain_name", 'value': self.get_input_attr('domain_name')}
         exists = False
 
@@ -67,6 +85,13 @@ class ElasticsearchDomainResource(TerraformResource):
 
 
 class ElasticsearchDomainPolicyResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS ES Domain policy resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_elasticsearch_domain_policy"
     setup_time = 60
     available_args = {

@@ -15,10 +15,6 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.compliance.controller;
 
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -45,7 +41,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.commons.Constants;
 import com.tmobile.pacman.api.commons.exception.ServiceException;
 import com.tmobile.pacman.api.commons.utils.CommonUtils;
@@ -54,6 +49,10 @@ import com.tmobile.pacman.api.commons.utils.ResponseUtils;
 import com.tmobile.pacman.api.compliance.domain.CompliantTrendRequest;
 import com.tmobile.pacman.api.compliance.domain.RuleTrendRequest;
 import com.tmobile.pacman.api.compliance.service.IssueTrendService;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 
 /**
  * The Class TrendController.
@@ -80,7 +79,7 @@ public class TrendController implements Constants {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),
             @ApiResponse(code = 417, message = "Expectation Failed") })
-    @HystrixCommand
+    
     @ApiOperation(value = "view the issue trends over the period of last 3 months", response = Iterable.class)
     @RequestMapping(path = "/v1/trend", method = RequestMethod.GET)
     public String getTrend() {
@@ -120,7 +119,7 @@ public class TrendController implements Constants {
             @ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
             @ApiResponse(code = 404, message = "The resource you were trying to reach is not found"),
             @ApiResponse(code = 417, message = "Expectation Failed") })
-    @HystrixCommand
+    
     @ApiOperation(value = "view the issue trends over the period of last 3 months", response = Iterable.class)
     // @Cacheable(cacheNames="trends",unless="#result.status==200")
     @Cacheable(cacheNames = "trends", key = "T(java.util.Objects).hash(#p0,#p1, #p2, #p3, #p4, #p5, #p6, #p7)")
@@ -159,7 +158,7 @@ public class TrendController implements Constants {
      *
      * @return the trend from cache
      */
-    @HystrixCommand
+    
     public String getTrendFromCache() {
         return "{\"message\":\"retrieving from cache..! when I will implement caching it will get picked up :-)))\"}";
     }
@@ -179,7 +178,7 @@ public class TrendController implements Constants {
      *            the rule id
      * @return ResponseEntity<Object> 
      */
-    @HystrixCommand
+    
     public ResponseEntity<Object> getTrendFromCache(String assetGroup, String fromDate, String toDate, String severity,
             String ruleId) {
         return ResponseUtils.buildFailureResponse(new ServiceException(
@@ -199,7 +198,7 @@ public class TrendController implements Constants {
      */
 
     @RequestMapping(path = "/v1/trend/compliance", method = RequestMethod.POST)
-    @HystrixCommand
+    
     public ResponseEntity<Object> getCompliantTrend(@RequestBody(required = true) CompliantTrendRequest request) {
         Map<String, Object> response = new HashMap<>();
         String assetGroup = request.getAg();
@@ -243,7 +242,7 @@ public class TrendController implements Constants {
      *            the request
      * @return ResponseEntity
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/trend/compliancebyrule", method = RequestMethod.POST)
     public ResponseEntity<Object> getRuleTrend(@RequestBody(required = true) RuleTrendRequest request) {
 
@@ -290,7 +289,7 @@ public class TrendController implements Constants {
      *            the request
      * @return ResponseEntity
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/trend/compliance/vulnerabilities", method = RequestMethod.POST)
     public ResponseEntity<Object> getVulnTrend(@RequestBody(required = true) CompliantTrendRequest request) {
 
@@ -336,7 +335,7 @@ public class TrendController implements Constants {
      *            the request
      * @return ResponseEntity<Object> 
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/trend/compliance/certificates", method = RequestMethod.POST)
     public ResponseEntity<Object> getCertTrend(@RequestBody(required = true) CompliantTrendRequest request) {
 
@@ -382,7 +381,7 @@ public class TrendController implements Constants {
      *            the request
      * @return ResponseEntity
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/trend/compliance/tagging", method = RequestMethod.POST)
     public ResponseEntity<Object> getTagTrend(@RequestBody(required = true) CompliantTrendRequest request) {
 
@@ -428,7 +427,7 @@ public class TrendController implements Constants {
      * @return ResponseEntity
      */
 
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/trend/issues", method = RequestMethod.POST)
     public ResponseEntity<Object> getTrendIssues(@RequestBody(required = true) CompliantTrendRequest request) {
         Map<String, Object> response = new HashMap<>();
