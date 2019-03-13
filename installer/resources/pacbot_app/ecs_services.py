@@ -40,11 +40,11 @@ class ConfigEcsService(BaseEcsService, ECSServiceResource):
     task_definition = td.ConfigEcsTaskDefinition.get_output_attr('arn')
     load_balancer_target_group_arn = tg.ConfigALBTargetGroup.get_output_attr('arn')
     load_balancer_container_name = "config"
-    DEPENDS_ON = [BuildUiAndApis, alr.ConfigALBListenerRule]
+    DEPENDS_ON = [BuildUiAndApis, alr.ConfigALBListenerRule, ImportDbSql]
 
 
 class WaitConfigServiceToUp(NullResource):
-    DEPENDS_ON = [ConfigEcsService, ImportDbSql]
+    DEPENDS_ON = [ConfigEcsService]
 
     def get_provisioners(self):
         '''
@@ -52,7 +52,7 @@ class WaitConfigServiceToUp(NullResource):
         '''
         return [{
             'local-exec': {
-                'command': "import time; time.sleep(1)",
+                'command': "import time; time.sleep(30)",
                 'interpreter': [Settings.PYTHON_INTERPRETER, "-c"]
             }
         }]
