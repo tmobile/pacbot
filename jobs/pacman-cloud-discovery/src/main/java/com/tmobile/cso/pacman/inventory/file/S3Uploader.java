@@ -18,8 +18,8 @@ package com.tmobile.cso.pacman.inventory.file;
 import java.io.File;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -45,19 +45,16 @@ import com.tmobile.cso.pacman.inventory.auth.CredentialProvider;
 public class S3Uploader {
 	
 	/** The log. */
-	private static Logger log = LogManager.getLogger(InventoryFetchOrchestrator.class);
+	private static Logger log = LoggerFactory.getLogger(InventoryFetchOrchestrator.class);
 	
-	/** The file tableinfo. */
-	@Value("${file-tableinfo}")
-	private String fileTableinfo;
 	
 	/** The account. */
-	@Value("${base-account}")
+	@Value("${base.account}")
 	private String account;
 	
-	/** The role name. */
-	@Value("${s3-role}")
-	private String roleName;
+	/** The account. */
+	@Value("${s3.role}")
+	private String s3Role;
 	
 	/** The cred provider. */
 	@Autowired
@@ -72,7 +69,7 @@ public class S3Uploader {
 	 * @param filePath the file path
 	 */
 	public void uploadFiles(String s3Bucket,String dataFolder, String s3Region,String filePath){
-		BasicSessionCredentials credentials = credProvider.getCredentials(account,roleName);
+		BasicSessionCredentials credentials = credProvider.getCredentials(account,s3Role);
 		AmazonS3 s3client = AmazonS3ClientBuilder.standard().withRegion(s3Region).withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
 		uploadAllFiles(s3client,s3Bucket,dataFolder,filePath);
 	}
@@ -86,8 +83,9 @@ public class S3Uploader {
 	 * @param to the to
 	 */
 	public void backUpFiles(String s3Bucket,String s3Region,String from,String to){
-		BasicSessionCredentials credentials = credProvider.getCredentials(account,roleName);
+		BasicSessionCredentials credentials = credProvider.getCredentials(account,s3Role);
 		AmazonS3 s3client = AmazonS3ClientBuilder.standard().withRegion(s3Region).withCredentials(new AWSStaticCredentialsProvider(credentials)).build();
+		log.info("Backing up  files from  : {} to : {} in bucket : {}",from,to,s3Bucket);
 		copytoBackUp(s3client,s3Bucket,from,to);
 		deleteFiles(s3client,s3Bucket,from);
 	}
@@ -101,7 +99,7 @@ public class S3Uploader {
 	 * @param filePath the file path
 	 */
 	private void uploadAllFiles(AmazonS3 s3client,String s3Bucket,String dataFolderS3, String filePath){
-		
+		log.info("Uploading files to bucket: {} folder: {}",s3Bucket,dataFolderS3);
 		TransferManager xferMgr = TransferManagerBuilder.standard().withS3Client(s3client).build();
 		try {
 		    MultipleFileUpload xfer = xferMgr.uploadDirectory(s3Bucket,
@@ -112,6 +110,7 @@ public class S3Uploader {
 		    		Thread.sleep(3000);
 		    	}catch(InterruptedException e){
 		    	    log.error("Error in uploadAllFiles",e);
+		    	    ErrorManageUtil.uploadError("all", "all", "all", e.getMessage());
 		    	    Thread.currentThread().interrupt();
 		    	}
 		    	log.debug("    Transfer % Completed :" +xfer.getProgress().getPercentTransferred());
@@ -120,8 +119,8 @@ public class S3Uploader {
 		   
 		   log.info("Transfer completed");
 		} catch (Exception e) {
-			log.fatal("{\"errcode\": \"S3_UPLOAD_ERR\" ,\"account\": \"ANY\",\"Message\": \"Exception in loading files to S3\", \"cause\":\"" +e.getMessage()+"\"}") ;
-			log.info("Error Uploading files "+e);
+			log.error("{\"errcode\": \"S3_UPLOAD_ERR\" ,\"account\": \"ANY\",\"Message\": \"Exception in loading files to S3\", \"cause\":\"" +e.getMessage()+"\"}") ;
+			ErrorManageUtil.uploadError("all", "all", "all", e.getMessage());
 		}
 		 xferMgr.shutdownNow();
 	}
@@ -144,6 +143,7 @@ public class S3Uploader {
 				log.debug("    Copy "+fileName + " to backup folder");
 			}catch(Exception e){
 				log.info("    Copy "+fileName + "failed",e);
+				ErrorManageUtil.uploadError("all", "all", "all", e.getMessage());
 			}
 		}
 	}
@@ -165,6 +165,7 @@ public class S3Uploader {
 			log.debug("Files Deleted " +result.getDeletedObjects().stream().map(obj->obj.getKey()).collect(Collectors.toList()));
 		}catch(Exception e){
 			log.error("Delete Failed",e);
+			ErrorManageUtil.uploadError("all", "all", "all", e.getMessage());
 		}
 	}
 	
@@ -181,6 +182,7 @@ public class S3Uploader {
 			return s3client.listObjectsV2(new ListObjectsV2Request().withBucketName(s3Bucket).withPrefix(folder)).getObjectSummaries().stream().map(S3ObjectSummary::getKey).toArray(String[]::new);
 		}catch(Exception e){
 		    log.error("Error in listKeys",e);
+		    ErrorManageUtil.uploadError("all", "all", "all", e.getMessage());
 		}
 		return new String[0];
 	}

@@ -11,9 +11,21 @@ import json
 
 
 class PyTerraform():
+    """
+    This is the main class which bridges between the python_terraform class and framework system
+
+    Attributes:
+        log_obj (obj): SysLog object used to write logs
+    """
     log_obj = SysLog()
 
     def terraform_init(self):
+        """
+        Run terraform init and raise excpetion if there is any error or response of the command
+
+        Returns:
+            response (dict): Response after terraform init
+        """
         if exists_teraform_lock():
             raise Exception(K.ANOTHER_PROCESS_RUNNING)
 
@@ -32,6 +44,15 @@ class PyTerraform():
         return response
 
     def terraform_plan(self, resources=None):
+        """
+        Run terraform plan and raise excpetion if there is any error or response of the command
+
+        Args:
+            resources (list): List of resources if there are targets else None
+
+        Returns:
+            response (dict): Response after terraform plan
+        """
         if exists_teraform_lock():
             raise Exception(K.ANOTHER_PROCESS_RUNNING)
 
@@ -52,6 +73,15 @@ class PyTerraform():
         return response
 
     def terraform_apply(self, resources=None):
+        """
+        Run terraform apply and raise excpetion if there is any error or response of the command
+
+        Args:
+            resources (list): List of resources if there are targets else None
+
+        Returns:
+            response (dict): Response after terraform apply
+        """
         if exists_teraform_lock():
             raise Exception(K.ANOTHER_PROCESS_RUNNING)
 
@@ -75,6 +105,15 @@ class PyTerraform():
         return response
 
     def terraform_destroy(self, resources=None):
+        """
+        Run terraform destroy and raise excpetion if there is any error or response of the command
+
+        Args:
+            resources (list): List of resources if there are targets else None
+
+        Returns:
+            response (dict): Response after terraform destroy
+        """
         if exists_teraform_lock():
             raise Exception(K.ANOTHER_PROCESS_RUNNING)
 
@@ -98,6 +137,12 @@ class PyTerraform():
         return response
 
     def process_destroy_result(self, p):
+        """
+        Store the destroy response and riase exception if there is any
+
+        Args:
+            p (process obj): process obj of the terraform destroy
+        """
         response = Terraform().return_process_result(p)
         CMD = Settings.get('running_command', "Terraform Destroy")
 
@@ -109,6 +154,15 @@ class PyTerraform():
         self.write_current_status(CMD, K.DESTROY_STATUS_COMPLETED, K.TERRAFORM_DESTROY_COMPLETED)
 
     def terraform_taint(self, resources):
+        """
+        Run terraform taint on the mentioned resources
+
+        Args:
+            resources (list): List of resources if there are targets else None
+
+        Returns:
+            response (dict): Response after terraform taint
+        """
         if exists_teraform_lock():
             raise Exception(K.ANOTHER_PROCESS_RUNNING)
 
@@ -131,6 +185,15 @@ class PyTerraform():
         return response
 
     def get_target_resources(self, resources):
+        """
+        Get list of terraform targets arguments to be supplied to terraform command
+
+        Args:
+            resources (list): List of resources if there are targets else None
+
+        Returns:
+            targets (list / none): list of resources to be added as targets if there is any else None
+        """
         if resources:
             targets = []
             for resource in resources:
@@ -146,6 +209,15 @@ class PyTerraform():
         return None
 
     def get_taint_resources(self, resources):
+        """
+        Get list of terraform resources to be tainted
+
+        Args:
+            resources (list): List of resources
+
+        Returns:
+            taint_resources (list): List of resources to be tainted
+        """
         taint_resources = []
         for resource in resources:
             if TerraformResource in inspect.getmro(resource.__class__):
@@ -155,6 +227,12 @@ class PyTerraform():
 
     @classmethod
     def save_terraform_output(cls):
+        """
+        Save terraform output to the output file
+
+        Returns:
+            output_dict (dict): Terraform output
+        """
         tf_output_file = get_terraform_latest_output_file()
         output_dict = cls.load_terraform_output()
 
@@ -166,6 +244,12 @@ class PyTerraform():
 
     @classmethod
     def load_terraform_output(cls):
+        """
+        Load terraform output form the output command
+
+        Returns:
+            output_dict (dict): Terraform output
+        """
         output_dict = {}
 
         terraform = Terraform(
@@ -186,6 +270,12 @@ class PyTerraform():
 
     @classmethod
     def load_terraform_output_from_json_file(cls):
+        """
+        Load terraform output form the output file
+
+        Returns:
+            output_dict (dict): Terraform output
+        """
         tf_output_file = get_terraform_latest_output_file()
         output_dict = {}
         if os.path.exists(tf_output_file):
@@ -195,6 +285,14 @@ class PyTerraform():
         return output_dict
 
     def write_current_status(self, command, status_code, description=""):
+        """
+        Write current status for the executed comamnd to status file
+
+        Args:
+            command (str): Command name
+            status_code (str): Status of the current execution
+            description (str): Description of the current command
+        """
         current_status = self.get_current_status()
         prev_status = None
 
@@ -220,6 +318,12 @@ class PyTerraform():
 
     @classmethod
     def get_current_status(self):
+        """
+        Write current status for the executed comamnd to status file
+
+        Returns:
+            status_dict (dict): Status dict to be written
+        """
         status_file = get_terraform_status_file()
         status_dict = {}
         if os.path.exists(status_file):

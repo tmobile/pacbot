@@ -20,8 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicSessionCredentials;
@@ -29,9 +29,9 @@ import com.amazonaws.regions.Region;
 import com.amazonaws.regions.RegionUtils;
 import com.amazonaws.services.sns.AmazonSNSClient;
 import com.amazonaws.services.sns.AmazonSNSClientBuilder;
-import com.amazonaws.services.sns.model.ListSubscriptionsRequest;
-import com.amazonaws.services.sns.model.ListSubscriptionsResult;
-import com.amazonaws.services.sns.model.Subscription;
+import com.amazonaws.services.sns.model.ListTopicsRequest;
+import com.amazonaws.services.sns.model.ListTopicsResult;
+import com.amazonaws.services.sns.model.Topic;
 import com.tmobile.cso.pacman.inventory.file.ErrorManageUtil;
 import com.tmobile.cso.pacman.inventory.file.FileGenerator;
 
@@ -47,7 +47,7 @@ public class SNSInventoryUtil {
 	}
 	
 	/** The log. */
-	private static Logger log = LogManager.getLogger(SNSInventoryUtil.class);
+	private static Logger log = LoggerFactory.getLogger(SNSInventoryUtil.class);
 	
 	/** The delimiter. */
 	private static String delimiter = FileGenerator.DELIMITER;
@@ -57,39 +57,40 @@ public class SNSInventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<Subscription>> fetchSNSTopics(BasicSessionCredentials temporaryCredentials, String skipRegions,String account) {
+	public static Map<String,List<Topic>> fetchSNSTopics(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
 		
-		Map<String,List<Subscription>> subscriptionMap = new LinkedHashMap<>();
+		Map<String,List<Topic>> topicMap = new LinkedHashMap<>();
 		AmazonSNSClient snsClient ;
-		String expPrefix = "{\"errcode\": \"NO_RES_REG\" ,\"account\": \""+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"snstopic\" , \"region\":\"" ;
+		String expPrefix = "{\"errcode\": \"NO_RES_REG\" ,\"accountId\": \""+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"snstopic\" , \"region\":\"" ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
 				if(!skipRegions.contains(region.getName())){ 
-					List<Subscription> subscriptionList = new ArrayList<>();
+					List<Topic> topiList = new ArrayList<>();
 					snsClient = (AmazonSNSClient) AmazonSNSClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					String nextToken = null;
-					ListSubscriptionsResult listSubscriptionDefinitionsResult;
+					ListTopicsResult listTopicResult;
 					do {
-						listSubscriptionDefinitionsResult = snsClient.listSubscriptions(new ListSubscriptionsRequest().withNextToken(nextToken));
-						subscriptionList.addAll(listSubscriptionDefinitionsResult.getSubscriptions());
-						nextToken = listSubscriptionDefinitionsResult.getNextToken();
+						
+						listTopicResult = snsClient.listTopics(new ListTopicsRequest().withNextToken(nextToken));
+						topiList.addAll(listTopicResult.getTopics());
+						nextToken = listTopicResult.getNextToken();
 					}while(nextToken!=null);
 					
-					if(!subscriptionList.isEmpty() ) {
-						log.debug("Account : " + account + " Type : SNS Topics "+ region.getName()+" >> " + subscriptionList.size());
-						subscriptionMap.put(account+delimiter+region.getName(), subscriptionList);
+					if(!topiList.isEmpty() ) {
+						log.debug("Account : " + accountId + " Type : SNS Topics "+ region.getName()+" >> " + topiList.size());
+						topicMap.put(accountId+delimiter+accountName+delimiter+region.getName(), topiList);
 					}
 			   	}
 				
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+"\", \"cause\":\"" +e.getMessage()+"\"}");
-				ErrorManageUtil.uploadError(account,region.getName(),"snstopic",e.getMessage());
+				ErrorManageUtil.uploadError(accountId,region.getName(),"snstopic",e.getMessage());
 		   	}
 		}
-		return subscriptionMap;
+		return topicMap;
 	}
 }

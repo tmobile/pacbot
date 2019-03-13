@@ -223,7 +223,7 @@
                 </div>
             </article>
             <article class="metaData-wrapper">
-                <div class="sub-head">
+                <div class="sub-head" *ngIf="showEmail || resourceType == 'ec2'">
                     <app-title-burger-head [subHeadTitle]="'Quick Actions'"></app-title-burger-head>
                 </div>
                 <div class="actions-wrappers add-margin" *ngIf="showOppositeEmail">
@@ -277,7 +277,7 @@
                     <div class='border-bottom'></div>
                 </div>
                 <div class='buttons-wrapper'>
-                    <div class='flex flex-col flex-center button-parent' *ngIf="this.configurations && this.configurations.optional.assetDetails.ASSET_DETAILS_FROM_ID && this.configurations.optional.assetDetails.ASSET_DETAILS_TEMPLATE_URL && !showOppositeEmail">
+                    <div class='flex flex-col flex-center button-parent' *ngIf="showEmail && this.configurations && this.configurations.optional.assetDetails.ASSET_DETAILS_FROM_ID && this.configurations.optional.assetDetails.ASSET_DETAILS_TEMPLATE_URL && !showOppositeEmail">
                         <app-button-icon (onClickInner)="sendEmail()" [iconSrc]="'../assets/icons/email.svg'">Email</app-button-icon>
                     </div>
                     <div class='flex flex-col flex-center button-parent' *ngIf="resourceType == 'ec2'">

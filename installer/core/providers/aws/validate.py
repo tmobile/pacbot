@@ -8,10 +8,23 @@ import sys
 
 
 class SystemValidation(MsgMixin, metaclass=ABCMeta):
+    """
+    Base class for system validation
+
+    Attributes:
+        error_message (str): Error message
+        full_access_policies (str): Admin access policies with all permissions
+    """
     error_message = None
     full_access_policies = ["AdministratorAccess"]
 
     def validate_vpc_and_cidr_blocks(self):
+        """
+        Check the VPC is correct and the CIDR block provided is also correct
+
+        Returns:
+            valid or not_valid (str): Configured string for valid and not valid conditions
+        """
         self.error_message = None
         if Settings.get('VPC', None):
             vpc_ids = [Settings.VPC['ID']]
@@ -35,6 +48,12 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
         return K.VALID
 
     def validate_subnet_ids(self):
+        """
+        Check the subnets provided are present under the given VPC or not
+
+        Returns:
+            valid or not_valid (str): Configured string for valid and not valid conditions
+        """
         self.error_message = None
 
         if Settings.get('VPC', None):
@@ -65,6 +84,12 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
         return K.VALID
 
     def validate_user_policies(self):
+        """
+        Check required policies are present in user policies or not. Required policies are kept in the settings AWS_POLICIES_REQUIRED
+
+        Returns:
+            boolean: True if all policies are present else False
+        """
         access_key, secret_key = Settings.AWS_ACCESS_KEY, Settings.AWS_SECRET_KEY
         user_name = iam.get_user_name(access_key, secret_key)
 
@@ -85,6 +110,12 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
         return False
 
     def _check_group_policies(self, access_key, secret_key, user_name):
+        """
+        Check required policies are present in user-group policies or not. Required policies are kept in the settings AWS_POLICIES_REQUIRED
+
+        Returns:
+            boolean: True if all policies are present else False
+        """
         group_policy_names = iam.get_user_group_policy_names(access_key, secret_key, user_name)
 
         if self._has_full_access_policies(group_policy_names):
@@ -100,6 +131,12 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
         return True
 
     def _check_user_policies(self, access_key, secret_key, user_name):
+        """
+        This method uses the above methods and validate required policies are present in combine User and Group policies
+
+        Returns:
+            boolean: True if all policies are present else False
+        """
         user_policy_names = iam.get_iam_user_policy_names(access_key, secret_key, user_name)
 
         if self._has_full_access_policies(user_policy_names):
@@ -115,10 +152,17 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
         return True
 
     def _has_full_access_policies(self, policy_names):
+        """
+        Check if full access policies are present
+
+        Returns:
+            boolean: True if full access policies are present else False
+        """
         return bool(set(self.full_access_policies).intersection(policy_names))
 
 
 class SystemInstallValidation(SystemValidation):
+    """Main class for validating install process"""
     def validate(self):
         self.show_step_heading(K.SETTINGS_CHECK_STARTED)
 
@@ -138,5 +182,6 @@ class SystemInstallValidation(SystemValidation):
 
 
 class SystemDestroyValidation(SystemValidation):
+    """Main class for validating destroy process"""
     def validate(self):
         return True

@@ -15,22 +15,21 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.admin.controller;
 
-import io.swagger.annotations.Api;
-
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.admin.domain.PluginDetails;
 import com.tmobile.pacman.api.admin.repository.service.PluginService;
 import com.tmobile.pacman.api.commons.exception.ServiceException;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
+
+import io.swagger.annotations.Api;
 
 @Api(value = "/plugin", consumes = "application/json", produces = "application/json")
 @RestController
@@ -39,7 +38,6 @@ import com.tmobile.pacman.api.commons.utils.ResponseUtils;
 public class PluginController {
     PluginService pluginService;
     
-    @HystrixCommand
     @RequestMapping(path = "/v1/plugins", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<Object> getplugins( @RequestParam(name = "pluginId", required = false) String pluginId){

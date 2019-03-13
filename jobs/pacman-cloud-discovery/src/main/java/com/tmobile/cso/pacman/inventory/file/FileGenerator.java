@@ -23,14 +23,17 @@ import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 /**
  * The Class FileGenerator.
@@ -51,13 +54,15 @@ public class FileGenerator {
 	public static final String DELIMITER ="`";
 	
 	/** The Constant LINESEPARATOR. */
-	public static final String LINESEPARATOR ="\n";	
+	public static final String LINESEPARATOR ="\n";
+	
+	public static final String COMMA =",";	
 	
 	/** The current date. */
-	protected static String currentDate =  new SimpleDateFormat("yyyy-MM-dd H:00:00Z").format(new java.util.Date());
+	protected static String currentDate =  new SimpleDateFormat("yyyy-MM-dd HH:00:00Z").format(new java.util.Date());
 	
 	/** The log. */
-	private static Logger log = LogManager.getLogger(FileGenerator.class);
+	private static Logger log = LoggerFactory.getLogger(FileGenerator.class);
 	
 	/**
 	 * Generate file.
@@ -69,7 +74,7 @@ public class FileGenerator {
 	 * @param fileName the file name
 	 * @return true, if successful
 	 */
-	protected static <T,U> boolean generateFile( Map<U,List<T>> fileInfoMap,String fieldNames,String fileName){	
+	protected static <T,U> String generateFile( Map<U,List<T>> fileInfoMap,String fieldNames){	
 		Iterator<Entry<U,List<T>>> it= fileInfoMap.entrySet().iterator();
 		StringBuilder sb = new StringBuilder();
 		while(it.hasNext()){
@@ -93,13 +98,7 @@ public class FileGenerator {
 				}
 			}
 		}
-		try {
-			writeToFile(fileName,sb.toString(),true);
-		} catch (IOException e) {
-		    log.error("Error in generateFile ",e);
-			return false;
-		}
-		return true;
+		return sb.toString();
 	}
 	
 	/**
@@ -111,7 +110,6 @@ public class FileGenerator {
 	 * @throws IOException Signals that an I/O exception has occurred.
 	 */
 	protected static void  writeToFile(String filename ,String data,boolean appendto) throws IOException{
-		
 		log.debug("Write to File :"+filename );
 		BufferedWriter bw = null ;
 		try {
@@ -120,8 +118,7 @@ public class FileGenerator {
 			bw.flush();
 			bw.close();
 		} catch (IOException e) {
-			log.debug("Write to File :"+filename +"failed. Exception below");
-			log.error(e);
+			log.error("Write to File :{} failed",filename,e);
 			throw e;
 		}
 		finally {
@@ -294,7 +291,7 @@ public class FileGenerator {
 	        	}
 	            
 	        } catch (Exception e) {
-	        	log.error(e);
+	        	log.error("Error getting value for {}",name);
 	        }
 	        clazz = clazz.getSuperclass();
 	    }
@@ -322,6 +319,47 @@ public class FileGenerator {
 	 */
 	public static String getFolderName(){
 		return folderName;
+	}
+	
+	protected static <T,U> boolean generateJson( Map<U,List<T>> fileInfoMap,String fieldNames,String fileName, String keys){
+		
+		ObjectMapper objectMapper = new ObjectMapper();
+		StringBuilder sb = new StringBuilder();
+		String[] keysList = keys.split("["+DELIMITER+"]+");
+		String dataLines = generateFile(fileInfoMap, fieldNames);
+		if(dataLines != null && !"".equals(dataLines)){
+			String[] dataList = generateFile(fileInfoMap, fieldNames).split(LINESEPARATOR);
+			for(String data : dataList) {
+				Map<String,String> lineDataMap = new HashMap<>(); 
+				String[] lineData = data.split(DELIMITER);
+				for(int i=0;i<keysList.length;i++) {
+					try {
+						lineDataMap.put(keysList[i], lineData[i]);
+					} catch (IndexOutOfBoundsException e) {
+						lineDataMap.put(keysList[i], "");
+					}
+				}
+				
+				try {
+					if(sb.length() == 0 && new File(folderName+File.separator+fileName).length() < 2) {
+						sb.append(objectMapper.writeValueAsString(lineDataMap));
+					} else {
+						sb.append(COMMA+LINESEPARATOR+objectMapper.writeValueAsString(lineDataMap));
+					}
+		        } catch (Exception e) {
+		        	log.error("Error in generateJson ",e);
+					return false;
+		        }
+			}
+			
+			try {
+				writeToFile(fileName, sb.toString(), true);
+			} catch (IOException e) {
+				log.error("Error in generateJson ",e);
+				return false;
+			}
+		}
+		return true;
 	}
 	
 }

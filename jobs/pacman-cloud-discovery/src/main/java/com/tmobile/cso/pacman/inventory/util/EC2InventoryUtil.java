@@ -20,8 +20,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicSessionCredentials;
@@ -62,7 +62,7 @@ public class EC2InventoryUtil {
 	}
 	
 	/** The log. */
-	private static Logger log = LogManager.getLogger(EC2InventoryUtil.class);
+	private static Logger log = LoggerFactory.getLogger(EC2InventoryUtil.class);
 	
 	/** The delimiter. */
 	private static String delimiter = FileGenerator.DELIMITER;
@@ -72,14 +72,14 @@ public class EC2InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<RouteTable>> fetchRouteTables(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+	public static Map<String,List<RouteTable>> fetchRouteTables(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		Map<String,List<RouteTable>> routeTableMap = new LinkedHashMap<>();
 		AmazonEC2 ec2Client ;
-		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + InventoryConstants.ERROR_PREFIX_EC2 ;
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + InventoryConstants.ERROR_PREFIX_EC2 ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
@@ -88,13 +88,13 @@ public class EC2InventoryUtil {
 					List<RouteTable> routeTableList = ec2Client.describeRouteTables().getRouteTables();
 					
 					if(!routeTableList.isEmpty() ) {
-						log.debug(InventoryConstants.ACCOUNT + account + " Type : EC2 Route table "+ region.getName()+" >> " + routeTableList.size());
-						routeTableMap.put(account+delimiter+region.getName(), routeTableList);
+						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : EC2 Route table "+ region.getName()+" >> " + routeTableList.size());
+						routeTableMap.put(accountId+delimiter+accountName+delimiter+region.getName(), routeTableList);
 					}
 			   	}
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
-				ErrorManageUtil.uploadError(account,region.getName(),"routetable",e.getMessage());
+				ErrorManageUtil.uploadError(accountId,region.getName(),"routetable",e.getMessage());
 		   	}
 		}
 		return routeTableMap;
@@ -105,14 +105,14 @@ public class EC2InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<NetworkAcl>> fetchNetworkACL(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+	public static Map<String,List<NetworkAcl>> fetchNetworkACL(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		Map<String,List<NetworkAcl>> networkAclMap = new LinkedHashMap<>();
 		AmazonEC2 ec2Client ;
-		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + InventoryConstants.ERROR_PREFIX_EC2 ;
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + InventoryConstants.ERROR_PREFIX_EC2 ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
@@ -121,13 +121,13 @@ public class EC2InventoryUtil {
 					List<NetworkAcl> networkAclList = ec2Client.describeNetworkAcls().getNetworkAcls();
 					
 					if(!networkAclList.isEmpty() ) {
-						log.debug(InventoryConstants.ACCOUNT + account + " Type : EC2 Network Acl "+ region.getName()+" >> " + networkAclList.size());
-						networkAclMap.put(account+delimiter+region.getName(), networkAclList);
+						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : EC2 Network Acl "+ region.getName()+" >> " + networkAclList.size());
+						networkAclMap.put(accountId+delimiter+accountName+delimiter+region.getName(), networkAclList);
 					}
 			   	}
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
-				ErrorManageUtil.uploadError(account,region.getName(),"networkacl",e.getMessage());
+				ErrorManageUtil.uploadError(accountId,region.getName(),"networkacl",e.getMessage());
 		   	}
 		}
 		return networkAclMap;
@@ -138,14 +138,14 @@ public class EC2InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<Address>> fetchElasticIPAddresses(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+	public static Map<String,List<Address>> fetchElasticIPAddresses(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		Map<String,List<Address>> elasticIPMap = new LinkedHashMap<>();
 		AmazonEC2 ec2Client ;
-		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + InventoryConstants.ERROR_PREFIX_EC2 ;
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + InventoryConstants.ERROR_PREFIX_EC2 ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
@@ -154,13 +154,13 @@ public class EC2InventoryUtil {
 					List<Address> elasticIPList = ec2Client.describeAddresses().getAddresses();
 					
 					if(!elasticIPList.isEmpty() ) {
-						log.debug(InventoryConstants.ACCOUNT + account + " Type : EC2 Elastic IP "+ region.getName()+" >> " + elasticIPList.size());
-						elasticIPMap.put(account+delimiter+region.getName(), elasticIPList);
+						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : EC2 Elastic IP "+ region.getName()+" >> " + elasticIPList.size());
+						elasticIPMap.put(accountId+delimiter+accountName+delimiter+region.getName(), elasticIPList);
 					}
 			   	}
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
-				ErrorManageUtil.uploadError(account,region.getName(),"elasticip",e.getMessage());
+				ErrorManageUtil.uploadError(accountId,region.getName(),"elasticip",e.getMessage());
 		   	}
 		}
 		return elasticIPMap;
@@ -171,14 +171,14 @@ public class EC2InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<InternetGateway>> fetchInternetGateway(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+	public static Map<String,List<InternetGateway>> fetchInternetGateway(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		Map<String,List<InternetGateway>> internetGatewayMap = new LinkedHashMap<>();
 		AmazonEC2 ec2Client ;
-		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"internetgateway\" , \"region\":\"" ;
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"internetgateway\" , \"region\":\"" ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
@@ -187,13 +187,13 @@ public class EC2InventoryUtil {
 					List<InternetGateway> internetGatewayList = ec2Client.describeInternetGateways().getInternetGateways();
 					
 					if(!internetGatewayList.isEmpty() ) {
-						log.debug(InventoryConstants.ACCOUNT + account + " Type : EC2 Internet Gateway "+ region.getName()+" >> " + internetGatewayList.size());
-						internetGatewayMap.put(account+delimiter+region.getName(), internetGatewayList);
+						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : EC2 Internet Gateway "+ region.getName()+" >> " + internetGatewayList.size());
+						internetGatewayMap.put(accountId+delimiter+accountName+delimiter+region.getName(), internetGatewayList);
 					}
 			   	}
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
-				ErrorManageUtil.uploadError(account,region.getName(),"internetgateway",e.getMessage());
+				ErrorManageUtil.uploadError(accountId,region.getName(),"internetgateway",e.getMessage());
 		   	}
 		}
 		return internetGatewayMap;
@@ -204,14 +204,14 @@ public class EC2InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<VpnGateway>> fetchVPNGateway(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+	public static Map<String,List<VpnGateway>> fetchVPNGateway(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		Map<String,List<VpnGateway>> vpnGatewayMap = new LinkedHashMap<>();
 		AmazonEC2 ec2Client ;
-		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"vpngateway\" , \"region\":\"" ;
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"vpngateway\" , \"region\":\"" ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
@@ -220,13 +220,13 @@ public class EC2InventoryUtil {
 					List<VpnGateway> vpnGatewayList = ec2Client.describeVpnGateways().getVpnGateways();
 					
 					if(!vpnGatewayList.isEmpty() ) {
-						log.debug(InventoryConstants.ACCOUNT + account + " Type : EC2 VPN Gateway "+ region.getName()+" >> " + vpnGatewayList.size());
-						vpnGatewayMap.put(account+delimiter+region.getName(), vpnGatewayList);
+						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : EC2 VPN Gateway "+ region.getName()+" >> " + vpnGatewayList.size());
+						vpnGatewayMap.put(accountId+delimiter+accountName+delimiter+region.getName(), vpnGatewayList);
 					}
 			   	}
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
-		   		ErrorManageUtil.uploadError(account,region.getName(),"vpngateway",e.getMessage());
+		   		ErrorManageUtil.uploadError(accountId,region.getName(),"vpngateway",e.getMessage());
 		   	}
 		}
 		return vpnGatewayMap;
@@ -237,14 +237,14 @@ public class EC2InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<EgressOnlyInternetGateway>> fetchEgressGateway(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+	public static Map<String,List<EgressOnlyInternetGateway>> fetchEgressGateway(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		Map<String,List<EgressOnlyInternetGateway>> egressGatewayMap = new LinkedHashMap<>();
 		AmazonEC2 ec2Client ;
-		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"egressgateway\" , \"region\":\"" ;
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"egressgateway\" , \"region\":\"" ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
@@ -253,13 +253,13 @@ public class EC2InventoryUtil {
 					List<EgressOnlyInternetGateway> egressGatewayList = ec2Client.describeEgressOnlyInternetGateways(new DescribeEgressOnlyInternetGatewaysRequest()).getEgressOnlyInternetGateways();
 					
 					if(!egressGatewayList.isEmpty() ) {
-						log.debug(InventoryConstants.ACCOUNT + account + " Type : EC2 Egress Gateway "+ region.getName()+" >> " + egressGatewayList.size());
-						egressGatewayMap.put(account+delimiter+region.getName(), egressGatewayList);
+						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : EC2 Egress Gateway "+ region.getName()+" >> " + egressGatewayList.size());
+						egressGatewayMap.put(accountId+delimiter+accountName+delimiter+region.getName(), egressGatewayList);
 					}
 			   	}
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
-		   		ErrorManageUtil.uploadError(account,region.getName(),"egressgateway",e.getMessage());
+		   		ErrorManageUtil.uploadError(accountId,region.getName(),"egressgateway",e.getMessage());
 		   	}
 		}
 		return egressGatewayMap;
@@ -270,14 +270,14 @@ public class EC2InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<DhcpOptions>> fetchDHCPOptions(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+	public static Map<String,List<DhcpOptions>> fetchDHCPOptions(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		Map<String,List<DhcpOptions>> dhcpOptionsMap = new LinkedHashMap<>();
 		AmazonEC2 ec2Client ;
-		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"dhcpoption\" , \"region\":\"" ;
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"dhcpoption\" , \"region\":\"" ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
@@ -286,13 +286,13 @@ public class EC2InventoryUtil {
 					List<DhcpOptions> dhcpOptionsList = ec2Client.describeDhcpOptions().getDhcpOptions();
 					
 					if(!dhcpOptionsList.isEmpty() ) {
-						log.debug(InventoryConstants.ACCOUNT + account + " Type : EC2 DHCP Options "+ region.getName()+" >> " + dhcpOptionsList.size());
-						dhcpOptionsMap.put(account+delimiter+region.getName(), dhcpOptionsList);
+						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : EC2 DHCP Options "+ region.getName()+" >> " + dhcpOptionsList.size());
+						dhcpOptionsMap.put(accountId+delimiter+accountName+delimiter+region.getName(), dhcpOptionsList);
 					}
 			   	}
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
-		   		ErrorManageUtil.uploadError(account,region.getName(),"dhcpoption",e.getMessage());
+		   		ErrorManageUtil.uploadError(accountId,region.getName(),"dhcpoption",e.getMessage());
 		   	}
 		}
 		return dhcpOptionsMap;
@@ -303,14 +303,14 @@ public class EC2InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<VpcPeeringConnection>> fetchPeeringConnections(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+	public static Map<String,List<VpcPeeringConnection>> fetchPeeringConnections(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		Map<String,List<VpcPeeringConnection>> peeringConnectionMap = new LinkedHashMap<>();
 		AmazonEC2 ec2Client ;
-		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"peeringconnection\" , \"region\":\"" ;
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"peeringconnection\" , \"region\":\"" ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
@@ -319,13 +319,13 @@ public class EC2InventoryUtil {
 					List<VpcPeeringConnection> peeringConnectionList = ec2Client.describeVpcPeeringConnections().getVpcPeeringConnections();
 					
 					if(!peeringConnectionList.isEmpty() ) {
-						log.debug(InventoryConstants.ACCOUNT + account + " Type : EC2 Peering Connections "+ region.getName()+" >> " + peeringConnectionList.size());
-						peeringConnectionMap.put(account+delimiter+region.getName(), peeringConnectionList);
+						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : EC2 Peering Connections "+ region.getName()+" >> " + peeringConnectionList.size());
+						peeringConnectionMap.put(accountId+delimiter+accountName+delimiter+region.getName(), peeringConnectionList);
 					}
 			   	}
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
-		   		ErrorManageUtil.uploadError(account,region.getName(),"peeringconnection",e.getMessage());
+		   		ErrorManageUtil.uploadError(accountId,region.getName(),"peeringconnection",e.getMessage());
 		   	}
 		}
 		return peeringConnectionMap;
@@ -336,14 +336,14 @@ public class EC2InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<CustomerGateway>> fetchCustomerGateway(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+	public static Map<String,List<CustomerGateway>> fetchCustomerGateway(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		Map<String,List<CustomerGateway>> customerGatewayMap = new LinkedHashMap<>();
 		AmazonEC2 ec2Client ;
-		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"customergateway\" , \"region\":\"" ;
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"customergateway\" , \"region\":\"" ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
@@ -352,13 +352,13 @@ public class EC2InventoryUtil {
 					List<CustomerGateway> customerGatewayList = ec2Client.describeCustomerGateways().getCustomerGateways();
 					
 					if(!customerGatewayList.isEmpty() ) {
-						log.debug(InventoryConstants.ACCOUNT + account + " Type : EC2 Customer Gateway "+ region.getName()+" >> " + customerGatewayList.size());
-						customerGatewayMap.put(account+delimiter+region.getName(), customerGatewayList);
+						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : EC2 Customer Gateway "+ region.getName()+" >> " + customerGatewayList.size());
+						customerGatewayMap.put(accountId+delimiter+accountName+delimiter+region.getName(), customerGatewayList);
 					}
 			   	}
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
-		   		ErrorManageUtil.uploadError(account,region.getName(),"customergateway",e.getMessage());
+		   		ErrorManageUtil.uploadError(accountId,region.getName(),"customergateway",e.getMessage());
 		   	}
 		}
 		return customerGatewayMap;
@@ -369,14 +369,14 @@ public class EC2InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<VpnConnection>> fetchVPNConnections(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+	public static Map<String,List<VpnConnection>> fetchVPNConnections(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		Map<String,List<VpnConnection>> vpnConnectionMap = new LinkedHashMap<>();
 		AmazonEC2 ec2Client ;
-		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"vpnconnection\" , \"region\":\"" ;
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"vpnconnection\" , \"region\":\"" ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
@@ -384,13 +384,13 @@ public class EC2InventoryUtil {
 					ec2Client = AmazonEC2ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					List<VpnConnection> vpnConnectionsList = ec2Client.describeVpnConnections().getVpnConnections();
 					if(!vpnConnectionsList.isEmpty() ) {
-						log.debug(InventoryConstants.ACCOUNT + account + " Type : EC2 VPN Connections"+ region.getName()+" >> " + vpnConnectionsList.size());
-						vpnConnectionMap.put(account+delimiter+region.getName(), vpnConnectionsList);
+						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : EC2 VPN Connections"+ region.getName()+" >> " + vpnConnectionsList.size());
+						vpnConnectionMap.put(accountId+delimiter+accountName+delimiter+region.getName(), vpnConnectionsList);
 					}
 			   	}
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
-		   		ErrorManageUtil.uploadError(account,region.getName(),"vpnconnection",e.getMessage());
+		   		ErrorManageUtil.uploadError(accountId,region.getName(),"vpnconnection",e.getMessage());
 		   	}
 		}
 		return vpnConnectionMap;
@@ -401,14 +401,14 @@ public class EC2InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<ReservedInstances>> fetchReservedInstances(BasicSessionCredentials temporaryCredentials, String skipRegions,String account){
+	public static Map<String,List<ReservedInstances>> fetchReservedInstances(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		
 		Map<String,List<ReservedInstances>> reservedInstancesMap = new LinkedHashMap<>();
 		AmazonEC2 ec2Client ;
-		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + InventoryConstants.ERROR_PREFIX_EC2 ;
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + InventoryConstants.ERROR_PREFIX_EC2 ;
 	
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
@@ -416,13 +416,13 @@ public class EC2InventoryUtil {
 					ec2Client = AmazonEC2ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					List<ReservedInstances> reservedInstancesList = ec2Client.describeReservedInstances().getReservedInstances();
 					if(!reservedInstancesList.isEmpty() ) {
-						log.debug(InventoryConstants.ACCOUNT + account + " Type : EC2 Reserved Instances"+ region.getName()+" >> " + reservedInstancesList.size());
-						reservedInstancesMap.put(account+delimiter+region.getName(), reservedInstancesList);
+						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : reservedinstance"+ region.getName()+" >> " + reservedInstancesList.size());
+						reservedInstancesMap.put(accountId+delimiter+accountName+delimiter+region.getName(), reservedInstancesList);
 					}
 			   	}
 			}catch(Exception e){
 		   		log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
-		   		ErrorManageUtil.uploadError(account,region.getName(),"reservedinstance",e.getMessage());
+		   		ErrorManageUtil.uploadError(accountId,region.getName(),"reservedinstance",e.getMessage());
 		   	}
 		}
 		return reservedInstancesMap;
@@ -433,15 +433,15 @@ public class EC2InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
-	 * @param account the account
+	 * @param accountId the accountId
 	 * @return the map
 	 */
-	public static Map<String,List<InstanceInformation>> fetchSSMInfo(BasicSessionCredentials temporaryCredentials, String skipRegions, String account) {
+	public static Map<String,List<InstanceInformation>> fetchSSMInfo(BasicSessionCredentials temporaryCredentials, String skipRegions, String accountId,String accountName) {
 
 		Map<String,List<InstanceInformation>> ssmInstanceList = new LinkedHashMap<>();
 
 		AWSSimpleSystemsManagement ssmClient;
-		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE + account
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE + accountId
 				+ "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"SSM\" , \"region\":\"";
 
 		List<InstanceInformation> ssmInstanceListTemp ;
@@ -463,14 +463,14 @@ public class EC2InventoryUtil {
 								.getInstanceInformationList());
 					} while (nextToken != null);
 					if(! ssmInstanceListTemp.isEmpty() ) {
-						log.debug(InventoryConstants.ACCOUNT + account + " Type : SSM "+region.getName() + " >> "+ssmInstanceListTemp.size());
-						ssmInstanceList.put(account+delimiter+region.getName(), ssmInstanceListTemp);
+						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : SSM "+region.getName() + " >> "+ssmInstanceListTemp.size());
+						ssmInstanceList.put(accountId+delimiter+accountName+delimiter+region.getName(), ssmInstanceListTemp);
 					}
 				}
 
 			} catch (Exception e) {
 				log.warn(expPrefix + region.getName() + InventoryConstants.ERROR_CAUSE + e.getMessage() + "\"}");
-				ErrorManageUtil.uploadError(account, region.getName(), "SSM", e.getMessage());
+				ErrorManageUtil.uploadError(accountId, region.getName(), "SSM", e.getMessage());
 			}
 		}
 		return ssmInstanceList;

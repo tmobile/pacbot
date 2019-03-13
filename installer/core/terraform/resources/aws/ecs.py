@@ -4,6 +4,13 @@ from core.providers.aws.boto3 import ecs
 
 
 class ECSClusterResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS ECS cluster resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_ecs_cluster"
     setup_time = 600
     available_args = {
@@ -12,6 +19,17 @@ class ECSClusterResource(TerraformResource):
     }
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
 
@@ -26,6 +44,13 @@ class ECSClusterResource(TerraformResource):
 
 
 class ECSTaskDefinitionResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS ECS task definition resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_ecs_task_definition"
     setup_time = 600
     available_args = {
@@ -41,6 +66,17 @@ class ECSTaskDefinitionResource(TerraformResource):
     }
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('family')}
         exists = False
 
@@ -55,6 +91,13 @@ class ECSTaskDefinitionResource(TerraformResource):
 
 
 class ECSServiceResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS ECS service resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_ecs_service"
     setup_time = 600
     available_args = {

@@ -4,6 +4,13 @@ from core.providers.aws.boto3 import iam
 
 
 class IAMRoleResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS IAM role resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_iam_role"
     available_args = {
         'name': {'required': True, 'prefix': True, 'sep': '_'},
@@ -20,6 +27,17 @@ class IAMRoleResource(TerraformResource):
     description = Settings.RESOURCE_DESCRIPTION
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
 
@@ -30,6 +48,13 @@ class IAMRoleResource(TerraformResource):
 
 
 class IAMRolePolicyResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS IAM role policy resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_iam_policy"
     available_args = {
         'name': {'required': True, 'prefix': True, 'sep': '_'},
@@ -42,6 +67,17 @@ class IAMRolePolicyResource(TerraformResource):
     description = Settings.RESOURCE_DESCRIPTION
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
         if not self.resource_in_tf_output(tf_outputs):
@@ -51,6 +87,13 @@ class IAMRolePolicyResource(TerraformResource):
 
 
 class IAMRolePolicyAttachmentResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS IAM role policy attach resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_iam_role_policy_attachment"
     available_args = {
         'role': {'required': True},
@@ -59,6 +102,13 @@ class IAMRolePolicyAttachmentResource(TerraformResource):
 
 
 class IAMInstanceProfileResource(TerraformResource):
+    """
+    Base resource class for Terraform AWS IAM instance profile resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_iam_instance_profile"
     available_args = {
         'name': {'required': True, 'prefix': True, 'sep': '_'},
@@ -66,6 +116,17 @@ class IAMInstanceProfileResource(TerraformResource):
     }
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        Check if the resource is already exists in AWS
+
+        Args:
+            input (instance): input object
+            tf_outputs (dict): Terraform output dictionary
+
+        Returns:
+            exists (boolean): True if already exists in AWS else False
+            checked_details (dict): Status of the existence check
+        """
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
         if not self.resource_in_tf_output(tf_outputs):
@@ -75,6 +136,13 @@ class IAMInstanceProfileResource(TerraformResource):
 
 
 class IAMPolicyDocumentData(TerraformData):
+    """
+    Base resource class for Terraform Policy document data resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_iam_policy_document"
     available_args = {
         'statement': {'required': True},
@@ -82,6 +150,13 @@ class IAMPolicyDocumentData(TerraformData):
 
 
 class IamServiceLinkedRole(TerraformResource):
+    """
+    Base resource class for Terraform AWS Service linked role resource
+
+    Attributes:
+        resource_instance_name (str): Type of resource instance
+        available_args (dict): Instance configurations
+    """
     resource_instance_name = "aws_iam_service_linked_role"
     available_args = {
         'aws_service_name': {'required': True},

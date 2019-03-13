@@ -33,7 +33,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.google.common.base.Strings;
-import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import com.tmobile.pacman.api.commons.Constants;
 import com.tmobile.pacman.api.commons.exception.ServiceException;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
@@ -70,7 +69,7 @@ public class PatchingController implements Constants {
      * @param assetGroup name of the asset group
      * @return ResponseEntity<Object> list of non compliant number
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/patching/topnoncompliantapps", method = RequestMethod.GET)
     public ResponseEntity<Object> getTopNonCompliantApps(@RequestParam(name = "ag", required = true) String assetGroup) {
         ResponseData response = null;
@@ -88,7 +87,7 @@ public class PatchingController implements Constants {
      * @param assetGroup name of the asset group
      * @return ResponseEntity<Object> list of top non compliant
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/patching/topnoncompliantexecs", method = RequestMethod.GET)
     public ResponseEntity<Object> getTopNonCompliantExecs(@RequestParam(name = "ag", required = true) String assetGroup) {
         ResponseData response = null;
@@ -107,7 +106,7 @@ public class PatchingController implements Constants {
      * @param request the request
      * @return ResponseEntity<Object> list of patching details
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/patching/detail", method = RequestMethod.POST)
     public ResponseEntity<Object> getPatchingDetails(@RequestBody(required = true) Request request) {
 
@@ -171,7 +170,7 @@ public class PatchingController implements Constants {
      * @param request the request
      * @return ResponseEntity<Object> list of patching progress
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/patching/progress", method = RequestMethod.POST)
     public ResponseEntity<Object> getPatchingProgress(@RequestBody(required = true) PatchingRequest request) {
 
@@ -217,7 +216,7 @@ public class PatchingController implements Constants {
      * @param assetGroup name of the asset group
      * @return ResponseEntity<Object> list of quarters with patching data
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/patching/quarters", method = RequestMethod.POST)
     public ResponseEntity<Object> getQuartersWithPatchingData(String assetGroup) {
         Map<String, Object> response = new HashMap<>();
@@ -237,7 +236,7 @@ public class PatchingController implements Constants {
      * @param ag name of the asset group
      * @return ResponseEntity<Object> rating info
      */
-    @HystrixCommand
+    
     @RequestMapping(path = "/v1/patching/rating", method = RequestMethod.GET)
     public ResponseEntity<Object> getPatchingDataForAgForQuarter(String ag, int quarter, int year) {
         Map<String, Object> response = new HashMap<>();

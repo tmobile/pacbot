@@ -23,7 +23,7 @@ import com.tmobile.cso.pacman.datashipper.util.Constants;
 public class RDSDBManager {
 
     /** The Constant dbURL. */
-    private static final String DB_URL = System.getenv("RDS_DB_URL");
+    private static final String DB_URL = System.getProperty(Constants.RDS_DB_URL);
 
     /** The Constant dbUserName. */
     private static final String DB_USER_NAME = System.getProperty(Constants.RDS_USER);
@@ -31,7 +31,7 @@ public class RDSDBManager {
     /** The Constant dbPassword. */
     private static final String DB_PASSWORD = System.getProperty(Constants.RDS_PWD);
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DBManager.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(RDSDBManager.class);
     
     private RDSDBManager(){
         

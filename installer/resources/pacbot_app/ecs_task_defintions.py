@@ -3,6 +3,7 @@ from resources.iam.ecs_role import ECSRole
 from resources.pacbot_app.task_def_variables import ContainerDefinitions
 from resources.pacbot_app.ecr import APIDockerImageBuild, UIDockerImageBuild
 
+
 container_def = ContainerDefinitions()
 
 
@@ -42,11 +43,10 @@ class ComplianceEcsTaskDefinition(ECSTaskDefinitionResource, BaseTaskDefinition)
     DEPENDS_ON = [APIDockerImageBuild]
 
 
-# TODO: Commenting this out to use it in future
-# class NotificationsEcsTaskDefinition(ECSTaskDefinitionResource, BaseTaskDefinition):
-#     family = "notifications"
-#     container_definitions = container_def.get_container_definitions('notifications')
-#     DEPENDS_ON = [APIDockerImageBuild]
+class NotificationsEcsTaskDefinition(ECSTaskDefinitionResource, BaseTaskDefinition):
+    family = "notifications"
+    container_definitions = container_def.get_container_definitions('notifications')
+    DEPENDS_ON = [APIDockerImageBuild]
 
 
 class StatisticsEcsTaskDefinition(ECSTaskDefinitionResource, BaseTaskDefinition):
