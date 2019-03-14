@@ -1152,7 +1152,8 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
           violationReason: this.issueBlocks.violationReason,
           resourceId: this.issueBlocks.resouceViolatedPolicy,
           createdOn: this.issueBlocks.violationModifiedDate,
-          lastModifiedDate: this.issueBlocks.violationModifiedDate
+          lastModifiedDate: this.issueBlocks.violationModifiedDate,
+          templatePath: this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL
         },
         subject: 'Issue Details',
         to: emailArrayList
