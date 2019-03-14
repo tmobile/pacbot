@@ -39,3 +39,52 @@ def check_rule_exists(rule_name, access_key, secret_key, region):
         return True if response else False
     except:
         return False
+
+
+def get_targets_of_a_rule(rule_name, access_key, secret_key, region):
+    """
+    Returns the targets of the given cloudwatch rule
+
+    Args:
+        rule_name (str): Cloudwatch rule name
+        access_key (str): AWS Access Key
+        secret_key (str): AWS Secret Key
+        region (str): AWS Region
+
+    Returns:
+        targets (list): List of all targets attached to a rule
+    """
+    client = get_event_client(access_key, secret_key, region)
+
+    try:
+        response = client.list_targets_by_rule(
+            Rule=rule_name
+        )
+    except:
+        return []
+
+    return response['Targets']
+
+
+def remove_all_targets_of_a_rule(rule_name, access_key, secret_key, region):
+    """
+    Remove all targets of a rule
+
+    Args:
+        rule_name (str): Cloudwatch rule name
+        access_key (str): AWS Access Key
+        secret_key (str): AWS Secret Key
+        region (str): AWS Region
+    """
+    targets = get_targets_of_a_rule(rule_name, access_key, secret_key, region)
+
+    target_ids = [item['Id'] for item in targets]
+
+    if len(target_ids) > 0:
+        client = get_event_client(access_key, secret_key, region)
+
+        client.remove_targets(
+            Rule=rule_name,
+            Ids=target_ids,
+            Force=True
+        )
