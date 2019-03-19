@@ -10,6 +10,8 @@ from resources.lambda_rule_engine.s3_upload import UploadLambdaRuleEngineZipFile
 from resources.lambda_rule_engine.utils import get_rule_engine_cloudwatch_rules_var
 from core.config import Settings
 from core.providers.aws.boto3 import cloudwatch_event
+from core.mixins import MsgMixin
+import sys
 
 
 class RuleEngineLambdaFunction(LambdaFunctionResource):
@@ -53,6 +55,9 @@ class RuleEngineEventRules(CloudWatchEventRuleResource):
     }
 
     def check_exists_before(self, input, tf_outputs):
+        """
+        This method overrides the base class method, since here we need to check the existennce of a list of CW rules
+        """
         exists = False
         checked_details = {}
 
@@ -70,6 +75,25 @@ class RuleEngineEventRules(CloudWatchEventRuleResource):
                     break
 
         return exists, checked_details
+
+    def pre_terraform_destroy(self):
+        """
+        Remove all targets from the coudwatch rules before starting destroy. This is required as it would be possible to delete
+        and re create cloudwatch rules and then attach targets in the PacBot application. So terraform cannot track them and fail to
+        execute destroy.
+        """
+        for rule in get_rule_engine_cloudwatch_rules_var():
+            rule_name = rule['ruleId']
+            try:
+                cloudwatch_event.remove_all_targets_of_a_rule(
+                    rule_name,
+                    Settings.AWS_ACCESS_KEY,
+                    Settings.AWS_SECRET_KEY,
+                    Settings.AWS_REGION)
+            except Exception as e:
+                message = "\n\t ** Not able to remove targets from the rule: %s: Reason: %s **\n" % (rule_name, str(e))
+                print(MsgMixin.BERROR_ANSI + message + MsgMixin.RESET_ANSI)
+                sys.exit()
 
 
 class RuleEngineCloudWatchEventTargets(CloudWatchEventTargetResource):
