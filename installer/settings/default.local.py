@@ -13,6 +13,8 @@ AWS_SECRET_KEY = ""
 AWS_REGION = ""
 
 MAKE_ALB_INTERNAL = True
+ALB_PROTOCOL = "HTTP"
+SSL_CERTIFICATE_ARN = ""
 
 # MAIL Server configuration
 MAIL_SERVER = "localhost"
