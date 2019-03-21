@@ -148,10 +148,10 @@ public class PacmanUtilsTest {
     @Test
     public void checkResourceIdFromElasticSearchTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.checkResourceIdFromElasticSearch("test","123","test","123"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.checkResourceIdFromElasticSearch("test","123","test","123"),is(notNullValue()));
     }
     
@@ -159,10 +159,10 @@ public class PacmanUtilsTest {
     @Test
     public void getSecurityGroupsByInstanceIdTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getSecurityGroupsByInstanceId("test","123"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getSecurityGroupsByInstanceId("test","123"),is(notNullValue()));
     }
     
@@ -170,13 +170,13 @@ public class PacmanUtilsTest {
     @Test
     public void getRouteTableIdTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getRouteTableId("test","123","test","123"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getRouteTableId("subnetid","123","test","123"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getRouteTableId("test","123","test","123"),is(notNullValue()));
     }
     
@@ -184,10 +184,10 @@ public class PacmanUtilsTest {
     @Test
     public void getRouteTableRoutesIdTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getRouteTableRoutesId(CommonTestUtils.getListString(),CommonTestUtils.getSetString("123"),"123","test","igw"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getRouteTableRoutesId(CommonTestUtils.getListString(),CommonTestUtils.getSetString("123"),"123","test","123"),is(notNullValue()));
     }
     
@@ -195,10 +195,10 @@ public class PacmanUtilsTest {
     @Test
     public void checkInstanceIdForPortRuleInESTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.checkInstanceIdForPortRuleInES("test","123","test"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.checkInstanceIdForPortRuleInES("test","123","test"),is(notNullValue()));
     }
     
@@ -206,10 +206,10 @@ public class PacmanUtilsTest {
     @Test
     public void getSeverityVulnerabilitiesByInstanceIdTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getSeverityVulnerabilitiesByInstanceId("test","123","test"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getSeverityVulnerabilitiesByInstanceId("test","123","test"),is(notNullValue()));
     }
     
@@ -217,13 +217,13 @@ public class PacmanUtilsTest {
     @Test
     public void checkAccessibleToAllTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.checkAccessibleToAll(CommonTestUtils.getSetGroupIdentifier("123"),"80","test","test"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getAllJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getAllJsonObject());
         assertThat(pacmanUtils.checkAccessibleToAll(CommonTestUtils.getEmptySetGroupIdentifier("123"),"123","123","test"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.checkAccessibleToAll(CommonTestUtils.getEmptySetGroupIdentifier("123"),"123","123","test"),is(notNullValue()));
     }
     
@@ -231,13 +231,13 @@ public class PacmanUtilsTest {
     @Test
     public void isAccessbleToAllTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.isAccessbleToAll(CommonTestUtils.getSetGroupIdentifier("123"),80,"123","test"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getAllJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getAllJsonObject());
         assertThat(pacmanUtils.isAccessbleToAll(CommonTestUtils.getSetGroupIdentifier("123"),80,"123","test"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.isAccessbleToAll(CommonTestUtils.getEmptySetGroupIdentifier("123"),80,"123","test"),is(notNullValue()));
     }
     
@@ -246,10 +246,10 @@ public class PacmanUtilsTest {
     @Test
     public void checkResourceIdForRuleInESTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.checkResourceIdForRuleInES("123","123","123","test"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.checkResourceIdForRuleInES("123","123","123","test"),is(notNullValue()));
     }
     
@@ -257,10 +257,10 @@ public class PacmanUtilsTest {
     @Test
     public void getIdleLoadBalancerDetailsTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getIdleLoadBalancerDetails("123","rbl","123","test","test"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getIdleLoadBalancerDetails("123","123","123","test","test"),is(notNullValue()));
     }
     
@@ -268,10 +268,10 @@ public class PacmanUtilsTest {
     @Test
     public void getUnownedAdGroupTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getUnownedAdGroup("123","rbl"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getUnownedAdGroup("123","123"),is(notNullValue()));
     }
     
@@ -279,13 +279,13 @@ public class PacmanUtilsTest {
     @Test
     public void getNestedRolesTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getNestedRoles("123","rbl","nested"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getAllJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getAllJsonObject());
         assertThat(pacmanUtils.getNestedRoles("123","rbl","nested"),is(notNullValue()));
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getNestedRoles("123","123","nested"),is(notNullValue()));
     }
     
@@ -293,11 +293,11 @@ public class PacmanUtilsTest {
     @Test
     public void getMemberOfTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getMemberOf("123","rbl"),is(notNullValue()));
         
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getMemberOf("123","123"),is(notNullValue()));
     }
     
@@ -305,11 +305,11 @@ public class PacmanUtilsTest {
     @Test
     public void checkInstanceIdFromElasticSearchForQualysTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.checkInstanceIdFromElasticSearchForQualys("123","rbl","123","123"),is(notNullValue()));
         
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.checkInstanceIdFromElasticSearchForQualys("123","123","123","123"),is(notNullValue()));
     }
     
@@ -317,11 +317,11 @@ public class PacmanUtilsTest {
     @Test
     public void getLowUtilizationEc2DetailsTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getLowUtilizationEc2Details("123","i-09","123","123","123"),is(notNullValue()));
         
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getLowUtilizationEc2Details("123","i-09","123","123","123"),is(notNullValue()));
     }
     
@@ -330,11 +330,11 @@ public class PacmanUtilsTest {
     @Test
     public void getDetailsForCheckIdTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getDetailsForCheckId("123","redShift","123","123","123"),is(notNullValue()));
         
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getDetailsForCheckId("123","redShift","123","123","123"),is(notNullValue()));
     }
     
@@ -342,11 +342,11 @@ public class PacmanUtilsTest {
     @Test
     public void getRDSDetailsForCheckIdTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getRDSDetailsForCheckId("123","prd","123","123","123"),is(notNullValue()));
         
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getRDSDetailsForCheckId("123","prd","123","123","123"),is(notNullValue()));
     }
     
@@ -354,11 +354,11 @@ public class PacmanUtilsTest {
     @Test
     public void getEBSVolumeWithCheckIdTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getEBSVolumeWithCheckId("123","prd","123","123","123"),is(notNullValue()));
         
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getEBSVolumeWithCheckId("123","prd","123","123","123"),is(nullValue()));
     }
     
@@ -366,11 +366,11 @@ public class PacmanUtilsTest {
     @Test
     public void getEBSSnapshotWithCheckIdTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getEBSSnapshotWithCheckId("123","snap","123","123","123"),is(notNullValue()));
         
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getEBSSnapshotWithCheckId("123","snap","123","123","123"),is(notNullValue()));
     }
     
@@ -378,11 +378,11 @@ public class PacmanUtilsTest {
     @Test
     public void getRDSSnapshotWithCheckIdTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getRDSSnapshotWithCheckId("123","snap","123","123","123"),is(notNullValue()));
         
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getRDSSnapshotWithCheckId("123","snap","123","123","123"),is(notNullValue()));
     }
     
@@ -390,11 +390,11 @@ public class PacmanUtilsTest {
     @Test
     public void checkSSMAgentTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.checkSSMAgent("123","snap","123","123","123","123"),is(notNullValue()));
         
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.checkSSMAgent("123","snap","123","123","123","123"),is(notNullValue()));
     }
     
@@ -402,11 +402,11 @@ public class PacmanUtilsTest {
     @Test
     public void getResourceCreatedDetailsTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getResourceCreatedDetails("123","snap","123"),is(notNullValue()));
         
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getResourceCreatedDetails("123","snap","123"),is(notNullValue()));
     }
     
@@ -414,11 +414,11 @@ public class PacmanUtilsTest {
     @Test
     public void getAmazonEC2ReservedInstanceLeaseExpirationTest() throws Exception {
         mockStatic(RulesElasticSearchRepositoryUtil.class);
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
         assertThat(pacmanUtils.getAmazonEC2ReservedInstanceLeaseExpiration("123","24300dd4","123","snap","123"),is(notNullValue()));
         
         
-        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
         assertThat(pacmanUtils.getAmazonEC2ReservedInstanceLeaseExpiration("123","24300dd4","123","snap","123"),is(notNullValue()));
     }
     

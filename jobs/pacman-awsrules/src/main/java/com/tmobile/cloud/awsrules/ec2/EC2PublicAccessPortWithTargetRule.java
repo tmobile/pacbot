@@ -44,65 +44,42 @@ import com.tmobile.pacman.commons.rule.RuleResult;
 @PacmanRule(key = "check-for-ec2-with-public-access-port-with-target", desc = "checks for EC2 instance which has IP address and looks for any of SG group has CIDR IP to 0.0.0.0 for port which are < target given", severity = PacmanSdkConstants.SEV_HIGH, category = PacmanSdkConstants.SECURITY)
 public class EC2PublicAccessPortWithTargetRule extends BaseRule {
     private static final Logger logger = LoggerFactory.getLogger(EC2PublicAccessPortWithTargetRule.class);
-    String cidrfilterValue = PacmanRuleConstants.CIDR_FILTERVALUE;
-    String internetGateway = PacmanRuleConstants.INTERNET_GATEWAY;
-
     /**
      * The method will get triggered from Rule Engine with following parameters
      * 
      * @param ruleParam
      * 
-     *            ************* Following are the Rule Parameters********* <br>
-     * <br>
+     ************** Following are the Rule Parameters********* <br> <br>
      * 
-     *            internetGateWay : The value 'igw' is used to identify the
-     *            security group with internet gateway <br>
-     * <br>
+     * internetGateWay : The value 'igw' is used to identify the security group with internet gateway <br> <br>
      * 
-     *            ec2SgEsURL : The ES URL of the security group <br>
-     * <br>
+     * ec2SgEsURL : The ES URL of the security group <br><br>
      * 
-     *            ruleKey : check-for-ec2-with-public-access-port-with-target <br>
-     * <br>
+     * ruleKey : check-for-ec2-with-public-access-port-with-target <br><br>
      * 
-     *            severity : Enter the value of severity <br>
-     * <br>
+     * severity : Enter the value of severity <br><br>
      * 
-     *            ruleCategory : Enter the value of category <br>
-     * <br>
+     * ruleCategory : Enter the value of category <br><br>
      * 
-     *            esEc2SgURL : Enter the EC2 with SG URL <br>
-     * <br>
+     * esEc2SgURL : Enter the EC2 with SG URL <br><br>
      * 
-     *            esRoutetableAssociationsURL : Enter the route table
-     *            association ES URL <br>
-     * <br>
+     * esRoutetableAssociationsURL : Enter the route table association ES URL <br><br>
      * 
-     *            esRoutetableRoutesURL : Enter the route table routes ES URL <br>
-     * <br>
+     * esRoutetableRoutesURL : Enter the route table routes ES URL <br><br>
      * 
-     *            esRoutetableURL : Enter the route table ES URL <br>
-     * <br>
+     * esRoutetableURL : Enter the route table ES URL <br><br>
      * 
-     *            esSgRulesUrl : Enter the SG rules ES URL <br>
-     * <br>
+     * esSgRulesUrl : Enter the SG rules ES URL <br><br>
      * 
-     *            esSubnetURL: Enter the subnet ES URL <br>
-     * <br>
+     * cidrIp : Enter the ip as 0.0.0.0/0 <br><br>
      * 
-     *            cidrIp : Enter the ip as 0.0.0.0/0 <br>
-     * <br>
+     * cidripv6 : Enter the ip as ::/0 <br><br>
      * 
-     *            target :Give the target value to check the ports <br>
-     * <br>
+     * target :Give the target value to check the ports <br><br>
      * 
-     *            threadsafe : if true , rule will be executed on multiple
-     *            threads <br>
-     * <br>
+     * threadsafe : if true , rule will be executed on multiple threads <br><br>
      * 
-     * @param resourceAttributes
-     *            this is a resource in context which needs to be scanned this
-     *            is provided by execution engine
+     * @param resourceAttributes this is a resource in context which needs to be scanned this is provided by execution engine
      *
      */
 
@@ -110,7 +87,6 @@ public class EC2PublicAccessPortWithTargetRule extends BaseRule {
     public RuleResult execute(Map<String, String> ruleParam, Map<String, String> resourceAttributes) {
         logger.debug("========EC2PublicAccessPortWithTargetRule started=========");
         Annotation annotation = null;
-        Set<String> routeTableIdSet = new HashSet<>();
         Boolean isIgwExists = false;
         if (resourceAttributes.get("statename").equals(PacmanRuleConstants.RUNNING_STATE)) {
             Set<GroupIdentifier> securityGroupsSet = new HashSet<>();
@@ -123,10 +99,10 @@ public class EC2PublicAccessPortWithTargetRule extends BaseRule {
             String routetableAssociationsEsURL = null;
             String routetableRoutesEsURL = null;
             String routetableEsURL = null;
-            String subnetEsURL = null;
             String target = ruleParam.get(PacmanRuleConstants.TARGET);
             String sgRulesUrl = null;
             String cidrIp = ruleParam.get(PacmanRuleConstants.CIDR_IP);
+            String cidrIpv6 = ruleParam.get(PacmanRuleConstants.CIDRIPV6);
 
             String publicipaddress = resourceAttributes.get("publicipaddress");
             String subnetid = resourceAttributes.get("subnetid");
@@ -146,25 +122,19 @@ public class EC2PublicAccessPortWithTargetRule extends BaseRule {
                 routetableRoutesEsURL = pacmanHost + routetableRoutesEsURL;
                 routetableEsURL = pacmanHost + routetableEsURL;
                 sgRulesUrl = pacmanHost + sgRulesUrl;
-                subnetEsURL = pacmanHost + subnetEsURL;
             }
 
             logger.debug("========ec2SgEsURL URL after concatination param {}  =========", ec2SgEsURL);
-            logger.debug("========routetableAssociationsEsURL URL after concatination param {}  =========",
-                    routetableAssociationsEsURL);
-            logger.debug("========routetableRoutesEsURL URL after concatination param {}  =========",
-                    routetableRoutesEsURL);
+            logger.debug("========routetableAssociationsEsURL URL after concatination param {}  =========", routetableAssociationsEsURL);
+            logger.debug("========routetableRoutesEsURL URL after concatination param {}  =========",routetableRoutesEsURL);
             logger.debug("========routetableEsURL URL after concatination param {}  =========", routetableEsURL);
             logger.debug("========sgRulesUrl URL after concatination param {}  =========", sgRulesUrl);
-            logger.debug("========subnetEsURL URL after concatination param {}  =========", subnetEsURL);
 
             MDC.put("executionId", ruleParam.get("executionId"));
             MDC.put("ruleId", ruleParam.get(PacmanSdkConstants.RULE_ID));
             List<LinkedHashMap<String, Object>> issueList = new ArrayList<>();
             LinkedHashMap<String, Object> issue = new LinkedHashMap<>();
-            if (!PacmanUtils.doesAllHaveValue(internetGateWay, severity, category, ec2SgEsURL,
-                    routetableAssociationsEsURL, routetableRoutesEsURL, routetableEsURL, target, sgRulesUrl, cidrIp,
-                    subnetEsURL)) {
+            if (!PacmanUtils.doesAllHaveValue(cidrIpv6,internetGateWay, severity, category, ec2SgEsURL, routetableAssociationsEsURL, routetableRoutesEsURL, routetableEsURL, target, sgRulesUrl, cidrIp)) {
                 logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
                 throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
             }
@@ -172,30 +142,26 @@ public class EC2PublicAccessPortWithTargetRule extends BaseRule {
             try {
                 if (!StringUtils.isNullOrEmpty(publicipaddress) ) {
                     issue.put(PacmanRuleConstants.PUBLICIP, publicipaddress);
-                    routeTableIdSet = PacmanUtils.getRouteTableId(subnetid, vpcid, routetableAssociationsEsURL,
+                    Set<String> routeTableIdSet = PacmanUtils.getRouteTableId(subnetid, vpcid, routetableAssociationsEsURL,
                             "subnet");
 
-                    isIgwExists = PacmanUtils.isIgwFound(cidrfilterValue, subnetid, "Subnet", issue, routeTableIdSet,
-                            routetableRoutesEsURL, internetGateWay);
-                    if (!isIgwExists &&routeTableIdSet.isEmpty() && !StringUtils.isNullOrEmpty(vpcid)) {
+                    isIgwExists = PacmanUtils.isIgwFound(cidrIp, subnetid, "Subnet", issue, routeTableIdSet, routetableRoutesEsURL, internetGateWay,cidrIpv6);
+                    
+                    if (!isIgwExists && routeTableIdSet.isEmpty() && !StringUtils.isNullOrEmpty(vpcid)) {
                         routeTableIdSet = PacmanUtils.getRouteTableId(subnetid, vpcid, routetableEsURL, "vpc");
 
-                        isIgwExists = PacmanUtils.isIgwFound(cidrfilterValue, vpcid, "VPC", issue, routeTableIdSet,
-                                routetableRoutesEsURL, internetGateWay);
+                        isIgwExists = PacmanUtils.isIgwFound(cidrIp, vpcid, "VPC", issue, routeTableIdSet, routetableRoutesEsURL, internetGateWay,cidrIpv6);
                     }
 
                     if (isIgwExists) {
-                        List<GroupIdentifier> listSecurityGroupID = PacmanUtils.getSecurityGroupsByInstanceId(
-                                resourceId, ec2SgEsURL);
+                        List<GroupIdentifier> listSecurityGroupID = PacmanUtils.getSecurityGroupsByInstanceId(resourceId, ec2SgEsURL);
                         securityGroupsSet.addAll(listSecurityGroupID);
-                        issue.put(PacmanRuleConstants.SEC_GRP,
-                                org.apache.commons.lang3.StringUtils.join(listSecurityGroupID, "/"));
+                        issue.put(PacmanRuleConstants.SEC_GRP, org.apache.commons.lang3.StringUtils.join(listSecurityGroupID, "/"));
                     } else {
                         logger.info("EC2 is not publicly accessble");
                     }
-
-                    Map<String, Boolean> sgOpen = PacmanUtils.isAccessbleToAll(securityGroupsSet,
-                            Integer.parseInt(target), sgRulesUrl, cidrIp);
+                    
+                    Map<String, Boolean> sgOpen = PacmanUtils.checkAccessibleToAll(securityGroupsSet, "", sgRulesUrl, cidrIp,cidrIpv6,target);
                     if (!sgOpen.isEmpty()) {
                         Gson gson = new Gson();
                         String openPortsJson = gson.toJson(sgOpen);
@@ -214,16 +180,12 @@ public class EC2PublicAccessPortWithTargetRule extends BaseRule {
                         annotation.put(PacmanRuleConstants.CATEGORY, category);
                         annotation.put(PacmanRuleConstants.VPC_ID, vpcid);
                         annotation.put(PacmanRuleConstants.SUBNETID, subnetid);
-                        issue.put(PacmanRuleConstants.VIOLATION_REASON, "ResourceId " + resourceId
-                                + " has public access through one/more ports");
+                        issue.put(PacmanRuleConstants.VIOLATION_REASON, "ResourceId " + resourceId + " has public access through one/more ports");
                         issue.put(PacmanRuleConstants.PORTS_VIOLATED, String.join(",", portsSet));
                         issueList.add(issue);
                         annotation.put("issueDetails", issueList.toString());
-                        logger.debug(
-                                "========EC2PublicAccessPortWithTargetRule ended with an annotation {} : =========",
-                                annotation);
-                        return new RuleResult(PacmanSdkConstants.STATUS_FAILURE, PacmanRuleConstants.FAILURE_MESSAGE,
-                                annotation);
+                        logger.debug("========EC2PublicAccessPortWithTargetRule ended with an annotation {} : =========", annotation);
+                        return new RuleResult(PacmanSdkConstants.STATUS_FAILURE, PacmanRuleConstants.FAILURE_MESSAGE, annotation);
                     }
 
                 }

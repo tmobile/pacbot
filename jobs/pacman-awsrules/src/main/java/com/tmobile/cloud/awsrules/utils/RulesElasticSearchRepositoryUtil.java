@@ -158,7 +158,7 @@ public class RulesElasticSearchRepositoryUtil {
             requestBody.put(
                     PacmanRuleConstants.QUERY,
                     buildQuery(matchFilters, mustNotFilter, shouldFilter, null,
-                            mustTermsFilter, matchPhrasePrefix));
+                            mustTermsFilter, matchPhrasePrefix,null));
             requestBody.put("aggs", buildAggs(aggsFilter, size));
 
             if (!Strings.isNullOrEmpty(aggsFilter)) {
@@ -190,7 +190,7 @@ public class RulesElasticSearchRepositoryUtil {
             final Map<String, Object> mustNotFilter,
             final HashMultimap<String, Object> shouldFilter,
             final String searchText, final Map<String, Object> mustTermsFilter,
-            Map<String, List<String>> matchPhrasePrefix) {
+            Map<String, List<String>> matchPhrasePrefix,Map<String, List<String>> matchPhrase) {
         Map<String, Object> queryFilters = Maps.newHashMap();
         Map<String, Object> boolFilters = Maps.newHashMap();
 
@@ -213,16 +213,16 @@ public class RulesElasticSearchRepositoryUtil {
         if (isNotNullOrEmpty(mustFilter)
                 && (!Strings.isNullOrEmpty(searchText))) {
             List<Map<String, Object>> must = getFilter(mustFilter,
-                    mustTermsFilter, matchPhrasePrefix);
+                    mustTermsFilter, matchPhrasePrefix,matchPhrase);
             Map<String, Object> match = Maps.newHashMap();
             Map<String, Object> all = Maps.newHashMap();
             all.put("_all", searchText);
             match.put("match", all);
             must.add(match);
             boolFilters.put("must", must);
-        } else if (isNotNullOrEmpty(mustFilter)) {
+        } else if (isNotNullOrEmpty(mustFilter) || isNotNullOrEmpty(mustTermsFilter)) {
             boolFilters.put("must",
-                    getFilter(mustFilter, mustTermsFilter, matchPhrasePrefix));
+                    getFilter(mustFilter, mustTermsFilter, matchPhrasePrefix,matchPhrase));
         }
 
         if (isNotNullOrEmpty(mustFilter)) {
@@ -247,8 +247,9 @@ public class RulesElasticSearchRepositoryUtil {
         if (isNotNullOrEmpty(mustNotFilter)) {
 
             boolFilters.put("must_not",
-                    getFilter(mustNotFilter, null, matchPhrasePrefix));
+                    getFilter(mustNotFilter, null, matchPhrasePrefix,null));
         }
+        
         if (isNotNullOrEmpty(shouldFilter)) {
             boolFilters.put("should", getFilter(shouldFilter));
             boolFilters.put("minimum_should_match", 1);
@@ -256,7 +257,6 @@ public class RulesElasticSearchRepositoryUtil {
         queryFilters.put("bool", boolFilters);
         return queryFilters;
     }
-
     /**
      * 
      * @param collection
@@ -286,7 +286,7 @@ public class RulesElasticSearchRepositoryUtil {
     private static List<Map<String, Object>> getFilter(
             final Map<String, Object> mustfilter,
             final Map<String, Object> mustTerms,
-            Map<String, List<String>> matchPhrasePrefix) {
+            Map<String, List<String>> matchPhrasePrefix,Map<String, List<String>> matchPhrase) {
         List<Map<String, Object>> finalFilter = Lists.newArrayList();
         for (Map.Entry<String, Object> entry : mustfilter.entrySet()) {
             Map<String, Object> term = Maps.newHashMap();
@@ -319,6 +319,25 @@ public class RulesElasticSearchRepositoryUtil {
                     map.put(entry.getKey(), val);
                     matchPhrasePrefixMap.put("match_phrase_prefix", map);
                     finalFilter.add(matchPhrasePrefixMap);
+                }
+
+            }
+        }
+        
+        if (matchPhrase != null && !matchPhrase.isEmpty()) {
+
+            for (Map.Entry<String, List<String>> entry : matchPhrase
+                    .entrySet()) {
+                List<Object> infoList = new ArrayList<>();
+                infoList.add(entry.getValue());
+
+                for (Object val : entry.getValue()) {
+                    Map<String, Object> map = new HashMap<>();
+                    Map<String, Object> matchPhraseMap = Maps
+                            .newHashMap();
+                    map.put(entry.getKey(), val);
+                    matchPhraseMap.put("match_phrase", map);
+                    finalFilter.add(matchPhraseMap);
                 }
 
             }
@@ -366,7 +385,7 @@ public class RulesElasticSearchRepositoryUtil {
             Map<String, Object> mustFilter, Map<String, Object> mustNotFilter,
             HashMultimap<String, Object> shouldFilter, String aggsFilter,
             int size, Map<String, Object> mustTermsFilter,
-            Map<String, List<String>> matchPhrasePrefix) throws Exception {
+            Map<String, List<String>> matchPhrasePrefix,Map<String, List<String>> matchPhrase) throws Exception {
         String requestJson = null;
         String urlToQuery = esUrl;
         Map<String, Object> requestBody = new HashMap<>();
@@ -380,7 +399,7 @@ public class RulesElasticSearchRepositoryUtil {
             requestBody.put(
                     PacmanRuleConstants.QUERY,
                     buildQuery(matchFilters, mustNotFilter, shouldFilter, null,
-                            mustTermsFilter, matchPhrasePrefix));
+                            mustTermsFilter, matchPhrasePrefix,matchPhrase));
 
             if (!Strings.isNullOrEmpty(aggsFilter)) {
                 requestBody.put("size", "0");
@@ -401,7 +420,6 @@ public class RulesElasticSearchRepositoryUtil {
         }
         return getResponse(urlToQuery, requestJson);
     }
-
     public static JsonObject getResponse(String urlToQueryBuffer,
             String requestBody) throws Exception {
         String responseJson = null;
@@ -496,7 +514,7 @@ public class RulesElasticSearchRepositoryUtil {
         if (isNotNullOrEmpty(mustFilter)
                 && (!Strings.isNullOrEmpty(searchText))) {
             List<Map<String, Object>> must = getFilter(mustFilter,
-                    mustTermsFilter, matchPhrasePrefix);
+                    mustTermsFilter, matchPhrasePrefix,null);
             Map<String, Object> match = Maps.newHashMap();
             Map<String, Object> all = Maps.newHashMap();
             all.put("_all", searchText);
@@ -505,7 +523,7 @@ public class RulesElasticSearchRepositoryUtil {
             boolFilters.put("must", must);
         } else if (isNotNullOrEmpty(mustFilter)) {
             boolFilters.put("must",
-                    getFilter(mustFilter, mustTermsFilter, matchPhrasePrefix));
+                    getFilter(mustFilter, mustTermsFilter, matchPhrasePrefix,null));
         }
 
         if (isNotNullOrEmpty(mustFilter)) {
