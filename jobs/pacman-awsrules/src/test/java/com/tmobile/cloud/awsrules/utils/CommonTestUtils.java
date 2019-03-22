@@ -36,6 +36,7 @@ public class CommonTestUtils {
 
     public static Map<String, String> getMapString(String passRuleResourceId) {
         Map<String, String> commonMap = new HashMap<>();
+        commonMap.put("scheme", "internet-facing");
         commonMap.put("esEc2SgURL", "esEc2SgURL");
         commonMap.put("esRoutetableAssociationsURL", "esRoutetableAssociationsURL");
         commonMap.put("esRoutetableRoutesURL", "esRoutetableRoutesURL");
@@ -520,6 +521,14 @@ public class CommonTestUtils {
 
     public static List<GroupIdentifier> getListSecurityGroupId() {
         List<GroupIdentifier> groupIdentifiers = new ArrayList<>();
+        return groupIdentifiers;
+    }
+    
+    public static List<GroupIdentifier> getListSecurityGroupIdELB() {
+    	GroupIdentifier groupIdentifier = new GroupIdentifier();
+    	groupIdentifier.setGroupId("123");
+        List<GroupIdentifier> groupIdentifiers = new ArrayList<>();
+        groupIdentifiers.add(groupIdentifier);
         return groupIdentifiers;
     }
 

@@ -53,7 +53,7 @@ public class ElbPublicAccessRuleTest {
         when(PacmanUtils.getRouteTableId(anyString(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getSetString("123"));
         
         when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString(),anyString())).thenReturn(true);
-        when(PacmanUtils.getSecurityBroupIdByElb(anyString(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getListSecurityGroupId());
+        when(PacmanUtils.getSecurityBroupIdByElb(anyString(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getListSecurityGroupIdELB());
         when(PacmanUtils.checkAccessibleToAll(anyObject(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getMapBoolean("123"));
         when(PacmanUtils.setAnnotation(anyObject(),anyObject(),anyString(),anyString(),anyObject())).thenReturn(CommonTestUtils.getAnnotation("123"));
         assertThat(applicationElbPublicAccessRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
