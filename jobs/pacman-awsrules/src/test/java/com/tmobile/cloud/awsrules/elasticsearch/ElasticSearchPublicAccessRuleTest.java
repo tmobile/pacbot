@@ -72,10 +72,6 @@ public class ElasticSearchPublicAccessRuleTest {
         when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString(),anyString())).thenReturn(false);
         assertThat(elasticSearchPublicAccessRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getAnotherMapString("r_123 ")), is(notNullValue()));
         
-        /*when(PacmanUtils.getRouteTableId(anyString(),anyString(),anyString(),anyString())).thenThrow(new Exception());
-        assertThatThrownBy( 
-                () -> elasticSearchPublicAccessRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 "))).isInstanceOf(RuleExecutionFailedExeption.class);*/
-        
         when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
                 false);
         assertThatThrownBy(
