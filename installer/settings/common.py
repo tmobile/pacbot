@@ -37,6 +37,7 @@ PROCESS_RESOURCES = {
     'iam.ecs_role': {'tags': ["roles"]},
     'iam.lambda_role': {'tags': ["roles"]},
     'iam.base_role_policy': {'tags': ["roles"]},
+    'iam.all_read_role': {'tags': ["roles"]},
     'vpc.security_group': {'tags': ["security"]},
     'datastore.db': {'tags': ["rds"]},
     'datastore.es': {'tags': ["es"]},
