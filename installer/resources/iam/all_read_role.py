@@ -1,5 +1,5 @@
 from core.terraform.resources.aws import iam
-from resources.iam.lambda_role import LambdaRole
+from resources.iam.ecs_role import ECSRole
 
 
 class LambdaPolicyDocument(iam.IAMPolicyDocumentData):
@@ -44,5 +44,5 @@ class AllReadRolePolicy(iam.IAMRolePolicyResource):
 
 
 class AllReadRoleLambdaPolicyAttach(iam.IAMRolePolicyAttachmentResource):
-    role = LambdaRole.get_output_attr('name')
+    role = ECSRole.get_output_attr('name')
     policy_arn = AllReadRolePolicy.get_output_attr('arn')
