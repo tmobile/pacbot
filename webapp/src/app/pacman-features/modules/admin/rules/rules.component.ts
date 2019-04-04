@@ -310,9 +310,10 @@ export class RulesComponent implements OnInit, OnDestroy {
         innerArr = {};
         for (var col = 0; col < getCols.length; col++) {
           if (getCols[col].toLowerCase() == 'actions') {
-            let dropDownItems: Array<String> = ['Invoke', 'Edit'];
+            let dropDownItems: Array<String> = ['Edit'];
             if (getData[row].Status === 'ENABLED') {
               dropDownItems.push('Disable');
+			  dropDownItems.push('Invoke');
             } else {
               dropDownItems.push('Enable');
             }
