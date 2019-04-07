@@ -37,6 +37,7 @@ class MySQLDatabase(RDSResource):
     db_subnet_group_name = DBSubnetGroup.get_input_attr('name')
     vpc_security_group_ids = [InfraSecurityGroupResource.get_output_attr('id')]
     skip_final_snapshot = True
+    apply_immediately = True
 
     DEPENDS_ON = [DBOptionGroup, DBParameterGroup, DBSubnetGroup]
 

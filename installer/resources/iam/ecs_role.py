@@ -59,11 +59,6 @@ class ECSContainerServiceForEC2PolicyAttach(iam.IAMRolePolicyAttachmentResource)
     policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonEC2ContainerServiceforEC2Role"
 
 
-class ECSGuardDutyReadOnlyPolicyAttach(iam.IAMRolePolicyAttachmentResource):
-    role = ECSRole.get_output_attr('name')
-    policy_arn = "arn:aws:iam::aws:policy/AmazonGuardDutyReadOnlyAccess"
-
-
 class ECSCloudWatchLogsFullAccessPolicyAttach(iam.IAMRolePolicyAttachmentResource):
     role = ECSRole.get_output_attr('name')
     policy_arn = "arn:aws:iam::aws:policy/CloudWatchLogsFullAccess"
