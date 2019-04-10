@@ -17,6 +17,8 @@ ES_INSTANCE_TYPE = "m4.large.elasticsearch"  # Possibble values m4.xlarge.elasti
 
 # ALB related configurations
 MAKE_ALB_INTERNAL = True
+ALB_PROTOCOL = "HTTP"
+SSL_CERTIFICATE_ARN = ""
 
 
 # MAIL Server configuration

@@ -14,11 +14,11 @@ class ApplicationLoadBalancer(LoadBalancerResource):
 
     @classmethod
     def get_http_url(cls):
-        return "http://%s" % cls.get_output_attr('dns_name')
+        return "%s://%s" % (Settings.get('ALB_PROTOCOL', "HTTP").lower(), cls.get_output_attr('dns_name'))
 
     @classmethod
     def get_api_base_url(cls):
-        return "http://%s/api" % cls.get_output_attr('dns_name')
+        return "%s://%s/api" % (Settings.get('ALB_PROTOCOL', "HTTP").lower(), cls.get_output_attr('dns_name'))
 
     @classmethod
     def get_api_version_url(cls, service):
