@@ -16,10 +16,10 @@ ES_INSTANCE_TYPE = "m4.large.elasticsearch"  # Possibble values m4.xlarge.elasti
 
 
 # ALB related configurations
-MAKE_ALB_INTERNAL = True
+MAKE_ALB_INTERNAL = True  # False if ALB need to be public(internet facing) else True
 ALB_PROTOCOL = "HTTP"
-SSL_CERTIFICATE_ARN = ""
-
+SSL_CERTIFICATE_ARN = ""  # Required only if ALB_PROTOCOL is defined as HTTPS
+PACBOT_DOMAIN = ""  # Required only if you point a CNAME record to ALB ex: app.pacbot.com
 
 # MAIL Server configuration
 MAIL_SERVER = "localhost"
