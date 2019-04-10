@@ -1,4 +1,5 @@
 from core.terraform.resources.aws.load_balancer import ALBListenerResource, ALBListenerRuleResource
+from core.config import Settings
 from resources.pacbot_app.alb import ApplicationLoadBalancer
 from resources.pacbot_app import alb_target_groups as tg
 
@@ -8,8 +9,10 @@ PATH_PREFIX = '/api/'
 
 class ApplicationLoadBalancerListener(ALBListenerResource):
     load_balancer_arn = ApplicationLoadBalancer.get_output_attr('arn')
-    port = 80
-    protocol = "HTTP"
+    port = 80 if Settings.get('ALB_PROTOCOL', "HTTP") != "HTTPS" else 443
+    protocol = Settings.get('ALB_PROTOCOL', "HTTP")
+    ssl_policy = "ELBSecurityPolicy-2016-08" if Settings.get('ALB_PROTOCOL', None) == "HTTPS" else None
+    certificate_arn = Settings.get('SSL_CERTIFICATE_ARN') if Settings.get('ALB_PROTOCOL', None) == "HTTPS" else None
     default_action_target_group_arn = tg.NginxALBTargetGroup.get_output_attr('arn')
     default_action_type = "forward"
 

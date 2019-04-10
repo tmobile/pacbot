@@ -2,6 +2,9 @@ from core.commands import BaseCommand
 from core.config import Settings
 from core import constants as K
 from core.terraform.resources.aws.ecs import ECSTaskDefinitionResource, ECSClusterResource
+from core.terraform.resources.aws.load_balancer import ALBTargetGroupResource
+from resources.pacbot_app.alb import ApplicationLoadBalancer
+from core.providers.aws.boto3 import elb
 from core.terraform import PyTerraform
 from core.providers.aws.boto3.ecs import stop_all_tasks_in_a_cluster, deregister_task_definition
 from threading import Thread
@@ -83,7 +86,46 @@ class Redeploy(BaseCommand):
         terraform_with_targets = False if self.need_complete_install else True
         resources_to_process = self.get_complete_resources(input_instance) if self.need_complete_install else resources_to_taint
 
+        self.run_pre_deployment_process(resources_to_process)
         self.run_real_deployment(input_instance, resources_to_process, terraform_with_targets)
+
+    def _get_resources_of_a_given_class_type(self, resources_to_process, class_to_check):
+        """
+        Match the resources of given class type and return matched resources
+
+        Args:
+            resources_to_process (list): List of resources to be created/updated
+            class_to_check (class): The class object which is to be checked
+        """
+        matched_resources = []
+        for resource in resources_to_process:
+            resource_base_classes = inspect.getmro(resource.__class__)
+            if class_to_check in resource_base_classes:
+                matched_resources.append(resource)
+
+        return matched_resources
+
+    def run_pre_deployment_process(self, resources_to_process):
+        """
+        Before redeploy get started do predeployment activities
+
+        Args:
+            resources_to_process (list): List of resources to be created/updated
+        """
+        if not self.dry_run:
+            elb.delete_all_listeners_of_alb(
+                ApplicationLoadBalancer.get_input_attr('name'),
+                Settings.AWS_ACCESS_KEY,
+                Settings.AWS_SECRET_KEY,
+                Settings.AWS_REGION)
+
+            tg_resources = self._get_resources_of_a_given_class_type(resources_to_process, ALBTargetGroupResource)
+            tg_names = [resource.get_input_attr('name') for resource in tg_resources]
+            elb.delete_alltarget_groups(
+                tg_names,
+                Settings.AWS_ACCESS_KEY,
+                Settings.AWS_SECRET_KEY,
+                Settings.AWS_REGION)
 
     def inactivate_required_services_for_redeploy(self, resources_to_process, dry_run):
         """
@@ -140,6 +182,7 @@ class Redeploy(BaseCommand):
             terraform_with_targets (boolean): This is True since redeployment is happening
         """
         self.terraform_thread = Thread(target=self.run_tf_apply, args=(input_instance, list(resources_to_process), terraform_with_targets))
+        # Dt-run variable is passed as it is rquired otherwise argument parsing issue will occur
         stop_related_task_thread = Thread(target=self.inactivate_required_services_for_redeploy, args=(list(resources_to_process), self.dry_run))
 
         self.terraform_thread.start()
