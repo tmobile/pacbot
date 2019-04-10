@@ -1,6 +1,6 @@
 from core.terraform.resources import TerraformResource
-from core.config import Settings
 from core.providers.aws.boto3 import elb
+from core.config import Settings
 
 
 class LoadBalancerResource(TerraformResource):
@@ -66,8 +66,23 @@ class ALBListenerResource(TerraformResource):
                 'default_action_type': {'required': True, 'tf_arg_key': 'type'},
             }
         },
-
+        'ssl_policy': {'required': False},
+        'certificate_arn': {'required': False}
     }
+
+    def validate_input_args(self):
+        """
+        Check protocol is HTTPS then validate certificate ARN. If not Or correct ARN then fallback to original validation
+
+        Returns:
+            success (boolean): Validation is success or not
+            msg_list (list): List of validation messages
+        """
+        if self.protocol == "HTTPS":
+            if not Settings.get('SSL_CERTIFICATE_ARN', None):
+                return False, ["Certifcate ARN is not found for ELB SSL Policy"]
+
+        return super().validate_input_args()
 
 
 class ALBListenerRuleResource(TerraformResource):
