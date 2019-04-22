@@ -3,6 +3,9 @@ from core.config import Settings
 from core import constants as K
 from core.terraform import PyTerraform
 from resources.iam.all_read_role import AllReadRole
+from core.providers.aws.boto3 import elb
+from core.terraform.resources.aws.load_balancer import ALBTargetGroupResource
+from resources.pacbot_app.alb import ApplicationLoadBalancer
 import importlib
 import os
 
@@ -57,6 +60,28 @@ class Upgrade(BaseCommand):
         self.install_class = getattr(importlib.import_module(
             provider.provider_module + '.install'), 'Install')
 
+    def run_pre_deployment_process(self, resources_to_process):
+        """
+        Before redeploy get started do predeployment activities
+
+        Args:
+            resources_to_process (list): List of resources to be created/updated
+        """
+        if not self.dry_run:
+            elb.delete_all_listeners_of_alb(
+                ApplicationLoadBalancer.get_input_attr('name'),
+                Settings.AWS_ACCESS_KEY,
+                Settings.AWS_SECRET_KEY,
+                Settings.AWS_REGION)
+
+            tg_resources = self._get_resources_of_a_given_class_type(resources_to_process, ALBTargetGroupResource)
+            tg_names = [resource.get_input_attr('name') for resource in tg_resources]
+            elb.delete_alltarget_groups(
+                tg_names,
+                Settings.AWS_ACCESS_KEY,
+                Settings.AWS_SECRET_KEY,
+                Settings.AWS_REGION)
+
     def upgrade_pacbot(self, input_instance):
         """
         Upgrade RDS, ES and roles if any by running terraform apply for those resources
@@ -66,6 +91,7 @@ class Upgrade(BaseCommand):
         """
         terraform_with_targets = False
         resources_to_process = self.get_complete_resources(input_instance)
+        self.run_pre_deployment_process(resources_to_process)
 
         self.install_class(
             self.args,
