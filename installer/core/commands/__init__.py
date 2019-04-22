@@ -128,3 +128,19 @@ class BaseCommand(metaclass=ABCMeta):
         input_instancce.read_input()
 
         return input_instancce
+
+    def _get_resources_of_a_given_class_type(self, resources_to_process, class_to_check):
+        """
+        Match the resources of given class type and return matched resources
+
+        Args:
+            resources_to_process (list): List of resources to be created/updated
+            class_to_check (class): The class object which is to be checked
+        """
+        matched_resources = []
+        for resource in resources_to_process:
+            resource_base_classes = inspect.getmro(resource.__class__)
+            if class_to_check in resource_base_classes:
+                matched_resources.append(resource)
+
+        return matched_resources
