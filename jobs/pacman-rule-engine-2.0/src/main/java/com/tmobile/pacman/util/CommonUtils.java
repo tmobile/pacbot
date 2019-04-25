@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -86,6 +87,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tmobile.pacman.common.PacmanSdkConstants;
 import com.tmobile.pacman.commons.rule.Annotation;
+import com.tmobile.pacman.config.ConfigManager;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -130,19 +132,11 @@ public class CommonUtils {
     /** The prop. */
     static Properties prop;
     static {
-
-        InputStream inputStream = null;
-        prop = new Properties();
-        String propFileName = "application.properties";
-        inputStream = CommonUtils.class.getClassLoader().getResourceAsStream(propFileName);
-        if (inputStream != null) {
-            try {
-                prop.load(inputStream);
-                inputStream.close();
-            } catch (IOException e) {
-                LOGGER.error("unable to load properties");
-            }
-        }
+		prop = new Properties();
+		Hashtable<String, Object> configMap = ConfigManager.getConfigurationsMap();
+		if (configMap != null && !configMap.isEmpty()) {
+			prop.putAll(configMap);
+		}
     }
 
     /**
