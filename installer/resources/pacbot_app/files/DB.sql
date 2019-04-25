@@ -1334,6 +1334,9 @@ INSERT IGNORE INTO pac_config_relation (`application`,`parent`) VALUES ('admin-s
 INSERT IGNORE INTO pac_config_relation (`application`,`parent`) VALUES ('magenta-skill','api');
 INSERT IGNORE INTO pac_config_relation (application,parent) VALUES ('data-shipper','batch');
 INSERT IGNORE INTO pac_config_relation (application,parent) VALUES ('inventory','batch');
+INSERT IGNORE INTO pac_config_relation (`application`,`parent`) VALUES ('rule','application');
+INSERT IGNORE INTO pac_config_relation (application,parent) VALUES ('rule-engine','rule');
+
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('admin.api-role','Description PlaceHolder');
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('admin.push.notification.pollinterval.milliseconds','description');
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('api.services[0].name','Description PlaceHolder');
@@ -1520,6 +1523,73 @@ INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spri
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.properties.mail.smtp.starttls.enable','Description PlaceHolder');
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.test-connection','Description PlaceHolder');
 
+
+INSERT INTO `pac_config_key_metadata` (`cfkey`, `description`) VALUES('pacman.es.host','Description PlaceHolder');
+INSERT INTO `pac_config_key_metadata` (`cfkey`, `description`) VALUES('pacman.es.port','Description PlaceHolder');
+INSERT INTO `pac_config_key_metadata` (`cfkey`, `description`) VALUES('esLoggingLevel','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('heimdall-host','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('heimdall-port','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.host','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.mail.cc.to','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.orphan.resource.owner','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.role.name','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.integrations.slack.webhook.url','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.target.type.alias','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('autofix.whitelist.accounts.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('autofix.whitelist.accounts.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('autofix.cufoff.date','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('api.backup.asset.config','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('api.resource.creationdate','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('api.getlastaction','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('api.postlastaction','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('api.register.reactors.url','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('api.auth.owner.slack.handle','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.tag.name','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.max.email.notifications','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.resource.name.filter.pattern','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.es.stats.index','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.es.stats.type','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.es.auto.fix.transaction.index','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.es.auto.fix.transaction.type','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.api.sendmail','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.es.reactors.index','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.es.reactors.registry','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('square.one.slack.channel','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('com.tmobile.pacman.reactors.impl.s3.S3CreateBucketAndUpdateBucketPolicyReactor.account.whitelist','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('com.tmobile.pacman.reactors.impl.sample.SampleReactor.account.whitelist','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('com.tmobile.pacman.reactors.impl.sample.SampleReactor2.account.whitelist','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.mail.from','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.tag.salt','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.tag.encyption.algorithm','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.exempted.mail.subject','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.exempted.types.for.cutoff.data','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.non.taggable.services','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.policy.url.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.mail.subject.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.warning.mail.subject.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.rule.violation.message.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.rule.warning.message.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.rule.post.fix.message.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.waittime.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.max.email.notifications.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.policy.url.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.mail.subject.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.warning.mail.subject.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.rule.violation.message.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.rule.warning.message.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.rule.post.fix.message.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.waittime.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.max.email.notifications.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.mail.template.columns.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','Description PlaceHolder');
+insert into `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.common.email.notifications.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','Description PlaceHolder');
+
+
+
+
+
+
+
+
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.config','classpath:spring-logback.xml','application','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.esLoggingLevel','WARN','application','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.consoleLoggingLevel','INFO','application','prd','latest',NULL,NULL,NULL,NULL);
@@ -1668,3 +1738,63 @@ INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.properties.mail.smtp.ssl.trust',concat(@MAIL_SERVER,''),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.properties.mail.smtp.starttls.enable',concat(@MAIL_SMTP_SSL_ENABLE,''),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('spring.mail.test-connection',concat(@MAIL_SMTP_SSL_TEST_CONNECTION,''),'notification-service','prd','latest',NULL,NULL,NULL,NULL);
+
+
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.es.host',concat(@ES_HOST_NAME,''),'rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.es.port',concat(@ES_PORT,''),'rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('esLoggingLevel','DEBUG','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('heimdall-host',concat(@ES_HEIMDALL_HOST_NAME,''),'rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('heimdall-port',concat(@ES_HEIMDALL_PORT,''),'rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.host',concat(@PACMAN_HOST_NAME,''),'rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.mail.cc.to','mail@pacbot.com','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.orphan.resource.owner','mail@pacbot.com','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.role.name','role/pacman','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.integrations.slack.webhook.url','','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.target.type.alias','account=iam,volume=ec2,snapshot=ec2,rdsdb=rds,dynamodb=dyndb,appelb=elb_app,classicelb=elb_classic,sg=ec2,elasticip=ec2,iamuser=iam,iamrole=iam','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('autofix.whitelist.accounts.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('autofix.whitelist.accounts.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('autofix.cufoff.date','3/28/2018','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('api.backup.asset.config',concat(@PACMAN_HOST_NAME,'/api/asset/v1/save-asset-config'),'rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('api.resource.creationdate',concat(@PACMAN_HOST_NAME,'/api/asset/v1/get-resource-created-date'),'rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('api.getlastaction',concat(@PACMAN_HOST_NAME,'/api/compliance/v1/get-last-action'),'rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('api.postlastaction',concat(@PACMAN_HOST_NAME,'/api/compliance/v1/post-action'),'rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('api.register.reactors.url',concat(@PACMAN_HOST_NAME,'/api/admin/reactors'),'rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('api.auth.owner.slack.handle','','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.tag.name','pac_auto_fix_do_not_delete','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.max.email.notifications','2','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.resource.name.filter.pattern','','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.es.stats.index','fre-stats','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.es.stats.type','execution-stats','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.es.auto.fix.transaction.index','fre-auto-fix-tran-log','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.es.auto.fix.transaction.type','transaction-log','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.api.sendmail',concat(@PACMAN_HOST_NAME,'/api/notifications/send-plain-text-mail'),'rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.es.reactors.index','pac-reactor','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.es.reactors.registry','events-log','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('square.one.slack.channel','#square-1-alerts','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('com.tmobile.pacman.reactors.impl.s3.S3CreateBucketAndUpdateBucketPolicyReactor.account.whitelist','','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('com.tmobile.pacman.reactors.impl.sample.SampleReactor.account.whitelist','','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('com.tmobile.pacman.reactors.impl.sample.SampleReactor2.account.whitelist','','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.mail.from','noreply@pacman-tmobile.com','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.tag.salt','','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.tag.encyption.algorithm','AES','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.exempted.mail.subject','PacMan AutoFix - Vulnerable resource is now exempted','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.autofix.exempted.types.for.cutoff.data','iam,account,ec2,volume,snapshot,elasticsearch,efs,redshift,s3,dyndb,rds,elb_app,elb_classic,elasticip','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.autofix.non.taggable.services','iam,account','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.autofix.policy.url.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3',concat(@PACMAN_HOST_NAME,'/pl/compliance/policy-knowledgebase-details/PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3?ag=aws-all&domain=Infra%20%26%20Platforms'),'rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.mail.subject.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','PacBot autofix action - S3 bucket policy with anonymous read/write access restored back','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.warning.mail.subject.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','PacBot autofix - S3 bucket detected with anonymous access','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.autofix.rule.violation.message.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','a S3 bucket  (<b>${RESOURCE_ID}</b>) from account (<b>${ACCOUNT_ID}</b>) of region (<b>${REGION}</b>) created by you is open to internet for anonymous access','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.autofix.rule.warning.message.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','The permissions for this S3 bucket will be automatically fixed by PacBot after 5 days if no exception is granted.','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.autofix.rule.post.fix.message.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','PacBot has now automatically revoked the public permissions of s3 bucket (<b>${RESOURCE_ID}</b>) created by you as it was a violation of','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.autofix.waittime.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','48','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.max.email.notifications.PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3','4','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.autofix.policy.url.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2',concat(@PACMAN_HOST_NAME,'/pl/compliance/policy-knowledgebase-details/PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2?ag=aws-all&domain=Infra%20%26%20Platforms'),'rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.mail.subject.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','PacBot autofix action - Ec2 with public access restored back','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.warning.mail.subject.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','PacBot autofix - Ec2 instance detected with public access','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.autofix.rule.violation.message.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','an Ec2 instance  (<b>${RESOURCE_ID}</b>) from account (<b>${ACCOUNT_ID}</b>) of region (<b>${REGION}</b>) created by you is open to internet','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.autofix.rule.warning.message.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','The access to this Ec2 instance will be automatically fixed by PacBot after 5 days if no exception is granted.','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.autofix.rule.post.fix.message.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','PacBot has now automatically revoked the public access of this Ec2 instance created by you as it was a violation of','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.autofix.waittime.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','48','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.max.email.notifications.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','4','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.mail.template.columns.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','Resource Id,Account Id,Region,Attached Sg,Detached Sg','rule','prd','latest',NULL,NULL,NULL,NULL);
+insert into `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.common.email.notifications.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','commonTemplate','rule','prd','latest',NULL,NULL,NULL,NULL);
