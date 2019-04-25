@@ -37,6 +37,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Matchers.anyMap;
 import static org.mockito.Matchers.anyString;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +50,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.tmobile.pacman.common.AutoFixAction;
 import com.tmobile.pacman.common.PacmanSdkConstants;
+import com.tmobile.pacman.dto.AutoFixTransaction;
 import com.tmobile.pacman.dto.ResourceOwner;
 
 // TODO: Auto-generated Javadoc
@@ -64,10 +66,10 @@ public class MailUtilsTest {
 
 /*	@Mock
 	private HttpResponse response;
-
+	
 	@Mock
 	private StatusLine sl;*/
-
+	
 	/**
  * Send auto fix notification.
  *
@@ -78,10 +80,10 @@ public class MailUtilsTest {
 	public void sendAutoFixNotification() throws Exception {
 		PowerMockito.mockStatic(ESUtils.class);
         PowerMockito.when(ESUtils.getEsUrl()).thenReturn("");
-        PowerMockito.when(ESUtils.publishMetrics(anyMap())).thenReturn(Boolean.TRUE);
+        PowerMockito.when(ESUtils.publishMetrics(anyMap(),anyString())).thenReturn(Boolean.TRUE);
         PowerMockito.mockStatic(CommonUtils.class);
         PowerMockito.when(CommonUtils.doHttpPost(anyString(),anyString(),anyMap())).thenReturn("");
-        PowerMockito.when(CommonUtils.doHttpPost(anyString(),anyString())).thenReturn("");
+        PowerMockito.when(CommonUtils.doHttpPost(anyString(),anyString(),anyMap())).thenReturn("");
         PowerMockito.when(CommonUtils.getTemplateContent(anyString())).thenReturn("");
         PowerMockito.when(CommonUtils.getPropValue(anyString())).thenReturn("test@gmail.com;test@gmail.com");
         Map<String, String> params = new HashMap<>();
@@ -89,8 +91,8 @@ public class MailUtilsTest {
         ResourceOwner resourceOwner = new ResourceOwner();
         resourceOwner.setEmailId("test@gmail.com");
         resourceOwner.setName("name123");
-		boolean response = MailUtils.sendAutoFixNotification(params, resourceOwner, "targetType123", "resourceid123", "31/05/1999", AutoFixAction.AUTOFIX_ACTION_EMAIL);
+		boolean response = MailUtils.sendAutoFixNotification(params, resourceOwner, "targetType123", "resourceid123", "31/05/1999", AutoFixAction.AUTOFIX_ACTION_EMAIL,new ArrayList<AutoFixTransaction>(),new HashMap<String, String>());
 		assertTrue(response);
 	}
-
+    
 }

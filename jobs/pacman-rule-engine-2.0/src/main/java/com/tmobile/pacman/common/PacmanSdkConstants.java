@@ -515,5 +515,53 @@ public interface PacmanSdkConstants extends com.tmobile.pacman.commons.PacmanSdk
     
     /** The source. */
     String SOURCE = "source";
+    
+    /** **/
+    String AUTH_API_OWNER_SLACK_HANDLE = "api.auth.owner.slack.handle";
+    
+    /** default string **/
+    String PAC_DEFAULT = "default";
+    
+    /**default delay key**/
+    String PAC_AUTO_FIX_DELAY_KEY= "pacman.autofix.waittime";
+    
+    /** **/
+    String TYPE_FOR_AUTO_FIX_RECORD  = "autofix";
+    
+    /** **/
+    String TRANSACTION_ID = "transactionId";
+    
+    /****/
+    String TRANSACTION_TIME = "transationTime";
+    
+    String PACMAN_MAIL_TEMPLATE_COLUMNS = "pacman.auto.fix.mail.template.columns.";
+    
+    /** **/
+    String JOB_ID = "AWS_BATCH_JOB_ID";
+    
+    String SQUARE_ONE_SLACK_CHANNEL = "square.one.slack.channel";
+    
+    /** white list **/
+    String WHITELIST = ".account.whitelist";
+    
+    String EVENTS_INDEX_NAME_KEY = "pacman.es.reactors.index";
+
+    String EVENTS_REGISTRY_KEY = "pacman.es.reactors.registry";
+
+    String EVENT_ID = "eventId";
+
+    String EVENT_DATA_KEY = "eventData";
+
+    String EVENT_RECEIVE_TIME = "eventReceiveTime";
+
+    String EVENT_PROCESSED_TIME = "eventProcessedTime";
+
+    String EVENT_NAME = "evetName";
+    
+    /** The reactor category. */
+    String REACTOR_CATEGORY = "reactorCategory";
+    
+    /** The account. */
+    String ACCOUNT="account";
 
 }
