@@ -497,5 +497,23 @@ public interface PacmanSdkConstants extends com.tmobile.pacman.commons.PacmanSdk
 
     /** The rule contact. */
     String RULE_CONTACT = "ruleOwner";
+    
+    /** The config credentials. */
+    String CONFIG_CREDENTIALS = "CONFIG_CREDENTIALS";
+    
+    /** The config service url. */
+    String CONFIG_SERVICE_URL = "CONFIG_SERVICE_URL";
+    
+    /** The missing configuration. */
+    String MISSING_CONFIGURATION = "Missing value in the env configuration";
+   
+    /** The missing db configuration. */
+    String MISSING_DB_CONFIGURATION = "Missing db configurations";
+    
+    /** The name. */
+    String NAME = "name";
+    
+    /** The source. */
+    String SOURCE = "source";
 
 }
