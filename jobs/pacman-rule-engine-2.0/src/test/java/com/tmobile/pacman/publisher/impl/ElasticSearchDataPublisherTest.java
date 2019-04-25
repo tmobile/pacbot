@@ -18,6 +18,7 @@ package com.tmobile.pacman.publisher.impl;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
 import java.util.List;
 
 import org.junit.Test;
@@ -44,11 +45,11 @@ import com.tmobile.pacman.util.ReflectionUtils;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ReflectionUtils.class,ESUtils.class,CommonUtils.class})
 public class ElasticSearchDataPublisherTest {
-
-
+    
+    
     /** The elastic search data publisher. */
     private ElasticSearchDataPublisher elasticSearchDataPublisher=null;
-
+    
     /**
      * Test publish with no annotations.
      *
@@ -61,9 +62,9 @@ public class ElasticSearchDataPublisherTest {
        // RestClientBuilder restClientBuilder = PowerMockito.mock(RestClientBuilder.class);
        // PowerMockito.when(RestClient.builder(any())).thenReturn(restClientBuilder);
       //  HttpHost httpHost = PowerMockito.mock(HttpHost.class);
-    //    PowerMockito.whenNew(HttpHost.class).withAnyArguments().thenReturn(httpHost);
+    //    PowerMockito.whenNew(HttpHost.class).withAnyArguments().thenReturn(httpHost);  
         elasticSearchDataPublisher = new ElasticSearchDataPublisher(true);
-
+        
         List<AutoFixTransaction> autoFixTrans = Lists.newArrayList();
     	AutoFixTransaction autoFixTransaction = new AutoFixTransaction();
     	autoFixTransaction.setDesc("desc");
@@ -74,10 +75,10 @@ public class ElasticSearchDataPublisherTest {
     	autoFixTransaction.setTransactionId("transactionId");
     	autoFixTransaction.setTransationTime("transationTime");
     	autoFixTrans.add(autoFixTransaction);
-
-    	AutoFixTransaction autoFixTransaction1 = new AutoFixTransaction(AutoFixAction.AUTOFIX_ACTION_BACKUP, "resourceId", "ruleId", "executionId", "transactionId", "desc");
+    	
+    	AutoFixTransaction autoFixTransaction1 = new AutoFixTransaction(AutoFixAction.AUTOFIX_ACTION_BACKUP, "resourceId", "ruleId", "executionId", "transactionId", "desc","type","targetType","annotationId");
     	assertTrue(autoFixTransaction1.equals(autoFixTransaction1));
-    	assertNotNull(elasticSearchDataPublisher.publishAutoFixTransactions(autoFixTrans));
-    }
-
+    	assertNotNull(elasticSearchDataPublisher.publishAutoFixTransactions(autoFixTrans,new HashMap<>()));
+    } 
+    
 }

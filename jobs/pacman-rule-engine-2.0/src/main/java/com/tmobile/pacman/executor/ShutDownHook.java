@@ -16,6 +16,7 @@
 
 package com.tmobile.pacman.executor;
 
+import java.util.HashMap;
 import java.util.Map;
 
 import com.tmobile.pacman.common.PacmanSdkConstants;
@@ -53,11 +54,12 @@ public class ShutDownHook implements Runnable {
      */
     @Override
     public void run() {
+        if(null==ruleEngineStats)ruleEngineStats = new HashMap<>();
         ruleEngineStats.put("endTime", CommonUtils.getCurrentDateStringWithFormat(PacmanSdkConstants.PAC_TIME_ZONE,
                 PacmanSdkConstants.DATE_FORMAT));
-        ruleEngineStats.put(PacmanSdkConstants.STATUS_REASON, "SIGTERM");
+        ruleEngineStats.put(PacmanSdkConstants.STATUS_REASON, "SIGTERM"); 
         ruleEngineStats.put(PacmanSdkConstants.STATUS_KEY, PacmanSdkConstants.STATUS_FINISHED);
-        ESUtils.publishMetrics(ruleEngineStats);
+        ESUtils.publishMetrics(ruleEngineStats,CommonUtils.getPropValue(PacmanSdkConstants.STATS_TYPE_NAME_KEY));
     }
 
 }
