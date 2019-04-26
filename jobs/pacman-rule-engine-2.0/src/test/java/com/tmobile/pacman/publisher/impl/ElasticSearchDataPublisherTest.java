@@ -17,10 +17,13 @@
 package com.tmobile.pacman.publisher.impl;
 
 import static org.junit.Assert.*;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.api.mockito.PowerMockito;
@@ -30,9 +33,11 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.google.common.collect.Lists;
 import com.tmobile.pacman.common.AutoFixAction;
+import com.tmobile.pacman.config.ConfigManager;
 import com.tmobile.pacman.dto.AutoFixTransaction;
 import com.tmobile.pacman.util.CommonUtils;
 import com.tmobile.pacman.util.ESUtils;
+import com.tmobile.pacman.util.ProgramExitUtils;
 import com.tmobile.pacman.util.ReflectionUtils;
 
 // TODO: Auto-generated Javadoc
@@ -43,10 +48,18 @@ import com.tmobile.pacman.util.ReflectionUtils;
  */
 @PowerMockIgnore({"org.apache.http.conn.ssl.*", "javax.net.ssl.*" , "javax.crypto.*"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ReflectionUtils.class,ESUtils.class,CommonUtils.class})
+@PrepareForTest({ReflectionUtils.class,ESUtils.class,CommonUtils.class,ConfigManager.class})
 public class ElasticSearchDataPublisherTest {
     
-    
+	/**
+     * Setup.
+     */
+    @Before
+    public void setup(){
+        mockStatic(ConfigManager.class);
+        ConfigManager ConfigManager = PowerMockito.mock(ConfigManager.class);
+		PowerMockito.when(ConfigManager.getConfigurationsMap()).thenReturn(new Hashtable<String, Object>());
+    }
     /** The elastic search data publisher. */
     private ElasticSearchDataPublisher elasticSearchDataPublisher=null;
     

@@ -29,9 +29,11 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Matchers.anyMap;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -48,6 +50,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.tmobile.pacman.common.PacmanSdkConstants;
 import com.tmobile.pacman.commons.rule.Annotation;
+import com.tmobile.pacman.config.ConfigManager;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -55,7 +58,7 @@ import com.tmobile.pacman.commons.rule.Annotation;
  */
 @PowerMockIgnore("javax.net.ssl.*")
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CommonUtils.class, StringBuilder.class, Strings.class})
+@PrepareForTest({CommonUtils.class, StringBuilder.class, Strings.class,ConfigManager.class})
 public class ESUtilsTest {
     
     
@@ -67,8 +70,11 @@ public class ESUtilsTest {
      */
     @Before
     public void setup(){
+    	mockStatic(ConfigManager.class);
         PowerMockito.mockStatic(CommonUtils.class);
         PowerMockito.when(CommonUtils.getEnvVariableValue(anyString())).thenReturn(DUMMY_ES_HOST);
+        ConfigManager ConfigManager = PowerMockito.mock(ConfigManager.class);
+		PowerMockito.when(ConfigManager.getConfigurationsMap()).thenReturn(new Hashtable<String, Object>());
     }
     
     
