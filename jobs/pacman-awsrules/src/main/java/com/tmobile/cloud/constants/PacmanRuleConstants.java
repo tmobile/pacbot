@@ -318,4 +318,7 @@ public class PacmanRuleConstants {
     public static final String HEIMDALL_URI = "HEIMDALL_URI";
     public static final String KERNEL_VERSION_BY_INSTANCEID_API = "kernelVersionByInstanceIdAPI";
     public static final String PACMAN_API_URI = "PACMAN_API_URI";
+    public static final String IAM_USER_NAME = "username";
+	public static final String UNAPPROVED_IAM_ACTIONS = "unApprovedIamActions";
+	public static final String UNABLE_TO_GET_CLIENT = "Unable to get client";
 }

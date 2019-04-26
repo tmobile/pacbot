@@ -36,6 +36,7 @@ public class CommonTestUtils {
 
     public static Map<String, String> getMapString(String passRuleResourceId) {
         Map<String, String> commonMap = new HashMap<>();
+        commonMap.put("username", "svc_");
         commonMap.put("esEc2SgURL", "esEc2SgURL");
         commonMap.put("esRoutetableAssociationsURL", "esRoutetableAssociationsURL");
         commonMap.put("esRoutetableRoutesURL", "esRoutetableRoutesURL");
