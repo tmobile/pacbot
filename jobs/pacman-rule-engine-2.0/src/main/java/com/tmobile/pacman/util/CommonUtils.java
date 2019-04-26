@@ -180,13 +180,6 @@ public class CommonUtils {
                 httpclient = HttpClients.custom().build();
             }
             HttpPost httppost = new HttpPost(url);
-            if(AuthManager.getToken()!=null){
-                String accessToken =  AuthManager.getToken();
-                if(!Strings.isNullOrEmpty(accessToken))
-                {
-                	httppost.setHeader(PacmanSdkConstants.AUTH_HEADER, "Bearer " + accessToken);
-                }
-            }
             httppost.setHeader(CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
             StringEntity jsonEntity = new StringEntity(requestBody);
             httppost.setEntity(jsonEntity);
@@ -194,10 +187,50 @@ public class CommonUtils {
             int statusCode = httpresponse.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
                 return EntityUtils.toString(httpresponse.getEntity());
-            } else {
+            } else {/*
                 LOGGER.error(requestBody);
                 throw new Exception(
                         "unable to execute post request because " + httpresponse.getStatusLine().getReasonPhrase());
+            */}
+            
+            try {
+
+                if (url.contains(HTTPS)) {
+
+                    SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(createNoSSLContext());
+                    httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+                } else {
+                    httpclient = HttpClients.custom().build();
+                }
+                HttpPost httppost1 = new HttpPost(url);
+                if(AuthManager.getToken()!=null){
+                    String accessToken =  AuthManager.getToken();
+                    if(!Strings.isNullOrEmpty(accessToken))
+                    {
+                    	httppost1.setHeader(PacmanSdkConstants.AUTH_HEADER, "Bearer " + accessToken);
+                    }
+                }
+                httppost1.setHeader(CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
+                StringEntity jsonEntity1 = new StringEntity(requestBody);
+                httppost1.setEntity(jsonEntity1);
+                HttpResponse httpresponse1 = httpclient.execute(httppost1);
+                int statusCode1 = httpresponse1.getStatusLine().getStatusCode();
+                if (statusCode1 == HttpStatus.SC_OK || statusCode1 == HttpStatus.SC_CREATED) {
+                    return EntityUtils.toString(httpresponse1.getEntity());
+                } else {
+                    LOGGER.error(requestBody);
+                    throw new Exception(
+                            "unable to execute post request because " + httpresponse1.getStatusLine().getReasonPhrase());
+                }
+            } catch (ParseException parseException) {
+                LOGGER.error("error closing issue" + parseException);
+                throw parseException;
+            } catch (Exception exception) {
+                LOGGER.error("error closing issue" + exception.getMessage());
+                throw exception;
+            } finally {
+                if (null != httpclient)
+                    httpclient.close();
             }
         } catch (ParseException parseException) {
             LOGGER.error("error closing issue" + parseException);
@@ -523,12 +556,12 @@ public class CommonUtils {
      * @return the map
      */
     public static Map<String, String> createParamMap(String ruleParams) {
-        // return Splitter.on("#").withKeyValueSeparator("=").split(ruleParams);
+       /* // return Splitter.on("#").withKeyValueSeparator("=").split(ruleParams);
         if (ruleParams.contains("*")) // this is for backward compatibility
             return buildMapFromString(ruleParams, "*", "=");
-        else {
+        else {*/
             return buildMapFromJson(ruleParams);
-        }
+       // }
     }
 
     /**
