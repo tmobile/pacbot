@@ -17,6 +17,7 @@
 
 package com.tmobile.pacman.common;
 
+
 // TODO: Auto-generated Javadoc
 /**
  * The Interface PacmanSdkConstants.
@@ -492,6 +493,7 @@ public interface PacmanSdkConstants extends com.tmobile.pacman.commons.PacmanSdk
     String APPLICATION_TAG_NAME = "Application";
 
 
+    /** The target type alias. */
     String TARGET_TYPE_ALIAS = "pacman.target.type.alias";
 
 
@@ -516,46 +518,55 @@ public interface PacmanSdkConstants extends com.tmobile.pacman.commons.PacmanSdk
     /** The source. */
     String SOURCE = "source";
     
-    /** **/
+    /**  *. */
     String AUTH_API_OWNER_SLACK_HANDLE = "api.auth.owner.slack.handle";
     
-    /** default string **/
+    /**  default string *. */
     String PAC_DEFAULT = "default";
     
-    /**default delay key**/
+    /** default delay key*. */
     String PAC_AUTO_FIX_DELAY_KEY= "pacman.autofix.waittime";
     
-    /** **/
+    /**  *. */
     String TYPE_FOR_AUTO_FIX_RECORD  = "autofix";
     
-    /** **/
+    /**  *. */
     String TRANSACTION_ID = "transactionId";
     
-    /****/
+    /** *. */
     String TRANSACTION_TIME = "transationTime";
     
+    /** The pacman mail template columns. */
     String PACMAN_MAIL_TEMPLATE_COLUMNS = "pacman.auto.fix.mail.template.columns.";
     
-    /** **/
+    /**  *. */
     String JOB_ID = "AWS_BATCH_JOB_ID";
     
+    /** The square one slack channel. */
     String SQUARE_ONE_SLACK_CHANNEL = "square.one.slack.channel";
     
-    /** white list **/
+    /**  white list *. */
     String WHITELIST = ".account.whitelist";
     
+    /** The events index name key. */
     String EVENTS_INDEX_NAME_KEY = "pacman.es.reactors.index";
 
+    /** The events registry key. */
     String EVENTS_REGISTRY_KEY = "pacman.es.reactors.registry";
 
+    /** The event id. */
     String EVENT_ID = "eventId";
 
+    /** The event data key. */
     String EVENT_DATA_KEY = "eventData";
 
+    /** The event receive time. */
     String EVENT_RECEIVE_TIME = "eventReceiveTime";
 
+    /** The event processed time. */
     String EVENT_PROCESSED_TIME = "eventProcessedTime";
 
+    /** The event name. */
     String EVENT_NAME = "evetName";
     
     /** The reactor category. */
@@ -563,5 +574,18 @@ public interface PacmanSdkConstants extends com.tmobile.pacman.commons.PacmanSdk
     
     /** The account. */
     String ACCOUNT="account";
+    
+   
+    /** The auth header. */
+    String AUTH_HEADER = "Authorization";
+    
+    /** The pacman host. */
+    String PACMAN_HOST = "pacman.host";
+    
+    /** The pacman login user name. */
+    String PACMAN_LOGIN_USER_NAME = "pacman.login.user.name";
+    
+    /** The pacman login password. */
+    String PACMAN_LOGIN_PASSWORD = "pacman.login.password";
 
 }

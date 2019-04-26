@@ -86,6 +86,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tmobile.pacman.common.PacmanSdkConstants;
+import com.tmobile.pacman.commons.autofix.manager.AuthManager;
 import com.tmobile.pacman.commons.rule.Annotation;
 import com.tmobile.pacman.config.ConfigManager;
 
@@ -179,6 +180,13 @@ public class CommonUtils {
                 httpclient = HttpClients.custom().build();
             }
             HttpPost httppost = new HttpPost(url);
+            if(AuthManager.getToken()!=null){
+                String accessToken =  AuthManager.getToken();
+                if(!Strings.isNullOrEmpty(accessToken))
+                {
+                	httppost.setHeader(PacmanSdkConstants.AUTH_HEADER, "Bearer " + accessToken);
+                }
+            }
             httppost.setHeader(CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
             StringEntity jsonEntity = new StringEntity(requestBody);
             httppost.setEntity(jsonEntity);
@@ -222,6 +230,13 @@ public class CommonUtils {
                 jsonEntity = new StringEntity(requestBody);
             }
 
+            if(AuthManager.getToken()!=null){
+                String accessToken =  AuthManager.getToken();
+                if(!Strings.isNullOrEmpty(accessToken))
+                {
+                	httpPut.setHeader(PacmanSdkConstants.AUTH_HEADER, "Bearer " + accessToken);
+                }
+            }
             httpPut.setEntity(jsonEntity);
             HttpResponse httpresponse = client.execute(httpPut);
             if (httpresponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
@@ -726,11 +741,48 @@ public class CommonUtils {
             StringEntity jsonEntity = new StringEntity(requestBody);
             httppost.setEntity(jsonEntity);
             HttpResponse httpresponse = httpclient.execute(httppost);
-            return EntityUtils.toString(httpresponse.getEntity());
+           if(httpresponse.getStatusLine().getStatusCode()!=HttpStatus.SC_OK){
+               throw new IOException("non 200 code from rest call--->" + url);
+           }
+            String responseStr = EntityUtils.toString(httpresponse.getEntity());
+            LOGGER.debug(url + " service with input" + requestBody +" returned " + responseStr);
+            return responseStr;
         } catch (org.apache.http.ParseException parseException) {
             LOGGER.error("ParseException : " + parseException.getMessage());
         } catch (IOException ioException) {
-            LOGGER.error("IOException : " + ioException.getMessage());
+        	try{
+        		if(AuthManager.getToken()!=null){
+                    String accessToken =  AuthManager.getToken();
+                 if(!Strings.isNullOrEmpty(accessToken))
+                 {
+                     headers.put(PacmanSdkConstants.AUTH_HEADER, "Bearer " + accessToken);
+                 }
+             }
+        	 if (url.contains(HTTPS)) {
+
+                 SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(createNoSSLContext());
+                 httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+             } else {
+                 httpclient = HttpClients.custom().build();
+             }
+
+             HttpPost httppost = new HttpPost(url);
+             for (Map.Entry<String, String> entry : headers.entrySet()) {
+                 httppost.addHeader(entry.getKey(), entry.getValue());
+             }
+             httppost.setHeader(CONTENT_TYPE, APPLICATION_JSON);
+             StringEntity jsonEntity = new StringEntity(requestBody);
+             httppost.setEntity(jsonEntity);
+             HttpResponse httpresponse = httpclient.execute(httppost);
+            if(httpresponse.getStatusLine().getStatusCode()!=HttpStatus.SC_OK){
+                throw new IOException("non 200 code from rest call--->" + url);
+            }
+             String responseStr = EntityUtils.toString(httpresponse.getEntity());
+             LOGGER.debug(url + " service with input" + requestBody +" returned " + responseStr);
+             return responseStr;
+        }catch(Exception e){
+        	LOGGER.error("Exception in isResourceDateExpired: " + e.getMessage());
+        }
         }
         return null;
     }
@@ -753,6 +805,14 @@ public class CommonUtils {
                 httpclient = HttpClients.custom().build();
             }
             HttpGet httpGet = new HttpGet(url);
+            if(AuthManager.getToken()!=null){
+                String accessToken =  AuthManager.getToken();
+                if(!Strings.isNullOrEmpty(accessToken))
+                {
+                    httpGet.setHeader(PacmanSdkConstants.AUTH_HEADER, "Bearer " + accessToken);
+                }
+            }
+            
             httpGet.setHeader(CONTENT_TYPE, APPLICATION_JSON);
             CloseableHttpResponse response = httpclient.execute(httpGet);
             return EntityUtils.toString(response.getEntity());
