@@ -457,7 +457,6 @@ public class AutoFixManager {
      */
     private boolean isAFixCandidate(Method isFixCandidateMethod, Object fixObject, String resourceId, String targetType,
             Map<String, Object> clientMap, Map<String, String> ruleParam, Map<String, String> annotation) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        logger.debug("is fix candidate ==> " + (null==isFixCandidateMethod?true:(Boolean)isFixCandidateMethod.invoke(fixObject, resourceId, targetType, clientMap, ruleParam,annotation)));
        return null==isFixCandidateMethod?true:(Boolean)isFixCandidateMethod.invoke(fixObject, resourceId, targetType, clientMap, ruleParam,annotation);
     }
 
