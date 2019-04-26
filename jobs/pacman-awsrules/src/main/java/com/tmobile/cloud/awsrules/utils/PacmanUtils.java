@@ -2213,5 +2213,32 @@ public class PacmanUtils {
         return kernelVersion;
     }
     
-   
+    /**
+     * Creates the annotation.
+     *
+     * @param resourceType the resource type
+     * @param ruleParam the rule param
+     * @param description the description
+     * @param severity the severity
+     * @param category the category
+     * @return the annotation
+     */
+    public static Annotation createAnnotation(String resourceType, Map<String, String> ruleParam, String description,
+            String severity, String category) {
+        List<LinkedHashMap<String, Object>> issueList = new ArrayList<>();
+        LinkedHashMap<String, Object> issue = new LinkedHashMap<>();
+
+        Annotation annotation = Annotation.buildAnnotation(ruleParam, Annotation.Type.ISSUE);
+        annotation.put(PacmanSdkConstants.DESCRIPTION, description);
+        annotation.put(PacmanRuleConstants.SEVERITY, severity);
+        if (!StringUtils.isEmpty(resourceType)) {
+            annotation.put(PacmanRuleConstants.SUBTYPE, Annotation.Type.RECOMMENDATION.toString());
+        }
+        annotation.put(PacmanRuleConstants.CATEGORY, category);
+
+        issue.put(PacmanRuleConstants.VIOLATION_REASON, description);
+        issueList.add(issue);
+        annotation.put(PacmanRuleConstants.ISSUE_DETAILS, issueList.toString());
+        return annotation;
+    }
 }
