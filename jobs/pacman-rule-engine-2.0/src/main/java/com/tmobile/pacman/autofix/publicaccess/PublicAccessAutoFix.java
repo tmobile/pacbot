@@ -372,12 +372,23 @@ public class PublicAccessAutoFix {
     	AmazonEC2 ec2Client = (AmazonEC2) clientMap.get("client");
     	DescribeInstancesRequest describeInstancesRequest = new DescribeInstancesRequest();
 		describeInstancesRequest.setInstanceIds(Arrays.asList(resourceId));
-		DescribeInstancesResult describeInstancesResult = ec2Client.describeInstances(describeInstancesRequest);
 		
-		List<Reservation> reservations = describeInstancesResult.getReservations();
-		Reservation reservation = reservations.get(0);
-		List<Instance> instances = reservation.getInstances();
-		return instances.get(0);
+		
+		RetryConfig config = RetryConfig.custom().maxAttempts(MAX_ATTEMPTS).waitDuration(Duration.ofSeconds(WAIT_INTERVAL)).build();
+		RetryRegistry registry = RetryRegistry.of(config);
+		
+		Retry retry = registry.retry(describeInstancesRequest.toString());
+   		
+		Function<Integer, Instance> decorated
+		  =  Retry.decorateFunction(retry, (Integer s) -> {
+			  DescribeInstancesResult  describeInstancesResult =  ec2Client.describeInstances(describeInstancesRequest);
+			  List<Reservation> reservations = describeInstancesResult.getReservations();
+				Reservation reservation = reservations.get(0);
+				List<Instance> instances = reservation.getInstances();
+				return instances.get(0);
+		    });
+		return decorated.apply(1);
+	
     }
 
 }
