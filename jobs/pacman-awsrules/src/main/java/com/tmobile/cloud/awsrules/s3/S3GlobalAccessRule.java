@@ -40,7 +40,6 @@ import com.tmobile.pacman.commons.exception.UnableToCreateClientException;
 import com.tmobile.pacman.commons.rule.BaseRule;
 import com.tmobile.pacman.commons.rule.PacmanRule;
 import com.tmobile.pacman.commons.rule.RuleResult;
-import com.tmobile.pacman.executor.RuleExecutor;
 
 @PacmanRule(key = "check-for-s3-global-access", desc = "checks entirely for S3 Buckets With Global Access Permission", severity = PacmanSdkConstants.SEV_HIGH, category = PacmanSdkConstants.SECURITY)
 public class S3GlobalAccessRule extends BaseRule {
@@ -203,8 +202,4 @@ public class S3GlobalAccessRule extends BaseRule {
         return false;
     }
     
-    public static void main(String args[]){
-    	new RuleExecutor().main(args);
-    }
-
 }

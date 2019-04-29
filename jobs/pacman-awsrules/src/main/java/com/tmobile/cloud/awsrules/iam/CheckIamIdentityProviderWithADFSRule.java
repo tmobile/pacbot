@@ -19,8 +19,6 @@
 
 package com.tmobile.cloud.awsrules.iam;
 
-import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -33,7 +31,6 @@ import org.slf4j.MDC;
 
 import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClient;
 import com.amazonaws.services.identitymanagement.model.GetSAMLProviderRequest;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.tmobile.cloud.awsrules.utils.PacmanUtils;
 import com.tmobile.cloud.constants.PacmanRuleConstants;
 import com.tmobile.pacman.commons.AWSService;
@@ -155,8 +152,4 @@ public class CheckIamIdentityProviderWithADFSRule extends BaseRule {
         return "At least one CORP ADFS identity provider should be configured on all AWS accounts";
     }
     
-    @SuppressWarnings("static-access")
-    public static void main(String args[]) throws JsonParseException, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, ClassNotFoundException, IOException{
-        //new RuleExecutor().main(args);
-    }
 }
