@@ -12,8 +12,8 @@ HEALTH_CHECK_INTERVAL = 300
 class BaseTG:
     # port = 80 if Settings.get('ALB_PROTOCOL', "HTTP") != "HTTPS" else 443
     # protocol = Settings.get('ALB_PROTOCOL', "HTTP")
-    port = 80
-    protocol = "HTTP"
+    port = 443
+    protocol = "HTTPS"
 
     target_type = "ip"
     create_before_destroy = True
@@ -23,43 +23,43 @@ class BaseTG:
     matcher = HEALTH_CHECK_MATCHING_LIST
 
 
-class ConfigALBTargetGroup(ALBTargetGroupResource, BaseTG):
-    name = "config"
+class ConfigALBHttpsTargetGroup(ALBTargetGroupResource, BaseTG):
+    name = "config-https"
     path = PATH_PREFIX + "config"
 
 
-class AdminALBTargetGroup(ALBTargetGroupResource, BaseTG):
-    name = "admin"
+class AdminALBHttpsTargetGroup(ALBTargetGroupResource, BaseTG):
+    name = "admin-https"
     path = PATH_PREFIX + "admin/api.html"
 
 
-class ComplianceALBTargetGroup(ALBTargetGroupResource, BaseTG):
-    name = "compliance"
+class ComplianceALBHttpsTargetGroup(ALBTargetGroupResource, BaseTG):
+    name = "compliance-https"
     path = PATH_PREFIX + "compliance/api.html"
 
 
-class NotificationsALBTargetGroup(ALBTargetGroupResource, BaseTG):
-    name = "notifications"
+class NotificationsALBHttpsTargetGroup(ALBTargetGroupResource, BaseTG):
+    name = "notifications-https"
     path = PATH_PREFIX + "notifications/api.html"
 
 
-class StatisticsALBTargetGroup(ALBTargetGroupResource, BaseTG):
-    name = "statistics"
+class StatisticsALBHttpsTargetGroup(ALBTargetGroupResource, BaseTG):
+    name = "statistics-https"
     path = PATH_PREFIX + "statistics/api.html"
 
 
-class AssetALBTargetGroup(ALBTargetGroupResource, BaseTG):
-    name = "asset"
+class AssetALBHttpsTargetGroup(ALBTargetGroupResource, BaseTG):
+    name = "asset-https"
     path = PATH_PREFIX + "asset/api.html"
 
 
-class AuthALBTargetGroup(ALBTargetGroupResource, BaseTG):
-    name = "auth"
+class AuthALBHttpsTargetGroup(ALBTargetGroupResource, BaseTG):
+    name = "auth-https"
     path = PATH_PREFIX + "auth/api.html"
 
 
-class NginxALBTargetGroup(ALBTargetGroupResource, BaseTG):
-    name = "ngnix"
+class NginxALBHttpsTargetGroup(ALBTargetGroupResource, BaseTG):
+    name = "ngnix-https"
     path = "/nginx"
     interval = 120
     matcher = "200"
