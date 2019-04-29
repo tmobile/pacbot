@@ -1543,6 +1543,7 @@ INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spri
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.properties.mail.smtp.ssl.trust','Description PlaceHolder');
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.properties.mail.smtp.starttls.enable','Description PlaceHolder');
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('spring.mail.test-connection','Description PlaceHolder');
+INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('email.banner','Description PlaceHolder');
 
 
 INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) VALUES('pacman.es.host','Description PlaceHolder');
@@ -1809,3 +1810,4 @@ INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `pr
 INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.common.email.notifications.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','commonTemplate','rule','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) VALUES('pacman.login.user.name',concat(@PACMAN_LOGIN_USER_NAME,''),'rule','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) VALUES('pacman.login.password',concat(@PACMAN_LOGIN_PASSWORD,''),'rule','prd','latest',NULL,NULL,NULL,NULL);
+INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) VALUES('email.banner','','rule','prd','latest',NULL,NULL,NULL,NULL);
