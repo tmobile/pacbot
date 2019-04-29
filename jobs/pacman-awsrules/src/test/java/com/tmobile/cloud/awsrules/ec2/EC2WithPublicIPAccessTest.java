@@ -46,29 +46,25 @@ public class EC2WithPublicIPAccessTest {
     @Test
     public void executeTest() throws Exception {
         mockStatic(PacmanUtils.class);
-        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
+        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
                 true);
         
         when(PacmanUtils.getPacmanHost(anyString())).thenReturn("host");
         when(PacmanUtils.getRouteTableId(anyString(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getSetString("123"));
         
-        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString())).thenReturn(false);
+        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString(),anyString())).thenReturn(false);
         
         when(PacmanUtils.getSecurityGroupsByInstanceId(anyString(),anyString())).thenReturn(CommonTestUtils.getListSecurityGroupId());
         
-        mockStatic(PacmanEc2Utils.class);
-        when(PacmanEc2Utils.checkAccessibleToAll(anyObject(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getLinkedHashMapBoolean("123"));
+        when(PacmanUtils.checkAccessibleToAll(anyObject(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getLinkedHashMapBoolean("123"));
         assertThat(ec2WithPublicIPAccess.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
         
-        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString())).thenReturn(false);
+        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString(),anyString())).thenReturn(false);
         assertThat(ec2WithPublicIPAccess.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
-        
-        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString())).thenReturn(true);
+        when(PacmanUtils.checkAccessibleToAll(anyObject(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getMapBoolean("123"));
+        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString(),anyString())).thenReturn(true);
         assertThat(ec2WithPublicIPAccess.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
        
-        when(PacmanEc2Utils.checkAccessibleToAll(anyObject(),anyString(),anyString(),anyString())).thenThrow(new Exception());
-        assertThatThrownBy( 
-                () -> ec2WithPublicIPAccess.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 "))).isInstanceOf(RuleExecutionFailedExeption.class);
         
         when(PacmanUtils.getRouteTableId(anyString(),anyString(),anyString(),anyString())).thenThrow(new Exception());
         assertThatThrownBy( 
@@ -77,7 +73,7 @@ public class EC2WithPublicIPAccessTest {
         
         
         
-        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
+        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
                 false);
         assertThatThrownBy(
                 () -> ec2WithPublicIPAccess.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 "))).isInstanceOf(InvalidInputException.class);

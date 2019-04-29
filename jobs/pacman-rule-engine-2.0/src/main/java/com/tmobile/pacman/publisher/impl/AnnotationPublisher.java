@@ -44,7 +44,7 @@ public class AnnotationPublisher {
     private static final String BULK_INDEX_REQUEST_TEMPLATE = "{ \"index\" : { \"_index\" : \"%s\", \"parent\" : \"%s\",  \"_type\" : \"%s\", \"_id\" : \"%s\" } }%n";
 
     /** The Constant BULK_WITH_REFRESH_TRUE. */
-    private static final String BULK_WITH_REFRESH_TRUE = "/_bulk?refresh=true";
+    public static final String BULK_WITH_REFRESH_TRUE = "/_bulk?refresh=true";
 
     /** The Constant ID. */
     private static final String ID = "_id";
@@ -66,19 +66,19 @@ public class AnnotationPublisher {
 
     /** The Constant logger. */
     private static final Logger logger = LoggerFactory.getLogger(AnnotationPublisher.class);
-
+    
     /** The bulk upload bucket. */
     private List<Annotation> bulkUploadBucket;
-
+    
     /** The clouser bucket. */
     private List<Annotation> clouserBucket;
-
+    
     /** The existing issues map with annotation id as key. */
     private Map<String, Map<String, String>> existingIssuesMapWithAnnotationIdAsKey;
-
+    
     /** The resources. */
     private List<Map<String, String>> resources;
-
+    
     /** The rule param. */
     private ImmutableMap<String, String> ruleParam;
 
@@ -189,6 +189,7 @@ public class AnnotationPublisher {
         List<Map<String, Map>> responseList = new ArrayList<>();
         for (Annotation _annotation : annotations) {
             annotationId = CommonUtils.getUniqueAnnotationId(_annotation);
+            _annotation.put(PacmanSdkConstants.ANNOTATION_PK, annotationId);
             issueAttributes = getExistingIssuesMapWithAnnotationIdAsKey().get(annotationId);
             if (null != issueAttributes) {
                 // now we are using this to modify and post hence remove all ES
@@ -217,14 +218,14 @@ public class AnnotationPublisher {
             bulkRequestBody.append("\n");
             if (bulkRequestBody.toString().getBytes().length
                     / (1024 * 1024) >= PacmanSdkConstants.ES_MAX_BULK_POST_SIZE) {
-                response = CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString());
+                response = CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString(),new HashMap<>());
                 responseList.add(serializer.fromJson(response, Map.class));
                 bulkRequestBody.setLength(0);
             }
         }
         // post the remaining data if available
         if (bulkRequestBody.length() > 0) {
-            response = CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString());
+            response = CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString(),new HashMap<>());
         }
         responseList.add(serializer.fromJson(response, Map.class));
         if (responsesHasError(responseList)) {
@@ -327,13 +328,13 @@ public class AnnotationPublisher {
                 closedIssues.add(annotation);
                 if (bulkRequestBody.toString().getBytes().length
                         / (1024 * 1024) >= PacmanSdkConstants.ES_MAX_BULK_POST_SIZE) {
-                    CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString());
+                    CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString(),new HashMap<>());
                     bulkRequestBody.setLength(0);
                 }
             }
         }
         if (bulkRequestBody.length() > 0) {
-            response = CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString());
+            response = CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString(),new HashMap<>());
         }
         return closedIssues;
     }
@@ -396,12 +397,12 @@ public class AnnotationPublisher {
             totalClosed++;
             if (bulkRequestBody.toString().getBytes().length
                     / (1024 * 1024) >= PacmanSdkConstants.ES_MAX_BULK_POST_SIZE) {
-                CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString());
+                CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString(),new HashMap<>());
                 bulkRequestBody.setLength(0);
             }
         }
         if (bulkRequestBody.length() > 0) {
-            CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString());
+            CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString(),new HashMap<>());
         }
         return totalClosed;
     }
