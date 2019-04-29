@@ -28,9 +28,12 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.anyMap;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.io.UnsupportedEncodingException;
 import java.text.ParseException;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -47,6 +50,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.tmobile.pacman.common.PacmanSdkConstants;
 import com.tmobile.pacman.commons.rule.Annotation;
+import com.tmobile.pacman.config.ConfigManager;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -54,10 +58,10 @@ import com.tmobile.pacman.commons.rule.Annotation;
  */
 @PowerMockIgnore("javax.net.ssl.*")
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CommonUtils.class, StringBuilder.class, Strings.class})
+@PrepareForTest({CommonUtils.class, StringBuilder.class, Strings.class,ConfigManager.class})
 public class ESUtilsTest {
-
-
+    
+    
 	/** The Constant DUMMY_ES_HOST. */
     private static final String DUMMY_ES_HOST = "http://localhost";
 
@@ -66,11 +70,14 @@ public class ESUtilsTest {
      */
     @Before
     public void setup(){
+    	mockStatic(ConfigManager.class);
         PowerMockito.mockStatic(CommonUtils.class);
         PowerMockito.when(CommonUtils.getEnvVariableValue(anyString())).thenReturn(DUMMY_ES_HOST);
+        ConfigManager ConfigManager = PowerMockito.mock(ConfigManager.class);
+		PowerMockito.when(ConfigManager.getConfigurationsMap()).thenReturn(new Hashtable<String, Object>());
     }
-
-
+    
+    
     /**
      * Post audit trail.
      *
@@ -88,7 +95,7 @@ public class ESUtilsTest {
 		annotations.add(annotation);
 		assertNotNull(ESUtils.buildIndexNameFromAnnotation(annotation));
 	}
-
+    
     /**
      * Publish metrics test 2.
      *
@@ -97,16 +104,17 @@ public class ESUtilsTest {
     @Test
   	public void publishMetricsTest2() throws Exception {
     	Map<String, Object> evalResults = Maps.newHashMap();
+    	evalResults.put(PacmanSdkConstants.EXECUTION_ID,"test");
     	PowerMockito.mockStatic(CommonUtils.class);
         PowerMockito.when(CommonUtils.getPropValue(anyString())).thenReturn("fre-stats");
         PowerMockito.when(CommonUtils.getEnvVariableValue(anyString())).thenReturn("fre-stats");
         PowerMockito.when(CommonUtils.isValidResource(anyString())).thenReturn(true);
         PowerMockito.when(CommonUtils.doHttpPut(anyString(), anyString())).thenReturn("{}");
-        PowerMockito.when(CommonUtils.doHttpPost(anyString(), anyString())).thenReturn("{\"count\":\"10\"}");
+        PowerMockito.when(CommonUtils.doHttpPost(anyString(), anyString(),anyMap())).thenReturn("{\"count\":\"10\"}");
 
-  		assertNotNull(ESUtils.publishMetrics(evalResults));
+  		assertNotNull(ESUtils.publishMetrics(evalResults,""));
   	}
-
+	
     /**
      * Publish metrics test 3.
      *
@@ -116,16 +124,17 @@ public class ESUtilsTest {
 	@Test
   	public void publishMetricsTest3() throws Exception {
     	Map<String, Object> evalResults = Maps.newHashMap();
+    	evalResults.put(PacmanSdkConstants.EXECUTION_ID,"test");
     	PowerMockito.mockStatic(CommonUtils.class);
         PowerMockito.when(CommonUtils.getPropValue(anyString())).thenReturn("fre-stats");
         PowerMockito.when(CommonUtils.getEnvVariableValue(anyString())).thenReturn("fre-stats");
         PowerMockito.when(CommonUtils.isValidResource(anyString())).thenReturn(false);
         PowerMockito.when(CommonUtils.doHttpPut(anyString(), anyString())).thenReturn("{}");
-        PowerMockito.when(CommonUtils.doHttpPost(anyString(), anyString())).thenThrow(Exception.class);
+        PowerMockito.when(CommonUtils.doHttpPost(anyString(), anyString(),anyMap())).thenThrow(Exception.class);
 
-  		assertFalse(ESUtils.publishMetrics(evalResults));
+  		assertFalse(ESUtils.publishMetrics(evalResults,""));
   	}
-
+    
     /**
      * Publish metrics test.
      *
@@ -134,16 +143,17 @@ public class ESUtilsTest {
     @Test
   	public void publishMetricsTest() throws Exception {
     	Map<String, Object> evalResults = Maps.newHashMap();
+    	evalResults.put(PacmanSdkConstants.EXECUTION_ID,"test");
     	PowerMockito.mockStatic(CommonUtils.class);
         PowerMockito.when(CommonUtils.getPropValue(anyString())).thenReturn("fre-stats");
         PowerMockito.when(CommonUtils.getEnvVariableValue(anyString())).thenReturn("fre-stats");
         PowerMockito.when(CommonUtils.isValidResource(anyString())).thenReturn(false);
         PowerMockito.when(CommonUtils.doHttpPut(anyString(), anyString())).thenReturn("{}");
-        PowerMockito.when(CommonUtils.doHttpPost(anyString(), anyString())).thenReturn("{\"count\":\"10\"}");
+        PowerMockito.when(CommonUtils.doHttpPost(anyString(), anyString(),anyMap())).thenReturn("{\"count\":\"10\"}");
 
-  		assertNotNull(ESUtils.publishMetrics(evalResults));
+  		assertNotNull(ESUtils.publishMetrics(evalResults,""));
   	}
-
+    
     /**
      * Gets the ES port.
      *
@@ -155,7 +165,7 @@ public class ESUtilsTest {
         PowerMockito.when(CommonUtils.getPropValue(anyString())).thenReturn("1");
   		assertNotNull(ESUtils.getESPort());
   	}
-
+    
     /**
      * Gets the ES host.
      *
@@ -167,7 +177,7 @@ public class ESUtilsTest {
         PowerMockito.when(CommonUtils.getPropValue(anyString())).thenReturn("123");
   		assertNotNull(ESUtils.getESHost());
     }
-
+    
     /**
      * Gets the document for id test.
      *
@@ -181,18 +191,18 @@ public class ESUtilsTest {
 
     	PowerMockito.when(CommonUtils.getEnvVariableValue(anyString())).thenReturn("123");
     	final StringBuilder stringBuilder = PowerMockito.spy(new StringBuilder());
-		PowerMockito.whenNew(StringBuilder.class).withAnyArguments().thenReturn(stringBuilder);
-
+		PowerMockito.whenNew(StringBuilder.class).withAnyArguments().thenReturn(stringBuilder); 
+		
         PowerMockito.when(CommonUtils.getPropValue(anyString())).thenReturn("123");
     	PowerMockito.mockStatic(Strings.class);
     	PowerMockito.when(Strings.isNullOrEmpty(anyString())).thenReturn(false);
 
 		String jsonObject = "{\"ruleUUID\":\"qqqq123\",\"hits\":{\"total\":1000,\"max_score\":null,\"hits\":[{\"_index\":\"bank\",\"_type\":\"_doc\",\"_id\":\"0\",\"sort\":[0],\"_score\":null,\"_source\":{\"account_number\":0,\"balance\":16623,\"firstname\":\"Bradshaw\",\"lastname\":\"Mckenzie\",\"age\":29,\"gender\":\"F\",\"address\":\"244 Columbus Place\",\"employer\":\"Euron\",\"email\":\"bradshawmckenzie@euron.com\",\"city\":\"Hobucken\",\"state\":\"CO\"}}]},\"aggregations\":{\"avg-values-per-day\":{\"buckets\":[{\"key_as_string\":\"ID\",\"Avg-CPU-Utilization\":{\"value\":12},\"Avg-NetworkIn\":{\"value\":12},\"Avg-NetworkOut\":{\"value\":12},\"Avg-DiskReadinBytes\":{\"value\":12},\"Avg-DiskWriteinBytes\":{\"value\":12}}]}}}";
-		PowerMockito.when(CommonUtils.doHttpPost(anyString(), anyString())).thenReturn(jsonObject);
-
+		PowerMockito.when(CommonUtils.doHttpPost(anyString(), anyString(),anyMap())).thenReturn(jsonObject);
+	        
   		assertNotNull(ESUtils.getDocumentForId("index", "targetType", "_id"));
     }
-
+    
     /**
      * Gets the document for id test 1.
      *
@@ -208,7 +218,7 @@ public class ESUtilsTest {
     	assertThatThrownBy(() -> ESUtils.getDocumentForId("index", "targetType", "_id")).isInstanceOf(Exception.class);
 
     }
-
+    
     /**
      * Convert attributeto keyword.
      *
@@ -218,15 +228,15 @@ public class ESUtilsTest {
   	public void convertAttributetoKeyword() throws Exception {
     	assertEquals(ESUtils.convertAttributetoKeyword("attributeName"), "attributeName.keyword");
     }
-
-
-
-
+    
+    
+    	   
+   
 /*	@Test
 	public void getFilterForTypeTest() throws ParseException, UnsupportedEncodingException {
 		assertEquals(forTest.getFilterForTypeTest(), true);
 	}*/
-
+	
 	/**
  * Test create keyword.
  */
@@ -234,7 +244,7 @@ public class ESUtilsTest {
 	public void testCreateKeyword(){
 	    assertTrue(ESUtils.createKeyword("testField").contains(PacmanSdkConstants.ES_KEYWORD_KEY));
 	}
-
+	
 	/**
 	 * Test get resources from es with no es URL.
 	 *
@@ -244,7 +254,7 @@ public class ESUtilsTest {
 	public void testGetResourcesFromEsWithNoEsURL() throws Exception{
 	    ESUtils.getResourcesFromEs("test", "test", null, null);
 	}
-
+	
 	/**
 	 * Test get resources from es.
 	 *
@@ -254,11 +264,11 @@ public class ESUtilsTest {
     public void testGetResourcesFromEs() throws Exception{
 //	    PowerMockito.mockStatic(CommonUtils.class);
 //        PowerMockito.when(CommonUtils.getEnvVariableValue(PacmanSdkConstants.ES_URI_ENV_VAR_NAME)).thenReturn(DUMMY_ES_HOST);
-        PowerMockito.when(CommonUtils.doHttpPost(anyString(), anyString())).thenReturn("{\"count\":\"10\"}");
+        PowerMockito.when(CommonUtils.doHttpPost(anyString(), anyString(),anyMap())).thenReturn("{\"count\":\"10\"}");
         assertNotNull(ESUtils.getResourcesFromEs("test", "test", null, null));
     }
-
-
+	
+	
 	/**
 	 * Test create mapping.
 	 *
@@ -271,7 +281,7 @@ public class ESUtilsTest {
         String toReturn = ESUtils.createMapping(DUMMY_ES_HOST, "testIndex", "testType");
         assertNotNull(toReturn);
     }
-
+	
 	/**
 	 * Test create mapping with parent.
 	 *
@@ -284,7 +294,7 @@ public class ESUtilsTest {
         String toReturn = ESUtils.createMappingWithParent(DUMMY_ES_HOST, "testIndex", "testType","testParent");
         assertNotNull(toReturn);
     }
-
+	
 	/**
 	 * Test create index.
 	 *
@@ -296,7 +306,7 @@ public class ESUtilsTest {
         PowerMockito.when(CommonUtils.doHttpPut(anyString(), anyString())).thenReturn("{}");
         ESUtils.createIndex(DUMMY_ES_HOST, "testIndex");
     }
-
+	
 	/**
 	 * Test ensure index and type for annotation with no es URL.
 	 *
@@ -311,8 +321,8 @@ public class ESUtilsTest {
         PowerMockito.mockStatic(CommonUtils.class);
         PowerMockito.when(CommonUtils.isValidResource(anyString())).thenReturn(Boolean.TRUE);
         ESUtils.ensureIndexAndTypeForAnnotation(annotation, Boolean.FALSE);
-    }
-
+    } 
+	
 //	@Test
 //    public void testEnsureIndexAndTypeForAnnotation() throws Exception{
 //        Annotation annotation = new Annotation();
@@ -322,6 +332,6 @@ public class ESUtilsTest {
 //        PowerMockito.mockStatic(CommonUtils.class);
 //        PowerMockito.when(CommonUtils.isValidResource(anyString())).thenReturn(Boolean.TRUE);
 //        ESUtils.ensureIndexAndTypeForAnnotation(annotation, Boolean.FALSE);
-//    }
-
+//    } 
+	
 }

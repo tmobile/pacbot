@@ -54,10 +54,10 @@ public class ESUtils {
 
     /** The Constant COUNT. */
     private static final String COUNT = "_count";
-
+    
     /** The Constant QUERY. */
     private static final String QUERY = "query";
-
+    
     /** The Constant logger. */
     private static final Logger logger = LoggerFactory.getLogger(ESUtils.class);
 
@@ -140,7 +140,7 @@ public class ESUtils {
         Gson gson = new GsonBuilder().create();
         try {
             String requestJson = gson.toJson(requestBody, Object.class);
-            responseDetails = CommonUtils.doHttpPost(urlToQuery, requestJson);
+            responseDetails = CommonUtils.doHttpPost(urlToQuery, requestJson,new HashMap<>());
             Map<String, Object> response = (Map<String, Object>) gson.fromJson(responseDetails, Object.class);
             return (long) (Double.parseDouble(response.get("count").toString()));
         } catch (Exception e) {
@@ -370,7 +370,7 @@ public class ESUtils {
                     request = buildScrollRequest(_scroll_id, PacmanSdkConstants.ES_PAGE_SCROLL_TTL);
                     urlToQuery = urlToScroll;
                 }
-                responseDetails = CommonUtils.doHttpPost(urlToQuery, request);
+                responseDetails = CommonUtils.doHttpPost(urlToQuery, request,new HashMap<>());
                 _scroll_id = processResponseAndSendTheScrollBack(responseDetails, results);
             } catch (Exception e) {
                 logger.error("error retrieving inventory from ES", e);
@@ -477,10 +477,9 @@ public class ESUtils {
      * @param evalResults the eval results
      * @return the boolean
      */
-    public static Boolean publishMetrics(Map<String, Object> evalResults) {
+    public static Boolean publishMetrics(Map<String, Object> evalResults,String type) {
         //logger.info(Joiner.on("#").withKeyValueSeparator("=").join(evalResults));
         String indexName = CommonUtils.getPropValue(PacmanSdkConstants.STATS_INDEX_NAME_KEY);// "fre-stats";
-        String type = CommonUtils.getPropValue(PacmanSdkConstants.STATS_TYPE_NAME_KEY); // "execution-stats";
         return doESPublish(evalResults, indexName, type);
     }
 
@@ -511,8 +510,42 @@ public class ESUtils {
      * @param type the type
      * @return the boolean
      */
-    private static Boolean doESPublish(Map<String, Object> evalResults, String indexName, String type) {
+    public static Boolean doESPublish(Map<String, Object> evalResults, String indexName, String type) {
+        
+        Gson serializer = new GsonBuilder().create();
+        String postBody = serializer.toJson(evalResults);
+        return postJsonDocumentToIndexAndType(evalResults.get(PacmanSdkConstants.EXECUTION_ID).toString(),indexName, type,postBody,Boolean.FALSE);
+    }
+    
+    /**
+     * Do ES publish.
+     *
+     * @param evalResults the eval results
+     * @param indexName the index name
+     * @param type the type
+     * @return the boolean
+     */
+    public static Boolean doESUpdate(String docId,Map<String, Object> evalResults, String indexName, String type) {
+        Gson serializer = new GsonBuilder().create();
+        String postBody = serializer.toJson(evalResults);
+        return postJsonDocumentToIndexAndType(docId,indexName, type,postBody,Boolean.TRUE);
+    }
+    
+    /**
+     * 
+     * @param evalResults
+     * @param indexName
+     * @param type
+     * @param postBody
+     * @return
+     */
+    private static Boolean postJsonDocumentToIndexAndType(String executionId, String indexName, String type,
+            String postBody,Boolean isUpdate) {
         String url = ESUtils.getEsUrl();
+        if(Strings.isNullOrEmpty(url)){
+            logger.error("unable to find ES url");
+            return false;
+        }
         try {
             if (!ESUtils.isValidIndex(url, indexName)) {
                 ESUtils.createIndex(url, indexName);
@@ -521,9 +554,12 @@ public class ESUtils {
                 ESUtils.createMapping(url, indexName, type);
             }
             String esUrl = new StringBuilder(url).append("/").append(indexName).append("/").append(type).append("/")
-                    .append(evalResults.get(PacmanSdkConstants.EXECUTION_ID)).toString();
-            Gson serializer = new GsonBuilder().create();
-            CommonUtils.doHttpPost(esUrl, serializer.toJson(evalResults));
+                    .append(executionId).toString();
+            if(isUpdate){
+                esUrl += "/_update";
+            }
+            
+            CommonUtils.doHttpPost(esUrl,postBody,new HashMap<>());
         } catch (Exception e) {
             logger.error("unable to publish execution stats");
             return Boolean.FALSE;
