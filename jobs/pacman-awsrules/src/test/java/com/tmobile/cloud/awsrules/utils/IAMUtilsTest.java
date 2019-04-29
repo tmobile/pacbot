@@ -131,4 +131,47 @@ public class IAMUtilsTest {
         
     }
     
+    @SuppressWarnings("static-access")
+    @Test
+    public void getActionsByRolePolicyTest() throws Exception {
+    	 AttachedPolicy attachedPolicies = new AttachedPolicy();
+         attachedPolicies.setPolicyName("IAMFullAccess");
+         List<AttachedPolicy> policies = new ArrayList<>();
+         policies.add(attachedPolicies);
+         
+         PolicyVersion versions = new PolicyVersion();
+         versions.setIsDefaultVersion(true);
+         versions.setVersionId("123");
+         versions.setDocument("{\"ag\":\"aws-all\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"iam:*\"],\"Resource\":[\"iam:*\"]}],\"from\":0,\"searchtext\":\"\",\"size\":25}");
+        ListPolicyVersionsResult policyVersions = new ListPolicyVersionsResult();
+        policyVersions.setVersions(Arrays.asList(versions));
+        
+        
+        ListAttachedRolePoliciesResult attachedRolePoliciesResult = new ListAttachedRolePoliciesResult();
+        attachedRolePoliciesResult.setAttachedPolicies(policies);
+        attachedRolePoliciesResult.setIsTruncated(false);
+        
+        ListRolePoliciesResult rolePoliciesResult = new ListRolePoliciesResult();
+        rolePoliciesResult.setPolicyNames(Arrays.asList("123"));
+        rolePoliciesResult.setIsTruncated(false);
+        
+        GetRolePolicyResult policyResult = new GetRolePolicyResult();
+        
+        policyResult.setPolicyName("123");
+        policyResult.setPolicyDocument("{\"ag\":\"aws-all\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"iam:*\"],\"Resource\":[\"iam:*\"]}],\"from\":0,\"searchtext\":\"\",\"size\":25}");
+        policyResult.setRoleName("123");
+         
+        GetPolicyVersionResult versionResult = new GetPolicyVersionResult();
+        versionResult.setPolicyVersion(versions);
+        when(iamClient.listAttachedRolePolicies(anyObject())).thenReturn(attachedRolePoliciesResult);
+        when(iamClient.listRolePolicies(anyObject())).thenReturn(rolePoliciesResult);
+        when(iamClient.getRolePolicy(anyObject())).thenReturn(policyResult);
+        when(iamClient.listPolicyVersions(anyObject())).thenReturn(policyVersions);
+        when(iamClient.getPolicyVersion(anyObject())).thenReturn(versionResult);
+        mockStatic(URLDecoder.class);
+        when(URLDecoder.decode(anyString(),anyString())).thenReturn("qeqwehgj");
+        assertThat(iamUtils.getAllowedActionsByRolePolicy(iamClient,"133"),is(notNullValue()));
+        
+    }
+    
 }
