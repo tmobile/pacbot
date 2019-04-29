@@ -64,6 +64,7 @@ PROCESS_RESOURCES = {
 DATA_DIR = os.path.join(BASE_APP_DIR, 'data')
 LOG_DIR = os.path.join(BASE_APP_DIR, 'log')
 PROVISIONER_FILES_DIR_TO_COPY = os.path.join(BASE_APP_DIR, 'files')
+ALB_PROTOCOL = "HTTP"
 
 DESTROY_NUM_ATTEMPTS = 3
 SKIP_RESOURCE_EXISTENCE_CHECK = False
@@ -112,3 +113,7 @@ try:
     from settings.local import *
 except:
     pass
+
+if ALB_PROTOCOL == "HTTPS":
+    PROCESS_RESOURCES['pacbot_app.alb_https_listener'] = {'tags': ["deploy"]}  # This should not be removed
+    PROCESS_RESOURCES['pacbot_app.alb_https_target_groups'] = {'tags': ["deploy"]}  # This should not be removed
