@@ -23,7 +23,7 @@ class BuildUiAndApis(NullResource):
                 'command': pacbot_build_script,
                 'environment': {
                     'PROVIDER_FILE': get_terraform_provider_file(),
-                    'APPLICATION_DOMAIN': ApplicationLoadBalancer.get_http_url(),
+                    'APPLICATION_DOMAIN': ApplicationLoadBalancer.get_pacbot_domain_url(),
                     'PACBOT_CODE_DIR': Settings.PACBOT_CODE_DIR,
                     'DIST_FILES_UPLOAD_DIR': upload_dir,
                     'LOG_DIR': Settings.LOG_DIR,

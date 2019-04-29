@@ -52,6 +52,21 @@ def get_user_name(access_key, secret_key):
     return user_name
 
 
+def get_current_user(access_key, secret_key):
+    """
+    Returns the user detials of the given user credentails
+
+    Args:
+        access_key (str): AWS Access Key
+        secret_key (str): AWS Secret Key
+
+    Returns:
+        user (obj): AWS IAM User
+    """
+    iam = get_iam_resource(access_key, secret_key)
+    return iam.CurrentUser()
+
+
 def get_aws_account_user(access_key, secret_key):
     """
     Returns the user details of the current user
