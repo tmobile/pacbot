@@ -156,6 +156,8 @@ public class MailUtils {
             placeholderValues.put("AUTOFIX_WARNING_MESSAGE", warning);
             placeholderValues.put("AUTOFIX_POST_FIX_MESSAGE", postFixMessage);
             placeholderValues.put("AUTOFIX_EXPIRY_TIME", expiringTime);
+            placeholderValues.put("EMAIL_BANNER", CommonUtils.getPropValue(PacmanSdkConstants.EMAIL_BANNER));
+            
             String emailSubject = "Pacman AutoFix Reminder";
             if (autofixActionEmail == AutoFixAction.AUTOFIX_ACTION_EMAIL && "Sandbox".equalsIgnoreCase(accountName)) {
                 templateName = "autofix-user-notification-info";
