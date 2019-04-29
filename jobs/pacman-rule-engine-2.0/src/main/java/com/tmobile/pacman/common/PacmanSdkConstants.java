@@ -587,5 +587,8 @@ public interface PacmanSdkConstants extends com.tmobile.pacman.commons.PacmanSdk
     
     /** The pacman login password. */
     String PACMAN_LOGIN_PASSWORD = "pacman.login.password";
+    
+    /** The email banner. */
+    String EMAIL_BANNER = "email.banner";
 
 }
