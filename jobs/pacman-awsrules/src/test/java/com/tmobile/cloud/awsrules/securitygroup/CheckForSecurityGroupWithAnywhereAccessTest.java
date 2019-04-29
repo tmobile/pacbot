@@ -45,7 +45,7 @@ public class CheckForSecurityGroupWithAnywhereAccessTest {
     @Test
     public void executeTest() throws Exception {
         mockStatic(PacmanUtils.class);
-        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
+        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
                 true);
         when(PacmanUtils.formatUrl(anyObject(),anyString())).thenReturn("host");
         when(PacmanUtils.checkAccessibleToAll(anyObject(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getMapBoolean("r_123 "));
@@ -61,7 +61,7 @@ public class CheckForSecurityGroupWithAnywhereAccessTest {
         assertThatThrownBy( 
                 () -> checkForSecurityGroupWithAnywhereAccess.execute(CommonTestUtils.getOneMoreMapString("r_123 "),CommonTestUtils.getMapString("r_123 "))).isInstanceOf(RuleExecutionFailedExeption.class);
         
-        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
+        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
                 false);
         assertThatThrownBy(
                 () -> checkForSecurityGroupWithAnywhereAccess.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 "))).isInstanceOf(InvalidInputException.class);
