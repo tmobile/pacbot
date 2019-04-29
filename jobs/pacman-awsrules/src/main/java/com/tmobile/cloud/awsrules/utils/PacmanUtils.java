@@ -33,6 +33,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -376,7 +377,7 @@ public class PacmanUtils {
         mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.REGION), region);
 
         JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(esUrl, mustFilter,
-                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null);
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
         if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
             String hitsJsonString = resultJson.get(PacmanRuleConstants.HITS).toString();
             JsonObject hitsJson = (JsonObject) jsonParser.parse(hitsJsonString);
@@ -1021,7 +1022,7 @@ public class PacmanUtils {
         Map<String, Object> mustTermsFilter = new HashMap<>();
         mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.INSTANCEID), instanceId);
         JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(esUrl, mustFilter,
-                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null);
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
         if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
             JsonObject hitsJson = (JsonObject) jsonParser.parse(resultJson.get(PacmanRuleConstants.HITS).toString());
             JsonArray hitsArray = hitsJson.getAsJsonArray(PacmanRuleConstants.HITS);
@@ -1057,7 +1058,7 @@ public class PacmanUtils {
         Set<String> routeTableIdList = new HashSet<>();
         
         JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(routetableEsURL, mustFilter,
-                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null);
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
         if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
             JsonObject hitsJson = (JsonObject) jsonParser.parse(resultJson.get(PacmanRuleConstants.HITS).toString());
             JsonArray hitsArray = hitsJson.getAsJsonArray(PacmanRuleConstants.HITS);
@@ -1085,7 +1086,7 @@ public class PacmanUtils {
         mustTermsFilter.put(convertAttributetoKeyword(PacmanRuleConstants.ROUTE_TABLE_ID), routeTableIdSet);
         mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.DEST_CIDR_BLOCK), cidrfilterValue);
         JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(routetableRoutesEsURL,
-                mustFilter, mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null);
+                mustFilter, mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
 
         if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
             JsonObject hitsJson = (JsonObject) jsonParser.parse(resultJson.get(PacmanRuleConstants.HITS).toString());
@@ -1118,7 +1119,7 @@ public class PacmanUtils {
         mustFilter.put(convertAttributetoKeyword(PacmanSdkConstants.RESOURCE_ID), instanceId);
 
         JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(ec2PortUrl, mustFilter,
-                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null);
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
 
         if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
             JsonObject hitsJson = (JsonObject) jsonParser.parse(resultJson.get(PacmanRuleConstants.HITS).toString());
@@ -1146,7 +1147,7 @@ public class PacmanUtils {
         mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.SEVERITY), severityVulnValue);
         mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.RESOURCE_ID), instanceId);
         JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(ec2WithVulnUrl, mustFilter,
-                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null);
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
         if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
             JsonObject hitsJson = (JsonObject) jsonParser.parse(resultJson.get(PacmanRuleConstants.HITS).toString());
 
@@ -1206,66 +1207,36 @@ public class PacmanUtils {
         return annotation;
     }
 
+    /**
+     * Check accessible to all.
+     *
+     * @param secuityGroups the secuity groups
+     * @param portToCheck the port to check
+     * @param sgRulesUrl the sg rules url
+     * @param cidrIp the cidr ip
+     * @param cidripv6 the cidripv 6
+     * @param target the target
+     * @return the map
+     * @throws Exception the exception
+     */
     public static Map<String, Boolean> checkAccessibleToAll(Set<GroupIdentifier> secuityGroups, String portToCheck,
-            String sgRulesUrl, String cidrIp) throws Exception {
-        JsonObject resultJson = null;
-        String fromPort = null;
-        String toPort = null;
-        String ipprotocol = null;
+            String sgRulesUrl, String cidrIp, String cidripv6,String target) throws Exception {
+        JsonObject resultJsonCidrip = null;
         LinkedHashMap<String, Boolean> openPorts = new LinkedHashMap<>();
         for (GroupIdentifier securityGrp : secuityGroups) {
-            JsonParser jsonParser = new JsonParser();
             Map<String, Object> mustFilter = new HashMap<>();
             Map<String, Object> mustNotFilter = new HashMap<>();
             HashMultimap<String, Object> shouldFilter = HashMultimap.create();
             Map<String, Object> mustTermsFilter = new HashMap<>();
             mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.GROUP_ID), securityGrp.getGroupId());
-            mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.CIDRIP), cidrIp);
+            shouldFilter.put(convertAttributetoKeyword(PacmanRuleConstants.CIDRIP), cidrIp);
+            shouldFilter.put(convertAttributetoKeyword(PacmanRuleConstants.CIDRIPV6), cidripv6);
             mustFilter.put(convertAttributetoKeyword(PacmanSdkConstants.TYPE), PacmanRuleConstants.INBOUND);
-            resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(sgRulesUrl, mustFilter, mustNotFilter,
-                    shouldFilter, null, 0, mustTermsFilter, null);
-            if (resultJson != null) {
-                JsonObject hitsJson = (JsonObject) jsonParser
-                        .parse(resultJson.get(PacmanRuleConstants.HITS).toString());
-                JsonArray hitsArray = hitsJson.getAsJsonArray(PacmanRuleConstants.HITS);
-                logger.info(sgRulesUrl);
-                logger.info(securityGrp.getGroupId());
-                logger.info(portToCheck);
-                for (int i = 0; i < hitsArray.size(); i++) {
-                    JsonObject source = hitsArray.get(i).getAsJsonObject().get(PacmanRuleConstants.SOURCE)
-                            .getAsJsonObject();
-                    fromPort = source.get("fromport").getAsString();
-                    toPort = source.get("toport").getAsString();
-                    ipprotocol = source.get("ipprotocol").getAsString();
-                    logger.info(fromPort);
-                    logger.info(toPort);
-                    logger.info(ipprotocol);
-                    if (!org.apache.commons.lang.StringUtils.isEmpty(fromPort)
-                            && !org.apache.commons.lang.StringUtils.isEmpty(toPort)) {
-
-                        if (!"All".equalsIgnoreCase(toPort) && !"All".equalsIgnoreCase(fromPort)) {
-
-                            if (portToCheck.equals(fromPort)
-                                    || (Long.parseLong(portToCheck) >= Long.parseLong(fromPort) && Long
-                                            .parseLong(portToCheck) <= Long.parseLong(toPort))) {
-                                getFromAndToPorts(fromPort, toPort, ipprotocol, openPorts);
-                            }
-                        } else {
-                            if (!"All".equalsIgnoreCase(fromPort)) {
-
-                                if (portToCheck.equals(fromPort)
-                                        || (Long.parseLong(portToCheck) >= Long.parseLong(fromPort) && "All"
-                                                .equalsIgnoreCase(toPort))) {
-                                    getFromAndToPorts(fromPort, toPort, ipprotocol, openPorts);
-                                }
-                            } else {
-                                getFromAndToPorts(fromPort, toPort, ipprotocol, openPorts);
-                            }
-                        }
-                    }
-                }
-            }
+            resultJsonCidrip = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(sgRulesUrl, mustFilter,
+                    mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
+            proccessCidrIpOrCidrIpv6Data(resultJsonCidrip, portToCheck, openPorts,target);
         }
+
         return openPorts;
     }
 
@@ -1316,7 +1287,7 @@ public class PacmanUtils {
             mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.CIDRIP), cidrIp);
             mustFilter.put(convertAttributetoKeyword(PacmanSdkConstants.TYPE), PacmanRuleConstants.INBOUND);
             resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(sgRulesUrl, mustFilter, mustNotFilter,
-                    shouldFilter, null, 0, mustTermsFilter, null);
+                    shouldFilter, null, 0, mustTermsFilter, null,null);
             if (resultJson != null) {
                 JsonObject hitsJson = (JsonObject) jsonParser
                         .parse(resultJson.get(PacmanRuleConstants.HITS).toString());
@@ -1363,7 +1334,7 @@ public class PacmanUtils {
         mustFilter.put(convertAttributetoKeyword(PacmanSdkConstants.RESOURCE_ID), resourceId);
 
         JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(url, mustFilter, mustNotFilter,
-                shouldFilter, null, 0, mustTermsFilter, null);
+                shouldFilter, null, 0, mustTermsFilter, null,null);
 
         if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
             JsonObject hitsJson = (JsonObject) jsonParser.parse(resultJson.get(PacmanRuleConstants.HITS).toString());
@@ -1408,7 +1379,7 @@ public class PacmanUtils {
         mustFilter.put(convertAttributetoKeyword(PacmanSdkConstants.RESOURCE_ID), resourceId);
 
         JsonObject ownedAdGroupsJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(url, mustFilter,
-                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null);
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
         if (ownedAdGroupsJson != null && ownedAdGroupsJson.has(PacmanRuleConstants.HITS)) {
             JsonObject hitsJson = ownedAdGroupsJson.get(PacmanRuleConstants.HITS).getAsJsonObject();
             JsonArray jsonArray = hitsJson.getAsJsonObject().get(PacmanRuleConstants.HITS).getAsJsonArray();
@@ -1446,7 +1417,7 @@ public class PacmanUtils {
         mustFilter.put(convertAttributetoKeyword(PacmanSdkConstants.RESOURCE_ID), resourceId);
 
         JsonObject nestedRolesJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(url, mustFilter,
-                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null);
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
         if (nestedRolesJson != null && nestedRolesJson.has(PacmanRuleConstants.HITS)) {
             JsonObject hitsJson = nestedRolesJson.get(PacmanRuleConstants.HITS).getAsJsonObject();
             JsonArray jsonArray = hitsJson.getAsJsonObject().get(PacmanRuleConstants.HITS).getAsJsonArray();
@@ -1484,7 +1455,7 @@ public class PacmanUtils {
         mustFilter.put(convertAttributetoKeyword(PacmanSdkConstants.RESOURCE_ID), resourceId);
 
         JsonObject nestedRolesJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(url, mustFilter,
-                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null);
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
         if (nestedRolesJson != null && nestedRolesJson.has(PacmanRuleConstants.HITS)) {
             JsonObject hitsJson = nestedRolesJson.get(PacmanRuleConstants.HITS).getAsJsonObject();
             JsonArray jsonArray = hitsJson.getAsJsonObject().get(PacmanRuleConstants.HITS).getAsJsonArray();
@@ -1515,7 +1486,7 @@ public class PacmanUtils {
         mustFilter.put(PacmanRuleConstants.LATEST, true);
 
         JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(esUrl, mustFilter,
-                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null);
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
         if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
             String hitsJsonString = resultJson.get(PacmanRuleConstants.HITS).toString();
             JsonObject hitsJson = (JsonObject) jsonParser.parse(hitsJsonString);
@@ -1672,7 +1643,7 @@ public class PacmanUtils {
         matchPhrasePrefix.put(PacmanRuleConstants.RESOURCE_INFO, resourceInfoList);
 
         JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(esUrl, mustFilter,
-                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, matchPhrasePrefix);
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, matchPhrasePrefix,null);
 
         if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
             JsonObject hitsJson = (JsonObject) jsonParser.parse(resultJson.get(PacmanRuleConstants.HITS).toString());
@@ -1877,7 +1848,7 @@ public class PacmanUtils {
     public static Map<String, String> getEBSVolumeWithCheckId(String checkId, String id, String esUrl, String region,
             String accountId) throws Exception {
         JsonParser jsonParser = new JsonParser();
-        Map<String, String> resourceInfoMap = null;
+        Map<String, String> resourceInfoMap = new HashMap<>();
 
         String resourceinfo = getQueryDataForCheckid(checkId, esUrl, id, region, accountId);
         if (resourceinfo != null) {
@@ -1945,7 +1916,7 @@ public class PacmanUtils {
         mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.ACCOUNTID), accountId);
         mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.PING_STATUS), online);
         JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(esUrl, mustFilter,
-                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null);
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
         if (null != resultJson && resultJson.has(PacmanRuleConstants.HITS)) {
             String hitsJsonString = resultJson.get(PacmanRuleConstants.HITS).toString();
             JsonObject hitsJson = (JsonObject) parser.parse(hitsJsonString);
@@ -1973,7 +1944,7 @@ public class PacmanUtils {
         mustFilter.put("event_type", eventType);
         JsonParser parser = new JsonParser();
         JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(heimdallESURL, mustFilter, null,
-                null, null, 0, null, null);
+                null, null, 0, null, null,null);
         if (null != resultJson && resultJson.has(PacmanRuleConstants.HITS)) {
             JsonObject hitsJson = (JsonObject) parser.parse(resultJson.get(PacmanRuleConstants.HITS).toString());
             JsonArray hits = hitsJson.getAsJsonObject().get(PacmanRuleConstants.HITS).getAsJsonArray();
@@ -2164,23 +2135,38 @@ public class PacmanUtils {
         return !standardRegions.isEmpty() && standardRegions.contains(region);
     }
 
-    public static Boolean isIgwFound(String cidrfilterValue,String id,String type,Map<String, Object> issue,Set<String> routeTableIdSet,String routetableRoutesEsURL,String internetGateWay) throws Exception{
+    /**
+     * Checks if is igw found.
+     *
+     * @param cidrIp the cidr ip
+     * @param id the id
+     * @param type the type
+     * @param issue the issue
+     * @param routeTableIdSet the route table id set
+     * @param routetableRoutesEsURL the routetable routes es URL
+     * @param internetGateWay the internet gate way
+     * @param cidrIpv6 the cidr ipv 6
+     * @return the boolean
+     * @throws Exception the exception
+     */
+    public static Boolean isIgwFound(String cidrIp, String id, String type, Map<String, Object> issue,
+            Set<String> routeTableIdSet, String routetableRoutesEsURL, String internetGateWay,String cidrIpv6) throws Exception {
         Boolean isIgwExists = false;
         List<String> routeTableIdList = new ArrayList<>();
         if (!CollectionUtils.isNullOrEmpty(routeTableIdSet)) {
-            isIgwExists = PacmanUtils.getRouteTableRoutesId(routeTableIdList,routeTableIdSet, routetableRoutesEsURL,cidrfilterValue, internetGateWay);
-            if("VPC".equals(type)){
+            isIgwExists = getRouteTableRoutesId(routeTableIdList, routeTableIdSet, routetableRoutesEsURL,
+            		cidrIp, internetGateWay,cidrIpv6);
+            if ("VPC".equals(type)) {
                 issue.put(PacmanRuleConstants.VPCID, id);
-            }else{
+            } else {
                 issue.put(PacmanRuleConstants.SUBID, id);
             }
-            if(isIgwExists){
-            issue.put(PacmanRuleConstants.IGW_OPENED, type);
-            issue.put(PacmanRuleConstants.ROUTE_TABLEID,
-                    String.join(",", routeTableIdList));
-            return isIgwExists;
+            if (isIgwExists) {
+                issue.put(PacmanRuleConstants.IGW_OPENED, type);
+                issue.put(PacmanRuleConstants.ROUTE_TABLEID, String.join(",", routeTableIdList));
+                return isIgwExists;
             }
-            
+
         }
         return isIgwExists;
     }
@@ -2197,7 +2183,7 @@ public class PacmanUtils {
         Map<String, Object> mustTermsFilter = new HashMap<>();
         mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.RESOURCE_ID),instanceId);
         mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.SOURCE_FIELD),source);
-        JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(kernelInfoApi, mustFilter,mustNotFilter, shouldFilter, null, 0, mustTermsFilter,null);
+        JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(kernelInfoApi, mustFilter,mustNotFilter, shouldFilter, null, 0, mustTermsFilter,null,null);
         if (null != resultJson && resultJson.has(PacmanRuleConstants.HITS)) {
             String hitsJsonString = resultJson.get(PacmanRuleConstants.HITS).toString();
             JsonObject hitsJson = (JsonObject) parser.parse(hitsJsonString);
@@ -2213,5 +2199,348 @@ public class PacmanUtils {
         return kernelVersion;
     }
     
-   
+    /**
+     * Creates the annotation.
+     *
+     * @param resourceType the resource type
+     * @param ruleParam the rule param
+     * @param description the description
+     * @param severity the severity
+     * @param category the category
+     * @return the annotation
+     */
+    public static Annotation createAnnotation(String resourceType, Map<String, String> ruleParam, String description,
+            String severity, String category) {
+        List<LinkedHashMap<String, Object>> issueList = new ArrayList<>();
+        LinkedHashMap<String, Object> issue = new LinkedHashMap<>();
+
+        Annotation annotation = Annotation.buildAnnotation(ruleParam, Annotation.Type.ISSUE);
+        annotation.put(PacmanSdkConstants.DESCRIPTION, description);
+        annotation.put(PacmanRuleConstants.SEVERITY, severity);
+        if (!StringUtils.isEmpty(resourceType)) {
+            annotation.put(PacmanRuleConstants.SUBTYPE, Annotation.Type.RECOMMENDATION.toString());
+        }
+        annotation.put(PacmanRuleConstants.CATEGORY, category);
+
+        issue.put(PacmanRuleConstants.VIOLATION_REASON, description);
+        issueList.add(issue);
+        annotation.put(PacmanRuleConstants.ISSUE_DETAILS, issueList.toString());
+        return annotation;
+    }
+    
+    /**
+     * Gets the route table routes id.
+     *
+     * @param routeTableIdList the route table id list
+     * @param routeTableIdSet the route table id set
+     * @param routetableRoutesEsURL the routetable routes es URL
+     * @param cidrIp the cidr ip
+     * @param internetGateWay the internet gate way
+     * @param cidrIpv6 the cidr ipv 6
+     * @return the route table routes id
+     * @throws Exception the exception
+     */
+    public static boolean getRouteTableRoutesId(List<String> routeTableIdList, Set<String> routeTableIdSet,
+            String routetableRoutesEsURL, String cidrIp, String internetGateWay,String cidrIpv6) throws Exception {
+        String gatewayid = null;
+        JsonParser jsonParser = new JsonParser();
+        Map<String, Object> mustFilter = new HashMap<>();
+        Map<String, Object> mustNotFilter = new HashMap<>();
+        HashMultimap<String, Object> shouldFilter = HashMultimap.create();
+        Map<String, Object> mustTermsFilter = new HashMap<>();
+        mustTermsFilter.put(convertAttributetoKeyword(PacmanRuleConstants.ROUTE_TABLE_ID), routeTableIdSet);
+        shouldFilter.put(convertAttributetoKeyword(PacmanRuleConstants.DEST_CIDR_BLOCK), cidrIp);
+        shouldFilter.put(convertAttributetoKeyword(PacmanRuleConstants.DEST_CIDR_IPV6_BLOCK), cidrIpv6);
+        JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(routetableRoutesEsURL,mustFilter, mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
+
+        if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
+            JsonObject hitsJson = (JsonObject) jsonParser.parse(resultJson.get(PacmanRuleConstants.HITS).toString());
+
+            JsonArray hitsArray = hitsJson.getAsJsonArray(PacmanRuleConstants.HITS);
+            for (int i = 0; i < hitsArray.size(); i++) {
+                JsonObject source = hitsArray.get(i).getAsJsonObject().get(PacmanRuleConstants.SOURCE)
+                        .getAsJsonObject();
+                gatewayid = source.get(PacmanRuleConstants.GATE_WAY_ID).getAsString();
+                if (!org.apache.commons.lang.StringUtils.isEmpty(gatewayid)
+                        && gatewayid.toLowerCase().startsWith(internetGateWay)) {
+                    routeTableIdList.add(source.get(PacmanRuleConstants.ROUTE_TABLE_ID).getAsString());
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Proccess cidr ip or cidr ipv 6 data.
+     *
+     * @param resultJson the result json
+     * @param portToCheck the port to check
+     * @param openPorts the open ports
+     * @param target the target
+     * @return the map
+     */
+    private static Map<String, Boolean> proccessCidrIpOrCidrIpv6Data(JsonObject resultJson, String portToCheck,
+            LinkedHashMap<String, Boolean> openPorts,String target) {
+        String fromPort = null;
+        String toPort = null;
+        String ipprotocol = null;
+        JsonParser jsonParser = new JsonParser();
+        if (resultJson != null) {
+            JsonObject hitsJson = (JsonObject) jsonParser.parse(resultJson.get(PacmanRuleConstants.HITS).toString());
+            JsonArray hitsArray = hitsJson.getAsJsonArray(PacmanRuleConstants.HITS);
+            if (hitsArray.size() > 0 && portToCheck.equalsIgnoreCase("any")) {
+                return getFromAndToPorts(PacmanRuleConstants.ANY_PORT, PacmanRuleConstants.ANY_PORT, PacmanRuleConstants.ANY_PORT, openPorts);
+            }
+            for (int i = 0; i < hitsArray.size(); i++) {
+                JsonObject source = hitsArray.get(i).getAsJsonObject().get(PacmanRuleConstants.SOURCE)
+                        .getAsJsonObject();
+                fromPort = source.get("fromport").getAsString();
+                toPort = source.get("toport").getAsString();
+                ipprotocol = source.get("ipprotocol").getAsString();
+                logger.info(fromPort);
+                logger.info(toPort);
+                logger.info(ipprotocol);
+
+                if ((!org.apache.commons.lang.StringUtils.isEmpty(fromPort) && !org.apache.commons.lang.StringUtils
+                        .isEmpty(toPort) && !"icmp".equalsIgnoreCase(ipprotocol))) {
+                	if(StringUtils.isEmpty(target)){
+                    if (!"All".equalsIgnoreCase(toPort) && !"All".equalsIgnoreCase(fromPort)) {
+
+                    	if (PacmanRuleConstants.SSH_PORT.equals(portToCheck)) {
+							if (portToCheck.equals(fromPort) || (Long.parseLong(fromPort) == Long.parseLong("0") && Long.parseLong(toPort) == Long.parseLong("1024"))) {
+								getFromAndToPorts(fromPort, toPort, ipprotocol, openPorts);
+							} 
+						} else if (PacmanRuleConstants.RDP_PORT.equals(portToCheck)) {
+							if (portToCheck.equals(fromPort) || (Long.parseLong(fromPort) == Long.parseLong("1024") && Long.parseLong(toPort) == Long.parseLong("4098"))) {
+								getFromAndToPorts(fromPort, toPort, ipprotocol, openPorts);
+							} 
+						}else if (portToCheck.equals(fromPort) || (Long.parseLong(portToCheck) >= Long.parseLong(fromPort) && Long.parseLong(portToCheck) <= Long.parseLong(toPort))) {
+							getFromAndToPorts(fromPort, toPort, ipprotocol, openPorts);
+						}
+                    } else {
+                        if (!"All".equalsIgnoreCase(fromPort)) {
+
+                            if ( portToCheck.equals(fromPort)
+                                    || (Long.parseLong(portToCheck) >= Long.parseLong(fromPort) && "All"
+                                            .equalsIgnoreCase(toPort))) {
+                                getFromAndToPorts(fromPort, toPort, ipprotocol, openPorts);
+                            }
+                        } else {
+                            getFromAndToPorts(fromPort, toPort, ipprotocol, openPorts);
+                        }
+                    }
+                }else{
+                	   if (!"All".equalsIgnoreCase(fromPort)) {
+
+                           if (Long.parseLong(fromPort) <= Long.parseLong(target)) {
+                               getFromAndToPorts(fromPort, toPort, ipprotocol, openPorts);
+                           }
+                       } else {
+                           getFromAndToPorts(fromPort, toPort, ipprotocol, openPorts);
+                       }
+                }}
+                }
+            
+        }
+        return openPorts;
+    }
+    
+    /**
+     * Checks if is having public access.
+     *
+     * @param jsonArray the json array
+     * @param endPoint the end point
+     * @return true, if is having public access
+     */
+    public static boolean isHavingPublicAccess(JsonArray jsonArray, String endPoint) {
+        boolean isPublicAccess = false;
+        JsonObject conditionJsonObject = new JsonObject();
+        JsonArray conditionJsonArray = new JsonArray();
+        String conditionStr = null;
+        JsonObject principal = new JsonObject();
+        String effect = null;
+        String principalStr = null;
+        String aws = null;
+        if (jsonArray.size() > 0) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JsonObject firstObject = (JsonObject) jsonArray.get(i);
+
+                if (firstObject.has(PacmanRuleConstants.PRINCIPAL)
+                        && firstObject.get(PacmanRuleConstants.PRINCIPAL).isJsonObject()) {
+                    principal = firstObject.get(PacmanRuleConstants.PRINCIPAL).getAsJsonObject();
+                } else {
+                    principalStr = firstObject.get(PacmanRuleConstants.PRINCIPAL).getAsString();
+                }
+                try {
+                    if (principal.has("AWS") || "*".equals(principalStr)) {
+                        JsonArray awsArray = null;
+                        effect = firstObject.get(PacmanRuleConstants.EFFECT).getAsString();
+                        if (principal.has("AWS") && principal.get("AWS").isJsonArray()) {
+                            awsArray = principal.get("AWS").getAsJsonArray();
+                            if (awsArray.size() > 0) {
+                                logger.debug(
+                                        "Not checking the s3 read/write public access for principal array values : {}",
+                                        awsArray);
+                            }
+                        }
+
+                        if (principal.has("AWS") && !principal.get("AWS").isJsonArray()) {
+                            aws = principal.get("AWS").getAsString();
+                        }
+                        if ("*".equals(principalStr)) {
+                            aws = firstObject.get(PacmanRuleConstants.PRINCIPAL).getAsString();
+                        }
+
+                        if ("*".equals(aws) && !firstObject.has(PacmanRuleConstants.CONDITION)) {
+                            if (effect.equals(PacmanRuleConstants.ALLOW)) {
+                                isPublicAccess = true;
+                            }
+                        } else if ("*".equals(aws) && firstObject.has(PacmanRuleConstants.CONDITION)
+                                && effect.equals(PacmanRuleConstants.ALLOW)) {
+                            if (firstObject.has(PacmanRuleConstants.CONDITION)
+                                    && (firstObject.get(PacmanRuleConstants.CONDITION).getAsJsonObject()
+                                            .has(PacmanRuleConstants.IP_ADDRESS_CAP))
+                                    && (firstObject.get(PacmanRuleConstants.CONDITION).getAsJsonObject()
+                                            .get(PacmanRuleConstants.IP_ADDRESS_CAP).getAsJsonObject()
+                                            .has(PacmanRuleConstants.SOURCE_IP))) {
+                                if (firstObject.get(PacmanRuleConstants.CONDITION).getAsJsonObject()
+                                        .get(PacmanRuleConstants.IP_ADDRESS_CAP).getAsJsonObject()
+                                        .get(PacmanRuleConstants.SOURCE_IP).isJsonObject()) {
+                                    conditionJsonObject = firstObject.get(PacmanRuleConstants.CONDITION)
+                                            .getAsJsonObject().get(PacmanRuleConstants.IP_ADDRESS_CAP)
+                                            .getAsJsonObject().get(PacmanRuleConstants.SOURCE_IP).getAsJsonObject();
+                                } else if (firstObject.get(PacmanRuleConstants.CONDITION).getAsJsonObject()
+                                        .get(PacmanRuleConstants.IP_ADDRESS_CAP).getAsJsonObject()
+                                        .get(PacmanRuleConstants.SOURCE_IP).isJsonArray()) {
+                                    conditionJsonArray = firstObject.get(PacmanRuleConstants.CONDITION)
+                                            .getAsJsonObject().get(PacmanRuleConstants.IP_ADDRESS_CAP)
+                                            .getAsJsonObject().get(PacmanRuleConstants.SOURCE_IP).getAsJsonArray();
+                                } else {
+                                    conditionStr = firstObject.get(PacmanRuleConstants.CONDITION).getAsJsonObject()
+                                            .get(PacmanRuleConstants.IP_ADDRESS_CAP).getAsJsonObject()
+                                            .get(PacmanRuleConstants.SOURCE_IP).getAsString();
+                                }
+                            }
+
+                            JsonElement cJson = conditionJsonArray;
+                            Type listType = new TypeToken<List<String>>() {
+                            }.getType();
+
+                            List<String> conditionList = new Gson().fromJson(cJson, listType);
+                            if (!conditionJsonObject.isJsonNull()
+                                    && conditionJsonObject.toString().equals(PacmanRuleConstants.CIDR_FILTERVALUE)) {
+                                isPublicAccess = true;
+                            }
+
+                            if (null != conditionStr && conditionStr.contains(PacmanRuleConstants.CIDR_FILTERVALUE)) {
+                                isPublicAccess = true;
+                            }
+                            if (conditionList.contains(PacmanRuleConstants.CIDR_FILTERVALUE)) {
+                                isPublicAccess = true;
+                            }
+
+                        }
+                    }
+                } catch (Exception e1) {
+                    logger.error("error", e1);
+                    throw new RuleExecutionFailedExeption(e1.getMessage());
+                }
+            }
+        }
+        return isPublicAccess;
+    }
+    
+    /**
+     * Gets the security grouplist.
+     *
+     * @param securityGroupId the security group id
+     * @param delimeter the delimeter
+     * @param securityGrouplist the security grouplist
+     * @return the security grouplist
+     */
+    public static List<GroupIdentifier> getSecurityGrouplist(String securityGroupId, String delimeter,
+            List<GroupIdentifier> securityGrouplist) {
+        List<String> sgList = new ArrayList(Arrays.asList(securityGroupId.split(delimeter)));
+        for (String sg : sgList) {
+            GroupIdentifier groupIdentifier = new GroupIdentifier();
+            groupIdentifier.setGroupId(sg);
+            securityGrouplist.add(groupIdentifier);
+        }
+        return securityGrouplist;
+    }
+    
+    /**
+     * Sets the annotation.
+     *
+     * @param openPortsMap the open ports map
+     * @param ruleParam the rule param
+     * @param subnetId the subnet id
+     * @param descrition the descrition
+     * @param issue the issue
+     * @return the annotation
+     */
+    public static Annotation setAnnotation(Map<String, Boolean> openPortsMap, Map<String, String> ruleParam,
+            String subnetId, String descrition, LinkedHashMap<String, Object> issue) {
+        Annotation annotation = null;
+        List<LinkedHashMap<String, Object>> issueList = new ArrayList<>();
+        List<String> portsSet = new ArrayList<>();
+        for (Map.Entry<String, Boolean> ports : openPortsMap.entrySet()) {
+            portsSet.add(ports.getKey());
+        }
+
+        annotation = Annotation.buildAnnotation(ruleParam, Annotation.Type.ISSUE);
+        annotation.put(PacmanSdkConstants.DESCRIPTION, descrition);
+        annotation.put(PacmanRuleConstants.SEVERITY, ruleParam.get(PacmanRuleConstants.SEVERITY));
+        annotation.put(PacmanRuleConstants.CATEGORY, ruleParam.get(PacmanRuleConstants.CATEGORY));
+        annotation.put(PacmanRuleConstants.VPC_ID, ruleParam.get(PacmanRuleConstants.VPC_ID));
+        annotation.put(PacmanRuleConstants.SUBNETID, subnetId);
+        issue.put(PacmanRuleConstants.VIOLATION_REASON, descrition);
+        issueList.add(issue);
+        annotation.put("issueDetails", issueList.toString());
+        logger.debug("========ApplicationElbPublicAccessRule ended with an annotation {} : =========", annotation);
+        return annotation;
+    }
+    
+    /**
+     * Gets the security broup id by elb.
+     *
+     * @param resourceId the resource id
+     * @param elbSecurityApi the elb security api
+     * @param accountId the account id
+     * @param region the region
+     * @return the security broup id by elb
+     * @throws Exception the exception
+     */
+    public static List<GroupIdentifier> getSecurityBroupIdByElb(String resourceId, String elbSecurityApi,
+            String accountId, String region) throws Exception {
+        JsonArray hits;
+        JsonParser parser = new JsonParser();
+        String securityGroupId = null;
+        List<GroupIdentifier> securityGrouplist = new ArrayList<>();
+        Map<String, Object> mustFilter = new HashMap<>();
+        Map<String, Object> mustNotFilter = new HashMap<>();
+        HashMultimap<String, Object> shouldFilter = HashMultimap.create();
+        Map<String, Object> mustTermsFilter = new HashMap<>();
+        mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.LOAD_BALANCER_ID_ATTRIBUTE), resourceId);
+        mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.ACCOUNTID), accountId);
+        mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.REGION_ATTR), region);
+        JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(elbSecurityApi, mustFilter,
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
+        if (null != resultJson && resultJson.has(PacmanRuleConstants.HITS)) {
+            String hitsJsonString = resultJson.get(PacmanRuleConstants.HITS).toString();
+            JsonObject hitsJson = (JsonObject) parser.parse(hitsJsonString);
+            hits = hitsJson.getAsJsonObject().get(PacmanRuleConstants.HITS).getAsJsonArray();
+            if (hits.size() > 0) {
+                JsonObject firstObject = (JsonObject) hits.get(0);
+                JsonObject sourceJson = (JsonObject) firstObject.get(PacmanRuleConstants.SOURCE);
+                if (null != sourceJson && sourceJson.has(PacmanRuleConstants.EC2_WITH_SECURITYGROUP_ID)) {
+                    securityGroupId = sourceJson.get(PacmanRuleConstants.EC2_WITH_SECURITYGROUP_ID).getAsString();
+                    getSecurityGrouplist(securityGroupId, ":;", securityGrouplist);
+                }
+            }
+        }
+        return securityGrouplist;
+    }
+
 }
