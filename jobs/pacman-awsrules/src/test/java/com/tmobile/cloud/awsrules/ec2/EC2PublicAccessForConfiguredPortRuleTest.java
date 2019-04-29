@@ -45,7 +45,7 @@ public class EC2PublicAccessForConfiguredPortRuleTest {
     @Test
     public void executeTest() throws Exception {
         mockStatic(PacmanUtils.class);
-        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
+        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
                 true);
         
         when(PacmanUtils.getPacmanHost(anyString())).thenReturn("host");
@@ -75,7 +75,7 @@ public class EC2PublicAccessForConfiguredPortRuleTest {
         
         
         
-        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
+        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
                 false);
         assertThatThrownBy(
                 () -> accessForConfiguredPortRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 "))).isInstanceOf(InvalidInputException.class);
