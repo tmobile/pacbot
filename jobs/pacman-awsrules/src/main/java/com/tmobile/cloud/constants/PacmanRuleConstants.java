@@ -321,4 +321,11 @@ public class PacmanRuleConstants {
     public static final String IAM_USER_NAME = "username";
 	public static final String UNAPPROVED_IAM_ACTIONS = "unApprovedIamActions";
 	public static final String UNABLE_TO_GET_CLIENT = "Unable to get client";
+	public static final String GLOBAL_ACCESS = "global";
+	public static final String CIDRIPV6 = "cidripv6";
+	public static final String DEST_CIDR_IPV6_BLOCK = "destinationipv6cidrblock";
+	public static final String ANY_PORT = "ANY";
+	public static final String SSH_PORT = "22";
+	public static final String RDP_PORT = "3389";
+	public static final String DEFAULT_CIDR_IP = "defaultCidrIp";
 }
