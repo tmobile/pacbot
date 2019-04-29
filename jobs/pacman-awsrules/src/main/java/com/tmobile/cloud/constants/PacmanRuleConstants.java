@@ -328,4 +328,12 @@ public class PacmanRuleConstants {
 	public static final String SSH_PORT = "22";
 	public static final String RDP_PORT = "3389";
 	public static final String DEFAULT_CIDR_IP = "defaultCidrIp";
+	public static final String END_POINT = "endpoint";
+	public static final String ENTITY_TYPE = "_entitytype";
+	public static final String ACCESS_POLICIES = "accesspolicies";
+	public static final String RESOURCE_DISPLAY_ID = "resourceDisplayId";
+	public static final String SCHEME = "scheme";
+	public static final String ES_ELB_WITH_SECURITYGROUP_URL = "esElbWithSGUrl";
+	public static final String SUBNETS_LIST = "subnets";
+	public static final String INTERNET_FACING = "internet-facing";
 }
