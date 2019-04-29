@@ -51,20 +51,20 @@ public class EC2PublicAccessForConfiguredPortRuleTest {
         when(PacmanUtils.getPacmanHost(anyString())).thenReturn("host");
         when(PacmanUtils.getRouteTableId(anyString(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getSetString("123"));
         
-        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString())).thenReturn(false);
+        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString(),anyString())).thenReturn(false);
         
         when(PacmanUtils.getSecurityGroupsByInstanceId(anyString(),anyString())).thenReturn(CommonTestUtils.getListSecurityGroupId());
         
-        when(PacmanUtils.checkAccessibleToAll(anyObject(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getLinkedHashMapBoolean("123"));
+        when(PacmanUtils.checkAccessibleToAll(anyObject(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getLinkedHashMapBoolean("123"));
         assertThat(accessForConfiguredPortRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
         
-        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString())).thenReturn(true);
+        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString(),anyString())).thenReturn(true);
         assertThat(accessForConfiguredPortRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
         
-        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString())).thenReturn(false);
+        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString(),anyString())).thenReturn(false);
         assertThat(accessForConfiguredPortRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
        
-        when(PacmanUtils.checkAccessibleToAll(anyObject(),anyString(),anyString(),anyString())).thenThrow(new Exception());
+        when(PacmanUtils.checkAccessibleToAll(anyObject(),anyString(),anyString(),anyString(),anyString(),anyString())).thenThrow(new Exception());
         assertThatThrownBy( 
                 () -> accessForConfiguredPortRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 "))).isInstanceOf(RuleExecutionFailedExeption.class);
         

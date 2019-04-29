@@ -45,6 +45,7 @@ import com.tmobile.pacman.commons.rule.Annotation;
 import com.tmobile.pacman.commons.rule.BaseRule;
 import com.tmobile.pacman.commons.rule.PacmanRule;
 import com.tmobile.pacman.commons.rule.RuleResult;
+import com.tmobile.pacman.executor.RuleExecutor;
 
 /**
  * The Class ServiceAccountPrivilegesRule.
@@ -165,6 +166,10 @@ public class ServiceAccountPrivilegesRule extends BaseRule {
 	@Override
 	public String getHelpText() {
 		return "Checks if any service account has certain privileges,if so creates an issue";
+	}
+	
+	public static void main(String args[]){
+		new RuleExecutor().main(args);
 	}
 
 }
