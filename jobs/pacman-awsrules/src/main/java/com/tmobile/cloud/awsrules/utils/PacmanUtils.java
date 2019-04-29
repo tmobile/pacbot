@@ -33,6 +33,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -2344,4 +2345,202 @@ public class PacmanUtils {
         }
         return openPorts;
     }
+    
+    /**
+     * Checks if is having public access.
+     *
+     * @param jsonArray the json array
+     * @param endPoint the end point
+     * @return true, if is having public access
+     */
+    public static boolean isHavingPublicAccess(JsonArray jsonArray, String endPoint) {
+        boolean isPublicAccess = false;
+        JsonObject conditionJsonObject = new JsonObject();
+        JsonArray conditionJsonArray = new JsonArray();
+        String conditionStr = null;
+        JsonObject principal = new JsonObject();
+        String effect = null;
+        String principalStr = null;
+        String aws = null;
+        if (jsonArray.size() > 0) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JsonObject firstObject = (JsonObject) jsonArray.get(i);
+
+                if (firstObject.has(PacmanRuleConstants.PRINCIPAL)
+                        && firstObject.get(PacmanRuleConstants.PRINCIPAL).isJsonObject()) {
+                    principal = firstObject.get(PacmanRuleConstants.PRINCIPAL).getAsJsonObject();
+                } else {
+                    principalStr = firstObject.get(PacmanRuleConstants.PRINCIPAL).getAsString();
+                }
+                try {
+                    if (principal.has("AWS") || "*".equals(principalStr)) {
+                        JsonArray awsArray = null;
+                        effect = firstObject.get(PacmanRuleConstants.EFFECT).getAsString();
+                        if (principal.has("AWS") && principal.get("AWS").isJsonArray()) {
+                            awsArray = principal.get("AWS").getAsJsonArray();
+                            if (awsArray.size() > 0) {
+                                logger.debug(
+                                        "Not checking the s3 read/write public access for principal array values : {}",
+                                        awsArray);
+                            }
+                        }
+
+                        if (principal.has("AWS") && !principal.get("AWS").isJsonArray()) {
+                            aws = principal.get("AWS").getAsString();
+                        }
+                        if ("*".equals(principalStr)) {
+                            aws = firstObject.get(PacmanRuleConstants.PRINCIPAL).getAsString();
+                        }
+
+                        if ("*".equals(aws) && !firstObject.has(PacmanRuleConstants.CONDITION)) {
+                            if (effect.equals(PacmanRuleConstants.ALLOW)) {
+                                isPublicAccess = true;
+                            }
+                        } else if ("*".equals(aws) && firstObject.has(PacmanRuleConstants.CONDITION)
+                                && effect.equals(PacmanRuleConstants.ALLOW)) {
+                            if (firstObject.has(PacmanRuleConstants.CONDITION)
+                                    && (firstObject.get(PacmanRuleConstants.CONDITION).getAsJsonObject()
+                                            .has(PacmanRuleConstants.IP_ADDRESS_CAP))
+                                    && (firstObject.get(PacmanRuleConstants.CONDITION).getAsJsonObject()
+                                            .get(PacmanRuleConstants.IP_ADDRESS_CAP).getAsJsonObject()
+                                            .has(PacmanRuleConstants.SOURCE_IP))) {
+                                if (firstObject.get(PacmanRuleConstants.CONDITION).getAsJsonObject()
+                                        .get(PacmanRuleConstants.IP_ADDRESS_CAP).getAsJsonObject()
+                                        .get(PacmanRuleConstants.SOURCE_IP).isJsonObject()) {
+                                    conditionJsonObject = firstObject.get(PacmanRuleConstants.CONDITION)
+                                            .getAsJsonObject().get(PacmanRuleConstants.IP_ADDRESS_CAP)
+                                            .getAsJsonObject().get(PacmanRuleConstants.SOURCE_IP).getAsJsonObject();
+                                } else if (firstObject.get(PacmanRuleConstants.CONDITION).getAsJsonObject()
+                                        .get(PacmanRuleConstants.IP_ADDRESS_CAP).getAsJsonObject()
+                                        .get(PacmanRuleConstants.SOURCE_IP).isJsonArray()) {
+                                    conditionJsonArray = firstObject.get(PacmanRuleConstants.CONDITION)
+                                            .getAsJsonObject().get(PacmanRuleConstants.IP_ADDRESS_CAP)
+                                            .getAsJsonObject().get(PacmanRuleConstants.SOURCE_IP).getAsJsonArray();
+                                } else {
+                                    conditionStr = firstObject.get(PacmanRuleConstants.CONDITION).getAsJsonObject()
+                                            .get(PacmanRuleConstants.IP_ADDRESS_CAP).getAsJsonObject()
+                                            .get(PacmanRuleConstants.SOURCE_IP).getAsString();
+                                }
+                            }
+
+                            JsonElement cJson = conditionJsonArray;
+                            Type listType = new TypeToken<List<String>>() {
+                            }.getType();
+
+                            List<String> conditionList = new Gson().fromJson(cJson, listType);
+                            if (!conditionJsonObject.isJsonNull()
+                                    && conditionJsonObject.toString().equals(PacmanRuleConstants.CIDR_FILTERVALUE)) {
+                                isPublicAccess = true;
+                            }
+
+                            if (null != conditionStr && conditionStr.contains(PacmanRuleConstants.CIDR_FILTERVALUE)) {
+                                isPublicAccess = true;
+                            }
+                            if (conditionList.contains(PacmanRuleConstants.CIDR_FILTERVALUE)) {
+                                isPublicAccess = true;
+                            }
+
+                        }
+                    }
+                } catch (Exception e1) {
+                    logger.error("error", e1);
+                    throw new RuleExecutionFailedExeption(e1.getMessage());
+                }
+            }
+        }
+        return isPublicAccess;
+    }
+    
+    /**
+     * Gets the security grouplist.
+     *
+     * @param securityGroupId the security group id
+     * @param delimeter the delimeter
+     * @param securityGrouplist the security grouplist
+     * @return the security grouplist
+     */
+    public static List<GroupIdentifier> getSecurityGrouplist(String securityGroupId, String delimeter,
+            List<GroupIdentifier> securityGrouplist) {
+        List<String> sgList = new ArrayList(Arrays.asList(securityGroupId.split(delimeter)));
+        for (String sg : sgList) {
+            GroupIdentifier groupIdentifier = new GroupIdentifier();
+            groupIdentifier.setGroupId(sg);
+            securityGrouplist.add(groupIdentifier);
+        }
+        return securityGrouplist;
+    }
+    
+    /**
+     * Sets the annotation.
+     *
+     * @param openPortsMap the open ports map
+     * @param ruleParam the rule param
+     * @param subnetId the subnet id
+     * @param descrition the descrition
+     * @param issue the issue
+     * @return the annotation
+     */
+    public static Annotation setAnnotation(Map<String, Boolean> openPortsMap, Map<String, String> ruleParam,
+            String subnetId, String descrition, LinkedHashMap<String, Object> issue) {
+        Annotation annotation = null;
+        List<LinkedHashMap<String, Object>> issueList = new ArrayList<>();
+        List<String> portsSet = new ArrayList<>();
+        for (Map.Entry<String, Boolean> ports : openPortsMap.entrySet()) {
+            portsSet.add(ports.getKey());
+        }
+
+        annotation = Annotation.buildAnnotation(ruleParam, Annotation.Type.ISSUE);
+        annotation.put(PacmanSdkConstants.DESCRIPTION, descrition);
+        annotation.put(PacmanRuleConstants.SEVERITY, ruleParam.get(PacmanRuleConstants.SEVERITY));
+        annotation.put(PacmanRuleConstants.CATEGORY, ruleParam.get(PacmanRuleConstants.CATEGORY));
+        annotation.put(PacmanRuleConstants.VPC_ID, ruleParam.get(PacmanRuleConstants.VPC_ID));
+        annotation.put(PacmanRuleConstants.SUBNETID, subnetId);
+        issue.put(PacmanRuleConstants.VIOLATION_REASON, descrition);
+        issueList.add(issue);
+        annotation.put("issueDetails", issueList.toString());
+        logger.debug("========ApplicationElbPublicAccessRule ended with an annotation {} : =========", annotation);
+        return annotation;
+    }
+    
+    /**
+     * Gets the security broup id by elb.
+     *
+     * @param resourceId the resource id
+     * @param elbSecurityApi the elb security api
+     * @param accountId the account id
+     * @param region the region
+     * @return the security broup id by elb
+     * @throws Exception the exception
+     */
+    public static List<GroupIdentifier> getSecurityBroupIdByElb(String resourceId, String elbSecurityApi,
+            String accountId, String region) throws Exception {
+        JsonArray hits;
+        JsonParser parser = new JsonParser();
+        String securityGroupId = null;
+        List<GroupIdentifier> securityGrouplist = new ArrayList<>();
+        Map<String, Object> mustFilter = new HashMap<>();
+        Map<String, Object> mustNotFilter = new HashMap<>();
+        HashMultimap<String, Object> shouldFilter = HashMultimap.create();
+        Map<String, Object> mustTermsFilter = new HashMap<>();
+        mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.LOAD_BALANCER_ID_ATTRIBUTE), resourceId);
+        mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.ACCOUNTID), accountId);
+        mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.REGION_ATTR), region);
+        JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(elbSecurityApi, mustFilter,
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
+        if (null != resultJson && resultJson.has(PacmanRuleConstants.HITS)) {
+            String hitsJsonString = resultJson.get(PacmanRuleConstants.HITS).toString();
+            JsonObject hitsJson = (JsonObject) parser.parse(hitsJsonString);
+            hits = hitsJson.getAsJsonObject().get(PacmanRuleConstants.HITS).getAsJsonArray();
+            if (hits.size() > 0) {
+                JsonObject firstObject = (JsonObject) hits.get(0);
+                JsonObject sourceJson = (JsonObject) firstObject.get(PacmanRuleConstants.SOURCE);
+                if (null != sourceJson && sourceJson.has(PacmanRuleConstants.EC2_WITH_SECURITYGROUP_ID)) {
+                    securityGroupId = sourceJson.get(PacmanRuleConstants.EC2_WITH_SECURITYGROUP_ID).getAsString();
+                    getSecurityGrouplist(securityGroupId, ":;", securityGrouplist);
+                }
+            }
+        }
+        return securityGrouplist;
+    }
+
 }
