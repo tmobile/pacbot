@@ -30,7 +30,8 @@ class RDSResource(TerraformResource):
         'parameter_group_name': {'required': False},
         'vpc_security_group_ids': {'required': False},
         'final_snapshot_identifier': {'required': False},
-        'tags': {'required': False}
+        'tags': {'required': False},
+        'apply_immediately': {'required': False}
     }
 
     def check_exists_before(self, input, tf_outputs):
