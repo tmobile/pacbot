@@ -71,9 +71,9 @@ public class AutoFixManager {
 
     private static final Logger logger = LoggerFactory.getLogger(AutoFixManager.class);
 
-
+    
     Map<String,String> targetTypeAlias;
-
+    
     /**
      * Perform auto fixs.
      *
@@ -84,9 +84,9 @@ public class AutoFixManager {
      * @throws Exception the exception
      */
 
-
+    
     /**
-     *
+     * 
      */
     public AutoFixManager() {
         targetTypeAlias = new HashMap<>();
@@ -96,9 +96,9 @@ public class AutoFixManager {
             targetTypeAlias = Splitter.on(",").withKeyValueSeparator("=").split(alias);
          }
              }
-
+        
    /**
-    *
+    *  
     * @param ruleParam
     * @param exemptedResourcesForRule
     * @param individuallyExcemptedIssues
@@ -147,6 +147,8 @@ public class AutoFixManager {
 
         MDC.put("executionId", executionId);
         MDC.put("ruleId", ruleParam.get(PacmanSdkConstants.RULE_ID));
+        
+        String type = "autofix";
 
         // check fix exists for rule
         try {
@@ -168,7 +170,7 @@ public class AutoFixManager {
             return autoFixStats;
         }
 
-
+        
         try {
             existingIssues = getOpenAndExcepmtedAnnotationForRule(ruleParam);
         } catch (Exception e) {
@@ -178,10 +180,10 @@ public class AutoFixManager {
         }
 
         for (Map<String, String> annotation : existingIssues) {
+        	List<AutoFixTransaction> addDetailsToLogTrans = new ArrayList<>();
             targetType = annotation.get("targetType");
             resourceId =annotation.get("_resourceid");
             transactionId = CommonUtils.getUniqueIdForString(resourceId);
-
                annotationId = annotation.get(PacmanSdkConstants.ES_DOC_ID_KEY); // this
                                                                              // will
                                                                              // be
@@ -194,35 +196,38 @@ public class AutoFixManager {
                                                                              // the
                                                                              // resource
             targetType =  getTargetTypeAlias(targetType);
-
-
+            
+            
             serviceType = AWSService.valueOf(targetType.toUpperCase());
+            
+            // create client
+            if(isAccountWhiteListedForAutoFix(annotation.get(PacmanSdkConstants.ACCOUNT_ID),ruleParam.get(PacmanSdkConstants.RULE_ID))){
+            	clientMap = getAWSClient(targetType, annotation, CommonUtils.getPropValue(PacmanSdkConstants.AUTO_FIX_ROLE_NAME));
+            }else{
+            	 logger.info("Account id is not whitelisted {}" , annotation.get(PacmanSdkConstants.ACCOUNT_ID));
+            	continue;
+            }
             logger.debug(String.format("processing for %s " , resourceId));
-            if (!isAccountWhiteListedForAutoFix(annotation.get(PacmanSdkConstants.ACCOUNT_ID),
-                    ruleParam.get(PacmanSdkConstants.RULE_ID))
-                    || (!isResourceTypeExemptedFromCutOfDateCriteria(targetType)
-                         && resourceCreatedBeforeCutoffData(resourceId, targetType))
+            if ((!isResourceTypeExemptedFromCutOfDateCriteria(targetType)
+                       && resourceCreatedBeforeCutoffData(resourceId, targetType))
                     || !isresourceIdMatchesCriteria(resourceId) ||!isAFixCandidate(isFixCandidateMethod,fixObject, resourceId, targetType, clientMap, ruleParam,annotation)) {
                 logger.debug(String.format("exempted by various conditions --> %s " , resourceId));
                 continue;
             }
-
             logger.debug(String.format("not exempted by conditions --> %s " , resourceId));
-            // create client
-            clientMap = getAWSClient(targetType, annotation, CommonUtils.getPropValue(PacmanSdkConstants.AUTO_FIX_ROLE_NAME));
+          
             // if resource is exempted tag the resource
             String issueStatus = annotation.get("issueStatus");
 
             // find resource owner
             resourceOwner = ownerService.findResourceOwnerByIdAndType(resourceId, serviceType);
             autoFixAction = nextStepManager.getNextStep(ruleParam.get(PacmanSdkConstants.RULE_ID),resourceId, clientMap, serviceType);
-
             if(AutoFixAction.UNABLE_TO_DETERMINE==autoFixAction){
                 autoFixTrans.add(new AutoFixTransaction(AutoFixAction.UNABLE_TO_DETERMINE, resourceId,ruleId,
-                        executionId, transactionId, "unable to determine the next set of action , not processing for this pass"));
+                        executionId, transactionId, "unable to determine the next set of action , not processing for this pass",type,annotation.get("targetType"),annotationId,annotation.get(PacmanSdkConstants.ACCOUNT_ID),annotation.get(PacmanSdkConstants.REGION)));
                 continue;
             }
-
+            
             if (PacmanSdkConstants.ISSUE_STATUS_EXEMPTED_VALUE.equals(issueStatus)) {
                 try {
                     // get the exception
@@ -239,12 +244,12 @@ public class AutoFixManager {
                         Map<String, String> pacTag = createPacTag(exceptionExpiryDate);
                         taggingManager.tagResource(resourceId, clientMap, serviceType, pacTag);
                         autoFixTrans.add(new AutoFixTransaction(AutoFixAction.AUTOFIX_ACTION_TAG, resourceId,ruleId,
-                                executionId, transactionId, "resource tagged"));
+                                executionId, transactionId, "resource tagged",type,annotation.get("targetType"),annotationId,annotation.get(PacmanSdkConstants.ACCOUNT_ID),annotation.get(PacmanSdkConstants.REGION)));
                         resourcesTaggedCounter++;
                         // this means this resource was exempted after sending
                         // the violation emails and exempted afterwards
                         if (!nextStepManager.isSilentFixEnabledForRule(ruleId) && !MailUtils.sendAutoFixNotification(ruleParam, resourceOwner, targetType, resourceId,
-                                exceptionExpiryDate, AutoFixAction.AUTOFIX_ACTION_EXEMPTED)) {
+                                exceptionExpiryDate, AutoFixAction.AUTOFIX_ACTION_EXEMPTED,addDetailsToLogTrans,annotation)) {
                             logger.error(String.format("unable to send email to %s" ,resourceOwner.toString()));
                         }
                     }
@@ -286,7 +291,7 @@ public class AutoFixManager {
                                 .setEmailId(CommonUtils.getPropValue(PacmanSdkConstants.ORPHAN_RESOURCE_OWNER_EMAIL));
                     }
 
-
+                    
                 } catch (Exception e) {
                     logger.error(String.format("unable to find the resource owner for %s " , resourceId));
                     resourceOwner = new ResourceOwner("CSO",
@@ -297,25 +302,27 @@ public class AutoFixManager {
                 if (AutoFixAction.DO_NOTHING == autoFixAction) {
                     didNothingCounter++;
                     autoFixTrans.add(new AutoFixTransaction(AutoFixAction.DO_NOTHING, resourceId,ruleId, executionId,
-                            transactionId, "waiting for 24 hours before fixing the violation"));
+                            transactionId, "waiting for 24 hours before fixing the violation",type,annotation.get("targetType"),annotationId,annotation.get(PacmanSdkConstants.ACCOUNT_ID),annotation.get(PacmanSdkConstants.REGION)));
 
                     continue;
                 }
 
                 if (AutoFixAction.AUTOFIX_ACTION_EMAIL == autoFixAction
                         && isAccountWhiteListedForAutoFix(annotation.get(PacmanSdkConstants.ACCOUNT_ID), ruleId)) {
-
-                    ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("America/Los_Angeles")).plusHours(24);
+                    long autofixExpiring=nextStepManager.getAutoFixExpirationTimeInHours(ruleParam.get(PacmanSdkConstants.RULE_ID),resourceId);
+                	/*ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("America/Los_Angeles")).plusHours(Integer.parseInt(CommonUtils.getPropValue(PacmanSdkConstants.PAC_AUTO_FIX_DELAY_KEY
+                            +"."+ ruleParam.get(PacmanSdkConstants.RULE_ID))));*/
+                    ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneId.of("America/Los_Angeles")).plusHours(autofixExpiring);
                     String expiringTime = zonedDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
                     if (!MailUtils.sendAutoFixNotification(ruleParam, resourceOwner, targetType, resourceId,
-                            expiringTime, AutoFixAction.AUTOFIX_ACTION_EMAIL)) {
+                            expiringTime, AutoFixAction.AUTOFIX_ACTION_EMAIL,addDetailsToLogTrans,annotation)) {
                         logger.error(String.format("unable to send email to %s" , resourceOwner.toString()));
                         continue; // notification was not sent, skip further
                                   // execution
                     }
                     logger.debug(String.format("email sent to %s" , resourceOwner.toString()));
                     autoFixTrans.add(new AutoFixTransaction(AutoFixAction.AUTOFIX_ACTION_EMAIL, resourceId,ruleId, executionId,
-                            transactionId, "email sent to " + resourceOwner.getEmailId()));
+                            transactionId, "email sent to " + resourceOwner.getEmailId(),type,annotation.get("targetType"),annotationId,annotation.get(PacmanSdkConstants.ACCOUNT_ID),annotation.get(PacmanSdkConstants.REGION)));
                     notificationSentCounter++;
                     try {
                         nextStepManager.postFixAction(resourceId, AutoFixAction.EMAIL);
@@ -337,15 +344,20 @@ public class AutoFixManager {
                                     continue;
                                 }
                                 autoFixTrans.add(new AutoFixTransaction(AutoFixAction.AUTOFIX_ACTION_BACKUP, resourceId,ruleId,
-                                        executionId, transactionId, "resource aconfig backedup"));
+                                        executionId, transactionId, "resource aconfig backedup",type,annotation.get("targetType"),annotationId,annotation.get(PacmanSdkConstants.ACCOUNT_ID),annotation.get(PacmanSdkConstants.REGION)));
                                 backupConfigCounter++;
                                 FixResult result = (FixResult) executeMethod.invoke(fixObject, annotation, clientMap, ruleParam);
                                 fixResults
                                         .add(result);
                                 autoFixTrans.add(new AutoFixTransaction(AutoFixAction.AUTOFIX_ACTION_FIX, resourceId,ruleId,
-                                        executionId, transactionId, result.toString()));
-                                if (!nextStepManager.isSilentFixEnabledForRule(ruleId) && MailUtils.sendAutoFixNotification(ruleParam, resourceOwner, targetType, resourceId, "",
-                                        AutoFixAction.AUTOFIX_ACTION_FIX)) {
+                                        executionId, transactionId, result.toString(),type,annotation.get("targetType"),annotationId,annotation.get(PacmanSdkConstants.ACCOUNT_ID),annotation.get(PacmanSdkConstants.REGION)));
+                                if (!nextStepManager.isSilentFixEnabledForRule(ruleId)){
+                                	
+                                	if(null!=addDetailsToTransactionLogMethod){
+                                		addDetailsToLogTrans.add((AutoFixTransaction) addDetailsToTransactionLogMethod.invoke(fixObject,annotation));
+                                    }
+                                	MailUtils.sendAutoFixNotification(ruleParam, resourceOwner, targetType, resourceId, "",
+                                        AutoFixAction.AUTOFIX_ACTION_FIX,addDetailsToLogTrans,annotation);
                                     logger.debug(String.format("autofixed the resource %s and email sent to  %s",
                                             resourceId, resourceOwner.toString()));
                                 }
@@ -354,12 +366,12 @@ public class AutoFixManager {
 //                                    }
                                     else{
                                     logger.error(String.format("unable to send email to %s " , resourceOwner.toString()));
-
+                                   
                                     }
-                                if(null!=addDetailsToTransactionLogMethod){
+                                if(nextStepManager.isSilentFixEnabledForRule(ruleId) && null!=addDetailsToTransactionLogMethod){
                                     silentautoFixTrans.add((AutoFixTransaction) addDetailsToTransactionLogMethod.invoke(fixObject,annotation));
                                 }
-
+                                                                
                                 autoFixCounter++;
                         } catch (Exception e) {
                             logger.error(String.format("unable to execute auto fix for %s  will not fix at this time",resourceId),
@@ -370,26 +382,27 @@ public class AutoFixManager {
                     } else if (AutoFixAction.AUTOFIX_ACTION_EMAIL_REMIND_EXCEPTION_EXPIRY == autoFixAction) {
 
                         if (!MailUtils.sendAutoFixNotification(ruleParam, resourceOwner, targetType, resourceId, "",
-                                AutoFixAction.AUTOFIX_ACTION_EMAIL_REMIND_EXCEPTION_EXPIRY)) {
+                                AutoFixAction.AUTOFIX_ACTION_EMAIL_REMIND_EXCEPTION_EXPIRY,addDetailsToLogTrans,annotation)) {
                             logger.error(String.format("unable to send email to %s" , resourceOwner.toString()));
                         }
                     }
                 }
             } // if issue open
-                } // for
+        
+}// for
         //Silent fix send Digest email
-        if(!silentautoFixTrans.isEmpty()){
-
-            MailUtils.sendSilentFixNotification(silentautoFixTrans, ruleParam, resourceOwner, targetType);
+        if(!silentautoFixTrans.isEmpty() && nextStepManager.isSilentFixEnabledForRule(ruleId)){
+            
+            MailUtils.sendCommonFixNotification(silentautoFixTrans, ruleParam, resourceOwner, targetType);
         }
         // publish the transactions here
         // if any transaction exists post it
         if (autoFixTrans != null && autoFixTrans.size() > 0) {
             ElasticSearchDataPublisher dataPublisher =  new ElasticSearchDataPublisher();
-            dataPublisher.publishAutoFixTransactions(autoFixTrans);
+            dataPublisher.publishAutoFixTransactions(autoFixTrans,ruleParam);
             dataPublisher.close();
         }
-
+        
         autoFixStats.put("autoFixCounter", autoFixCounter);
         autoFixStats.put("resourcesTaggedCounter", resourcesTaggedCounter);
         autoFixStats.put("notificationSentCounter", notificationSentCounter);
@@ -400,8 +413,8 @@ public class AutoFixManager {
 
         return autoFixStats;
     }
-
-
+    
+   
     /**
      * @param targetType
      * @return
@@ -444,7 +457,6 @@ public class AutoFixManager {
      */
     private boolean isAFixCandidate(Method isFixCandidateMethod, Object fixObject, String resourceId, String targetType,
             Map<String, Object> clientMap, Map<String, String> ruleParam, Map<String, String> annotation) throws IllegalAccessException, IllegalArgumentException, InvocationTargetException {
-        logger.debug("is fix candidate ==> " + (null==isFixCandidateMethod?true:(Boolean)isFixCandidateMethod.invoke(fixObject, resourceId, targetType, clientMap, ruleParam,annotation)));
        return null==isFixCandidateMethod?true:(Boolean)isFixCandidateMethod.invoke(fixObject, resourceId, targetType, clientMap, ruleParam,annotation);
     }
 
@@ -672,8 +684,8 @@ public class AutoFixManager {
         tagMap.put(pacTagName, pacTagValue);
         return tagMap;
     }
-
-
+    
+    
 
     /**
      * test the code locally.
