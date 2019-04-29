@@ -52,7 +52,7 @@ public class EC2WithPublicIPAccessTest {
         when(PacmanUtils.getPacmanHost(anyString())).thenReturn("host");
         when(PacmanUtils.getRouteTableId(anyString(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getSetString("123"));
         
-        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString())).thenReturn(false);
+        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString(),anyString())).thenReturn(false);
         
         when(PacmanUtils.getSecurityGroupsByInstanceId(anyString(),anyString())).thenReturn(CommonTestUtils.getListSecurityGroupId());
         
@@ -60,10 +60,10 @@ public class EC2WithPublicIPAccessTest {
         when(PacmanEc2Utils.checkAccessibleToAll(anyObject(),anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getLinkedHashMapBoolean("123"));
         assertThat(ec2WithPublicIPAccess.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
         
-        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString())).thenReturn(false);
+        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString(),anyString())).thenReturn(false);
         assertThat(ec2WithPublicIPAccess.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
         
-        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString())).thenReturn(true);
+        when(PacmanUtils.isIgwFound(anyString(),anyString(),anyString(),anyObject(),anyObject(),anyString(),anyString(),anyString())).thenReturn(true);
         assertThat(ec2WithPublicIPAccess.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
        
         when(PacmanEc2Utils.checkAccessibleToAll(anyObject(),anyString(),anyString(),anyString())).thenThrow(new Exception());

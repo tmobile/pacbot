@@ -23,3 +23,5 @@ security:
       user-info-uri: ${PACMAN_HOST_NAME}/api/auth/user
 query:
     assetGroupQuery: SELECT groupName, targetType, attributeName, attributeValue, dataSource, aliasQuery FROM cf_AssetGroups
+    
+spring.jpa.hibernate.naming.physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
