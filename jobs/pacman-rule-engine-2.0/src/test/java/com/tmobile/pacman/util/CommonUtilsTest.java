@@ -411,12 +411,12 @@ private CloseableHttpClient httpClient;
 	 * Creates the param map.
 	 *
 	 * @throws Exception the exception
-	 */
+	 *//*
 	@Test
 	public void createParamMap() throws Exception {
 		Map<String, String> response = CommonUtils.createParamMap("test=122*name=908");
 		assertNotNull(response);
-	}
+	}*/
 
     /**
      * Test is env variable exists.
