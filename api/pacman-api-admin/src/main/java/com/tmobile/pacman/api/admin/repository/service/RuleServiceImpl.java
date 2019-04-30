@@ -38,6 +38,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import com.amazonaws.services.cloudwatchevents.model.DeleteRuleRequest;
 import com.amazonaws.services.cloudwatchevents.model.DeleteRuleResult;
+import com.amazonaws.services.cloudwatchevents.model.ListTargetsByRuleRequest;
+import com.amazonaws.services.cloudwatchevents.model.ListTargetsByRuleResult;
 import com.amazonaws.services.cloudwatchevents.model.PutRuleRequest;
 import com.amazonaws.services.cloudwatchevents.model.PutRuleResult;
 import com.amazonaws.services.cloudwatchevents.model.PutTargetsRequest;
@@ -428,16 +430,21 @@ public class RuleServiceImpl implements RuleService {
 	}
 	
 	private boolean removeTargetWithRule(final Rule rule) {
-		RemoveTargetsRequest removeTargetsRequest = new RemoveTargetsRequest()
-		.withIds(config.getRule().getLambda().getTargetId())
-	    .withRule(rule.getRuleUUID());
-		try {
-			RemoveTargetsResult targetsResult = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion()).removeTargets(removeTargetsRequest);
-			return (targetsResult.getFailedEntryCount()==0);
-		} catch(Exception exception) {
-			exception.printStackTrace();
-			return false;
+		boolean targetRemoved = true;
+		ListTargetsByRuleResult listTargetsByRuleResult = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion())
+				.listTargetsByRule(new ListTargetsByRuleRequest().withRule(rule.getRuleUUID()));
+		for(Target target : listTargetsByRuleResult.getTargets()) {
+			RemoveTargetsRequest removeTargetsRequest = new RemoveTargetsRequest()
+			.withIds(target.getId()).withRule(rule.getRuleUUID());
+			try {
+				RemoveTargetsResult targetsResult = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion()).removeTargets(removeTargetsRequest);
+				targetRemoved = targetRemoved && targetsResult.getFailedEntryCount()==0;
+			} catch(Exception exception) {
+				exception.printStackTrace();
+				return false;
+			}
 		}
+		return targetRemoved;
 	}
 	
 	private void createPolicyForLambda(final String lambdaFunctionName, final AWSLambda lambdaClient) {
