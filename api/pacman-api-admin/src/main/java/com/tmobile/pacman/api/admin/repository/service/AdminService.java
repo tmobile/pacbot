@@ -1,6 +1,5 @@
 package com.tmobile.pacman.api.admin.repository.service;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,9 +12,11 @@ import com.amazonaws.services.cloudwatchevents.model.DisableRuleRequest;
 import com.amazonaws.services.cloudwatchevents.model.EnableRuleRequest;
 import com.amazonaws.services.cloudwatchevents.model.ListRulesRequest;
 import com.amazonaws.services.cloudwatchevents.model.RuleState;
+import com.tmobile.pacman.api.admin.common.AdminConstants;
 import com.tmobile.pacman.api.admin.config.PacmanConfiguration;
 import com.tmobile.pacman.api.admin.repository.JobExecutionManagerRepository;
 import com.tmobile.pacman.api.admin.repository.RuleRepository;
+import com.tmobile.pacman.api.admin.repository.model.JobExecutionManager;
 import com.tmobile.pacman.api.admin.repository.model.Rule;
 import com.tmobile.pacman.api.admin.service.AmazonClientBuilderService;
 
@@ -36,26 +37,37 @@ public class AdminService {
 	@Autowired
 	private PacmanConfiguration config;
 	
-	public void shutDownAlloperations(String operation, String job) {
-		if(operation.equals("enable")) {
-			if(job.equals("rule")) {
-				enableRules();
-			} else if(job.equals("job")) {
-				enableJobs();
+	public String shutDownAlloperations(String operation, String job) {
+		if(operation.equals(AdminConstants.ENABLE)) {
+			if(job.equals(AdminConstants.RULE)) {
+				if(enableRules()) {
+					return "All rules has been sucessfully enabled";
+				}
+			} else if(job.equals(AdminConstants.JOB)) {
+				if(enableJobs()) {
+					return "All jobs has been sucessfully enabled";
+				}
 			} else {
-				enableRules();
-				enableJobs();
+				if(enableRules() &&	enableJobs()) {
+					return "All rules and jobs has been sucessfully enabled";
+				}
 			}
-			
+			return "Enabling operation failed";
 		} else {
-			if(job.equals("rule")) {
-				disableRules();
-			} else if(job.equals("job")) {
-				disableJobs();
+			if(job.equals(AdminConstants.RULE)) {
+				if(disableRules()) {
+					return "All rules has been sucessfully disabled";
+				}
+			} else if(job.equals(AdminConstants.JOB)) {
+				if(disableJobs()) {
+					return "All obs has been sucessfully disabled";
+				}
 			} else {
-				disableRules();
-				disableJobs();
+				if(disableRules() && disableJobs()) {
+					return "All rules and jobs has been sucessfully disabled";
+				}
 			}
+			return "Disabling operation failed";
 		}
 	}
 	
@@ -81,9 +93,23 @@ public class AdminService {
 	}
 	
 	private boolean disableJobs() {
-		Collection<String> jobIds = jobRepository.getAllJobIds();
-		System.out.println(jobIds);
-		return true;
+		List<JobExecutionManager> jobIds = jobRepository.findAll();
+		List<String> rules = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion())
+				.listRules(new ListRulesRequest()).getRules().parallelStream().map(rule->rule.getName()).collect(Collectors.toList());
+		try {
+			for(JobExecutionManager job : jobIds) {
+				if(rules.contains(job.getJobUUID())) {
+					amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion())
+						.disableRule(new DisableRuleRequest().withName(job.getJobUUID()));
+					job.setStatus(RuleState.DISABLED.name());
+					jobRepository.save(job);
+				}
+			}
+			return true;
+		} catch(Exception e) {
+			log.error("Error in disable jobs",e);
+			return false;
+		}
 	}
 	
 	private boolean enableRules() {
@@ -107,8 +133,23 @@ public class AdminService {
 	}
 	
 	private boolean enableJobs() {
-		
-		return true;
+		List<JobExecutionManager> jobIds = jobRepository.findAll();
+		List<String> rules = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion())
+				.listRules(new ListRulesRequest()).getRules().parallelStream().map(rule->rule.getName()).collect(Collectors.toList());
+		try {
+			for(JobExecutionManager job : jobIds) {
+				if(rules.contains(job.getJobUUID())) {
+					amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion())
+					.enableRule(new EnableRuleRequest().withName(job.getJobUUID()));
+					job.setStatus(RuleState.DISABLED.name());
+					jobRepository.save(job);
+				}
+			}
+			return true;
+		} catch(Exception e) {
+			log.error("Error in enable jobs",e);
+			return false;
+		}
 	}
 
 }
