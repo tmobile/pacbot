@@ -90,6 +90,10 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_MAIL_SMTP_AUTH': Settings.MAIL_SMTP_AUTH,
                         'ENV_MAIL_SMTP_SSL_ENABLE': Settings.MAIL_SMTP_SSL_ENABLE,
                         'ENV_MAIL_SMTP_SSL_TEST_CONNECTION': Settings.MAIL_SMTP_SSL_TEST_CONNECTION,
+                        'PACMAN_LOGIN_USER_NAME': "admin@pacbot.org",
+                        'PACMAN_LOGIN_PASSWORD': "pacman",
+                        'CONFIG_CREDENTIALS': "dXNlcjpwYWNtYW4=",
+                        'CONFIG_SERVICE_URL': ApplicationLoadBalancer.get_http_url() + "/api/config/rule/prd/latest",
                     },
                     'interpreter': [Settings.PYTHON_INTERPRETER]
                 }
