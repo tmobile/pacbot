@@ -52,13 +52,13 @@ class SubmitAndRuleEngineJobDefinition(BatchJobDefinitionResource):
 
 class RuleEngineJobQueue(BatchJobQueueResource):
     name = "rule-engine"
-    state = "ENABLED"
+    state = Settings.get('JOB_QUEUE_STATUS', "ENABLED")
     priority = 6
     compute_environments = [RuleEngineBatchJobEnv.get_output_attr('arn')]
 
 
 class BatchJobsQueue(BatchJobQueueResource):
     name = "data"
-    state = "ENABLED"
+    state = Settings.get('JOB_QUEUE_STATUS', "ENABLED")
     priority = 6
     compute_environments = [RuleEngineBatchJobEnv.get_output_attr('arn')]

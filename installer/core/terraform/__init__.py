@@ -118,13 +118,14 @@ class PyTerraform():
             raise Exception(K.ANOTHER_PROCESS_RUNNING)
 
         CMD = Settings.get('running_command', "Terraform Destroy")
+        self.log_obj.write_terraform_destroy_log_header()
+
         terraform = Terraform(
             working_dir=Settings.TERRAFORM_DIR,
             targets=self.get_target_resources(resources),
             stdout_log_file=self.log_obj.get_terraform_destroy_log_file()
         )
 
-        self.log_obj.write_terraform_destroy_log_header()
         kwargs = {"auto_approve": True}
         response = terraform.destroy(**kwargs)
 
@@ -174,13 +175,17 @@ class PyTerraform():
 
         self.log_obj.write_debug_log(K.TERRAFORM_TAINT_STARTED)
 
+        error_message = ""
         for resource_name in taint_resources:
             response = terraform.cmd("taint", resource_name)
             if response[0] == 1:
-                self.log_obj.write_debug_log(K.TERRAFORM_TAINT_ERROR)
-                raise Exception(response[2])
+                self.log_obj.write_debug_log(K.TERRAFORM_TAINT_ERROR + ": " + response[2])
+                error_message = response[2] + " : " + error_message
 
         self.log_obj.write_debug_log(K.TERRAFORM_TAINT_COMPLETED)
+
+        if error_message:
+            raise Exception(error_message)
 
         return response
 
