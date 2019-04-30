@@ -59,22 +59,6 @@ public class RuleExecutionUtils {
 
         return ruleString.equals(resourceString);
 
-        // if(ruleParam.get(PacmanSdkConstants.ACCOUNT_ID)==null &&
-        // ruleParam.get(PacmanSdkConstants.REGION)==null &&
-        // ruleParam.get(PacmanSdkConstants.RESOURCE_ID)==null){
-        // return Boolean.FALSE;
-        // }
-        // String
-        // ruleParam_account=ruleParam.get(PacmanSdkConstants.ACCOUNT_ID)!=null?ruleParam.get(PacmanSdkConstants.ACCOUNT_ID):resource.get("accountid");
-        // String
-        // ruleParam_region=ruleParam.get(PacmanSdkConstants.REGION)!=null?ruleParam.get(PacmanSdkConstants.REGION):resource.get("region");
-        // String
-        // ruleParam_resourceId=ruleParam.get(PacmanSdkConstants.RESOURCE_ID)!=null?ruleParam.get(PacmanSdkConstants.RESOURCE_ID):resource.get("_resourceid");
-        //
-        // return resource.get("accountid").equalsIgnoreCase(ruleParam_account)
-        // && resource.get("region").equalsIgnoreCase(ruleParam_region)
-        // &&
-        // resource.get("_resourceid").equalsIgnoreCase(ruleParam_resourceId);
     }
 
     /**

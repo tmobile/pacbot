@@ -40,7 +40,6 @@ import com.tmobile.pacman.dto.AutoFixTransaction;
 import com.tmobile.pacman.util.CommonUtils;
 import com.tmobile.pacman.util.ESUtils;
 
-// TODO: Auto-generated Javadoc
 // not using the old way , this is the new class to publish data to ES , all old code will be refactored to use this one
 
 /**
@@ -118,8 +117,6 @@ public class ElasticSearchDataPublisher {
                 try{
                     // parent child document seems to have some issue
                     bulkRequestBody.append(String.format(BULK_INDEX_REQUEST_TEMPLATE, getIndexName(ruleParam),getDocId(autoFixTransaction), autoFixType));
-//                    bulkRequestBody.append(String.format(BULK_INDEX_REQUEST_TEMPLATE, getIndexName(ruleParam),
-//                            "102707241671_us-east-1_jazzsocket-jazz-s3-api-doc-20181206181415084800000007", autoFixType));
                     bulkRequestBody.append(gson.toJson(autoFixTransaction));
                     bulkRequestBody.append("\n");
                     if (bulkRequestBody.toString().getBytes().length
@@ -197,28 +194,12 @@ public class ElasticSearchDataPublisher {
     }
 
     /**
-     * @param autoFixTransaction 
-     * @return
-     */
-    private Map buildDoc(AutoFixTransaction autoFixTransaction) {
-        Map<String,String> doc = new HashMap<>();
-        doc.put(PacmanSdkConstants.RULE_ID,autoFixTransaction.getRuleId());
-        doc.put(PacmanSdkConstants.TRANSACTION_ID,autoFixTransaction.getTransactionId());
-        doc.put(PacmanSdkConstants.TRANSACTION_TIME,autoFixTransaction.getTransationTime());
-        doc.put(PacmanSdkConstants.EXECUTION_ID,autoFixTransaction.getExecutionId());
-        doc.put("parent", "102707241671_us-east-1_jazzsocket-jazz-s3-api-doc-20181206181415084800000007");
-        return doc;
-    }
-
-    /**
      * Checks if is index avaialble.
      *
      * @param bulkItemResponses the bulk item responses
      * @return the boolean
      */
     private Boolean isIndexAvaialble(BulkItemResponse[] bulkItemResponses) {
-        // System.out.println(bulkItemResponses[0].getFailureMessage());
-        // System.out.println(bulkItemResponses[0].getFailure().getMessage());
         return null == Arrays.stream(bulkItemResponses)
                 .filter(x -> x.getFailure().getCause().getMessage().contains("no such index")).findAny().orElse(null);
     }
@@ -238,26 +219,4 @@ public class ElasticSearchDataPublisher {
         client = null;
     }
     
-    public static void main(String[] args) {
-        List<AutoFixTransaction> autoFixTrans = new ArrayList();
-        AutoFixTransaction autoFixTransaction = new AutoFixTransaction();
-        autoFixTransaction.setAction(AutoFixAction.AUTOFIX_ACTION_FIX);
-        autoFixTransaction.setRuleId("PacMan_S3GlobalAccess_version-1_S3BucketShouldnotpubliclyaccessble_s3");
-        autoFixTransaction.setResourceId("jazzsocket-jazz-s3-api-doc-20181206181415084800000007");
-        autoFixTransaction.setTransationTime("2018-12-12T10:36:32.387Z");
-        autoFixTransaction.setExecutionId("193800a5-c759-4143-b364-25ad94446378");
-        autoFixTransaction.setTransactionId("736c0082f0cb2e68321a1b82e3bfa766");
-        autoFixTransaction.setType("s3");
-        autoFixTransaction.setAccountId("102707241671");
-        autoFixTransaction.setRegion("us-east-1");
-        autoFixTransaction.setAdditionalInfo("additional info 1");
-        autoFixTransaction.setIssueId("736c0082f0cb2e68321a1b82e3bfa766");
-        autoFixTrans.add(autoFixTransaction);
-        Map<String, String> ruleParam  = CommonUtils.createParamMap(args[0]);
-        ElasticSearchDataPublisher edp = new ElasticSearchDataPublisher();
-        edp.publishAutoFixTransactions(autoFixTrans, ruleParam);
-        edp.close();
-        
-    }
-
 }

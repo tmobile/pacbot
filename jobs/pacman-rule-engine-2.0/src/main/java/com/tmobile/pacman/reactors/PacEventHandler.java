@@ -173,25 +173,6 @@ public class PacEventHandler {
         logger.info( reactorClassName + " will not be fired");
         return false;
     }
-// commenting in favour of IswhiteLabelledForAccount
-//    /**
-//     * checks if account id and event name are in white list
-//     * @param accountId
-//     * @param eventName
-//     * @return
-//     */
-//    private boolean accountAndEventAllowed(String accountId, String eventName) {
-//        String whiteListAccountIds = CommonUtils.getPropValue(PacmanSdkConstants.REACTORS_WHITE_LIST_ACCOUNTS);
-//        String whiteListEvents = CommonUtils.getPropValue(PacmanSdkConstants.REACTORS_WHITE_LIST_EVENTS);
-//        if(Strings.isNullOrEmpty(whiteListEvents) || Strings.isNullOrEmpty(whiteListAccountIds)){
-//            logger.error("white list account list / event list not found, will not process, please configure both the lists");
-//            return Boolean.FALSE;
-//        }else{
-//            List<String> whiteListAccountList = Arrays.asList(whiteListAccountIds.split("\\s*,\\s*"));// convert comma separated string to array list 
-//            List<String> whiteListEventList = Arrays.asList(whiteListEvents.split("\\s*,\\s*"));// convert comma separated string to array list 
-//            return whiteListEventList.contains(eventName) && whiteListAccountList.contains(accountId);
-//        }
-//    }
 
     /**
      * @param reactions
@@ -247,8 +228,6 @@ public class PacEventHandler {
     /****/
     public static void main(String[] args) {
         String eventData= "{\"eventName\":\"runInstance\",\"eventData\":{\"a\":\"b\"}}";
-        eventData="{\"eventName\":\"DeleteRolePolicy\",\"eventData\":{\"version\":\"0\",\"id\":\"2376eca8-966f-1fec-c043-9fa72b68157e\",\"detail-type\":\"AWS API Call via CloudTrail\",\"source\":\"aws.iam\",\"account\":\"192006145812\",\"time\":\"2019-02-05T08:55:37Z\",\"region\":\"us-east-1\",\"resources\":[],\"detail\":{\"eventVersion\":\"1.05\",\"userIdentity\":{\"type\":\"AssumedRole\",\"principalId\":\"AROAI4ANLYLLK72YPMQX4:AMathew16\",\"arn\":\"arn:aws:sts::484695107796:assumed-role/Admin/AMathew16\",\"accountId\":\"192006145812\",\"accessKeyId\":\"ASIAXBWQUNDKOTLAUCHM\",\"sessionContext\":{\"attributes\":{\"mfaAuthenticated\":\"false\",\"creationDate\":\"2019-02-05T06:40:00Z\"},\"sessionIssuer\":{\"type\":\"Role\",\"principalId\":\"AROAI4ANLYLLK72YPMQX4\",\"arn\":\"arn:aws:iam::484695107796:role/Admin\",\"accountId\":\"192006145812\",\"userName\":\"Admin\"}}},\"eventTime\":\"2019-02-05T08:55:37Z\",\"eventSource\":\"iam.amazonaws.com\",\"eventName\":\"DeleteRolePolicy\",\"awsRegion\":\"us-east-1\",\"sourceIPAddress\":\"206.29.176.53\",\"userAgent\":\"console.amazonaws.com\",\"requestParameters\":{\"policyName\":\"tmo-sec-iam-mon-test\",\"roleName\":\"tmo-security-iam-monitoring-test\"},\"responseElements\":null,\"requestID\":\"ce95d210-2923-11e9-8cf4-37a9a7fd5b42\",\"eventID\":\"d90dea80-9fc3-4fd5-8c94-acb0cdc6fb47\",\"eventType\":\"AwsApiCall\"}},\"eventId\":\"6ae0e4f8-b461-4d56-af01-85b1be9c6517\",\"accountId\":\"192006145812\",\"messageId\":\"a4b8e256-2505-5c6c-a96e-b6f049d00c4f\"}";
-       System.out.println(isInvocationSourceAnEvent(eventData)); 
        new PacEventHandler().handleEvent(UUID.randomUUID().toString(), eventData);
        
     }
