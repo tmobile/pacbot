@@ -113,31 +113,4 @@ public class AuditUtils {
         return _auditTrail;
     }
 
-    /**
-     * 
-     * test method only
-     * 
-     * @param args
-     */
-
-    // public static void main(String args[]){
-    // List<Annotation> list = new ArrayList<>();
-    // Annotation annotation = new Annotation();
-    // annotation.put(PacmanSdkConstants.RULE_ID,
-    // "PacMan_ClassicElbMandatoryTags_version-1_ClassicELBMandatoryTags_classicelb");
-    // annotation.put(PacmanSdkConstants.POLICY_ID,
-    // "PacMan_ClassicElbMandatoryTags_version-1");
-    // annotation.put(PacmanSdkConstants.DATA_SOURCE_KEY,"aws");
-    // annotation.put(PacmanSdkConstants.TARGET_TYPE,"classicelb");
-    // annotation.put(PacmanSdkConstants.PARENT_ID,"");
-    // list.add(annotation);
-    // list.add(annotation);
-    // list.add(annotation);
-    //
-    // postAuditTrail(list,"open");
-    //
-    //
-    //
-    // }
-
 }

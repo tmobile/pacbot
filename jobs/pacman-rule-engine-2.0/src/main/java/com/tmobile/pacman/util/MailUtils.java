@@ -274,50 +274,5 @@ public class MailUtils {
           return writer.toString();
           
       }
-      
-      
-//    public static void main(String[] args) {
-//    TemplateEngine templateEngine = new TemplateEngine();
-//    ClassLoaderTemplateResolver templateResolver = new ClassLoaderTemplateResolver();
-//    templateResolver.setTemplateMode("HTML");
-//    templateResolver.setSuffix(".html");
-//    templateEngine.setTemplateResolver(templateResolver);
-//    Context context = new Context();
-//    Map<String,String>ruleParam=new HashMap<String, String>();
-//    ruleParam.put("ruleId","PacMan_ApplicationTagsShouldBeValid_version-1_VolumeApplicationTags_volume");
-//    List<AutoFixTransaction> resources = new ArrayList<>();
-//    resources.add(new AutoFixTransaction("vol-0fb488425dd49ba16", "PacMan_ApplicationTagsShouldBeValid_version-1_VolumeApplicationTags_volume", "tmonpe", "us-west-2","CAT"));
-//    resources.add(new AutoFixTransaction("vol-095fc3dbd487b589a", "PacMan_ApplicationTagsShouldBeValid_version-1_VolumeApplicationTags_volume", "tmonpe", "us-west-2","TFB Self-Service Portal"));
-//   context.setVariable("resources", resources);
-//   String emailSubject = CommonUtils.getPropValue(PacmanSdkConstants.SEND_EMAIL_FIX_SUBJECT_PREFIX
-//           + ruleParam.get(PacmanSdkConstants.RULE_ID));
-//   String policyUrl = CommonUtils.getPropValue(PacmanSdkConstants.POLICY_URL_PREFIX_KEY
-//           + ruleParam.get(PacmanSdkConstants.RULE_ID));
-//   String name =CommonUtils.getPropValue(PacmanSdkConstants.SEND_EMAIL_SILENT_FIX_ADMIN
-//           + ruleParam.get(PacmanSdkConstants.RULE_ID));
-//   String postFixMessage = CommonUtils.getPropValue(PacmanSdkConstants.EMAIL_FIX_MESSAGE_PREFIX
-//           + ruleParam.get(PacmanSdkConstants.RULE_ID));
-//    context.setVariable("AUTOFIX_POST_FIX_MESSAGE", postFixMessage);
-//    context.setVariable("POLICY_URL", policyUrl);
-//    context.setVariable("NAME", " Hello "+name);
-//    context.setVariable("RESOURCE_TYPE", "Resource Type : AWS Volumes");
-//    context.setVariable("AUTO_FIX_APPLIED", "Resources applied autofix : "+resources.size());
-//    StringWriter writer = new StringWriter();
-//    templateEngine.process("/template/autofix-silent-autoapptag-usernotification-info.html", context, writer);
-//    ruleParam.put(PacmanSdkConstants.RULE_ID, "PacMan_ApplicationTagsShouldBeValid_version-1_VolumeApplicationTags_volume");
-//    String targetType="ebs";
-//    ResourceOwner resourceOwner =new ResourceOwner("santhoshi", "santhoshi.gorle@t-mobile.com");
-//   if(   sendSilentFixNotification(writer.toString(), ruleParam, resourceOwner, targetType)){
-//    System.out.println("email sent successfully");
-//}
-        
-//        String warning = CommonUtils.getPropValue(PacmanSdkConstants.EMAIL_WARNING_MESSAGE_PREFIX
-//                +"PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb");
-//        Long autoFixDealy = NextStepManager.getAutoFixDelay("PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb");
-//        if(autoFixDealy!=null){
-//            warning = warning.replace("{days}", "" + Math.toIntExact(autoFixDealy/24));
-//        }
-//        System.out.println(warning);
-//}
-      
+
 }
