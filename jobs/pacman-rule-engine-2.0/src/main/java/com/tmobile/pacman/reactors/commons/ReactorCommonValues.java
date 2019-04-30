@@ -113,7 +113,7 @@ public class ReactorCommonValues {
        //getConfiguration from Database;
          String dbquery = "SELECT * FROM pac_v2_reactors_configs WHERE configName='" + configName.trim()+ "'";
    //      List<Map<String, String>>configValue= RDSManager.executeQuery(dbquery);
-         String confiValue= "{\"Version\"\"2012-10-17\",\"Statement\":[{\"Effect\":\"Allow\",\"Action\":[\"cloudwatch:PutMetricData\",\"ds:CreateComputer\",\"ds:DescribeDirectories\",\"ec2:DescribeInstanceStatus\",\"ec2messages:*\",\"iam:PassRole\",\"logs:*\",\"ssm:*\",\"s3:PutObject\",\"s3:GetObject\",\"s3:AbortMultipartUpload\",\"s3:ListMultipartUploadParts\",\"s3:ListBucket\",\"s3:ListBucketMultipartUploads\"],\"Resource\":\"*\"},{\"Sid\":\"Stmt1477803259001\",\"Effect\":\"Allow\",\"Action\":[\"lambda:InvokeFunction\"],\"Resource\":[\"arn:aws:lambda:*:*:function:SSM*\",\"arn:aws:lambda:*:*:function:*:SSM*\"]},{\"Sid\":\"Stmt1477803259002\",\"Effect\":\"Allow\",\"Action\":[\"states:DescribeExecution\",\"states:StartExecution\"],\"Resource\":[\"arn:aws:states:*:*:stateMachine:SSM*\",\"arn:aws:states:*:*:execution:SSM*\"]},{\"Sid\":\"AddCannedAcl1\",\"Effect\":\"Allow\",\"Action\":[\"s3:Getobject*\",\"s3:PutObject*\"],\"Resource\":[\"arn:aws:s3:::tmo-artifactory/*\",\"arn:aws:s3:::tmo-flexera-inventory/*\"]}]}";
+         String confiValue= "";
          return confiValue;
     }
 
