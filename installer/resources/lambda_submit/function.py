@@ -23,7 +23,9 @@ class SubmitJobLambdaFunction(LambdaFunctionResource):
         'variables': {
             'JOB_QUEUE': BatchJobsQueue.get_input_attr('name'),
             'JOB_DEFINITION': SubmitAndRuleEngineJobDefinition.get_input_attr('name'),
-            'CONFIG_URL': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,inventory/prd/latest"
+            'CONFIG_URL': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,inventory/prd/latest",
+            'CONFIG_CREDENTIALS': "dXNlcjpwYWNtYW4=",
+            'CONFIG_SERVICE_URL': ApplicationLoadBalancer.get_http_url() + "/api/config/rule/prd/latest"
         }
     }
 
