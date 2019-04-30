@@ -24,7 +24,7 @@ class RuleEngineBatchJobEnv(BatchComputeEnvironmentResource):
     subnets = Settings.get('VPC')['SUBNETS']
     env_type = "MANAGED"
     service_role = BatchRole.get_output_attr('arn')
-    compute_resources_tags = [{'Application': Settings.RESOURCE_NAME_PREFIX}]
+    compute_resources_tags = [{Settings.RESOURCE_DEFAULT_TAG_NAME: Settings.RESOURCE_DEFAULT_TAG_VALUE}]
 
     DEPENDS_ON = [BatchIAMRolePolicyAttach]  # This is required otherwise policy would be dettached from Batchrole
 
