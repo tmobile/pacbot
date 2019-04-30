@@ -42,6 +42,12 @@ public class LoadBalancerVH {
 	
 	/** The availability zones. */
     private List<String> subnets;
+    
+    /** The accessLogBucketName. */
+	 String accessLogBucketName;
+	 
+	 /** The accessLog. */
+	 boolean accessLog;
 
     
 	/**
@@ -65,9 +71,11 @@ public class LoadBalancerVH {
 	 * @param elb the elb
 	 * @param tags the tags
 	 */
-	public LoadBalancerVH(LoadBalancer elb,List<Tag> tags){
+	public LoadBalancerVH(LoadBalancer elb,List<Tag> tags, String accessLogBucketName, boolean accessLog){
 		lb = elb;
 		this.tags = tags;
+		this.accessLog = accessLog;
+		this.accessLogBucketName = accessLogBucketName;
 		availabilityZones = new ArrayList<>();
 		subnets = new ArrayList<>();
 		this.instances = new ArrayList<>();

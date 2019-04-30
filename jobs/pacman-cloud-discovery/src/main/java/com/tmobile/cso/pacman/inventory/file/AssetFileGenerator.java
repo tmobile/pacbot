@@ -895,6 +895,82 @@ public class AssetFileGenerator {
                     ErrorManageUtil.uploadError(accountId, "", "videostream", e.getMessage());
                 }
             });
+			//****** Changes For Federated Rules Start ******
+			executor.execute(() -> 
+			{
+			    if(!(isTypeInScope("acmcertificate"))) {
+                    return;
+                }
+            
+				try{
+					log.info(infoPrefix + "acmcertificate");
+					FileManager.generateACMCertificateFiles(InventoryUtil.fetchACMCertficateInfo(temporaryCredentials, skipRegions, accountId, accountName));
+				}catch(Exception e){
+					log.error(expPrefix+ "acmcertificate\", \"cause\":\"" +e.getMessage()+"\"}");
+					ErrorManageUtil.uploadError(accountId, "", "acmcertificate", e.getMessage());
+				}
+			});
+			
+			executor.execute(() -> 
+			{
+			    if(!(isTypeInScope("iamcertificate"))) {
+                    return;
+                }
+            
+				try{
+					log.info(infoPrefix + "iamcertificate");
+					FileManager.generateIAMCertificateFiles(InventoryUtil.fetchIAMCertificateInfo(temporaryCredentials, skipRegions, accountId, accountName));
+				}catch(Exception e){
+					log.error(expPrefix+ "iamcertificate\", \"cause\":\"" +e.getMessage()+"\"}");
+					ErrorManageUtil.uploadError(accountId, "", "iamcertificate", e.getMessage());
+				}
+			});
+			
+			executor.execute(() ->
+            {
+                if(!(isTypeInScope("account"))) {
+                   return;
+               }
+
+                try{
+                    log.info(infoPrefix + "Account");
+                    FileManager.generateAccountFiles(InventoryUtil.fetchAccountsInfo(temporaryCredentials, skipRegions, accountId, accountName));
+                }catch(Exception e){
+                    log.error(expPrefix+ "AccountInfo\", \"cause\":\"" +e.getMessage()+"\"}");
+                    ErrorManageUtil.uploadError(accountId, "", "AccountInfo", e.getMessage());
+                }
+            });
+			
+			executor.execute(() -> 
+			{
+			    if(!(isTypeInScope("iamgroup"))) {
+                    return;
+                }
+            
+				try{
+					log.info(infoPrefix + "IAM Groups");
+					FileManager.generateIamGroupFiles(InventoryUtil.fetchIAMGroups(temporaryCredentials, accountId, accountName));
+				}catch(Exception e){
+					log.error(expPrefix+ "IAM Groups\", \"cause\":\"" +e.getMessage()+"\"}");
+					ErrorManageUtil.uploadError(accountId, "", "iamgroup", e.getMessage());
+				}
+			});
+			
+			executor.execute(() -> 
+			{
+			    if(!(isTypeInScope("cloudtrail"))) {
+                    return;
+                }
+            
+				try{
+					log.info(infoPrefix + "CloudTrail");
+					FileManager.generateCloudTrailFiles(InventoryUtil.fetchCloudTrails(temporaryCredentials, skipRegions, accountId, accountName));
+				}catch(Exception e){
+					log.error(expPrefix+ "Cloud Trailt\", \"cause\":\"" +e.getMessage()+"\"}");
+					ErrorManageUtil.uploadError(accountId, "", "cloudtrail", e.getMessage());
+				}
+			});	
+			//****** Changes For Federated Rules End ******
 			
 			executor.shutdown();
 			while (!executor.isTerminated()) {

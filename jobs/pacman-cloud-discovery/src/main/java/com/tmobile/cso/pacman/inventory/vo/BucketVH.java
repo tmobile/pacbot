@@ -42,6 +42,12 @@ public class BucketVH {
 	/** The mfa delete. */
 	Boolean mfaDelete;
 	
+	/** The Bucket Encryption. */
+    String bucketEncryp;
+    
+    /** The DPC Value. */
+    String DPCvalue;
+	
 	/**
 	 * Instantiates a new bucket VH.
 	 *
@@ -50,11 +56,13 @@ public class BucketVH {
 	 * @param versionConfig the version config
 	 * @param tags the tags
 	 */
-	public BucketVH(Bucket bucket,String location,BucketVersioningConfiguration versionConfig, List<Tag> tags){
+	public BucketVH(Bucket bucket,String location,BucketVersioningConfiguration versionConfig, List<Tag> tags, String bucketEncryp, String DPCvalue){
 		this.bucket = bucket;
 		this.location = location;
 		this.versionStatus = versionConfig==null?"":versionConfig.getStatus();
 		this.mfaDelete =  versionConfig==null?null:versionConfig.isMfaDeleteEnabled();
 		this.tags = tags;
+		this.bucketEncryp = bucketEncryp;
+        this.DPCvalue = DPCvalue;
 	}
 }

@@ -15,40 +15,47 @@
  ******************************************************************************/
 package com.tmobile.cso.pacman.inventory.vo;
 
+import java.util.Date;
 import java.util.List;
 
-import com.amazonaws.services.elasticloadbalancing.model.LoadBalancerDescription;
-import com.amazonaws.services.elasticloadbalancing.model.Tag;
+import com.amazonaws.services.identitymanagement.model.Group;
 
 
 /**
- * The Class ClassicELBVH.
+ * The Class GroupVH.
  */
-public class ClassicELBVH {
+public class GroupVH {
 	
-	/** The elb. */
-	LoadBalancerDescription elb;
+	/** The user. */
+	private Group group;
 	
-	/** The tags. */
-	List<Tag> tags;
-	
-	/** The accessLogBucketName. */
-	String accessLogBucketName;
-	
-	/** The accessLog. */
-	boolean accessLog;
+	/** The policies. */
+	private List<String> policies;
 	
 	/**
-	 * Instantiates a new classic ELBVH.
+	 * Instantiates a new user VH.
 	 *
-	 * @param elb the elb
-	 * @param tags the tags
+	 * @param usr the usr
 	 */
-	public ClassicELBVH(LoadBalancerDescription elb,List<Tag> tags, String accessLogBucketName, boolean accessLog){
-		this.elb = elb;
-		this.tags = tags;
-		this.accessLogBucketName = accessLogBucketName;
-		this.accessLog = accessLog;
+	public GroupVH(Group grp){
+		this.group = grp;
 	}
-
+	
+	/**
+	 * Gets the policies.
+	 *
+	 * @return the policies
+	 */
+	public List<String> getPolicies() {
+		return policies;
+	}
+	
+	/**
+	 * Sets the groups.
+	 *
+	 * @param groups the new groups
+	 */
+	public void setPolicies(List<String> policies) {
+		this.policies = policies;
+	}		
 }

@@ -32,6 +32,12 @@ public class CloudFrontVH {
 	/** The tags. */
 	List<Tag> tags;
 	
+	/** The bucketName. */
+	String bucketName;
+	
+	/** The accessLogEnabled. */
+	boolean accessLogEnabled;
+	
 	/**
 	 * Gets the dist summary.
 	 *
@@ -67,4 +73,22 @@ public class CloudFrontVH {
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
 	}
+
+	public String getBucketName() {
+		return bucketName;
+	}
+
+	public void setBucketName(String bucketName) {
+		this.bucketName = bucketName;
+	}
+
+	public boolean isAccessLogEnabled() {
+		return accessLogEnabled;
+	}
+
+	public void setAccessLogEnabled(boolean accessLogEnabled) {
+		this.accessLogEnabled = accessLogEnabled;
+	}
+	
+	
 }

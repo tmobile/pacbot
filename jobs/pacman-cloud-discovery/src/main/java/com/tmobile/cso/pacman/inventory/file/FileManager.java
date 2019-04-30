@@ -31,6 +31,7 @@ import com.amazonaws.services.autoscaling.model.AutoScalingGroup;
 import com.amazonaws.services.autoscaling.model.LaunchConfiguration;
 import com.amazonaws.services.autoscaling.model.ScalingPolicy;
 import com.amazonaws.services.cloudformation.model.Stack;
+import com.amazonaws.services.cloudtrail.model.Trail;
 import com.amazonaws.services.directconnect.model.Connection;
 import com.amazonaws.services.directconnect.model.VirtualInterface;
 import com.amazonaws.services.ec2.model.Address;
@@ -59,6 +60,7 @@ import com.amazonaws.services.rds.model.DBSnapshot;
 import com.amazonaws.services.simplesystemsmanagement.model.InstanceInformation;
 import com.amazonaws.services.sns.model.Topic;
 import com.tmobile.cso.pacman.inventory.InventoryConstants;
+import com.tmobile.cso.pacman.inventory.vo.AccountVH;
 import com.tmobile.cso.pacman.inventory.vo.BucketVH;
 import com.tmobile.cso.pacman.inventory.vo.CheckVH;
 import com.tmobile.cso.pacman.inventory.vo.ClassicELBVH;
@@ -73,6 +75,8 @@ import com.tmobile.cso.pacman.inventory.vo.EfsVH;
 import com.tmobile.cso.pacman.inventory.vo.ElastiCacheVH;
 import com.tmobile.cso.pacman.inventory.vo.ElasticsearchDomainVH;
 import com.tmobile.cso.pacman.inventory.vo.ErrorVH;
+import com.tmobile.cso.pacman.inventory.vo.GroupVH;
+import com.tmobile.cso.pacman.inventory.vo.IAMCertificateVH;
 import com.tmobile.cso.pacman.inventory.vo.KMSKeyVH;
 import com.tmobile.cso.pacman.inventory.vo.LambdaVH;
 import com.tmobile.cso.pacman.inventory.vo.LoadBalancerVH;
@@ -81,6 +85,7 @@ import com.tmobile.cso.pacman.inventory.vo.RedshiftVH;
 import com.tmobile.cso.pacman.inventory.vo.Resource;
 import com.tmobile.cso.pacman.inventory.vo.SGRuleVH;
 import com.tmobile.cso.pacman.inventory.vo.SQSVH;
+import com.tmobile.cso.pacman.inventory.vo.SSLCertificateVH;
 import com.tmobile.cso.pacman.inventory.vo.TargetGroupVH;
 import com.tmobile.cso.pacman.inventory.vo.UserVH;
 import com.tmobile.cso.pacman.inventory.vo.VideoStreamVH;
@@ -238,6 +243,11 @@ public class FileManager {
         FileGenerator.writeToFile("aws-videostream.data",InventoryConstants.OPEN_ARRAY, false);
         FileGenerator.writeToFile("aws-videostream-tags.data",InventoryConstants.OPEN_ARRAY, false);
         FileGenerator.writeToFile("aws-elasticache-nodes.data",InventoryConstants.OPEN_ARRAY, false);
+        FileGenerator.writeToFile("aws-acmcertificate.data",InventoryConstants.OPEN_ARRAY, false);
+        FileGenerator.writeToFile("aws-iamcertificate.data",InventoryConstants.OPEN_ARRAY, false);
+        FileGenerator.writeToFile("aws-account.data",InventoryConstants.OPEN_ARRAY, false);
+        FileGenerator.writeToFile("aws-iamgroup.data",InventoryConstants.OPEN_ARRAY, false);
+        FileGenerator.writeToFile("aws-cloudtrail.data",InventoryConstants.OPEN_ARRAY, false);
         
 	}
 	
@@ -372,6 +382,12 @@ public class FileManager {
         FileGenerator.writeToFile("aws-videostream.data",InventoryConstants.CLOSE_ARRAY, true);
         FileGenerator.writeToFile("aws-videostream-tags.data",InventoryConstants.CLOSE_ARRAY, true);
         FileGenerator.writeToFile("aws-elasticache-nodes.data",InventoryConstants.CLOSE_ARRAY, true);
+        FileGenerator.writeToFile("aws-acmcertificate.data",InventoryConstants.CLOSE_ARRAY, true);
+        FileGenerator.writeToFile("aws-iamcertificate.data",InventoryConstants.CLOSE_ARRAY, true);
+        FileGenerator.writeToFile("aws-account.data",InventoryConstants.CLOSE_ARRAY, true);
+        FileGenerator.writeToFile("aws-iamgroup.data",InventoryConstants.CLOSE_ARRAY, true);
+        FileGenerator.writeToFile("aws-cloudtrail.data",InventoryConstants.CLOSE_ARRAY, true);
+        
 	}
 	
 	/**
@@ -577,8 +593,8 @@ public class FileManager {
 	public static void generateClassicElbFiles(Map<String, List<ClassicELBVH>> elbMap) throws IOException {
 		String fieldNames;
 		String keys;
-		fieldNames = "elb.DNSName`elb.AvailabilityZones`elb.CanonicalHostedZoneName`elb.CanonicalHostedZoneNameID`elb.CreatedTime`elb.LoadBalancerName`elb.Scheme`elb.VPCId`elb.subnets";
-		keys = "discoverydate`accountid`accountname`region`dnsname`availabilityzones`canonicalhostedzonename`canonicalhostedzonenameid`createdtime`loadbalancername`scheme`vpcid`subnets";
+		fieldNames = "elb.DNSName`elb.AvailabilityZones`elb.CanonicalHostedZoneName`elb.CanonicalHostedZoneNameID`elb.CreatedTime`elb.LoadBalancerName`elb.Scheme`elb.VPCId`elb.subnets`accessLogBucketName`accessLog";
+		keys = "discoverydate`accountid`accountname`region`dnsname`availabilityzones`canonicalhostedzonename`canonicalhostedzonenameid`createdtime`loadbalancername`scheme`vpcid`subnets`accesslogbucketname`accesslog";
 		FileGenerator.generateJson(elbMap, fieldNames, "aws-classicelb.data",keys);
 		fieldNames = "elb.LoadBalancerName`elb.Instances.InstanceId";
 		keys = "discoverydate`accountid`accountname`region`loadbalancername`instanceid";
@@ -600,8 +616,8 @@ public class FileManager {
 	public static void generateApplicationElbFiles(Map<String, List<LoadBalancerVH>> elbMap) throws IOException {
 		String fieldNames;
 		String keys;
-		fieldNames = "lb.LoadBalancerArn`lb.DNSName`lb.CanonicalHostedZoneID`lb.CreatedTime`lb.LoadBalancerName`lb.Scheme`lb.VPCId`AvailabilityZones`lb.type`subnets";
-		keys = "discoverydate`accountid`accountname`region`loadbalancerarn`dnsname`canonicalhostedzoneid`createdtime`loadbalancername`scheme`vpcid`availabilityzones`type`subnets";
+		fieldNames = "lb.LoadBalancerArn`lb.DNSName`lb.CanonicalHostedZoneID`lb.CreatedTime`lb.LoadBalancerName`lb.Scheme`lb.VPCId`AvailabilityZones`lb.type`subnets`accessLogBucketName`accessLog";
+		keys = "discoverydate`accountid`accountname`region`loadbalancerarn`dnsname`canonicalhostedzoneid`createdtime`loadbalancername`scheme`vpcid`availabilityzones`type`subnets`accesslogbucketname`accesslog";
 		FileGenerator.generateJson(elbMap, fieldNames, "aws-appelb.data",keys);
 		fieldNames ="lb.LoadBalancerName`tags.key`tags.value";
 		keys ="discoverydate`accountid`accountname`region`loadbalancername`key`value";
@@ -746,8 +762,8 @@ public class FileManager {
 	public static void generateS3Files(Map<String, List<BucketVH>> bucketMap) throws IOException {
 		String fieldNames;
 		String keys;
-		fieldNames = "bucket.Name`bucket.CreationDate`bucket.owner.displayname`bucket.owner.id`versionStatus`mfaDelete`location";
-		keys = "discoverydate`accountid`accountname`name`creationdate`ownerdisplayname`ownerid`versionstatus`mfadelete`region";
+		fieldNames = "bucket.Name`bucket.CreationDate`bucket.owner.displayname`bucket.owner.id`versionStatus`mfaDelete`location`bucketEncryp`dpcvalue";
+		keys = "discoverydate`accountid`accountname`name`creationdate`ownerdisplayname`ownerid`versionstatus`mfadelete`region`bucketencryp`dpcvalue";
 		FileGenerator.generateJson(bucketMap, fieldNames, "aws-s3.data",keys);
 		fieldNames = "location`bucket.Name`tags.key`tags.value";
 		keys = "discoverydate`accountid`accountname`region`name`key`value";
@@ -1059,9 +1075,9 @@ public class FileManager {
 		String keys;
 		fieldNames = "distSummary.id`distSummary.aRN`distSummary.status`distSummary.lastModifiedTime`distSummary.domainName`distSummary.enabled"
 				+"`distSummary.comment`distSummary.priceClass`distSummary.webACLId`distSummary.httpVersion`distSummary.isIPV6Enabled`distSummary.viewerCertificate.iAMCertificateId"
-				+"`distSummary.viewerCertificate.aCMCertificateArn`distSummary.viewerCertificate.cloudFrontDefaultCertificate`distSummary.viewerCertificate.sSLSupportMethod`distSummary.viewerCertificate.minimumProtocolVersion`distSummary.aliases.items";
+				+"`distSummary.viewerCertificate.aCMCertificateArn`distSummary.viewerCertificate.cloudFrontDefaultCertificate`distSummary.viewerCertificate.sSLSupportMethod`distSummary.viewerCertificate.minimumProtocolVersion`distSummary.aliases.items`bucketName`accessLogEnabled";
 		keys = "discoverydate`accountid`accountname`id`arn`status`lastmodifiedtime`domainName`enabled`comment`priceclass`webaclid`httpversion`ipv6enabled`viewercertificateid"
-				+"`viewercertificatearn`viewercertificatedefaultcertificate`viewercertificatesslsupportmethod`viewercertificateminprotocolversion`aliases";
+				+"`viewercertificatearn`viewercertificatedefaultcertificate`viewercertificatesslsupportmethod`viewercertificateminprotocolversion`aliases`bucketname`accesslogenabled";
 		FileGenerator.generateJson(cfMap, fieldNames, "aws-cloudfront.data",keys);
 		fieldNames = "distSummary.id`tags.key`tags.value";
 		keys = "discoverydate`accountid`accountname`id`key`value";
@@ -1587,4 +1603,74 @@ public class FileManager {
         keys = "discoverydate`accountid`accountname`region`streamarn`key`value";
         FileGenerator.generateJson(kinesisVideoStreamMap, fieldNames, "aws-videostream-tags.data",keys);
     }
+	
+	//****** Changes For Federated Rules Start ******
+	/**
+	 * Generate ACM SSL certificate files.
+	 *
+	 * @param sslCertificate the sslCertificate map
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static void generateACMCertificateFiles(Map<String,List<SSLCertificateVH>> acmCertificate) throws IOException {
+		String fieldNames;
+		String keys;
+		fieldNames = "domainName`certificateARN`expiryDate";
+		keys = "discoverydate`accountid`accountname`region`domainname`certificatearn`expirydate";
+		FileGenerator.generateJson(acmCertificate, fieldNames, "aws-acmcertificate.data", keys);	
+	}
+	
+	/**
+	 * Generate IAM certificate files.
+	 *
+	 * @param iamCertificate the iamCertificate map
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static void generateIAMCertificateFiles(Map<String,List<IAMCertificateVH>> iamCertificate) throws IOException {
+		String fieldNames;
+		String keys;
+		fieldNames = "serverCertificateName`arn`expiryDate";
+		keys = "discoverydate`accountid`accountname`servercertificatename`arn`expirydate";
+		FileGenerator.generateJson(iamCertificate, fieldNames, "aws-iamcertificate.data", keys);	
+	}
+	
+	/**
+	 * Generate Account files.
+	 *
+	 * @param acc file the iamCertificate map
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static void generateAccountFiles(Map<String,List<AccountVH>> account) {
+		String fieldNames;
+		String keys;
+		fieldNames = "cloudtrailName`securityTopicARN`securityTopicEndpoint";
+		keys = "discoverydate`accountid`accountname`cloudtrailname`securitytopicarn`securitytopicendpoint";
+		FileGenerator.generateJson(account, fieldNames, "aws-account.data", keys);	
+	}
+	/**
+	 * Generate IamGroup files.
+	 *
+	 * @param acc file the iamCertificate map
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static void generateIamGroupFiles(Map<String, List<GroupVH>> iamGroupMap) throws IOException {
+		String fieldNames;
+		String keys;
+		fieldNames = "group.groupName`group.groupID`group.arn`group.createDate`policies";
+		keys = "discoverydate`accountid`accountname`groupname`groupid`grouparn`createdate`policies";
+		FileGenerator.generateJson(iamGroupMap, fieldNames, "aws-iamgroup.data", keys);	
+	}
+	/**
+	 * Generate CloudTrail files.
+	 *
+	 * @param acc file the iamCertificate map
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
+	public static void generateCloudTrailFiles(Map<String,List<Trail>> dbSnapShots) throws IOException {
+		String fieldNames;
+		String keys;
+		fieldNames = "Name`S3BucketName`IncludeGlobalServiceEvents`IsMultiRegionTrail`HomeRegion`TrailARN`LogFileValidationEnabled`HasCustomEventSelectors";
+		keys = "discoverydate`accountid`accountname`region`name`s3bucketname`includeglobalserviceevents`ismultiregiontrail`homeregion`trailarn`logfilevalidationenabled`hascustomeventselectors";
+		FileGenerator.generateJson(dbSnapShots, fieldNames, "aws-cloudtrail.data", keys);	
+	}
+	//****** Changes For Federated Rules End ******
 }

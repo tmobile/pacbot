@@ -17,6 +17,7 @@ package com.tmobile.cso.pacman.inventory.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -45,6 +46,13 @@ import com.amazonaws.services.autoscaling.AmazonAutoScalingClientBuilder;
 import com.amazonaws.services.autoscaling.model.AutoScalingGroup;
 import com.amazonaws.services.autoscaling.model.DescribeAutoScalingGroupsRequest;
 import com.amazonaws.services.autoscaling.model.DescribeAutoScalingGroupsResult;
+import com.amazonaws.services.certificatemanager.AWSCertificateManager;
+import com.amazonaws.services.certificatemanager.AWSCertificateManagerClientBuilder;
+import com.amazonaws.services.certificatemanager.model.CertificateDetail;
+import com.amazonaws.services.certificatemanager.model.CertificateSummary;
+import com.amazonaws.services.certificatemanager.model.DescribeCertificateRequest;
+import com.amazonaws.services.certificatemanager.model.DescribeCertificateResult;
+import com.amazonaws.services.certificatemanager.model.ListCertificatesRequest;
 import com.amazonaws.services.cloudformation.AmazonCloudFormation;
 import com.amazonaws.services.cloudformation.AmazonCloudFormationClientBuilder;
 import com.amazonaws.services.cloudformation.model.DescribeStacksRequest;
@@ -54,7 +62,12 @@ import com.amazonaws.services.cloudfront.AmazonCloudFront;
 import com.amazonaws.services.cloudfront.AmazonCloudFrontClientBuilder;
 import com.amazonaws.services.cloudfront.model.DistributionList;
 import com.amazonaws.services.cloudfront.model.DistributionSummary;
+import com.amazonaws.services.cloudfront.model.GetDistributionConfigRequest;
 import com.amazonaws.services.cloudfront.model.ListDistributionsRequest;
+import com.amazonaws.services.cloudtrail.AWSCloudTrail;
+import com.amazonaws.services.cloudtrail.AWSCloudTrailClientBuilder;
+import com.amazonaws.services.cloudtrail.model.DescribeTrailsResult;
+import com.amazonaws.services.cloudtrail.model.Trail;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
 import com.amazonaws.services.dynamodbv2.model.ListTablesRequest;
@@ -106,6 +119,7 @@ import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTargetGroupsR
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTargetHealthRequest;
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeTargetHealthResult;
 import com.amazonaws.services.elasticloadbalancingv2.model.LoadBalancer;
+import com.amazonaws.services.elasticloadbalancingv2.model.LoadBalancerAttribute;
 import com.amazonaws.services.elasticloadbalancingv2.model.TargetGroup;
 import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduce;
 import com.amazonaws.services.elasticmapreduce.AmazonElasticMapReduceClientBuilder;
@@ -129,19 +143,25 @@ import com.amazonaws.services.health.model.EventDetails;
 import com.amazonaws.services.identitymanagement.AmazonIdentityManagement;
 import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClientBuilder;
 import com.amazonaws.services.identitymanagement.model.AccessKeyMetadata;
+import com.amazonaws.services.identitymanagement.model.AttachedPolicy;
 import com.amazonaws.services.identitymanagement.model.GetAccessKeyLastUsedRequest;
 import com.amazonaws.services.identitymanagement.model.GetAccessKeyLastUsedResult;
 import com.amazonaws.services.identitymanagement.model.GetLoginProfileRequest;
 import com.amazonaws.services.identitymanagement.model.Group;
 import com.amazonaws.services.identitymanagement.model.ListAccessKeysRequest;
+import com.amazonaws.services.identitymanagement.model.ListAttachedGroupPoliciesRequest;
 import com.amazonaws.services.identitymanagement.model.ListGroupsForUserRequest;
+import com.amazonaws.services.identitymanagement.model.ListGroupsRequest;
+import com.amazonaws.services.identitymanagement.model.ListGroupsResult;
 import com.amazonaws.services.identitymanagement.model.ListMFADevicesRequest;
 import com.amazonaws.services.identitymanagement.model.ListRolesRequest;
 import com.amazonaws.services.identitymanagement.model.ListRolesResult;
+import com.amazonaws.services.identitymanagement.model.ListServerCertificatesRequest;
 import com.amazonaws.services.identitymanagement.model.ListUsersRequest;
 import com.amazonaws.services.identitymanagement.model.ListUsersResult;
 import com.amazonaws.services.identitymanagement.model.LoginProfile;
 import com.amazonaws.services.identitymanagement.model.Role;
+import com.amazonaws.services.identitymanagement.model.ServerCertificateMetadata;
 import com.amazonaws.services.identitymanagement.model.User;
 import com.amazonaws.services.kms.AWSKMS;
 import com.amazonaws.services.kms.AWSKMSClientBuilder;
@@ -181,8 +201,17 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.BucketTaggingConfiguration;
 import com.amazonaws.services.s3.model.BucketVersioningConfiguration;
+import com.amazonaws.services.s3.model.GetBucketEncryptionResult;
+import com.amazonaws.services.s3.model.ServerSideEncryptionConfiguration;
 import com.amazonaws.services.s3.model.Tag;
 import com.amazonaws.services.s3.model.TagSet;
+import com.amazonaws.services.sns.AmazonSNS;
+import com.amazonaws.services.sns.AmazonSNSClientBuilder;
+import com.amazonaws.services.sns.model.ListSubscriptionsByTopicRequest;
+import com.amazonaws.services.sns.model.ListSubscriptionsByTopicResult;
+import com.amazonaws.services.sns.model.ListTopicsResult;
+import com.amazonaws.services.sns.model.Subscription;
+import com.amazonaws.services.sns.model.Topic;
 import com.amazonaws.services.sqs.AmazonSQS;
 import com.amazonaws.services.sqs.AmazonSQSClientBuilder;
 import com.amazonaws.services.sqs.model.GetQueueAttributesRequest;
@@ -202,6 +231,7 @@ import com.tmobile.cso.pacman.inventory.InventoryConstants;
 import com.tmobile.cso.pacman.inventory.file.ErrorManageUtil;
 import com.tmobile.cso.pacman.inventory.file.FileGenerator;
 import com.tmobile.cso.pacman.inventory.vo.AccessKeyMetadataVH;
+import com.tmobile.cso.pacman.inventory.vo.AccountVH;
 import com.tmobile.cso.pacman.inventory.vo.Attribute;
 import com.tmobile.cso.pacman.inventory.vo.BucketVH;
 import com.tmobile.cso.pacman.inventory.vo.CheckVH;
@@ -212,6 +242,8 @@ import com.tmobile.cso.pacman.inventory.vo.DBInstanceVH;
 import com.tmobile.cso.pacman.inventory.vo.DynamoVH;
 import com.tmobile.cso.pacman.inventory.vo.EbsVH;
 import com.tmobile.cso.pacman.inventory.vo.EfsVH;
+import com.tmobile.cso.pacman.inventory.vo.GroupVH;
+import com.tmobile.cso.pacman.inventory.vo.IAMCertificateVH;
 import com.tmobile.cso.pacman.inventory.vo.KMSKeyVH;
 import com.tmobile.cso.pacman.inventory.vo.LambdaVH;
 import com.tmobile.cso.pacman.inventory.vo.LoadBalancerVH;
@@ -220,6 +252,7 @@ import com.tmobile.cso.pacman.inventory.vo.RedshiftVH;
 import com.tmobile.cso.pacman.inventory.vo.Resource;
 import com.tmobile.cso.pacman.inventory.vo.SQS;
 import com.tmobile.cso.pacman.inventory.vo.SQSVH;
+import com.tmobile.cso.pacman.inventory.vo.SSLCertificateVH;
 import com.tmobile.cso.pacman.inventory.vo.TargetGroupVH;
 import com.tmobile.cso.pacman.inventory.vo.UserVH;
 import com.tmobile.cso.pacman.inventory.vo.VpcEndPointVH;
@@ -329,10 +362,11 @@ public class InventoryUtil {
 	 * @return the map
 	 */
 	public static Map<String,List<SecurityGroup>> fetchSecurityGroups(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
-		
+		log.info("skipRegionseee" + skipRegions);
 		Map<String,List<SecurityGroup>> secGrpList = new LinkedHashMap<>();
 		AmazonEC2 ec2Client ;
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Security Group\" , \"region\":\"" ;
+		log.info("sgregion" + RegionUtils.getRegions().toString());
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
 				if(!skipRegions.contains(region.getName())){ 
@@ -676,10 +710,23 @@ public class InventoryUtil {
 						elbListTemp.parallelStream().forEach(elb->	{		
 								List<List<com.amazonaws.services.elasticloadbalancing.model.Tag>> tagsInfo =  tagDescriptions.stream().filter(tag -> tag.getLoadBalancerName().equals( elb.getLoadBalancerName())).map(x-> x.getTags()).collect(Collectors.toList());
 								List<com.amazonaws.services.elasticloadbalancing.model.Tag> tags = new ArrayList<>();
+								//****** Changes For Federated Rules Start ******
+								String accessLogBucketName = "";
+							    boolean accessLog = false;
+							    String name = elb.getLoadBalancerName();
+								if (name != null) {
+									com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancing classicElbClient = com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClientBuilder.standard().
+										 	withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
+									
+									com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancerAttributesRequest classicELBDescReq = new com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancerAttributesRequest().withLoadBalancerName(name) ;
+									accessLogBucketName = classicElbClient.describeLoadBalancerAttributes(classicELBDescReq).getLoadBalancerAttributes().getAccessLog().getS3BucketName();
+									accessLog = classicElbClient.describeLoadBalancerAttributes(classicELBDescReq).getLoadBalancerAttributes().getAccessLog().getEnabled();
+									}
+								//****** Changes For Federated Rules End ******
 								if(!tagsInfo.isEmpty())
 									tags = tagsInfo.get(0);
 								synchronized(classicElbList){
-									classicElbList.add(new ClassicELBVH(elb,tags));
+									classicElbList.add(new ClassicELBVH(elb,tags, accessLogBucketName, accessLog));
 								}
 							});			
 						elbList.put(accountId+delimiter+accountName+delimiter+region.getName(),classicElbList);
@@ -742,12 +789,39 @@ public class InventoryUtil {
 						elbList.parallelStream().forEach(elb->	{		
 							List<List<com.amazonaws.services.elasticloadbalancingv2.model.Tag>> tagsInfo =  tagDescriptions.stream().filter(tag -> tag.getResourceArn().equals( elb.getLoadBalancerArn())).map(x-> x.getTags()).collect(Collectors.toList());
 							List<com.amazonaws.services.elasticloadbalancingv2.model.Tag> tags = new ArrayList<>();
+							//****** Changes For Federated Rules Start ****** 
+							String name = elb.getLoadBalancerArn();
+							String accessLogBucketName = "";
+							boolean accessLog = false;
+						if (name != null) {
+							com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancing appElbClient = com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancingClientBuilder
+									.standard()
+									.withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials))
+									.withRegion(region.getName()).build();
+							com.amazonaws.services.elasticloadbalancingv2.model.DescribeLoadBalancerAttributesRequest request1 = new com.amazonaws.services.elasticloadbalancingv2.model.DescribeLoadBalancerAttributesRequest()
+									.withLoadBalancerArn(name);
+							List<LoadBalancerAttribute> listAccessLogBucketAttri = appElbClient
+									.describeLoadBalancerAttributes(request1).getAttributes();
+							for (LoadBalancerAttribute help : listAccessLogBucketAttri) {
+								String attributeBucketKey = help.getKey();
+								String attributeBucketValue = help.getValue();
+								if (attributeBucketKey.equalsIgnoreCase("access_logs.s3.enabled")
+										&& attributeBucketValue.equalsIgnoreCase("true")) {
+									accessLog = true;
+								}
+								if ((attributeBucketKey.equalsIgnoreCase("access_logs.s3.bucket")
+										&& attributeBucketValue != null)) {
+									accessLogBucketName = attributeBucketValue;
+								}
+							}
+							//****** Changes For Federated Rules End ******
 							if(!tagsInfo.isEmpty())
 								tags = tagsInfo.get(0);
-							LoadBalancerVH elbTemp = new LoadBalancerVH(elb,tags);
+							LoadBalancerVH elbTemp = new LoadBalancerVH(elb, tags, accessLogBucketName, accessLog);
 							synchronized(elbListTemp){
 								elbListTemp.add(elbTemp);
 							}
+						 }
 						});	
 						
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : Application ELB " +region.getName() + " >> "+elbListTemp.size());
@@ -960,10 +1034,22 @@ public class InventoryUtil {
 			BucketVersioningConfiguration versionconfig = null;
 			List<Tag> tags = new ArrayList<>();
 			try{
+				String bucketEncryp = null;
+				String DPCvalue = "";
 				String bucketLocation = amazonS3Client.getBucketLocation(bucket.getName());
 				bucketRegion = com.amazonaws.services.s3.model.Region.fromValue(bucketLocation).toAWSRegion().getName();
 				AmazonS3 s3Client = regionS3map.get(bucketRegion);
 				versionconfig =  s3Client.getBucketVersioningConfiguration(bucket.getName());
+				//****** Changes For Federated Rules Start ******
+				//Bucket Encryption
+				GetBucketEncryptionResult buckectEncry = s3Client.getBucketEncryption(bucket.getName());
+				if (buckectEncry != null) {
+					ServerSideEncryptionConfiguration sseBucketEncryp = buckectEncry.getServerSideEncryptionConfiguration();
+					if (sseBucketEncryp != null && sseBucketEncryp.getRules() != null) {
+						bucketEncryp = sseBucketEncryp.getRules().get(0).getApplyServerSideEncryptionByDefault()
+								.getSSEAlgorithm();
+					}
+				}
 				BucketTaggingConfiguration tagConfig = s3Client.getBucketTaggingConfiguration(bucket.getName());
 				if(tagConfig!=null){
 					List<TagSet> tagSets = tagConfig.getAllTagSets();
@@ -973,17 +1059,21 @@ public class InventoryUtil {
 						while(it.hasNext()){
 							Entry<String,String> tag = it.next();
 							tags.add(new Tag(tag.getKey(),tag.getValue()));
+							//Allowing only DPC tags value to pass in S3 bucket
+							if(tag.getKey().contains("DPC")) {
+								DPCvalue = tag.getValue();
+							}
 						}
 					}
 				}
 				synchronized(buckets){
-					buckets.add(new BucketVH(bucket,bucketRegion,versionconfig, tags));
+					buckets.add(new BucketVH(bucket,bucketRegion,versionconfig, tags, bucketEncryp, DPCvalue));
 				}
 			}
 			catch(AmazonS3Exception e){
 				if("AccessDenied".equals(e.getErrorCode())){
 					log.info("Access Denied for bucket " + bucket.getName());
-					buckets.add(new BucketVH(bucket,"",versionconfig, tags));
+					buckets.add(new BucketVH(bucket,"",versionconfig, tags, null, null));
 				}else{
 					log.info("Exception fetching S3 Bucket",e);
 				}
@@ -1527,6 +1617,8 @@ public class InventoryUtil {
 		Map<String,List<CloudFrontVH>> cloudFront = new LinkedHashMap<>();
 		List<DistributionSummary> distributionSummary = new ArrayList<>();
 		AmazonCloudFront amazonCloudFront;
+		String bucketName = null;
+		boolean accessLogEnabled = false;
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource \" ,\"type\": \"CloudFront\"" ;
 		try{
 			amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion("us-east-1").build();
@@ -1539,9 +1631,20 @@ public class InventoryUtil {
 				distributionSummary = distributionList.getItems();
 				marker = distributionList.getNextMarker();
 				for(DistributionSummary ds : distributionSummary) {
+					//****** Changes For Federated Rules Start ******
+					GetDistributionConfigRequest request = new GetDistributionConfigRequest().withId(ds.getId());
+					log.info("request" + request);
+					if(request != null) {
+					bucketName =  amazonCloudFront.getDistributionConfig(request).getDistributionConfig().getLogging().getBucket();
+					accessLogEnabled =  amazonCloudFront.getDistributionConfig(request).getDistributionConfig().getLogging().getEnabled();
+					log.info("bucketName" + bucketName + "accessLogEnabled" + accessLogEnabled);
+					}
+					//****** Changes For Federated Rules End ******
 					CloudFrontVH cf = new CloudFrontVH();
 					cf.setDistSummary(ds);
 					cf.setTags(amazonCloudFront.listTagsForResource(new com.amazonaws.services.cloudfront.model.ListTagsForResourceRequest().withResource(ds.getARN())).getTags().getItems());
+					cf.setAccessLogEnabled(accessLogEnabled);
+					cf.setBucketName(bucketName);
 					cloudFrontList.add(cf);
 				}
 			}while(marker!=null);
@@ -1712,4 +1815,267 @@ public class InventoryUtil {
  
         return sqs;
     }
+	
+	//****** Changes For Federated Rules Started ******
+	/**
+	 * Fetch ACMCertficate info.
+	 *
+	 * @param temporaryCredentials the temporary credentials
+	 * @param skipRegions the skip regions
+	 * @param account the account
+	 * @return the map
+	 */
+	public static Map<String,List<SSLCertificateVH>> fetchACMCertficateInfo(BasicSessionCredentials temporaryCredentials, String skipRegions, String account, String accountName) {
+		log.info("ACM cert method Entry");
+		Map<String,List<SSLCertificateVH>> sslVH = new LinkedHashMap<>();
+		List<CertificateSummary> listCertificateSummary = new ArrayList<>();
+		List<SSLCertificateVH> sslCertList = new ArrayList<>();
+		DescribeCertificateResult describeCertificateResult = new DescribeCertificateResult();
+		Date expiryDate = null;
+		String certificateARN = null;
+		String domainName  = null;
+		List<String> issuerDetails = null;
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"ACM Certificate \" , \"region\":\"" ;
+		for(Region region : RegionUtils.getRegions()) { 
+			try{
+				if(!skipRegions.contains(region.getName())){ 
+					AWSCertificateManager awsCertifcateManagerClient  = AWSCertificateManagerClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
+					listCertificateSummary = awsCertifcateManagerClient.listCertificates(new ListCertificatesRequest()).getCertificateSummaryList();
+					if(!CollectionUtils.isEmpty(listCertificateSummary)) {
+					for(CertificateSummary certSummary : listCertificateSummary) {
+						String certArn = certSummary.getCertificateArn();
+						DescribeCertificateRequest describeCertificateRequest = new DescribeCertificateRequest().withCertificateArn(certArn);
+						describeCertificateResult = awsCertifcateManagerClient.describeCertificate(describeCertificateRequest);
+						CertificateDetail  certificateDetail =   describeCertificateResult.getCertificate();
+						domainName = certificateDetail.getDomainName();
+						certificateARN = certificateDetail.getCertificateArn();
+						expiryDate = certificateDetail.getNotAfter();
+						 
+						SSLCertificateVH sslCertificate = new SSLCertificateVH();
+						sslCertificate.setDomainName(domainName);
+						sslCertificate.setCertificateARN(certificateARN);
+						sslCertificate.setExpiryDate(expiryDate);
+						sslCertificate.setIssuerDetails(issuerDetails);
+						sslCertList.add(sslCertificate);
+					}
+					sslVH.put(account+delimiter+accountName+delimiter+region.getName(), sslCertList);
+				  }else {
+					  log.info("List is empty"); 
+				  }
+				 }
+				}catch(Exception e){
+				log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
+				ErrorManageUtil.uploadError(account,region.getName(),"acmcertificate",e.getMessage());
+			}
+		}
+		return sslVH;
+	}
+	
+	/**
+	 * Fetch IAM certificate info.
+	 *
+	 * @param temporaryCredentials the temporary credentials
+	 * @param account the account
+	 * @return the map
+	 */
+	public static Map<String,List<IAMCertificateVH>> fetchIAMCertificateInfo(BasicSessionCredentials temporaryCredentials, String skipRegions, String account, String accountName) {
+		log.info("Fetch IAMCertificate info start");
+		Map<String,List<IAMCertificateVH>> iamCertificateVH = new LinkedHashMap<>();
+		AmazonIdentityManagement amazonIdentityManagement;
+		List<ServerCertificateMetadata> listServerCertificatesMetadata = new ArrayList<>();
+		String serverCertificateName = null;
+		String arn = null; 
+		Date expiryDate = null; 
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource \" ,\"type\": \"IAMCertificate\"" ;
+			try {
+					amazonIdentityManagement = AmazonIdentityManagementClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials))
+							.withRegion(InventoryConstants.REGION_US_WEST_2).build();
+					listServerCertificatesMetadata = amazonIdentityManagement.listServerCertificates(new ListServerCertificatesRequest())
+							.getServerCertificateMetadataList();
+					List<IAMCertificateVH> iamCerttList = new ArrayList<>();
+					if(!CollectionUtils.isEmpty(listServerCertificatesMetadata)) {
+					for (ServerCertificateMetadata serverCertIAMMetadata : listServerCertificatesMetadata) {
+						serverCertificateName = serverCertIAMMetadata.getServerCertificateName();
+						arn = serverCertIAMMetadata.getArn();
+						expiryDate = serverCertIAMMetadata.getExpiration();
+						IAMCertificateVH iamCertVH = new IAMCertificateVH();
+						iamCertVH.setServerCertificateName(serverCertificateName);
+						iamCertVH.setArn(arn);
+						iamCertVH.setExpiryDate(expiryDate);
+						iamCerttList.add(iamCertVH);
+					}
+					iamCertificateVH.put(account+delimiter+accountName, iamCerttList);
+					}else {
+						log.info("List is empty"); 
+					}
+			} catch (Exception e) {
+				log.error(expPrefix + InventoryConstants.ERROR_CAUSE + e.getMessage() + "\"}");
+				ErrorManageUtil.uploadError(account,"", "IAMCertificate", e.getMessage());
+			}
+		return iamCertificateVH;
+	}
+	
+	/**
+	 * Fetch Accounts info.
+	 *
+	 * @param temporaryCredentials the temporary credentials
+	 * @param account the account
+	 * @return the map
+	 */
+	public static Map<String,List<AccountVH>> fetchAccountsInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,
+			String account, String accountName) {
+		log.info("Fetch Accounts info start");
+		String comma = ",";
+		String securityTopicEndpoint = null;
+		String securityTopicARN = null;
+		Map<String, List<AccountVH>> accountInfoList = new LinkedHashMap<>();
+		List<AccountVH> accountList = new ArrayList<AccountVH>();
+		AccountVH accountObj = new AccountVH();
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE + account
+				+ "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Cloud Trail\" , \"region\":\"";
+		for (Region region : RegionUtils.getRegions()) {
+			try {
+				if (!skipRegions.contains(region.getName())) {
+					AWSCloudTrail cloudTrailClient = AWSCloudTrailClientBuilder.standard()
+							.withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials))
+							.withRegion("us-east-1").build();
+					DescribeTrailsResult rslt = cloudTrailClient.describeTrails();
+					List<Trail> trailTemp = rslt.getTrailList();
+					List<String> trailName = new ArrayList<>();
+					if (!trailTemp.isEmpty()) {
+						for (Trail trail : trailTemp) {
+							if (trail.isMultiRegionTrail()) {
+								trailName.add(trail.getName());
+							}
+						}
+					}
+					accountObj.setCloudTrailName(trailName);
+					boolean isTopicAvailable = false;
+					AmazonSNS snsClient = AmazonSNSClientBuilder.standard()
+							.withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials))
+							.withRegion("us-east-1").build();
+					ListTopicsResult listTopicsResult = snsClient.listTopics();
+					if (listTopicsResult != null) {
+						List<Topic> listTopics = listTopicsResult.getTopics();
+
+						if (!CollectionUtils.isEmpty(listTopics)) {
+							for (Topic topic : listTopics) {
+								securityTopicARN = topic.getTopicArn();
+								if (securityTopicARN.contains("TSI_Base_Security_Incident")) {
+									ListSubscriptionsByTopicRequest subsByTopicReq = new ListSubscriptionsByTopicRequest()
+											.withTopicArn(securityTopicARN);
+									ListSubscriptionsByTopicResult subsByTopicRes = snsClient
+											.listSubscriptionsByTopic(subsByTopicReq);
+									List<Subscription> listSubs = subsByTopicRes.getSubscriptions();
+									StringBuilder strBuilder = new StringBuilder();
+									if (!CollectionUtils.isEmpty(listSubs)) {
+										for (Subscription subscription : listSubs) {
+											String endpoint = subscription.getEndpoint();
+											strBuilder.append(endpoint);
+											strBuilder.append(comma);
+										}
+										securityTopicEndpoint = strBuilder.toString();
+										securityTopicEndpoint = securityTopicEndpoint.substring(0,
+												securityTopicEndpoint.length() - comma.length());
+									} else {
+										log.info("Subscription list is empty");
+									}
+									accountObj.setSecurityTopicARN(securityTopicARN);
+									accountObj.setSecurityTopicEndpoint(securityTopicEndpoint);
+									isTopicAvailable = true;
+								}
+							}
+						}
+						if (!isTopicAvailable) {
+							accountObj.setSecurityTopicARN("NA");
+							accountObj.setSecurityTopicEndpoint("NA");
+						}
+					}
+					synchronized (accountList) {
+						accountList.add(accountObj);
+					}
+					accountInfoList.put(account+delimiter+accountName, accountList);
+					break;
+				}
+			} catch (Exception e) {
+				if (region.isServiceSupported(AmazonRDS.ENDPOINT_PREFIX)) {
+					log.warn(expPrefix + region.getName() + InventoryConstants.ERROR_CAUSE + e.getMessage() + "\"}");
+					ErrorManageUtil.uploadError(account, region.getName(), "cloudtrail", e.getMessage());
+				}
+			}
+		}
+		return accountInfoList;
+	}
+	/**
+	 * Fetch IAM group info.
+	 *
+	 * @param temporaryCredentials the temporary credentials
+	 * @param account the account
+	 * @return the map
+	 */
+	public static  Map<String,List<GroupVH>> fetchIAMGroups(BasicSessionCredentials temporaryCredentials,String account, String accountName) {
+		log.info("Fetch IAMGroups info start");
+		AmazonIdentityManagement iamClient = AmazonIdentityManagementClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(InventoryConstants.REGION_US_WEST_2).build();
+		List<Group> groups = new ArrayList<>();
+		ListGroupsResult rslt;
+		String marker = null;
+		do{
+			rslt =  iamClient.listGroups(new ListGroupsRequest().withMarker(marker));
+			groups.addAll(rslt.getGroups());
+			marker = rslt.getMarker();
+		}while(marker!=null);
+		
+		List<GroupVH> groupList = new ArrayList<>();
+		Map<String,List<GroupVH>> iamGroups = new HashMap<>();
+		iamGroups.put(account+delimiter+accountName,  groupList);
+		groups.parallelStream().forEach(group -> {
+			GroupVH groupTemp = new GroupVH(group);
+			String groupName = group.getGroupName();
+						
+			List<AttachedPolicy> policies = iamClient.listAttachedGroupPolicies(new ListAttachedGroupPoliciesRequest().withGroupName(groupName)).getAttachedPolicies();
+			List<String> policyList = new ArrayList<>();
+			for(AttachedPolicy pol : policies){
+				policyList.add(pol.getPolicyName());
+			}
+			groupTemp.setPolicies(policyList);
+			synchronized (groupList) {
+				groupList.add(groupTemp);
+			}
+		});
+		
+		return iamGroups;
+	}
+	/**
+	 * Fetch CloudTrails info.
+	 *
+	 * @param temporaryCredentials the temporary credentials
+	 * @param account the account
+	 * @return the map
+	 */
+	public static Map<String,List<Trail>> fetchCloudTrails(BasicSessionCredentials temporaryCredentials, String skipRegions,String account, String accountName){
+		log.info("Fetch CloudTrails info start");
+		Map<String,List<Trail>> cloudTrails =  new LinkedHashMap<>();
+		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Cloud Trail\" , \"region\":\"" ;
+		for(Region region : RegionUtils.getRegions()){
+			try{
+				if(!skipRegions.contains(region.getName())){ 
+					AWSCloudTrail cloudTrailClient =  AWSCloudTrailClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
+					DescribeTrailsResult rslt = cloudTrailClient.describeTrails();
+					List<Trail> trailTemp = rslt.getTrailList();
+				
+					if(! trailTemp.isEmpty() ){
+						cloudTrails.put(account+delimiter+accountName+delimiter+region.getName(),  trailTemp);
+					}
+				}
+			}catch(Exception e){
+				if(region.isServiceSupported(AmazonRDS.ENDPOINT_PREFIX)){
+					log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
+					ErrorManageUtil.uploadError(account,region.getName(),"cloudtrail",e.getMessage());
+				}
+			}
+		}
+		return cloudTrails;
+	}
+	
+	//****** Changes For Federated Rules End ******
 }
