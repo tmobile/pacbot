@@ -75,12 +75,4 @@ public class ConfigManager {
 		return configHashtable;
 	}
 	
-
-	
-
-	public static void main(String[] args) {
-		getConfigurationsMap();
-
-	}
-
 }

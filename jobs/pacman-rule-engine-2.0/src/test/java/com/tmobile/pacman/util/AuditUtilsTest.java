@@ -100,7 +100,7 @@ public class AuditUtilsTest {
 		//PowerMockito.mockStatic(ESUtils.class);
 		PowerMockito.mockStatic(ESUtils.class);
 		CloseableHttpResponse mockResponse = PowerMockito.mock(CloseableHttpResponse.class);
-		String responseBody = "{\"count\":\"123\", \"hits\":{\"total\":1000,\"max_score\":null,\"hits\":[{\"_index\":\"bank\",\"_type\":\"_doc\",\"_id\":\"0\",\"sort\":[0],\"_score\":null,\"_source\":{\"account_number\":0,\"balance\":16623,\"firstname\":\"Bradshaw\",\"lastname\":\"Mckenzie\",\"age\":29,\"gender\":\"F\",\"address\":\"244 Columbus Place\",\"employer\":\"Euron\",\"email\":\"john@doe.com\",\"city\":\"Hobucken\",\"state\":\"CO\"}}]}}";
+		String responseBody = "{\"count\":\"123\", \"hits\":{\"total\":1000,\"max_score\":null,\"hits\":[{\"_index\":\"bank\",\"_type\":\"_doc\",\"_id\":\"0\",\"sort\":[0],\"_score\":null,\"_source\":{\"account_number\":0,\"balance\":16623,\"firstname\":\"12\",\"lastname\":\"12\",\"age\":29,\"gender\":\"F\",\"address\":\"123\",\"employer\":\"123\",\"email\":\"123\",\"city\":\"123\",\"state\":\"CO\"}}]}}";
 		//PowerMockito.when(CommonUtils.doHttpPost(anyString(), anyString())).thenReturn(responseBody);
 		PowerMockito.when(ESUtils.getEsUrl()).thenReturn("Test");
 		PowerMockito.mockStatic(CommonUtils.class);
