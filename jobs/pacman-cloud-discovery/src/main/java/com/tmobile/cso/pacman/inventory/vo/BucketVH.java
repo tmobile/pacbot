@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -26,22 +26,28 @@ import com.amazonaws.services.s3.model.Tag;
  * The Class BucketVH.
  */
 public class BucketVH {
-	
+
 	/** The bucket. */
 	Bucket bucket;
-	
+
 	/** The tags. */
 	List<Tag> tags ;
-	
+
 	/** The location. */
 	String location;
-	
+
 	/** The version status. */
 	String versionStatus;
-	
+
 	/** The mfa delete. */
 	Boolean mfaDelete;
-	
+
+	/** The Bucket Encryption. */
+    String bucketEncryp;
+
+    /** The DPC Value. */
+    String DPCvalue;
+
 	/**
 	 * Instantiates a new bucket VH.
 	 *
@@ -50,11 +56,13 @@ public class BucketVH {
 	 * @param versionConfig the version config
 	 * @param tags the tags
 	 */
-	public BucketVH(Bucket bucket,String location,BucketVersioningConfiguration versionConfig, List<Tag> tags){
+	public BucketVH(Bucket bucket,String location,BucketVersioningConfiguration versionConfig, List<Tag> tags, String bucketEncryp, String DPCvalue){
 		this.bucket = bucket;
 		this.location = location;
 		this.versionStatus = versionConfig==null?"":versionConfig.getStatus();
 		this.mfaDelete =  versionConfig==null?null:versionConfig.isMfaDeleteEnabled();
 		this.tags = tags;
+		this.bucketEncryp = bucketEncryp;
+        this.DPCvalue = DPCvalue;
 	}
 }
