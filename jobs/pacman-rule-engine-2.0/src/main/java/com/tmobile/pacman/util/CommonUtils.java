@@ -16,51 +16,25 @@
 
 package com.tmobile.pacman.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.math.BigDecimal;
-import java.nio.charset.StandardCharsets;
-import java.security.KeyManagementException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.security.cert.X509Certificate;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Hashtable;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
-import java.util.Set;
-import java.util.TimeZone;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
-import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
-import javax.crypto.spec.SecretKeySpec;
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
-
+import com.amazonaws.util.StringUtils;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.base.Splitter;
+import com.google.common.base.Strings;
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import com.google.gson.*;
+import com.tmobile.pacman.common.PacmanSdkConstants;
+import com.tmobile.pacman.commons.autofix.manager.AuthManager;
+import com.tmobile.pacman.commons.rule.Annotation;
+import com.tmobile.pacman.config.ConfigManager;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpHead;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
+import org.apache.http.client.methods.*;
 import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
@@ -71,24 +45,26 @@ import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.amazonaws.util.StringUtils;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.base.Splitter;
-import com.google.common.base.Strings;
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import com.tmobile.pacman.common.PacmanSdkConstants;
-import com.tmobile.pacman.commons.autofix.manager.AuthManager;
-import com.tmobile.pacman.commons.rule.Annotation;
-import com.tmobile.pacman.config.ConfigManager;
+import javax.crypto.Cipher;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import java.io.*;
+import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
+import java.security.KeyManagementException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.X509Certificate;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -137,7 +113,11 @@ public class CommonUtils {
 		Hashtable<String, Object> configMap = ConfigManager.getConfigurationsMap();
 		if (configMap != null && !configMap.isEmpty()) {
 			prop.putAll(configMap);
-		}
+            LOGGER.info(String.format("loaded the configuration successfully, config has %d keys", prop.keySet().size()));
+		}else{
+            LOGGER.info("unable to load configuration, exiting now");
+            throw new RuntimeException("unable to load configuration");
+        }
     }
 
     /**
@@ -192,7 +172,7 @@ public class CommonUtils {
                 throw new Exception(
                         "unable to execute post request because " + httpresponse.getStatusLine().getReasonPhrase());
             */}
-            
+
             try {
 
                 if (url.contains(HTTPS)) {
@@ -845,7 +825,7 @@ public class CommonUtils {
                     httpGet.setHeader(PacmanSdkConstants.AUTH_HEADER, "Bearer " + accessToken);
                 }
             }
-            
+
             httpGet.setHeader(CONTENT_TYPE, APPLICATION_JSON);
             CloseableHttpResponse response = httpclient.execute(httpGet);
             return EntityUtils.toString(response.getEntity());
