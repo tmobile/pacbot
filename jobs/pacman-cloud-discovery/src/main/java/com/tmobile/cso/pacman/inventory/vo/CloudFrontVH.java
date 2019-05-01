@@ -32,6 +32,18 @@ public class CloudFrontVH {
 	/** The tags. */
 	List<Tag> tags;
 	
+	/**  Default Root Object for the distribution *. */
+	String defaultRootObject;
+	
+	
+	public String getDefaultRootObject() {
+		return defaultRootObject;
+	}
+
+	public void setDefaultRootObject(String defaultRootObject) {
+		this.defaultRootObject = defaultRootObject;
+	}
+
 	/**
 	 * Gets the dist summary.
 	 *
@@ -67,4 +79,5 @@ public class CloudFrontVH {
 	public void setTags(List<Tag> tags) {
 		this.tags = tags;
 	}
+
 }

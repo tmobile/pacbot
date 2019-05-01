@@ -97,8 +97,7 @@ public class AdminController {
 			@ApiParam(value = "select operation ", required = true) @RequestParam("operation") Operation operation,
 			@ApiParam(value = "select job to perform operation ", required = true) @RequestParam("job") Job job) {
 		try {
-			adminService.shutDownAlloperations(operation.toString(),job.toString());
-			return ResponseUtils.buildSucessResponse("Operation completed successfully");
+			return ResponseUtils.buildSucessResponse(adminService.shutDownAlloperations(operation.toString(),job.toString()));
 		} catch (Exception exception) {
 			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());

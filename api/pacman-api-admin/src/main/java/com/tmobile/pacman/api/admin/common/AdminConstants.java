@@ -30,6 +30,9 @@ public final class AdminConstants {
 	public static final String RESOURCE_ACCESS_DENIED				=	"You don't have sufficient privileges to access this resource";
 	public static final String FAILED								=	"failed";
 	public static final String ENABLED_CAPS							=	"ENABLED";
+	public static final String RULE									=	"rule";
+	public static final String JOB									=	"job";
+	public static final String ENABLE								=	"enable";
 	
 	public static final String DATE_FORMAT 							= 	"MM/dd/yyyy HH:mm";
 	
@@ -47,6 +50,8 @@ public final class AdminConstants {
 	public static final String UNEXPECTED_ERROR_OCCURRED 			= 	"Unexpected error occurred!!";
 	public static final String LAMBDA_LINKING_EXCEPTION             =   "Failed in linking the lambda function to the rule";
 	public static final String CLOUDWATCH_RULE_DELETION_FAILURE     =   "Failed in deleting the cloudwatch rule while disabling the rule";
+	public static final String CLOUDWATCH_RULE_DISABLE_FAILURE     	=   "Failed in disabling the cloudwatch rule";
+	public static final String CLOUDWATCH_RULE_ENABLE_FAILURE     	=   "Failed in enabling the cloudwatch rule";
 
 	public static final String DOMAIN_CREATION_SUCCESS				=	"Domain has been successfully created";
 	public static final String DOMAIN_NAME_EXITS					=	"Domain name already exits!!!";
