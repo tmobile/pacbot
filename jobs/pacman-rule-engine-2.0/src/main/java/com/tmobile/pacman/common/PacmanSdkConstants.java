@@ -590,5 +590,8 @@ public interface PacmanSdkConstants extends com.tmobile.pacman.commons.PacmanSdk
     
     /** The email banner. */
     String EMAIL_BANNER = "email.banner";
+    
+    /** The pacbot autofix resourceowner fallback mail. */
+    String PACBOT_AUTOFIX_RESOURCE_OWNER_FALLBACK_MAIL = "pacbot.autofix.resourceowner.fallbak.email";
 
 }
