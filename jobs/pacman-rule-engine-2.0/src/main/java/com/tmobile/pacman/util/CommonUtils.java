@@ -133,12 +133,18 @@ public class CommonUtils {
     /** The prop. */
     static Properties prop;
     static {
-		prop = new Properties();
-		Hashtable<String, Object> configMap = ConfigManager.getConfigurationsMap();
-		if (configMap != null && !configMap.isEmpty()) {
-			prop.putAll(configMap);
-		}
-    }
+    	prop = new Properties();
+    	Hashtable<String, Object> configMap = ConfigManager.getConfigurationsMap();
+    	if (configMap != null && !configMap.isEmpty()) {
+    	   prop.putAll(configMap);
+    	          LOGGER.info(String.format("loaded the configuration successfully, config has %d keys", prop.keySet().size()));
+    	}else{
+    	          LOGGER.info("unable to load configuration, exiting now");
+    	          throw new RuntimeException("unable to load configuration");
+    	      }
+    	  }
+
+
 
     /**
      * Checks if is env variable exists.
