@@ -22,14 +22,17 @@
  **/
 package com.tmobile.cloud.awsrules.federated;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.tmobile.cloud.awsrules.utils.PacmanUtils;
 import com.tmobile.cloud.constants.PacmanRuleConstants;
 import com.tmobile.pacman.commons.PacmanSdkConstants;
+import com.tmobile.pacman.commons.rule.Annotation;
 import com.tmobile.pacman.commons.rule.BaseRule;
 import com.tmobile.pacman.commons.rule.PacmanRule;
 import com.tmobile.pacman.commons.rule.RuleResult;
@@ -48,13 +51,11 @@ public class AccessLogForCloudFront extends BaseRule {
 	 *
 	 *ruleKey : check-for-access-log-for-cloudfront <br><br>
 	 *
-	 *esAppElbWithInstanceUrl : Enter the application elb with instance api <br><br>
-	 *
-	 *threadsafe : if true , rule will be executed on multiple threads <br><br>
-	 *
 	 *severity : Enter the value of severity <br><br>
 	 *
 	 *ruleCategory : Enter the value of category <br><br>
+	 *
+	 *accessLogBucketName : ARN of the access log bucket name <br><br>
 	 *
 	 * @param resourceAttributes this is a resource in context which needs to be scanned this is provided by execution engine
 	 *
@@ -68,7 +69,9 @@ public class AccessLogForCloudFront extends BaseRule {
 		String severity = ruleParam.get(PacmanRuleConstants.SEVERITY);
 		String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
 		String loggingTags = resourceAttributes.get("tags.logging");
-		String description = "Access log for Cloud front";
+		Annotation annotation = null;
+		List<LinkedHashMap<String,Object>>issueList = new ArrayList<>();
+		LinkedHashMap<String,Object>issue = new LinkedHashMap<>();
 		if (resourceAttributes != null) {
 			if (loggingTags == null || loggingTags.equalsIgnoreCase("true")) {
 				if (accessLogBucketName != null && accessLogBucketName.equalsIgnoreCase(ruleParamBucketKey)
@@ -76,9 +79,16 @@ public class AccessLogForCloudFront extends BaseRule {
 					logger.info("Access log for Cloud front is available in bucket " + accessLogBucketName);
 					return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);
 				} else {
-					description += "is not available in S3 bucket";
-					return new RuleResult(PacmanSdkConstants.STATUS_FAILURE, PacmanRuleConstants.FAILURE_MESSAGE,
-							PacmanUtils.createELBAnnotation("Application", ruleParam, description, severity, category));
+					annotation = Annotation.buildAnnotation(ruleParam,Annotation.Type.ISSUE);
+					annotation.put(PacmanSdkConstants.DESCRIPTION,"Access log is not enabled!!");
+					annotation.put(PacmanRuleConstants.SEVERITY, severity);
+					annotation.put(PacmanRuleConstants.SUBTYPE, Annotation.Type.RECOMMENDATION.toString());
+					annotation.put(PacmanRuleConstants.CATEGORY, category);
+
+					issue.put(PacmanRuleConstants.VIOLATION_REASON, "Access log is not enabled and not attached to any bucket ");
+					issueList.add(issue);
+					annotation.put("issueDetails",issueList.toString());
+					return new RuleResult(PacmanSdkConstants.STATUS_FAILURE,PacmanRuleConstants.FAILURE_MESSAGE,annotation);
 				}
 			} else {
 				return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);

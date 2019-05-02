@@ -82,7 +82,6 @@ public class CheckPowerUserGroupIsMFAEnabled extends BaseRule{
 			logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
 			throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
 		}
-		String description = "Iam user does not have PowerUser group";
         sourcesverified.add("HTTP Get-From Public IP");
         accessLevels.put("HTTP Get-From Public IP", PacmanRuleConstants.PUBLIC);
 		if(resourceAttributes.get("groups")!= null || resourceAttributes.get("policies")!= null){
@@ -90,13 +89,14 @@ public class CheckPowerUserGroupIsMFAEnabled extends BaseRule{
 			List<String> policyNameList = Arrays.asList(resourceAttributes.get("policies").split(":;"));
 			if(resourceAttributes.get("groupname").equalsIgnoreCase(powerUserGroupName) && !policyNameList.contains(powerUserPolicyInput)){
 				annotation = Annotation.buildAnnotation(ruleParam,Annotation.Type.ISSUE);
+				annotation.put(PacmanSdkConstants.DESCRIPTION,"Power User Group Is MFA Not Enabled!!");
 				annotation.put(PacmanRuleConstants.SEVERITY, severity);
 				annotation.put(PacmanRuleConstants.CATEGORY, category);
 				return new RuleResult(PacmanSdkConstants.STATUS_FAILURE, PacmanRuleConstants.FAILURE_MESSAGE,annotation);
 			}
 		}
 
-		logger.debug("========CheckMFAforPowerUserGroup ended=========");
+		logger.debug("========CheckPowerUserGroupIsMFAEnabled ended=========");
 		return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);
 
 	}

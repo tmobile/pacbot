@@ -48,13 +48,11 @@ public class AccessLogForAppLB extends BaseRule {
 	 *
 	 *ruleKey : check-for-access-log-for-application-elb <br><br>
 	 *
-	 *esAppElbWithInstanceUrl : Enter the application elb with instance api <br><br>
-	 *
-	 *threadsafe : if true , rule will be executed on multiple threads <br><br>
-	 *
 	 *severity : Enter the value of severity <br><br>
 	 *
 	 *ruleCategory : Enter the value of category <br><br>
+	 *
+	 *accessLogBucketName : Name of the access log bucket name <br><br>
 	 *
 	 * @param resourceAttributes this is a resource in context which needs to be scanned this is provided by execution engine
 	 *
