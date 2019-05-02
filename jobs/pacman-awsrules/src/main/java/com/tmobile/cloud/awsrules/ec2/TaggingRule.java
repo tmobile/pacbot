@@ -116,4 +116,5 @@ public class TaggingRule extends BaseRule {
 	public String getHelpText() {
 		return "This rule checks for the missing tags of services";
 	}
+	
 }

@@ -17,6 +17,7 @@
 
 package com.tmobile.pacman.common;
 
+
 // TODO: Auto-generated Javadoc
 /**
  * The Interface PacmanSdkConstants.
@@ -492,10 +493,105 @@ public interface PacmanSdkConstants extends com.tmobile.pacman.commons.PacmanSdk
     String APPLICATION_TAG_NAME = "Application";
 
 
+    /** The target type alias. */
     String TARGET_TYPE_ALIAS = "pacman.target.type.alias";
 
 
     /** The rule contact. */
     String RULE_CONTACT = "ruleOwner";
+    
+    /** The config credentials. */
+    String CONFIG_CREDENTIALS = "CONFIG_CREDENTIALS";
+    
+    /** The config service url. */
+    String CONFIG_SERVICE_URL = "CONFIG_SERVICE_URL";
+    
+    /** The missing configuration. */
+    String MISSING_CONFIGURATION = "Missing value in the env configuration";
+   
+    /** The missing db configuration. */
+    String MISSING_DB_CONFIGURATION = "Missing db configurations";
+    
+    /** The name. */
+    String NAME = "name";
+    
+    /** The source. */
+    String SOURCE = "source";
+    
+    /**  *. */
+    String AUTH_API_OWNER_SLACK_HANDLE = "api.auth.owner.slack.handle";
+    
+    /**  default string *. */
+    String PAC_DEFAULT = "default";
+    
+    /** default delay key*. */
+    String PAC_AUTO_FIX_DELAY_KEY= "pacman.autofix.waittime";
+    
+    /**  *. */
+    String TYPE_FOR_AUTO_FIX_RECORD  = "autofix";
+    
+    /**  *. */
+    String TRANSACTION_ID = "transactionId";
+    
+    /** *. */
+    String TRANSACTION_TIME = "transationTime";
+    
+    /** The pacman mail template columns. */
+    String PACMAN_MAIL_TEMPLATE_COLUMNS = "pacman.auto.fix.mail.template.columns.";
+    
+    /**  *. */
+    String JOB_ID = "AWS_BATCH_JOB_ID";
+    
+    /** The square one slack channel. */
+    String SQUARE_ONE_SLACK_CHANNEL = "square.one.slack.channel";
+    
+    /**  white list *. */
+    String WHITELIST = ".account.whitelist";
+    
+    /** The events index name key. */
+    String EVENTS_INDEX_NAME_KEY = "pacman.es.reactors.index";
+
+    /** The events registry key. */
+    String EVENTS_REGISTRY_KEY = "pacman.es.reactors.registry";
+
+    /** The event id. */
+    String EVENT_ID = "eventId";
+
+    /** The event data key. */
+    String EVENT_DATA_KEY = "eventData";
+
+    /** The event receive time. */
+    String EVENT_RECEIVE_TIME = "eventReceiveTime";
+
+    /** The event processed time. */
+    String EVENT_PROCESSED_TIME = "eventProcessedTime";
+
+    /** The event name. */
+    String EVENT_NAME = "evetName";
+    
+    /** The reactor category. */
+    String REACTOR_CATEGORY = "reactorCategory";
+    
+    /** The account. */
+    String ACCOUNT="account";
+    
+   
+    /** The auth header. */
+    String AUTH_HEADER = "Authorization";
+    
+    /** The pacman host. */
+    String PACMAN_HOST = "pacman.host";
+    
+    /** The pacman login user name. */
+    String PACMAN_LOGIN_USER_NAME = "pacman.login.user.name";
+    
+    /** The pacman login password. */
+    String PACMAN_LOGIN_PASSWORD = "pacman.login.password";
+    
+    /** The email banner. */
+    String EMAIL_BANNER = "email.banner";
+    
+    /** The pacbot autofix resourceowner fallback mail. */
+    String PACBOT_AUTOFIX_RESOURCE_OWNER_FALLBACK_MAIL = "pacbot.autofix.resourceowner.fallbak.email";
 
 }

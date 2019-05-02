@@ -54,6 +54,7 @@ import com.amazonaws.services.cloudfront.AmazonCloudFront;
 import com.amazonaws.services.cloudfront.AmazonCloudFrontClientBuilder;
 import com.amazonaws.services.cloudfront.model.DistributionList;
 import com.amazonaws.services.cloudfront.model.DistributionSummary;
+import com.amazonaws.services.cloudfront.model.GetDistributionConfigRequest;
 import com.amazonaws.services.cloudfront.model.ListDistributionsRequest;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
 import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
@@ -252,6 +253,8 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
+	 * @param ec2Filters the ec 2 filters
 	 * @return the map
 	 */
 	public static Map<String,List<Instance>> fetchInstances(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName,String ec2Filters){
@@ -292,6 +295,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<NetworkInterface>> fetchNetworkIntefaces(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -326,6 +330,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<SecurityGroup>> fetchSecurityGroups(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -360,6 +365,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<AutoScalingGroup>> fetchAsg(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -400,6 +406,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<Stack>> fetchCloudFormationStack(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -439,6 +446,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<DynamoVH>> fetchDynamoDBTables(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -490,6 +498,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<EfsVH>> fetchEFSInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -537,6 +546,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<Cluster>> fetchEMRInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -585,6 +595,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static  Map<String,List<LambdaVH>> fetchLambdaInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -634,6 +645,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<ClassicELBVH>> fetchClassicElbInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -701,6 +713,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<LoadBalancerVH>> fetchElbInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -768,6 +781,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<TargetGroupVH>> fetchTargetGroups(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -811,6 +825,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<NatGateway>> fetchNATGatewayInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -843,6 +858,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<DBClusterVH>> fetchRDSClusterInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -889,6 +905,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<DBInstanceVH>> fetchRDSInstanceInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -938,6 +955,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the list
 	 */
 	public static Map<String,List<BucketVH>>  fetchS3Info(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -1006,6 +1024,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<Subnet>> fetchSubnets(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
@@ -1038,6 +1057,7 @@ public class InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the list
 	 */
 	public static Map<String,List<CheckVH>> fetchTrusterdAdvisorsChecks(BasicSessionCredentials temporaryCredentials,String accountId,String accountName ) {
@@ -1117,6 +1137,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<RedshiftVH>> fetchRedshiftInfo(BasicSessionCredentials temporaryCredentials,String skipRegions,String accountId,String accountName) {
@@ -1169,6 +1190,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<Volume>> fetchVolumetInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
@@ -1202,6 +1224,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<Snapshot>> fetchSnapshots(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
@@ -1232,6 +1255,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	@SuppressWarnings("rawtypes")
@@ -1288,6 +1312,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<RestApi>> fetchApiGateways(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
@@ -1327,6 +1352,7 @@ public class InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<UserVH>> fetchIAMUsers(BasicSessionCredentials temporaryCredentials,String accountId,String accountName) {
@@ -1397,6 +1423,7 @@ public class InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static  Map<String,List<Role>>  fetchIAMRoles(BasicSessionCredentials temporaryCredentials,String accountId,String accountName) {
@@ -1423,6 +1450,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<DBSnapshot>> fetchRDSDBSnapshots(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -1463,6 +1491,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<KMSKeyVH>> fetchKMSKeys(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
@@ -1520,6 +1549,7 @@ public class InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<CloudFrontVH>> fetchCloudFrontInfo(BasicSessionCredentials temporaryCredentials,String accountId,String accountName) {
@@ -1529,7 +1559,7 @@ public class InventoryUtil {
 		AmazonCloudFront amazonCloudFront;
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource \" ,\"type\": \"CloudFront\"" ;
 		try{
-			amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion("us-east-1").build();
+			amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion("us-west-2").build();
 			
 			String marker = null;
 			List<CloudFrontVH> cloudFrontList = new ArrayList<>();
@@ -1541,10 +1571,12 @@ public class InventoryUtil {
 				for(DistributionSummary ds : distributionSummary) {
 					CloudFrontVH cf = new CloudFrontVH();
 					cf.setDistSummary(ds);
-					cf.setTags(amazonCloudFront.listTagsForResource(new com.amazonaws.services.cloudfront.model.ListTagsForResourceRequest().withResource(ds.getARN())).getTags().getItems());
 					cloudFrontList.add(cf);
 				}
 			}while(marker!=null);
+			
+			setCloudFrontTags(temporaryCredentials,cloudFrontList);
+			setDefaultRootObject(temporaryCredentials,cloudFrontList);
 			
 			log.debug(InventoryConstants.ACCOUNT + accountId +" Type : CloudFront "+ " >> "+cloudFrontList.size());
 			cloudFront.put(accountId+delimiter+accountName,cloudFrontList);
@@ -1556,11 +1588,53 @@ public class InventoryUtil {
 	}
 	
 	/**
+	 * Sets the cloud front tags.
+	 *
+	 * @param temporaryCredentials the temporary credentials
+	 * @param cloudFrontList the cloud front list
+	 */
+	private static void setCloudFrontTags(BasicSessionCredentials temporaryCredentials,List<CloudFrontVH> cloudFrontList){
+		String[] regions = {"us-west-2","us-east-1"};
+		int index = 0;
+		AmazonCloudFront amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(regions[index]).build();
+		for(CloudFrontVH cfVH: cloudFrontList){
+			try{
+				cfVH.setTags(amazonCloudFront.listTagsForResource(new com.amazonaws.services.cloudfront.model.ListTagsForResourceRequest().withResource(cfVH.getDistSummary().getARN())).getTags().getItems());
+			}catch(Exception e){
+				index = index==0?1:0;
+				amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(regions[index]).build();
+			}
+		}
+	}
+
+	/**
+	 * Sets the default root object.
+	 *
+	 * @param temporaryCredentials the temporary credentials
+	 * @param cloudFrontList the cloud front list
+	 */
+	private static void setDefaultRootObject(BasicSessionCredentials temporaryCredentials, List<CloudFrontVH> cloudFrontList){
+		
+		String[] regions = {"us-east-2","us-west-1"};
+		int index = 0;
+		AmazonCloudFront amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(regions[index]).build();
+		for(CloudFrontVH cfVH: cloudFrontList){
+			try{
+				cfVH.setDefaultRootObject(amazonCloudFront.getDistributionConfig(new GetDistributionConfigRequest().withId(cfVH.getDistSummary().getId())).getDistributionConfig().getDefaultRootObject());
+			}catch(Exception e){
+				index = index==0?1:0;
+				amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(regions[index]).build();
+			}
+		}
+	}
+	
+	/**
 	 * Fetch EBS info.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<EbsVH>> fetchEBSInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
@@ -1613,6 +1687,7 @@ public class InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<PhdVH>> fetchPHDInfo(BasicSessionCredentials temporaryCredentials,String accountId,String accountName) {
@@ -1671,6 +1746,15 @@ public class InventoryUtil {
 		return phd;
 	}
 	
+	/**
+	 * Fetch SQS info.
+	 *
+	 * @param temporaryCredentials the temporary credentials
+	 * @param skipRegions the skip regions
+	 * @param accountId the account id
+	 * @param accountName the account name
+	 * @return the map
+	 */
 	public static Map<String,List<SQSVH>> fetchSQSInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
         
 	    ObjectMapper objectMapper = new ObjectMapper();
