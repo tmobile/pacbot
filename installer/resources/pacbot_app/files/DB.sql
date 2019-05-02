@@ -80,6 +80,7 @@ SET @PACMAN_LOGIN_USER_NAME='$PACMAN_LOGIN_USER_NAME';
 SET @PACMAN_LOGIN_PASSWORD='$PACMAN_LOGIN_PASSWORD';
 SET @CONFIG_CREDENTIALS='$CONFIG_CREDENTIALS';
 SET @CONFIG_SERVICE_URL='$CONFIG_SERVICE_URL';
+SET @PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID='$PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID';
 
 
 CREATE TABLE IF NOT EXISTS `OmniSearch_Config` (
@@ -1814,6 +1815,63 @@ INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `pr
 INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) VALUES('pacman.login.user.name',concat(@PACMAN_LOGIN_USER_NAME,''),'rule','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) VALUES('pacman.login.password',concat(@PACMAN_LOGIN_PASSWORD,''),'rule','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) VALUES('email.banner','','rule','prd','latest',NULL,NULL,NULL,NULL);
-INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) VALUES('pacbot.autofix.resourceowner.fallbak.email','','rule','prd','latest',NULL,NULL,NULL,NULL);
+INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) VALUES('pacbot.autofix.resourceowner.fallbak.email',concat(@PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID,''),'rule','prd','latest',NULL,NULL,NULL,NULL);
+
+
+
+
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_AmazonRDSIdleDBInstancesRule_version-1_AmazonRDSIdleDBInstancesRule_rdsdb';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws',ruleParams = '{"assetGroup":"aws","policyId":"PacMan_CheckInactiveIamUser_version-1","environmentVariables":[],"ruleUUID":"aws_iam_users_should_not_be_inactive_for_than_target_period","ruleType":"ManageRule","pac_ds":"aws","targetType":"iamuser","params":[{"encrypt":false,"value":"90","key":"pwdInactiveDuration"},{"encrypt":false,"value":"high","key":"severity"},{"encrypt":false,"value":"security","key":"ruleCategory"},{"encrypt":false,"value":"check-for-inactive-iam-users","key":"ruleKey"},{"encrypt":false,"value":"true","key":"threadsafe"}],"ruleId":"PacMan_CheckInactiveIamUser_version-1_CheckInactiveIamUser_iamuser","autofix":false,"alexaKeyword":"CheckInactiveIamUser","ruleRestUrl":""}' WHERE ruleId='PacMan_CheckInactiveIamUser_version-1_CheckInactiveIamUser_iamuser';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_EC2-RunInstance-iam-role-with-unapproved-access_version-1_ec2-runInstance-iam-role-with-unapproved-access_iamrole';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_ElasticSearchPublicAccess_version-1_ElasticSearchPublicAccessRule_elasticsearch';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_GuardDutyFindingsExists_version-1_GuardDutyFindingsExists_ec2';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_IAMRoleNetworkPrivilegesRule_version-1_IAMRoleNetworkPrivilegesRule_iamrole';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws',ruleParams = '{"assetGroup":"aws","policyId":"PacMan_IamPasswordPolicy_version-1","environmentVariables":[],"ruleUUID":"aws_accounts_should_follow_iam_password_policy","ruleType":"ManageRule","pac_ds":"aws","targetType":"account","params":[{"encrypt":false,"value":"role/pac_ro","key":"roleIdentifyingString"},{"encrypt":false,"value":"check-iam-password-policy","key":"ruleKey"},{"encrypt":false,"value":"security","key":"ruleCategory"},{"encrypt":false,"value":"90","key":"maxPasswordAge"},{"encrypt":false,"value":"true","key":"requireSymbols"},{"encrypt":false,"value":"true","key":"requireNumbers"},{"encrypt":false,"value":"true","key":"requireUppercaseCharacters"},{"encrypt":false,"value":"true","key":"requireLowercaseCharacters"},{"encrypt":false,"value":"true","key":"allowUsersToChangePassword"},{"encrypt":false,"value":"true","key":"expirePasswords"},{"encrypt":false,"value":"false","key":"hardExpiry"},{"encrypt":false,"value":"critical","key":"severity"},{"encrypt":false,"value":"14","key":"minPasswordLength"},{"encrypt":false,"value":"24","key":"lastPasswordsToRemember"},{"encrypt":false,"value":"iam-password-policy-fix","key":"fixKey"}],"ruleId":"PacMan_IamPasswordPolicy_version-1_IamPasswordPolicy_account","autofix":false,"alexaKeyword":"IamPasswordPolicy","ruleRestUrl":""}' WHERE ruleId='PacMan_IamPasswordPolicy_version-1_IamPasswordPolicy_account';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_IdleLoadBalancerRule_version-1_IdleLoadbalancerRule_classicelb';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_LambdaFunWithAdmin-OrIamPrivileges_version-1_LambdaFunWithAdminOrIamPrivileges_lambda';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_ApiWithNonStandardRule_api';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_AppelbWithNonStandardRule_appelb';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_DynamodbWithNonStandardRule_dynamodb';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_IdleLoadBalancerRule_version-1_IdleLoadbalancerRule_classicelb';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_LambdaFunWithAdmin-OrIamPrivileges_version-1_LambdaFunWithAdminOrIamPrivileges_lambda';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_ApiWithNonStandardRule_api';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_AppelbWithNonStandardRule_appelb';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_DynamodbWithNonStandardRule_dynamodb';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_EfsWithNonStandardRule_efs';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_ElasticacheWithNonStandardRule_elasticache';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_ElasticipWithNonStandardRule_elasticip';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_ElasticsearchWithNonStandardRule_elasticsearch';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_EmrWithNonStandardRule_emr';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_EniWithNonStandardRule_eni';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_KmsWithNonStandardRule_kms';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_RdsdbWithNonStandardRule_rdsdb';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_RedshiftWithNonStandardRule_redshift';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_VpcWithNonStandardRule_vpc';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_version-1_AsgWithNonStandardRegion_asg';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_version-1_ClassicelbWithNonStandardRegion_classicelb';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_version-1_LambdaWithNonStandardRegion_lambda';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_version-1_LaunchconfigWithNonStandardRegion_launchconfig';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_version-1_RdsSnapshotWithNonStandardRegion_rdssnapshot';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_version-1_ResourceWithNonStandardRule_ec2';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_version-1_S3WithNonStandardRegion_s3';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_version-1_SgWithNonStandardRegion_sg';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_version-1_SnapshotWithNonStandardRegion_snapshot';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_version-1_SnstopicWithNonStandardRegion_snstopic';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_version-1_StackWithNonStandardRegion_stack';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_version-1_SubnetWithNonStandardRegion_subnet';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_NonStandardRegionRule_version-1_version-1_VolumeWithNonStandardRegion_volume';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_SGWithAnywhereAccess_version-1_SgWithSshPort22OpenToInternetAccess_sg';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_SQS_Public_Access_Rule_version-1_SQS_Public_access_rule_sqs';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_ServiceAccountPrivilegesRule_version-1_UnapprovedServiceAccountAccess_iamuser';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_TaggingRule_version-1_ElasticacheTaggingRule_elasticache';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_TaggingRule_version-1_version-1_ElasticSearchTaggingRule_elasticsearch';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_UnapprovedIamRoleWithLambdaAccess_version-1_UnapprovedIamRoleLambdaAccess_iamrole';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_Underutilized-Amazon-EBS-Volumes_version-1_Underutilized-EBS-Volumes_volume';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_UnderutilizedAmazonRedshiftClustersRule_version-1_UnderutilizedAmazonRedshiftClustersRule_redshift';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_UntaggedOrUnusedEbsRule_version-1_version-1_UntaggedOrUnusedEbsRule_volume';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_UnusedElasticIpRule_version-1_UnusedElasticIpRule_elasticip';
+UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_core-networking-iam-user-with-unapproved-access_version-1_core-networking-iam-user-with-unapproved-access_iamuser';
 
 
