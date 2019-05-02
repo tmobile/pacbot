@@ -60,7 +60,7 @@ public class AdminService {
 				}
 			} else if(job.equals(AdminConstants.JOB)) {
 				if(disableJobs()) {
-					return "All obs has been sucessfully disabled";
+					return "All jobs has been sucessfully disabled";
 				}
 			} else {
 				if(disableRules() && disableJobs()) {
