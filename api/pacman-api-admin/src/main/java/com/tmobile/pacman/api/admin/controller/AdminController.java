@@ -103,6 +103,17 @@ public class AdminController {
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
 		}
 	}
+	
+	@ApiOperation(httpMethod = "GET", value = "API to get status of all jobs", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(path = "/system/status", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> statusOfSystem() {
+		try {
+			return ResponseUtils.buildSucessResponse(adminService.statusOfSystem());
+		} catch (Exception exception) {
+			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
+			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
+		}
+	}
 }
 
 enum Job {
