@@ -60,8 +60,6 @@ public class ACMCertificateExpiryRule extends BaseRule{
 	 * 
 	 * ruleKey : check-for-acm-certificate-expiry <br><br>
 	 *
-	 * threadsafe : if true , rule will be executed on multiple threads <br><br>
-	 *
 	 * targetExpireDuration : specify the expiry duration in numbers <br><br>
 	 * 
 	 * severity : Enter the value of severity <br><br>

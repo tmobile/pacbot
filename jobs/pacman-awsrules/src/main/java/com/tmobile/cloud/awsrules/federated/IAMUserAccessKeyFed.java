@@ -61,7 +61,9 @@ public class IAMUserAccessKeyFed extends BaseRule {
 	 * 
 	 * ruleCategory : Enter the value of category <br><br>
 	 * 
-	 * roleIdentifyingString : Configure it as role/pac_ro <br><br>
+	 * accessKeyInactivityDuration : No. of days of last used access key <br><br>
+	 * 
+	 * accessKeyAge : No. of days from create date of access key <br><br>
 	 * 
 	 * @param resourceAttributes this is a resource in context which needs to be scanned this is provided by execution engine
 	 *

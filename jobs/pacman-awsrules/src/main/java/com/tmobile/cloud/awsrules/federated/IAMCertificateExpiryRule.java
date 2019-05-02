@@ -61,8 +61,6 @@ public class IAMCertificateExpiryRule extends BaseRule{
 	 * 
 	 * ruleKey : check-for-iam-certificate-expiry <br><br>
 	 *
-	 * threadsafe : if true , rule will be executed on multiple threads <br><br>
-	 *
 	 * targetExpireDuration : specify the expiry duration in numbers <br><br>
 	 * 
 	 * severity : Enter the value of severity <br><br>

@@ -48,14 +48,11 @@ public class AccessLogForClassicLB extends BaseRule {
 	 * 
 	 *ruleKey : check-for-access-log-for-classic-elb <br><br>
 	 *
-	 *esAppElbWithInstanceUrl : Enter the application elb with instance api <br><br>
-	 *
-	 *threadsafe : if true , rule will be executed on multiple threads <br><br>
-	 *
 	 *severity : Enter the value of severity <br><br>
 	 * 
 	 *ruleCategory : Enter the value of category <br><br>
 	 *
+	 *accessLogBucketName : Name of the access log bucket name <br><br>
 	 * @param resourceAttributes this is a resource in context which needs to be scanned this is provided by execution engine
 	 *
 	 */
@@ -79,7 +76,7 @@ public class AccessLogForClassicLB extends BaseRule {
 				} else {
 					description += "is not available in S3 bucket";
 					return new RuleResult(PacmanSdkConstants.STATUS_FAILURE, PacmanRuleConstants.FAILURE_MESSAGE,
-							PacmanUtils.createELBAnnotation("Application", ruleParam, description, severity, category));
+							PacmanUtils.createELBAnnotation("Classic", ruleParam, description, severity, category));
 				}
 			} else {
 				return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);

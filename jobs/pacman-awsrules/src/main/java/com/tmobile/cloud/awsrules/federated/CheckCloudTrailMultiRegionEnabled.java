@@ -24,7 +24,6 @@ package com.tmobile.cloud.awsrules.federated;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +54,7 @@ public class CheckCloudTrailMultiRegionEnabled extends BaseRule {
      *            ************* Following are the Rule Parameters********* <br>
      * <br>
      *
-     *            ruleKey : check-for-aws-cloudtrail-config <br>
+     *            ruleKey : check-cloudtrail-multiRegion-enabled <br>
      * <br>
      *
      *            severity : Enter the value of severity <br>
@@ -64,7 +63,7 @@ public class CheckCloudTrailMultiRegionEnabled extends BaseRule {
      *            ruleCategory : Enter the value of category <br>
      * <br>
      *
-     *            roleIdentifyingString : Configure it as role/pac_ro <br>
+     *            inputCloudTrailName : TSI_Base_MasterAccountTrail  <br>
      * <br>
      *
      * @param resourceAttributes
@@ -79,13 +78,11 @@ public class CheckCloudTrailMultiRegionEnabled extends BaseRule {
         logger.debug("========CheckAWSCloudTrailConfig started=========");
         Annotation annotation = null;
         String cloudTrailInput = ruleParam.get("inputCloudTrailName");
-        String roleIdentifyingString = ruleParam
-                .get(PacmanSdkConstants.Role_IDENTIFYING_STRING);
         String severity = ruleParam.get(PacmanRuleConstants.SEVERITY);
         String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
         MDC.put("executionId", ruleParam.get("executionId"));
         MDC.put("ruleId", ruleParam.get(PacmanSdkConstants.RULE_ID));
-        if (!PacmanUtils.doesAllHaveValue(severity, category,roleIdentifyingString)) {
+        if (!PacmanUtils.doesAllHaveValue(severity, category)) {
             logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
             throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
         }
@@ -94,13 +91,14 @@ public class CheckCloudTrailMultiRegionEnabled extends BaseRule {
         if(resourceAttributes != null){
         	if(!cloudtrail.contains(cloudTrailInput)){
         		annotation = Annotation.buildAnnotation(ruleParam,Annotation.Type.ISSUE);
+        		annotation.put(PacmanSdkConstants.DESCRIPTION,"Cloudtrail multiregion is not enabled!!");
 				annotation.put(PacmanRuleConstants.SEVERITY, severity);
 				annotation.put(PacmanRuleConstants.CATEGORY, category);
 	    		return new RuleResult(PacmanSdkConstants.STATUS_FAILURE, PacmanRuleConstants.FAILURE_MESSAGE,annotation);
         	}
         }
 
-        logger.debug("========CheckMFAforPowerUserGroup ended=========");
+        logger.debug("========CheckAWSCloudTrailConfig ended=========");
 		return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);
     }
     

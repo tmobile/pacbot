@@ -62,7 +62,7 @@ public class S3DPCEncryFederatedRule extends BaseRule {
 	 * 
 	 *            ruleCategory : Enter the value of category <br><br>
 	 *            
-	 *            roleIdentifyingString : Configure it as role/pac_ro <br><br>
+	 *            checkId : value of check id <br><br>
 	 *            
 	 *            esServiceURL : Enter the Es url <br><br>
 	 * 
