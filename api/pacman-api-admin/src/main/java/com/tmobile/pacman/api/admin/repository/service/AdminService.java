@@ -1,7 +1,9 @@
 package com.tmobile.pacman.api.admin.repository.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -104,9 +106,9 @@ public class AdminService {
 	}
 	
 	private boolean disableJobs(List<String> rules) {
-		List<JobExecutionManager> jobIds = jobRepository.findAll();
+		List<JobExecutionManager> jobs = jobRepository.findAll();
 		try {
-			for(JobExecutionManager job : jobIds) {
+			for(JobExecutionManager job : jobs) {
 				if(rules.contains(job.getJobUUID())) {
 					job.getJobUUID();
 					amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion())
@@ -141,9 +143,9 @@ public class AdminService {
 	}
 	
 	private boolean enableJobs(List<String> rules) {
-		List<JobExecutionManager> jobIds = jobRepository.findAll();
+		List<JobExecutionManager> jobs = jobRepository.findAll();
 		try {
-			for(JobExecutionManager job : jobIds) {
+			for(JobExecutionManager job : jobs) {
 				if(rules.contains(job.getJobUUID())) {
 					amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion())
 					.enableRule(new EnableRuleRequest().withName(job.getJobUUID()));
@@ -155,6 +157,48 @@ public class AdminService {
 		} catch(Exception e) {
 			log.error("Error in enable jobs",e);
 			return false;
+		}
+	}
+
+	public Map<String,String> statusOfSystem() throws PacManException{
+		
+		Map<String,String> status = new HashMap<>();
+		try {
+			List<Rule> rules = ruleRepository.findAll();
+			List<JobExecutionManager> jobs = jobRepository.findAll();
+			
+			boolean rulesEnabled = false;
+			boolean jobsEnabled = false;
+			
+			for(Rule rule : rules) {
+				if(rule.getStatus().equals(RuleState.ENABLED.name())) {
+					rulesEnabled = true;
+					break;
+				}
+			}
+			
+			for(JobExecutionManager job : jobs) {
+				if(job.getStatus().equals(RuleState.ENABLED.name())) {
+					jobsEnabled = true;
+					break;
+				}
+			}
+			
+			if(rulesEnabled) {
+				status.put("rule", RuleState.ENABLED.name());
+			} else {
+				status.put("rule", RuleState.DISABLED.name());
+			}
+			
+			if(jobsEnabled) {
+				status.put("job", RuleState.ENABLED.name());
+			} else {
+				status.put("job", RuleState.DISABLED.name());
+			}
+			return status;
+		} catch(Exception e) {
+			log.error("Error in fetching status of system",e);
+			throw new PacManException("Error in fetching the status of system");
 		}
 	}
 
