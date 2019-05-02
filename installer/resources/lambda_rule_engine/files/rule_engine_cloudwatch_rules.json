@@ -1803,7 +1803,7 @@
     "severity": null,
     "category": null
   },
-{
+  {
       "ruleId": "PacMan_ServiceAccountPrivilegesRule_version-1_UnapprovedServiceAccountAccess_iamuser",
       "ruleUUID": "aws_iamuser_service-acc-shouldnothave_unauth_privileges",
       "policyId": "PacMan_ServiceAccountPrivilegesRule_version-1",
