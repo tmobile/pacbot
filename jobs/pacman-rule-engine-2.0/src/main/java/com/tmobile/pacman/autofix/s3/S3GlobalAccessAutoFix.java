@@ -47,7 +47,7 @@ public class S3GlobalAccessAutoFix extends BaseFix {
 
     /** The Constant BUCKET_ACL. */
     private static final String BUCKET_ACL = "bucketACL";
-
+    
     /** The Constant BUCKET_POLICY. */
     private static final String BUCKET_POLICY = "bucketPolicy";
     /** The Constant LOGGER. */

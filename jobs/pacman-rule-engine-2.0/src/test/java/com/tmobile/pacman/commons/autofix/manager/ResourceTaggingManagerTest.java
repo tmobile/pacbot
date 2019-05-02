@@ -20,6 +20,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.Assert.*;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyString;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -27,6 +28,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -35,6 +37,7 @@ import java.util.stream.Collectors;
 
 import org.apache.http.client.methods.HttpPost;
 import org.assertj.core.util.Lists;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -63,8 +66,10 @@ import com.google.common.base.Strings;
 import com.google.common.collect.Maps;
 import com.tmobile.pacman.common.PacmanSdkConstants;
 import com.tmobile.pacman.commons.AWSService;
+import com.tmobile.pacman.config.ConfigManager;
 import com.tmobile.pacman.util.CommonUtils;
 import com.tmobile.pacman.util.ESUtils;
+import com.tmobile.pacman.util.ProgramExitUtils;
 import com.tmobile.pacman.util.ReflectionUtils;
 
 // TODO: Auto-generated Javadoc
@@ -75,7 +80,7 @@ import com.tmobile.pacman.util.ReflectionUtils;
  */
 @PowerMockIgnore("javax.net.ssl.*")
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ReflectionUtils.class,ESUtils.class, CommonUtils.class, Strings.class})
+@PrepareForTest({ReflectionUtils.class,ESUtils.class, CommonUtils.class, Strings.class,ConfigManager.class})
 public class ResourceTaggingManagerTest {
 
 	/** The s 3 mock. */
@@ -93,6 +98,17 @@ public class ResourceTaggingManagerTest {
 	/** The bucket tagging configuration. */
 	@Mock
 	private BucketTaggingConfiguration bucketTaggingConfiguration;
+	
+	 /**
+     * Setup.
+     */
+    @Before
+    public void setup(){
+        
+        mockStatic(ConfigManager.class);
+        ConfigManager ConfigManager = PowerMockito.mock(ConfigManager.class);
+		PowerMockito.when(ConfigManager.getConfigurationsMap()).thenReturn(new Hashtable<String, Object>());
+    }
 
 	/**
 	 * Tag resource.

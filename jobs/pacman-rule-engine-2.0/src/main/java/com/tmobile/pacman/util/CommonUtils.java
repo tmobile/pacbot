@@ -33,6 +33,7 @@ import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -85,7 +86,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tmobile.pacman.common.PacmanSdkConstants;
+import com.tmobile.pacman.commons.autofix.manager.AuthManager;
 import com.tmobile.pacman.commons.rule.Annotation;
+import com.tmobile.pacman.config.ConfigManager;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -130,20 +133,18 @@ public class CommonUtils {
     /** The prop. */
     static Properties prop;
     static {
+    	prop = new Properties();
+    	Hashtable<String, Object> configMap = ConfigManager.getConfigurationsMap();
+    	if (configMap != null && !configMap.isEmpty()) {
+    	   prop.putAll(configMap);
+    	          LOGGER.info(String.format("loaded the configuration successfully, config has %d keys", prop.keySet().size()));
+    	}else{
+    	          LOGGER.info("unable to load configuration, exiting now");
+    	          throw new RuntimeException("unable to load configuration");
+    	      }
+    	  }
 
-        InputStream inputStream = null;
-        prop = new Properties();
-        String propFileName = "application.properties";
-        inputStream = CommonUtils.class.getClassLoader().getResourceAsStream(propFileName);
-        if (inputStream != null) {
-            try {
-                prop.load(inputStream);
-                inputStream.close();
-            } catch (IOException e) {
-                LOGGER.error("unable to load properties");
-            }
-        }
-    }
+
 
     /**
      * Checks if is env variable exists.
@@ -192,10 +193,50 @@ public class CommonUtils {
             int statusCode = httpresponse.getStatusLine().getStatusCode();
             if (statusCode == HttpStatus.SC_OK || statusCode == HttpStatus.SC_CREATED) {
                 return EntityUtils.toString(httpresponse.getEntity());
-            } else {
+            } else {/*
                 LOGGER.error(requestBody);
                 throw new Exception(
                         "unable to execute post request because " + httpresponse.getStatusLine().getReasonPhrase());
+            */}
+            
+            try {
+
+                if (url.contains(HTTPS)) {
+
+                    SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(createNoSSLContext());
+                    httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+                } else {
+                    httpclient = HttpClients.custom().build();
+                }
+                HttpPost httppost1 = new HttpPost(url);
+                if(AuthManager.getToken()!=null){
+                    String accessToken =  AuthManager.getToken();
+                    if(!Strings.isNullOrEmpty(accessToken))
+                    {
+                    	httppost1.setHeader(PacmanSdkConstants.AUTH_HEADER, "Bearer " + accessToken);
+                    }
+                }
+                httppost1.setHeader(CONTENT_TYPE, ContentType.APPLICATION_JSON.toString());
+                StringEntity jsonEntity1 = new StringEntity(requestBody);
+                httppost1.setEntity(jsonEntity1);
+                HttpResponse httpresponse1 = httpclient.execute(httppost1);
+                int statusCode1 = httpresponse1.getStatusLine().getStatusCode();
+                if (statusCode1 == HttpStatus.SC_OK || statusCode1 == HttpStatus.SC_CREATED) {
+                    return EntityUtils.toString(httpresponse1.getEntity());
+                } else {
+                    LOGGER.error(requestBody);
+                    throw new Exception(
+                            "unable to execute post request because " + httpresponse1.getStatusLine().getReasonPhrase());
+                }
+            } catch (ParseException parseException) {
+                LOGGER.error("error closing issue" + parseException);
+                throw parseException;
+            } catch (Exception exception) {
+                LOGGER.error("error closing issue" + exception.getMessage());
+                throw exception;
+            } finally {
+                if (null != httpclient)
+                    httpclient.close();
             }
         } catch (ParseException parseException) {
             LOGGER.error("error closing issue" + parseException);
@@ -233,8 +274,21 @@ public class CommonUtils {
             if (httpresponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 return EntityUtils.toString(httpresponse.getEntity());
             } else {
-                throw new Exception(
-                        "unable to execute put request caused by" + EntityUtils.toString(httpresponse.getEntity()));
+            	 if(AuthManager.getToken()!=null){
+                     String accessToken =  AuthManager.getToken();
+                     if(!Strings.isNullOrEmpty(accessToken))
+                     {
+                     	httpPut.setHeader(PacmanSdkConstants.AUTH_HEADER, "Bearer " + accessToken);
+                     }
+                 }
+                 httpPut.setEntity(jsonEntity);
+                 HttpResponse httpresponse1 = client.execute(httpPut);
+                 if (httpresponse1.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                     return EntityUtils.toString(httpresponse1.getEntity());
+                 } else {
+                     throw new Exception(
+                             "unable to execute put request caused by" + EntityUtils.toString(httpresponse1.getEntity()));
+                 }
             }
         } catch (ParseException parseException) {
             LOGGER.error("ParseException in getHttpPut :" + parseException.getMessage());
@@ -514,12 +568,12 @@ public class CommonUtils {
      * @return the map
      */
     public static Map<String, String> createParamMap(String ruleParams) {
-        // return Splitter.on("#").withKeyValueSeparator("=").split(ruleParams);
+       /* // return Splitter.on("#").withKeyValueSeparator("=").split(ruleParams);
         if (ruleParams.contains("*")) // this is for backward compatibility
             return buildMapFromString(ruleParams, "*", "=");
-        else {
+        else {*/
             return buildMapFromJson(ruleParams);
-        }
+       // }
     }
 
     /**
@@ -732,11 +786,48 @@ public class CommonUtils {
             StringEntity jsonEntity = new StringEntity(requestBody);
             httppost.setEntity(jsonEntity);
             HttpResponse httpresponse = httpclient.execute(httppost);
-            return EntityUtils.toString(httpresponse.getEntity());
+           if(httpresponse.getStatusLine().getStatusCode()!=HttpStatus.SC_OK){
+               throw new IOException("non 200 code from rest call--->" + url);
+           }
+            String responseStr = EntityUtils.toString(httpresponse.getEntity());
+            LOGGER.debug(url + " service with input" + requestBody +" returned " + responseStr);
+            return responseStr;
         } catch (org.apache.http.ParseException parseException) {
             LOGGER.error("ParseException : " + parseException.getMessage());
         } catch (IOException ioException) {
-            LOGGER.error("IOException : " + ioException.getMessage());
+        	try{
+        		if(AuthManager.getToken()!=null){
+                    String accessToken =  AuthManager.getToken();
+                 if(!Strings.isNullOrEmpty(accessToken))
+                 {
+                     headers.put(PacmanSdkConstants.AUTH_HEADER, "Bearer " + accessToken);
+                 }
+             }
+        	 if (url.contains(HTTPS)) {
+
+                 SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(createNoSSLContext());
+                 httpclient = HttpClients.custom().setSSLSocketFactory(sslsf).build();
+             } else {
+                 httpclient = HttpClients.custom().build();
+             }
+
+             HttpPost httppost = new HttpPost(url);
+             for (Map.Entry<String, String> entry : headers.entrySet()) {
+                 httppost.addHeader(entry.getKey(), entry.getValue());
+             }
+             httppost.setHeader(CONTENT_TYPE, APPLICATION_JSON);
+             StringEntity jsonEntity = new StringEntity(requestBody);
+             httppost.setEntity(jsonEntity);
+             HttpResponse httpresponse = httpclient.execute(httppost);
+            if(httpresponse.getStatusLine().getStatusCode()!=HttpStatus.SC_OK){
+                throw new IOException("non 200 code from rest call--->" + url);
+            }
+             String responseStr = EntityUtils.toString(httpresponse.getEntity());
+             LOGGER.debug(url + " service with input" + requestBody +" returned " + responseStr);
+             return responseStr;
+        }catch(Exception e){
+        	LOGGER.error("Exception in isResourceDateExpired: " + e.getMessage());
+        }
         }
         return null;
     }
@@ -759,6 +850,14 @@ public class CommonUtils {
                 httpclient = HttpClients.custom().build();
             }
             HttpGet httpGet = new HttpGet(url);
+            if(AuthManager.getToken()!=null){
+                String accessToken =  AuthManager.getToken();
+                if(!Strings.isNullOrEmpty(accessToken))
+                {
+                    httpGet.setHeader(PacmanSdkConstants.AUTH_HEADER, "Bearer " + accessToken);
+                }
+            }
+            
             httpGet.setHeader(CONTENT_TYPE, APPLICATION_JSON);
             CloseableHttpResponse response = httpclient.execute(httpGet);
             return EntityUtils.toString(response.getEntity());
