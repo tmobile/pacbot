@@ -80,6 +80,7 @@ SET @PACMAN_LOGIN_USER_NAME='$PACMAN_LOGIN_USER_NAME';
 SET @PACMAN_LOGIN_PASSWORD='$PACMAN_LOGIN_PASSWORD';
 SET @CONFIG_CREDENTIALS='$CONFIG_CREDENTIALS';
 SET @CONFIG_SERVICE_URL='$CONFIG_SERVICE_URL';
+SET @PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID='$PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID';
 
 
 CREATE TABLE IF NOT EXISTS `OmniSearch_Config` (
@@ -1814,7 +1815,7 @@ INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `pr
 INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) VALUES('pacman.login.user.name',concat(@PACMAN_LOGIN_USER_NAME,''),'rule','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) VALUES('pacman.login.password',concat(@PACMAN_LOGIN_PASSWORD,''),'rule','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) VALUES('email.banner','','rule','prd','latest',NULL,NULL,NULL,NULL);
-INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) VALUES('pacbot.autofix.resourceowner.fallbak.email','','rule','prd','latest',NULL,NULL,NULL,NULL);
+INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) VALUES('pacbot.autofix.resourceowner.fallbak.email',concat(@PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID,''),'rule','prd','latest',NULL,NULL,NULL,NULL);
 
 
 
