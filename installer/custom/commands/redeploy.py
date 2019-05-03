@@ -28,6 +28,8 @@ class Redeploy(BaseCommand):
     """
     def __init__(self, args):
         args.append((K.CATEGORY_FIELD_NAME, "deploy"))
+        args.append((K.CATEGORY_FIELD_NAME, "roles"))
+
         self.need_complete_install = self._need_complete_installation()
         Settings.set('SKIP_RESOURCE_EXISTENCE_CHECK', True)
         super().__init__(args)
@@ -77,17 +79,19 @@ class Redeploy(BaseCommand):
         Args:
             input_instance (Input object): User input values
         """
-        resources_to_taint = self.get_resources_to_process(input_instance)
+        resources_to_process = self.get_resources_to_process(input_instance)
         try:
+            resources_to_taint = self.get_resources_with_given_tags(input_instance, ["deploy"])
             response = PyTerraform().terraform_taint(resources_to_taint)  # If tainted or destroyed already then skip it
-        except:
+        except Exception as e:
             pass
 
         terraform_with_targets = False if self.need_complete_install else True
-        resources_to_process = self.get_complete_resources(input_instance) if self.need_complete_install else resources_to_taint
+        resources_to_process = self.get_complete_resources(input_instance) if self.need_complete_install else resources_to_process
 
         self.run_pre_deployment_process(resources_to_process)
         self.run_real_deployment(input_instance, resources_to_process, terraform_with_targets)
+
 
     def run_pre_deployment_process(self, resources_to_process):
         """
