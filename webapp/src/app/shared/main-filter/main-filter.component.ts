@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -23,6 +23,7 @@ import {
 import { LoggerService } from '../../shared/services/logger.service';
 import { DataCacheService } from '../../core/services/data-cache.service';
 import { UtilsService } from './../services/utils.service';
+import { RefactorFieldsService } from '../services/refactor-fields.service';
 
 @Component({
   selector: 'app-main-filter',
@@ -50,7 +51,7 @@ export class MainFilterComponent implements OnInit {
    * @desc secondaryLevelData,tertiaryLevelData,eachRefineByData holds the data for that level
    */
   secondaryLevelData = {};
-  tertiaryLevelData = {};
+  tertiaryLevelData;
   eachRefineByData = {};
 
   /**
@@ -98,7 +99,8 @@ export class MainFilterComponent implements OnInit {
     private logger: LoggerService,
     private eref: ElementRef,
     private dataStore: DataCacheService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private refactorFieldService: RefactorFieldsService
   ) {}
 
   ngOnInit() {
@@ -183,9 +185,15 @@ export class MainFilterComponent implements OnInit {
         this.secondLevelIndex = JSON.parse(
           this.dataStore.get('OmniSearchSecondLevelIndex')
         ).secondLevelIndex;
-        this.tertiaryLevelData = this.filterData['groupBy'].values[0][
+        const thirdLevelData = this.filterData['groupBy'].values[0][
           'groupBy'
         ].values[this.secondLevelIndex];
+        thirdLevelData.groupBy.values.forEach(element => {
+          element.displayName = this.refactorFieldService.getDisplayNameForAKey(
+            element.name.toLowerCase()
+          ) || element.name;
+        });
+        this.tertiaryLevelData = thirdLevelData;
       }
       if (
         !(this.dataStore.get('omniSearchFilterRefineByCount') === undefined) ||
@@ -320,6 +328,21 @@ export class MainFilterComponent implements OnInit {
   }
 
   /**
+   * @function checkRadio
+   * @param id
+   * @desc this function executes onclick of each Third filter options.
+   * It closes the open accordion
+   */
+  checkRadio(id) {
+    for (let i = 0; i < this.tertiaryLevelData.groupBy.values.length; i++) {
+      if (i !== id) {
+        const ele = (<HTMLInputElement>document.getElementById('selectBox' + i));
+        ele.checked = false;
+      }
+    }
+  }
+
+  /**
    * @function storeSecondLevel
    * @param data
    * @param index
@@ -331,6 +354,11 @@ export class MainFilterComponent implements OnInit {
 
   storeSecondLevel(data, index) {
     try {
+      data.groupBy.values.forEach(element => {
+        element.displayName = this.refactorFieldService.getDisplayNameForAKey(
+          element.name.toLowerCase()
+        ) || element.name;
+      });
       // empty the checkBoxSelectedCount array to reset chcekbox count value
       this.checkBoxSelectedCount = [];
       this.secondLevelIndex = index;
