@@ -6,13 +6,10 @@ class LambdaPolicyDocument(iam.IAMPolicyDocumentData):
     statement = [
         {
             'actions': ["sts:AssumeRole"],
-            'principals': [
-                {
-                    'type': "Service",
-                    'identifiers': ["lambda.amazonaws.com"]
-                }
-            ],
-            'effect': "Allow"
+            'principals': {
+                'type': "AWS",
+                'identifiers': [ECSRole.get_output_attr('arn')]
+            }
         }
     ]
 
@@ -112,7 +109,7 @@ class AllReadRoleAutoFixPolicyDocument(iam.IAMPolicyDocumentData):
             ],
             'resources': ["*"],
             'effect': "Allow"
-        },
+        }
     ]
 
 
