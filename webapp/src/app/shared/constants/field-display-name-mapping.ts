@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -251,5 +251,33 @@ export const MAPPING = {
     'displayid': 'Display ID',
     'pluginname': 'Plugin Name',
     'pluginid': 'Plugin ID',
-    'accountdesc': 'Account Description'
+    'accountdesc': 'Account Description',
+    'certtype': 'Type',
+    'certstatus': 'Status',
+    'validto': 'valid To',
+    'application': 'Application',
+    'environment': 'Environment',
+    'appcontact': 'Contact',
+    'updateddate': 'Updated Date',
+    'updatedby': 'Updated By',
+    'createtimestamp': 'Created Date',
+    'exemptionenddate': 'Exemption End Date',
+    'exemptionreason': 'Exemption Reason',
+    'exemptionrequestid': 'Exemption Request ID',
+    'exemptionstartdate': 'Exemption Start Date',
+    'issueidlist': 'Issue ID List',
+    'requeststatus': 'Request Status',
+    'commentforlastaction': 'Admin Remarks',
+    'resourceidlist': 'Resource ID List',
+    'systemcomment': 'System Remarks',
+    'metadata': 'Additional Info',
+    'uniqueAutoFixEnabled': 'Auto Fix Enabled',
+    'autoFixEnabled': 'Auto Fix Enabled',
+    'tags.name': 'Name',
+    'tags.role': 'Role',
+    'tags.owner': 'Owner',
+    'tags.stack': 'Stack',
+    'tags.channel': 'Channel',
+    'tags.tier': 'Tier',
+    'tags.workload': 'Workload'
 };
