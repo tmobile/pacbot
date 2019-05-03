@@ -813,5 +813,9 @@ export const environment = {
     systemOperations: {
         url: '{{baseUrl}}/admin/operations',
         method: 'POST'
+    },
+    systemJobStatus: {
+        url: '{{baseUrl}}/admin/operations',
+        method: 'POST'
     }
 };

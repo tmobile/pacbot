@@ -41,6 +41,7 @@ export class SystemManagementComponent implements OnInit, OnDestroy {
   errorVal = 0;
   modalTitle = 'Confirmation Required';
   private systemSubscription: Subscription;
+  private systemStatusSubscription: Subscription;
   constructor(
     private commonResponseService: CommonResponseService,
     private router: Router,
@@ -48,7 +49,20 @@ export class SystemManagementComponent implements OnInit, OnDestroy {
     private titleCasePipe: TitleCasePipe
   ) { }
 
-  ngOnInit() {
+  getJobStatus() {
+    const url = 'https://internal-pacbot-43782189.us-east-1.elb.amazonaws.com/api/admin/operations';
+    const method = environment.systemJobStatus.method;
+
+    this.systemStatusSubscription = this.commonResponseService
+      .getData(url, method, {}, {}).subscribe(
+        response => {
+          this.isCheckedRules = response[0].status;
+          this.isCheckedJobs  = response[1].status;
+        },
+        error => {
+
+        }
+      )
   }
 
   ontoggleAccess(e, selectToggle) {
@@ -86,6 +100,7 @@ export class SystemManagementComponent implements OnInit, OnDestroy {
     this.showLoader = true;
     if (this.systemSubscription) {
       this.systemSubscription.unsubscribe();
+      this.systemStatusSubscription.unsubscribe();
     }
     const url = 'https://internal-pacbot-43782189.us-east-1.elb.amazonaws.com/api/admin/operations';
     const method = environment.systemOperations.method;
@@ -109,7 +124,6 @@ export class SystemManagementComponent implements OnInit, OnDestroy {
           this.showLoader = false;
           this.toggleBtnOnSuccess(jobType);
         } , error => {
-          console.log('error', error);
           this.errorVal = -1;
           this.modalTitle = 'Error';
           this.showLoader = false;
@@ -125,6 +139,10 @@ export class SystemManagementComponent implements OnInit, OnDestroy {
       this.isCheckedJobs = !this.isCheckedJobs;
     }
 
+  }
+
+  ngOnInit() {
+    // this.getJobStatus();
   }
 
   ngOnDestroy() {
