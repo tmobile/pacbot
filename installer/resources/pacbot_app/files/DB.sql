@@ -1874,4 +1874,7 @@ UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_UntaggedOrU
 UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_UnusedElasticIpRule_version-1_UnusedElasticIpRule_elasticip';
 UPDATE `cf_RuleInstance` SET assetGroup = 'aws' WHERE ruleId='PacMan_core-networking-iam-user-with-unapproved-access_version-1_core-networking-iam-user-with-unapproved-access_iamuser';
 
+INSERT IGNORE INTO `cf_JobScheduler`(`jobId`,`jobUUID`,`jobName`,`jobType`,`jobParams`,`jobFrequency`,`jobExecutable`,`jobArn`,`status`,`userId`,`createdDate`,`modifiedDate`) values ('pacbot-AWS-Data-Collector','pacbot-AWS-Data-Collector','AWS-Data-Collector','jar','','0 0/2 * * ? *','inventory-fetch.jar',concat('arn:aws:events:',@region,':',@account,':rule/pacbot-AWS-Data-Collector'),'ENABLED','20433','2017-10-17 00:18:43','2017-11-03 12:48:23');
+INSERT IGNORE INTO `cf_JobScheduler`(`jobId`,`jobUUID`,`jobName`,`jobType`,`jobParams`,`jobFrequency`,`jobExecutable`,`jobArn`,`status`,`userId`,`createdDate`,`modifiedDate`) values('pacbot-aws-redshift-es-data-shipper','pacbot-aws-redshift-es-data-shipper','aws-redshift-es-data-shipper','jar','','30 0/2 * * ? *','data-shipper.jar',concat('arn:aws:events:',@region,':',@account,':rule/pacbot-aws-redshift-es-data-shipper'),'ENABLED','20433','2017-11-02 23:56:53','2017-11-03 12:48:49');
+
 

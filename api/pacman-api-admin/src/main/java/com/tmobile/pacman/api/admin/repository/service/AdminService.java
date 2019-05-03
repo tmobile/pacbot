@@ -1,6 +1,9 @@
 package com.tmobile.pacman.api.admin.repository.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
@@ -11,9 +14,11 @@ import org.springframework.stereotype.Service;
 import com.amazonaws.services.cloudwatchevents.model.DisableRuleRequest;
 import com.amazonaws.services.cloudwatchevents.model.EnableRuleRequest;
 import com.amazonaws.services.cloudwatchevents.model.ListRulesRequest;
+import com.amazonaws.services.cloudwatchevents.model.ListRulesResult;
 import com.amazonaws.services.cloudwatchevents.model.RuleState;
 import com.tmobile.pacman.api.admin.common.AdminConstants;
 import com.tmobile.pacman.api.admin.config.PacmanConfiguration;
+import com.tmobile.pacman.api.admin.exceptions.PacManException;
 import com.tmobile.pacman.api.admin.repository.JobExecutionManagerRepository;
 import com.tmobile.pacman.api.admin.repository.RuleRepository;
 import com.tmobile.pacman.api.admin.repository.model.JobExecutionManager;
@@ -37,44 +42,52 @@ public class AdminService {
 	@Autowired
 	private PacmanConfiguration config;
 	
-	public String shutDownAlloperations(String operation, String job) {
+	public String shutDownAlloperations(String operation, String job) throws PacManException {
+		
+		String nextToken = null;
+		ListRulesResult listRulesResult ;
+		List<String> rules = new ArrayList<>();
+		do{
+			listRulesResult =  amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion()).listRules(new ListRulesRequest().withNextToken(nextToken));
+			rules.addAll(listRulesResult.getRules().parallelStream().map(rule->rule.getName()).collect(Collectors.toList()));
+			nextToken = listRulesResult.getNextToken();
+		}while(nextToken!=null);
+		
 		if(operation.equals(AdminConstants.ENABLE)) {
 			if(job.equals(AdminConstants.RULE)) {
-				if(enableRules()) {
-					return "All rules has been sucessfully enabled";
+				if(enableRules(rules)) {
+					return "All Rules has been sucessfully enabled";
 				}
 			} else if(job.equals(AdminConstants.JOB)) {
-				if(enableJobs()) {
-					return "All jobs has been sucessfully enabled";
+				if(enableJobs(rules)) {
+					return "All Jobs has been sucessfully enabled";
 				}
 			} else {
-				if(enableRules() &&	enableJobs()) {
-					return "All rules and jobs has been sucessfully enabled";
+				if(enableRules(rules) && enableJobs(rules)) {
+					return "All Rules and Jobs has been sucessfully enabled";
 				}
 			}
-			return "Enabling operation failed";
+			throw new PacManException("Enabling operation failed");
 		} else {
 			if(job.equals(AdminConstants.RULE)) {
-				if(disableRules()) {
-					return "All rules has been sucessfully disabled";
+				if(disableRules(rules)) {
+					return "All Rules has been sucessfully disabled";
 				}
 			} else if(job.equals(AdminConstants.JOB)) {
-				if(disableJobs()) {
-					return "All obs has been sucessfully disabled";
+				if(disableJobs(rules)) {
+					return "All Jobs has been sucessfully disabled";
 				}
 			} else {
-				if(disableRules() && disableJobs()) {
-					return "All rules and jobs has been sucessfully disabled";
+				if(disableRules(rules) && disableJobs(rules)) {
+					return "All Rules and Jobs has been sucessfully disabled";
 				}
 			}
-			return "Disabling operation failed";
+			throw new PacManException("Disabling operation failed");
 		}
 	}
 	
-	private boolean disableRules() {
+	private boolean disableRules(List<String> rules) {
 		List<Rule> ruleIds = ruleRepository.findAll();
-		List<String> rules = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion())
-			.listRules(new ListRulesRequest()).getRules().parallelStream().map(rule->rule.getName()).collect(Collectors.toList());
 		try {
 			for(Rule rule : ruleIds) {
 				if(rules.contains(rule.getRuleUUID())) {
@@ -92,13 +105,12 @@ public class AdminService {
 		
 	}
 	
-	private boolean disableJobs() {
-		List<JobExecutionManager> jobIds = jobRepository.findAll();
-		List<String> rules = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion())
-				.listRules(new ListRulesRequest()).getRules().parallelStream().map(rule->rule.getName()).collect(Collectors.toList());
+	private boolean disableJobs(List<String> rules) {
+		List<JobExecutionManager> jobs = jobRepository.findAll();
 		try {
-			for(JobExecutionManager job : jobIds) {
+			for(JobExecutionManager job : jobs) {
 				if(rules.contains(job.getJobUUID())) {
+					job.getJobUUID();
 					amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion())
 						.disableRule(new DisableRuleRequest().withName(job.getJobUUID()));
 					job.setStatus(RuleState.DISABLED.name());
@@ -112,10 +124,8 @@ public class AdminService {
 		}
 	}
 	
-	private boolean enableRules() {
+	private boolean enableRules(List<String> rules) {
 		List<Rule> ruleIds = ruleRepository.findAll();
-		List<String> rules = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion())
-				.listRules(new ListRulesRequest()).getRules().parallelStream().map(rule->rule.getName()).collect(Collectors.toList());
 		try {
 			for(Rule rule : ruleIds) {
 				if(rules.contains(rule.getRuleUUID())) {
@@ -132,16 +142,14 @@ public class AdminService {
 		}
 	}
 	
-	private boolean enableJobs() {
-		List<JobExecutionManager> jobIds = jobRepository.findAll();
-		List<String> rules = amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion())
-				.listRules(new ListRulesRequest()).getRules().parallelStream().map(rule->rule.getName()).collect(Collectors.toList());
+	private boolean enableJobs(List<String> rules) {
+		List<JobExecutionManager> jobs = jobRepository.findAll();
 		try {
-			for(JobExecutionManager job : jobIds) {
+			for(JobExecutionManager job : jobs) {
 				if(rules.contains(job.getJobUUID())) {
 					amazonClient.getAmazonCloudWatchEvents(config.getRule().getLambda().getRegion())
 					.enableRule(new EnableRuleRequest().withName(job.getJobUUID()));
-					job.setStatus(RuleState.DISABLED.name());
+					job.setStatus(RuleState.ENABLED.name());
 					jobRepository.save(job);
 				}
 			}
@@ -149,6 +157,48 @@ public class AdminService {
 		} catch(Exception e) {
 			log.error("Error in enable jobs",e);
 			return false;
+		}
+	}
+
+	public Map<String,String> statusOfSystem() throws PacManException{
+		
+		Map<String,String> status = new HashMap<>();
+		try {
+			List<Rule> rules = ruleRepository.findAll();
+			List<JobExecutionManager> jobs = jobRepository.findAll();
+			
+			boolean rulesEnabled = false;
+			boolean jobsEnabled = false;
+			
+			for(Rule rule : rules) {
+				if(rule.getStatus().equals(RuleState.ENABLED.name())) {
+					rulesEnabled = true;
+					break;
+				}
+			}
+			
+			for(JobExecutionManager job : jobs) {
+				if(job.getStatus().equals(RuleState.ENABLED.name())) {
+					jobsEnabled = true;
+					break;
+				}
+			}
+			
+			if(rulesEnabled) {
+				status.put("rule", RuleState.ENABLED.name());
+			} else {
+				status.put("rule", RuleState.DISABLED.name());
+			}
+			
+			if(jobsEnabled) {
+				status.put("job", RuleState.ENABLED.name());
+			} else {
+				status.put("job", RuleState.DISABLED.name());
+			}
+			return status;
+		} catch(Exception e) {
+			log.error("Error in fetching status of system",e);
+			throw new PacManException("Error in fetching the status of system");
 		}
 	}
 
