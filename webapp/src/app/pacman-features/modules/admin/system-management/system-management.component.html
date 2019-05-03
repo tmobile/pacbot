@@ -22,7 +22,9 @@
     </div>
     <div class="container no-shrink">
       <div class="system-container flex-center flex flex-col flex-align-center">
-        <div class="flex flex-col flex-align-center outer-box w-100 ">
+        <div class='loader' *ngIf='showPageLoader==1'></div>
+        <app-error-message class='error_msg' [selectedValue]="errorMessage" *ngIf='showPageLoader == -1'></app-error-message>
+        <div class="flex flex-col flex-align-center outer-box w-100 " *ngIf='showPageLoader==0'>
           <div class="flex each-item flex-between no-shrink">
             <div class="rules">
               <div class="left-header">Rules</div>
