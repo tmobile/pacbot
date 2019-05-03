@@ -56,30 +56,30 @@ public class AdminService {
 		if(operation.equals(AdminConstants.ENABLE)) {
 			if(job.equals(AdminConstants.RULE)) {
 				if(enableRules(rules)) {
-					return "All rules has been sucessfully enabled";
+					return "All Rules has been sucessfully enabled";
 				}
 			} else if(job.equals(AdminConstants.JOB)) {
 				if(enableJobs(rules)) {
-					return "All jobs has been sucessfully enabled";
+					return "All Jobs has been sucessfully enabled";
 				}
 			} else {
 				if(enableRules(rules) && enableJobs(rules)) {
-					return "All rules and jobs has been sucessfully enabled";
+					return "All Rules and Jobs has been sucessfully enabled";
 				}
 			}
 			throw new PacManException("Enabling operation failed");
 		} else {
 			if(job.equals(AdminConstants.RULE)) {
 				if(disableRules(rules)) {
-					return "All rules has been sucessfully disabled";
+					return "All Rules has been sucessfully disabled";
 				}
 			} else if(job.equals(AdminConstants.JOB)) {
 				if(disableJobs(rules)) {
-					return "All jobs has been sucessfully disabled";
+					return "All Jobs has been sucessfully disabled";
 				}
 			} else {
 				if(disableRules(rules) && disableJobs(rules)) {
-					return "All rules and jobs has been sucessfully disabled";
+					return "All Rules and Jobs has been sucessfully disabled";
 				}
 			}
 			throw new PacManException("Disabling operation failed");
