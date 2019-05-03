@@ -1,0 +1,183 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.system-container{
+    border: 1px solid lightgrey;
+    width: 100%;
+    height: 100%;
+    max-height: 36em;
+    border-radius: .2em;
+    background-color: #ffff;
+}
+.container{
+    width: 100%;
+    height: 100%;
+    padding: 0 1.25em 2em 1.25em;
+}
+.align-start{
+    align-self:flex-start;
+}
+.w-100{
+    width:100%;
+}
+.outer-box{
+    padding:2em 5em;
+    overflow:auto;
+}
+.each-item{
+    border-bottom: 1px solid lightgrey;
+    padding: 1.5em .1em;
+    width:100%;
+}
+.each-item:last-child{
+    border:none;
+}
+.toggle{
+    padding: .1em 4em;
+    align-self: center;
+}
+.left-header{
+    font-size: 20px;
+    font-weight: bold;
+    padding: .3em .1em;
+}
+.left-element{
+    padding: .3em .1em;
+}
+
+.switch {
+	position: relative;
+	display: block;
+	width: 100px;
+	height: 29px;
+	cursor: pointer;
+}
+.switch-input {
+	position: absolute;
+	top: 0;
+	left: 0;
+	opacity: 0;
+}
+.switch-label {
+	position: relative;
+	display: block;
+	height: inherit;
+    background-color: #CCCCCC;
+    border-radius: 3px;
+}
+.switch-label:before, .switch-label:after {
+	position: absolute;
+    top: 9px;
+}
+.switch-label:before {
+	content: attr(data-off);
+	right: 18px;
+    color:white;
+}
+.switch-label:after {
+	content: attr(data-on);
+	left: 18px;
+    opacity: 1;
+    color:white;
+}
+.switch-input:checked ~ .switch-label:before {
+	opacity: 1;
+}
+.switch-input:checked ~ .switch-label:after {
+	opacity: 1;
+}
+.switch-handle {
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 50px;
+    height: 29px;
+    background-color: #50C17C;
+    border-radius: 3px;
+    color: white;
+    padding-top: 8px;
+    text-align: center;
+    padding-top: 8px;
+}
+
+.switch-input:checked ~ .switch-handle {
+    left: 50px;
+    background-color: #F2425F;
+}
+
+.switch-label, .switch-handle {
+	transition: All 0.3s ease;
+}
+.confirm-box{
+    /* width: 27em; */
+    width:100%;
+    height: 2.5em;
+    padding: 6px;
+    background-color: #FBFBFB;
+    border: 1px solid #c5bfbf;
+}
+.text-center{
+    text-align: center;
+}
+.action-text{
+    padding: 2em 2em;
+    font-size: 1.3em;
+    line-height: 1.2em;
+}
+.input-box{
+    padding:2em 5em;
+    width: 100%;
+    min-width: 26em;
+}
+.container{
+    min-height: 20em;
+}
+.modal-footer{
+    border-top: 1px solid #cccc;
+    padding: 2em 1em 0em;
+}
+.submit-button{
+    padding: .6em 2.1em;
+    border: none;
+    background-color: #E20074;
+    color: white;
+    font-weight: bold;
+    letter-spacing: .6px;
+    border-radius: 14px;
+    cursor: pointer;
+}
+.cancel{
+    color: #E20074;
+    font-weight: bold;
+    padding: 0 2em;
+}
+.submit-button:disabled{
+    background-color: silver;
+    pointer-events: none;
+    cursor: not-allowed;
+}
+
+.confirmation-txt {
+    font-size: 1.2em;
+    line-height: 1.4;
+    padding-bottom: 2.5em;
+    word-break: break-word;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: center;
+}
