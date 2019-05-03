@@ -51,7 +51,7 @@ class ESDomain(ElasticsearchDomainResource):
 
     @classmethod
     def get_http_url_with_port(cls):
-        return "%s:%s" % (cls.get_http_url(), ":80")
+        return "%s:%s" % (cls.get_http_url(), "80")
 
     @classmethod
     def get_http_url(cls):
