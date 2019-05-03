@@ -23,7 +23,9 @@ class SubmitJobLambdaFunction(LambdaFunctionResource):
         'variables': {
             'JOB_QUEUE': BatchJobsQueue.get_input_attr('name'),
             'JOB_DEFINITION': SubmitAndRuleEngineJobDefinition.get_input_attr('name'),
-            'CONFIG_URL': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,inventory/prd/latest"
+            'CONFIG_URL': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,inventory/prd/latest",
+            'CONFIG_CREDENTIALS': "dXNlcjpwYWNtYW4=",
+            'CONFIG_SERVICE_URL': ApplicationLoadBalancer.get_http_url() + "/api/config/rule/prd/latest"
         }
     }
 
@@ -70,7 +72,9 @@ class DataCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
         'jobType': "jar",
         'jobDesc': "AWS-Data-Collection",
         'environmentVariables': [
-            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,inventory/prd/latest"}
+            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,inventory/prd/latest"},
+            {'name': "CONFIG_CREDENTIALS", 'value': "dXNlcjpwYWNtYW4="},
+            {'name': "CONFIG_SERVICE_URL", 'value': ApplicationLoadBalancer.get_http_url() + "/api/config/rule/prd/latest"}
         ],
         'params': [
             {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile.cso.pacman"},
@@ -107,6 +111,8 @@ class DataShipperCloudWatchEventTarget(CloudWatchEventTargetResource):
             {'name': "ASSET_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('asset')},
             {'name': "CMPL_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('compliance')},
             {'name': "AUTH_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('auth')},
+            {'name': "CONFIG_CREDENTIALS", 'value': "dXNlcjpwYWNtYW4="},
+            {'name': "CONFIG_SERVICE_URL", 'value': ApplicationLoadBalancer.get_http_url() + "/api/config/rule/prd/latest"}
 
         ],
         'params': [

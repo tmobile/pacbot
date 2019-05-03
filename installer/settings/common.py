@@ -13,6 +13,12 @@ SETUP_TITLE = "PACBOT"
 SETUP_DESCRIPTION = "INFRA SETUP AND DEPLOYMENT"
 LOADER_FILE_PATH = os.path.join(str(CURRENT_FILE_PATH), "loader")
 
+# INSTALL_INPUTS_REQUIRED = [
+#     {
+#         'input_key': "USER_EMAIL_ID", 'input_msg': "Your email id to send emails: ", 'required': True
+#     }
+# ]
+
 TOOLS_REQUIRED = {
     'Maven': "mvn --version",
     'Git': "git --version",
@@ -116,4 +122,3 @@ except:
 
 if ALB_PROTOCOL == "HTTPS":
     PROCESS_RESOURCES['pacbot_app.alb_https_listener'] = {'tags': ["deploy"]}  # This should not be removed
-    PROCESS_RESOURCES['pacbot_app.alb_https_target_groups'] = {'tags': ["deploy"]}  # This should not be removed

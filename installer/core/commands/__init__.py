@@ -55,6 +55,10 @@ class BaseCommand(metaclass=ABCMeta):
         """
         This returns the resources to be processed currently. This can either be full resources or part of resources
 
+        Args:
+            input_instance (Input Obj): Input object
+            need_instance (boolean): True if object is required and if it is False then class is returned
+
         Returns:
             resources_to_process (list): List of resources
         """
@@ -62,6 +66,22 @@ class BaseCommand(metaclass=ABCMeta):
         resources_to_process = self.get_resources_from_the_keys(resource_keys_to_process, input_instance, need_instance)
 
         return resources_to_process
+
+    def get_resources_with_given_tags(self, input_instance, tags_list):
+        """
+        This returns the resources for a given list of tags
+
+        Args:
+            input_instance (Input Obj): Input object
+            tags_list (list): list of tag names
+
+        Returns:
+            tagged_resources (list): List of resources
+        """
+        tagged_resource_keys = self.get_resource_keys_to_process(tags_list, self.category_field_name)
+        tagged_resources = self.get_resources_from_the_keys(tagged_resource_keys, input_instance, True)
+
+        return tagged_resources
 
     def get_resources_from_the_keys(self, resource_keys_to_process, input_instance, need_instance):
         """

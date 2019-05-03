@@ -31,6 +31,7 @@ MAIL_SMTP_AUTH = ""
 MAIL_SMTP_SSL_ENABLE = "true"
 MAIL_SMTP_SSL_TEST_CONNECTION = "false"
 
+USER_EMAIL_ID = ""
 
 # System reads below data from user if not updated here
 AWS_ACCESS_KEY = ""
