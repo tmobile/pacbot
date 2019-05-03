@@ -84,6 +84,7 @@ import { FormsComponent } from './forms/forms.component';
 import { ConfirmationBoxComponent } from './confirmation-box/confirmation-box.component';
 import { FormService } from './services/form.service';
 import { LoaderMsgComponent } from './loader-msg/loader-msg.component';
+import { GenericModalComponent } from './generic-modal/generic-modal.component';
 
 @NgModule({
     imports: [
@@ -146,6 +147,7 @@ import { LoaderMsgComponent } from './loader-msg/loader-msg.component';
         FormsComponent,
         ConfirmationBoxComponent,
         LoaderMsgComponent,
+        GenericModalComponent
     ],
     exports: [CommonModule,
         FormsModule,
@@ -197,7 +199,7 @@ import { LoaderMsgComponent } from './loader-msg/loader-msg.component';
         FormsComponent,
         ConfirmationBoxComponent,
         LoaderMsgComponent,
-
+        GenericModalComponent
 
     ],
     providers: [HttpService, UtilsService, RefactorFieldsService, OrderByPipe, SearchFilterPipe, MainRoutingAnimationEventService, AuthGuardService, RouterUtilityService, LoggerService, ErrorHandlingService, FilterManagementService, CommonResponseService, CopytoClipboardService, FormService]
