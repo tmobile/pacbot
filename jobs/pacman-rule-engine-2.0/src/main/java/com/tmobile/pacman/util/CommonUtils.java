@@ -133,12 +133,18 @@ public class CommonUtils {
     /** The prop. */
     static Properties prop;
     static {
-		prop = new Properties();
-		Hashtable<String, Object> configMap = ConfigManager.getConfigurationsMap();
-		if (configMap != null && !configMap.isEmpty()) {
-			prop.putAll(configMap);
-		}
-    }
+    	prop = new Properties();
+    	Hashtable<String, Object> configMap = ConfigManager.getConfigurationsMap();
+    	if (configMap != null && !configMap.isEmpty()) {
+    	   prop.putAll(configMap);
+    	          LOGGER.info(String.format("loaded the configuration successfully, config has %d keys", prop.keySet().size()));
+    	}else{
+    	          LOGGER.info("unable to load configuration, exiting now");
+    	          throw new RuntimeException("unable to load configuration");
+    	      }
+    	  }
+
+
 
     /**
      * Checks if is env variable exists.
@@ -263,20 +269,26 @@ public class CommonUtils {
                 jsonEntity = new StringEntity(requestBody);
             }
 
-            if(AuthManager.getToken()!=null){
-                String accessToken =  AuthManager.getToken();
-                if(!Strings.isNullOrEmpty(accessToken))
-                {
-                	httpPut.setHeader(PacmanSdkConstants.AUTH_HEADER, "Bearer " + accessToken);
-                }
-            }
             httpPut.setEntity(jsonEntity);
             HttpResponse httpresponse = client.execute(httpPut);
             if (httpresponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
                 return EntityUtils.toString(httpresponse.getEntity());
             } else {
-                throw new Exception(
-                        "unable to execute put request caused by" + EntityUtils.toString(httpresponse.getEntity()));
+            	 if(AuthManager.getToken()!=null){
+                     String accessToken =  AuthManager.getToken();
+                     if(!Strings.isNullOrEmpty(accessToken))
+                     {
+                     	httpPut.setHeader(PacmanSdkConstants.AUTH_HEADER, "Bearer " + accessToken);
+                     }
+                 }
+                 httpPut.setEntity(jsonEntity);
+                 HttpResponse httpresponse1 = client.execute(httpPut);
+                 if (httpresponse1.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+                     return EntityUtils.toString(httpresponse1.getEntity());
+                 } else {
+                     throw new Exception(
+                             "unable to execute put request caused by" + EntityUtils.toString(httpresponse1.getEntity()));
+                 }
             }
         } catch (ParseException parseException) {
             LOGGER.error("ParseException in getHttpPut :" + parseException.getMessage());

@@ -97,8 +97,18 @@ public class AdminController {
 			@ApiParam(value = "select operation ", required = true) @RequestParam("operation") Operation operation,
 			@ApiParam(value = "select job to perform operation ", required = true) @RequestParam("job") Job job) {
 		try {
-			adminService.shutDownAlloperations(operation.toString(),job.toString());
-			return ResponseUtils.buildSucessResponse("Operation completed successfully");
+			return ResponseUtils.buildSucessResponse(adminService.shutDownAlloperations(operation.toString(),job.toString()));
+		} catch (Exception exception) {
+			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
+			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
+		}
+	}
+	
+	@ApiOperation(httpMethod = "GET", value = "API to get status of all jobs", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(path = "/system/status", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> statusOfSystem() {
+		try {
+			return ResponseUtils.buildSucessResponse(adminService.statusOfSystem());
 		} catch (Exception exception) {
 			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
