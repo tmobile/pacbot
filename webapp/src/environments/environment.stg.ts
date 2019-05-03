@@ -815,7 +815,7 @@ export const environment = {
         method: 'POST'
     },
     systemJobStatus: {
-        url: '{{baseUrl}}/admin/operations',
-        method: 'POST'
+        url: '{{baseUrl}}/admin/system/status',
+        method: 'GET'
     }
 };

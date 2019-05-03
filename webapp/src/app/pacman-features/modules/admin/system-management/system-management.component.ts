@@ -37,6 +37,8 @@ export class SystemManagementComponent implements OnInit, OnDestroy {
   OpenModal = false;
   selectedValue;
   showLoader = false;
+  showPageLoader = 1;
+  errorMessage = '';
   errorMsg = 'apiResponseError';
   errorVal = 0;
   modalTitle = 'Confirmation Required';
@@ -50,17 +52,20 @@ export class SystemManagementComponent implements OnInit, OnDestroy {
   ) { }
 
   getJobStatus() {
-    const url = 'https://internal-pacbot-43782189.us-east-1.elb.amazonaws.com/api/admin/operations';
+    const url = environment.systemJobStatus.url;
     const method = environment.systemJobStatus.method;
 
     this.systemStatusSubscription = this.commonResponseService
       .getData(url, method, {}, {}).subscribe(
         response => {
-          this.isCheckedRules = response[0].status;
-          this.isCheckedJobs  = response[1].status;
+          if(!response) return;
+          this.isCheckedRules = response.rule === 'ENABLED' ? false : true;
+          this.isCheckedJobs  = response.job === 'ENABLED' ? false : true;
+          this.showPageLoader = 0;
         },
         error => {
-
+          this.showPageLoader = -1;
+          this.errorMessage = error;
         }
       )
   }
@@ -102,7 +107,7 @@ export class SystemManagementComponent implements OnInit, OnDestroy {
       this.systemSubscription.unsubscribe();
       this.systemStatusSubscription.unsubscribe();
     }
-    const url = 'https://internal-pacbot-43782189.us-east-1.elb.amazonaws.com/api/admin/operations';
+    const url = environment.systemOperations.url;
     const method = environment.systemOperations.method;
     let operation;
       operation = jobAction ? 'enable' : 'disable';
@@ -142,13 +147,16 @@ export class SystemManagementComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    // this.getJobStatus();
+    this.getJobStatus();
   }
 
   ngOnDestroy() {
     try {
       if (this.systemSubscription) {
         this.systemSubscription.unsubscribe();
+      }
+      if (this.systemStatusSubscription) {
+        this.systemStatusSubscription.unsubscribe();
       }
     } catch (error) {
       this.logger.log('error', '--- Error while unsubscribing ---');
