@@ -439,11 +439,13 @@ export class UpdateJobExecutionManagerComponent implements OnInit, OnDestroy {
     this.adminService.executeHttpAction(url, method, {}, {jobId: this.jobId}).subscribe(jobDetailsResponse => {
       this.jobDetailsLoader = false;
       this.hideContent = false;
-      const jobParams = JSON.parse(jobDetailsResponse[0].jobParams);
-      this.allEnvironments = jobParams.environmentVariables;
-      this.allJobParams = jobParams.params;
       this.jobDetails = jobDetailsResponse[0];
-      this.jobDetails['jobDesc'] = jobParams.jobDesc;
+      if(jobDetailsResponse[0].jobParams) {
+        const jobParams = JSON.parse(jobDetailsResponse[0].jobParams);
+        this.allEnvironments = jobParams.environmentVariables;
+        this.allJobParams = jobParams.params;
+        this.jobDetails['jobDesc'] = jobParams.jobDesc;
+      }
       this.jobJarFileName = this.jobDetails['jobExecutable'];
       const frequencyforEdit = this.adminUtilityService.decodeCronExpression(this.jobDetails['jobFrequency']);
       this.jobFrequency = [{ 'text': frequencyforEdit.interval, 'id': frequencyforEdit.interval }];
