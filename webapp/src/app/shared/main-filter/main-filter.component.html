@@ -76,7 +76,7 @@
                             <input id="selectBox{{k}}" class="absolute accordion-input" type="checkbox" name="tabs">
                             <span class="filter-dropDdown-arrow"></span>
                             <span class="applied-filter-count absolute" *ngIf="checkBoxSelectedCount[k] > 0">+ {{checkBoxSelectedCount[k]}}</span>
-                            <label class="filter-multiselect-type pointer" (click)='checkRadio(k)' for="selectBox{{k}}" title="{{tertiaryFilterCategory.name}}">{{tertiaryFilterCategory.name}}</label>
+                            <label class="filter-multiselect-type pointer" (click)='checkRadio(k)' for="selectBox{{k}}" title="{{tertiaryFilterCategory.displayName || tertiaryFilterCategory.name}}">{{tertiaryFilterCategory.displayName || tertiaryFilterCategory.name}}</label>
                             <ul class="sub-filter-criteria">
                                 <!-- ************ TertiarySubValues Filter options ngRepeat starts here *******************-->
                                 <!--  *Onclick of the 4th level(eg :inside refine By -> stack -> running) filter options,

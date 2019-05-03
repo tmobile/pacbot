@@ -23,6 +23,7 @@ import {
 import { LoggerService } from '../../shared/services/logger.service';
 import { DataCacheService } from '../../core/services/data-cache.service';
 import { UtilsService } from './../services/utils.service';
+import { RefactorFieldsService } from '../services/refactor-fields.service';
 
 @Component({
   selector: 'app-main-filter',
@@ -98,7 +99,8 @@ export class MainFilterComponent implements OnInit {
     private logger: LoggerService,
     private eref: ElementRef,
     private dataStore: DataCacheService,
-    private utils: UtilsService
+    private utils: UtilsService,
+    private refactorFieldService: RefactorFieldsService
   ) {}
 
   ngOnInit() {
@@ -183,9 +185,15 @@ export class MainFilterComponent implements OnInit {
         this.secondLevelIndex = JSON.parse(
           this.dataStore.get('OmniSearchSecondLevelIndex')
         ).secondLevelIndex;
-        this.tertiaryLevelData = this.filterData['groupBy'].values[0][
+        const thirdLevelData = this.filterData['groupBy'].values[0][
           'groupBy'
         ].values[this.secondLevelIndex];
+        thirdLevelData.groupBy.values.forEach(element => {
+          element.displayName = this.refactorFieldService.getDisplayNameForAKey(
+            element.name.toLowerCase()
+          ) || element.name;
+        });
+        this.tertiaryLevelData = thirdLevelData;
       }
       if (
         !(this.dataStore.get('omniSearchFilterRefineByCount') === undefined) ||
@@ -346,6 +354,11 @@ export class MainFilterComponent implements OnInit {
 
   storeSecondLevel(data, index) {
     try {
+      data.groupBy.values.forEach(element => {
+        element.displayName = this.refactorFieldService.getDisplayNameForAKey(
+          element.name.toLowerCase()
+        ) || element.name;
+      });
       // empty the checkBoxSelectedCount array to reset chcekbox count value
       this.checkBoxSelectedCount = [];
       this.secondLevelIndex = index;

@@ -162,6 +162,7 @@ input:checked ~ .filter-dropDdown-arrow {
   position: relative;
   padding: 1em 1em 1em 3em;
   display: block;
+  text-transform: capitalize
 
 }
 .sub-filter-criteria::-webkit-scrollbar-thumb {
