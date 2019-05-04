@@ -122,8 +122,11 @@ export class SystemManagementComponent implements OnInit, OnDestroy {
       .getData(url, method, {}, queryParams)
       .subscribe(
         response => {
-          console.log(response);
-          this.errorMsg = this.titleCasePipe.transform(jobType) + 's operation is performed successfully.';
+          let custom_message = this.titleCasePipe.transform(jobType) + 's operation is performed successfully.';
+          if(response) {
+            custom_message = response.data;
+          }
+          this.errorMsg = custom_message
           this.errorVal = 1;
           this.modalTitle = 'Success';
           this.showLoader = false;

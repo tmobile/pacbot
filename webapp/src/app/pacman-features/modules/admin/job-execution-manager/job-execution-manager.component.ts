@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -26,6 +26,7 @@ import { RefactorFieldsService } from './../../../../shared/services/refactor-fi
 import { WorkflowService } from '../../../../core/services/workflow.service';
 import { RouterUtilityService } from '../../../../shared/services/router-utility.service';
 import { AdminService } from '../../../services/all-admin.service';
+import { CommonResponseService } from '../../../../shared/services/common-response.service';
 
 @Component({
   selector: 'app-admin-job-execution-manager',
@@ -56,6 +57,7 @@ export class JobExecutionManagerComponent implements OnInit, OnDestroy {
   currentPointer: number = 0;
   seekdata: boolean = false;
   showLoader: boolean = true;
+  isJobsTurnedOff: boolean = false;
 
   paginatorSize: number = 25;
   isLastPage: boolean;
@@ -84,6 +86,7 @@ export class JobExecutionManagerComponent implements OnInit, OnDestroy {
   private routeSubscription: Subscription;
   private getKeywords: Subscription;
   private previousUrlSubscription: Subscription;
+  private systemStatusSubscription: Subscription;
   private downloadSubscription: Subscription;
 
   constructor(
@@ -95,7 +98,8 @@ export class JobExecutionManagerComponent implements OnInit, OnDestroy {
     private refactorFieldsService: RefactorFieldsService,
     private workflowService: WorkflowService,
     private routerUtilityService: RouterUtilityService,
-    private adminService: AdminService
+    private adminService: AdminService,
+    private commonResponseService: CommonResponseService
   ) {
 
     this.routerParam();
@@ -104,6 +108,7 @@ export class JobExecutionManagerComponent implements OnInit, OnDestroy {
 
 
   ngOnInit() {
+    this.checkJobsStatus();
     this.urlToRedirect = this.router.routerState.snapshot.url;
     this.breadcrumbPresent = 'Job Execution Manager';
     this.backButtonRequired = this.workflowService.checkIfFlowExistsCurrently(
@@ -136,6 +141,21 @@ export class JobExecutionManagerComponent implements OnInit, OnDestroy {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
       this.logger.log('error', error);
     }
+  }
+
+  checkJobsStatus() {
+    const url = environment.systemJobStatus.url;
+    const method = environment.systemJobStatus.method;
+
+    this.systemStatusSubscription = this.commonResponseService
+      .getData(url, method, {}, {}).subscribe(
+        response => {
+          if(!response) return;
+          this.isJobsTurnedOff  = response.job !== 'ENABLED';
+        },
+        error => {
+        }
+      )
   }
 
   getJobSchedulerDetails() {
@@ -202,7 +222,7 @@ export class JobExecutionManagerComponent implements OnInit, OnDestroy {
   }
 
   /*
-    * This function gets the urlparameter and queryObj 
+    * This function gets the urlparameter and queryObj
     *based on that different apis are being hit with different queryparams
     */
   routerParam() {
@@ -400,6 +420,15 @@ export class JobExecutionManagerComponent implements OnInit, OnDestroy {
     this.getJobSchedulerDetails();
   }
 
+  routeToSystemManagementPage() {
+    this.router.navigate(['../system-management'], {
+      relativeTo: this.activatedRoute,
+      queryParamsHandling: 'merge',
+      queryParams: {
+      }
+    });
+  }
+
   ngOnDestroy() {
     try {
       if (this.routeSubscription) {
@@ -407,6 +436,9 @@ export class JobExecutionManagerComponent implements OnInit, OnDestroy {
       }
       if (this.previousUrlSubscription) {
         this.previousUrlSubscription.unsubscribe();
+      }
+      if (this.systemStatusSubscription) {
+        this.systemStatusSubscription.unsubscribe();
       }
     } catch (error) {
       this.logger.log('error', '--- Error while unsubscribing ---');
