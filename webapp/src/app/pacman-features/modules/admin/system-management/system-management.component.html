@@ -58,8 +58,8 @@
 <!-- </div> -->
 <app-generic-modal [title]="modalTitle" *ngIf="OpenModal" (emitClose)='closeModal()'>
   <div class="flex flex-col flex-align-center container">
-    <div  *ngIf="selectedValue === 'rule' && !showLoader && errorVal == 0" class="action-text text-center">This action will {{jobType ? 'stop' : 'start'}} PacBot compliance evaluation for all cloud resources ( Rules ). </div>
-    <div *ngIf="selectedValue === 'job' && !showLoader && errorVal == 0" class="action-text text-center">This action will stop all inventory collection by PacBot (jobs). </div>
+    <div  *ngIf="selectedValue === 'rule' && !showLoader && errorVal == 0" class="action-text text-center">This action will {{isCheckedRules ? 'start' : 'stop'}} PacBot compliance evaluation for all cloud resources ( Rules ). </div>
+    <div *ngIf="selectedValue === 'job' && !showLoader && errorVal == 0" class="action-text text-center">This action will {{isCheckedJobs ? 'start' : 'stop'}} all inventory collection by PacBot (jobs). </div>
     <div *ngIf='!showLoader && errorVal == 0' class="input-box text-center">
       <input type="text" [(ngModel)]="inputValue"  class="confirm-box" placeholder="Type 'Confirm' to authorize" autofocus>
     </div>
