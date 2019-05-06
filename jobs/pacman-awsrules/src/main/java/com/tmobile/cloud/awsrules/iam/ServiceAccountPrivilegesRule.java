@@ -72,7 +72,7 @@ public class ServiceAccountPrivilegesRule extends BaseRule {
 	 *            splitterChar : The splitter character used to split the
 	 *            iamPriviliges
 	 * 
-	 *            roleIdentifyingString : Configure it as role/pac_ro <br>
+	 *            roleIdentifyingString : Configure it as role/pacbot_ro <br>
 	 *            <br>
 	 * 
 	 * @param resourceAttributes
