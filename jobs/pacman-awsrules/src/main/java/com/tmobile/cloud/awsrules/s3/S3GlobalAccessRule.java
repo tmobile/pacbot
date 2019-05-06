@@ -58,7 +58,7 @@ public class S3GlobalAccessRule extends BaseRule {
      * ruleCategory : Enter the value of category <br>
      * <br>
      * 
-     * roleIdentifyingString : Configure it as role/pac_ro <br>
+     * roleIdentifyingString : Configure it as role/pacbot_ro <br>
      * <br>
      * 
      * esServiceURL : Enter the Elastic search URL <br>
