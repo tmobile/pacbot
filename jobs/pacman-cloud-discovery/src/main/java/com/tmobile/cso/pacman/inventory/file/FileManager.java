@@ -1075,9 +1075,9 @@ public class FileManager {
 		String keys;
 		fieldNames = "distSummary.id`distSummary.aRN`distSummary.status`distSummary.lastModifiedTime`distSummary.domainName`distSummary.enabled"
 				+"`distSummary.comment`distSummary.priceClass`distSummary.webACLId`distSummary.httpVersion`distSummary.isIPV6Enabled`distSummary.viewerCertificate.iAMCertificateId"
-				+"`distSummary.viewerCertificate.aCMCertificateArn`distSummary.viewerCertificate.cloudFrontDefaultCertificate`distSummary.viewerCertificate.sSLSupportMethod`distSummary.viewerCertificate.minimumProtocolVersion`distSummary.aliases.items`bucketName`accessLogEnabled";
+				+"`distSummary.viewerCertificate.aCMCertificateArn`distSummary.viewerCertificate.cloudFrontDefaultCertificate`distSummary.viewerCertificate.sSLSupportMethod`distSummary.viewerCertificate.minimumProtocolVersion`distSummary.aliases.items`bucketName`accessLogEnabled`defaultRootObject";
 		keys = "discoverydate`accountid`accountname`id`arn`status`lastmodifiedtime`domainName`enabled`comment`priceclass`webaclid`httpversion`ipv6enabled`viewercertificateid"
-				+"`viewercertificatearn`viewercertificatedefaultcertificate`viewercertificatesslsupportmethod`viewercertificateminprotocolversion`aliases`bucketname`accesslogenabled";
+				+"`viewercertificatearn`viewercertificatedefaultcertificate`viewercertificatesslsupportmethod`viewercertificateminprotocolversion`aliases`bucketname`accesslogenabled`defaultRootObject";
 		FileGenerator.generateJson(cfMap, fieldNames, "aws-cloudfront.data",keys);
 		fieldNames = "distSummary.id`tags.key`tags.value";
 		keys = "discoverydate`accountid`accountname`id`key`value";
