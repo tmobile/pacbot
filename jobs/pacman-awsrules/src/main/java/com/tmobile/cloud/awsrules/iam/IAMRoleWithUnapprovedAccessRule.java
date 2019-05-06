@@ -71,6 +71,8 @@ public class IAMRoleWithUnapprovedAccessRule extends BaseRule {
 	 *            iamPriviliges roleIdentifyingString : Configure it as role/pac_ro
 	 *            <br>
 	 *            <br>
+	 *            
+	 *            roleIdentifyingString : Configure it as role/pacbot_ro <br><br>
 	 * 
 	 * @param resourceAttributes
 	 *            this is a resource in context which needs to be scanned this is
