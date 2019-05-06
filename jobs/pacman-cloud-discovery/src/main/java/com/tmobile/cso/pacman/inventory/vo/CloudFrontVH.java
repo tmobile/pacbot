@@ -37,6 +37,21 @@ public class CloudFrontVH {
 
 	/** The accessLogEnabled. */
 	boolean accessLogEnabled;
+	
+	/**  Default Root Object for the distribution *. */
+	String defaultRootObject;
+
+	public String getDefaultRootObject() {
+		return defaultRootObject;
+	}
+
+
+
+	public void setDefaultRootObject(String defaultRootObject) {
+		this.defaultRootObject = defaultRootObject;
+	}
+
+
 
 	/**
 	 * Gets the dist summary.
@@ -46,6 +61,8 @@ public class CloudFrontVH {
 	public DistributionSummary getDistSummary() {
 		return distSummary;
 	}
+	
+	
 
 	/**
 	 * Sets the dist summary.

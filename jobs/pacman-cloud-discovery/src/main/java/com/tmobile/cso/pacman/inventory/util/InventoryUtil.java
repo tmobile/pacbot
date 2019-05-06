@@ -60,6 +60,7 @@ import com.amazonaws.services.cloudformation.model.DescribeStacksResult;
 import com.amazonaws.services.cloudformation.model.Stack;
 import com.amazonaws.services.cloudfront.AmazonCloudFront;
 import com.amazonaws.services.cloudfront.AmazonCloudFrontClientBuilder;
+import com.amazonaws.services.cloudfront.model.DistributionConfig;
 import com.amazonaws.services.cloudfront.model.DistributionList;
 import com.amazonaws.services.cloudfront.model.DistributionSummary;
 import com.amazonaws.services.cloudfront.model.GetDistributionConfigRequest;
@@ -1660,26 +1661,14 @@ public class InventoryUtil {
 				distributionSummary = distributionList.getItems();
 				marker = distributionList.getNextMarker();
 				for(DistributionSummary ds : distributionSummary) {
-					//****** Changes For Federated Rules Start ******
-					GetDistributionConfigRequest request = new GetDistributionConfigRequest().withId(ds.getId());
-					log.info("request" + request);
-					if(request != null) {
-					bucketName =  amazonCloudFront.getDistributionConfig(request).getDistributionConfig().getLogging().getBucket();
-					accessLogEnabled =  amazonCloudFront.getDistributionConfig(request).getDistributionConfig().getLogging().getEnabled();
-					log.info("bucketName" + bucketName + "accessLogEnabled" + accessLogEnabled);
-					}
-					//****** Changes For Federated Rules End ******
 					CloudFrontVH cf = new CloudFrontVH();
 					cf.setDistSummary(ds);
-					cf.setTags(amazonCloudFront.listTagsForResource(new com.amazonaws.services.cloudfront.model.ListTagsForResourceRequest().withResource(ds.getARN())).getTags().getItems());
-					cf.setAccessLogEnabled(accessLogEnabled);
-					cf.setBucketName(bucketName);
 					cloudFrontList.add(cf);
 				}
 			}while(marker!=null);
 
 			setCloudFrontTags(temporaryCredentials,cloudFrontList);
-			setDefaultRootObject(temporaryCredentials,cloudFrontList);
+			setConfigDetails(temporaryCredentials,cloudFrontList);
 
 			log.debug(InventoryConstants.ACCOUNT + accountId +" Type : CloudFront "+ " >> "+cloudFrontList.size());
 			cloudFront.put(accountId+delimiter+accountName,cloudFrontList);
@@ -1716,14 +1705,17 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param cloudFrontList the cloud front list
 	 */
-	private static void setDefaultRootObject(BasicSessionCredentials temporaryCredentials, List<CloudFrontVH> cloudFrontList){
+	private static void setConfigDetails(BasicSessionCredentials temporaryCredentials, List<CloudFrontVH> cloudFrontList){
 
 		String[] regions = {"us-east-2","us-west-1"};
 		int index = 0;
 		AmazonCloudFront amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(regions[index]).build();
 		for(CloudFrontVH cfVH: cloudFrontList){
 			try{
-				cfVH.setDefaultRootObject(amazonCloudFront.getDistributionConfig(new GetDistributionConfigRequest().withId(cfVH.getDistSummary().getId())).getDistributionConfig().getDefaultRootObject());
+				DistributionConfig distConfig = amazonCloudFront.getDistributionConfig(new GetDistributionConfigRequest().withId(cfVH.getDistSummary().getId())).getDistributionConfig();
+				cfVH.setDefaultRootObject(distConfig.getDefaultRootObject());
+				cfVH.setBucketName(distConfig.getLogging().getBucket());
+				cfVH.setAccessLogEnabled(distConfig.getLogging().getEnabled());
 			}catch(Exception e){
 				index = index==0?1:0;
 				amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(regions[index]).build();
