@@ -380,83 +380,69 @@ public class AWSClientManagerImpl implements AWSClientManager {
      *             the exception
      */
     private BasicSessionCredentials getTempCredentials(String roleArnWithAdequateAccess, Regions region,
-            String roleIdentifierString) throws Exception {
-    	logger.debug("roleIdentifierString {}",roleIdentifierString);
-    	logger.debug("region {}",region.getName());
-    	logger.debug("roleArnWithAdequateAccess {}",roleArnWithAdequateAccess);
+			String roleIdentifierString) throws Exception {
+		logger.debug("roleIdentifierString {}", roleIdentifierString);
+		logger.debug("region {}", region.getName());
+		logger.debug("roleArnWithAdequateAccess {}", roleArnWithAdequateAccess);
 
-    	AWSCredentialsProvider acp;
-        try {
+		AWSCredentialsProvider acp;
+		try {
 
-            acp = new ProfileCredentialsProvider(PacmanSdkConstants.PACMAN_DEV_PROFILE_NAME);
+			acp = new ProfileCredentialsProvider(PacmanSdkConstants.PACMAN_DEV_PROFILE_NAME);
 
-            acp.getCredentials();// to make sure profile exists
+			acp.getCredentials();// to make sure profile exists
 
-            logger.info("Dev environment detected, due to presense of aws credentials profile named -- >"
+			logger.info("Dev environment detected, due to presense of aws credentials profile named -- >"+ PacmanSdkConstants.PACMAN_DEV_PROFILE_NAME);
 
-                    + PacmanSdkConstants.PACMAN_DEV_PROFILE_NAME);
+		} catch (Exception e) {
 
-        } catch (Exception e) {
+			logger.info("non dev environment detected, will use default provider chain");
 
-            logger.info("non dev environment detected, will use default provider chain");
+			acp = new DefaultAWSCredentialsProviderChain();
 
-            acp = new DefaultAWSCredentialsProviderChain();
+		}
+		logger.debug("base ac#-->"+ CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME));
 
-        }
+		String baseAccountRoleArn = "arn:aws:iam::"+ CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME)+ ":"
 
-        // assume role on base account which has permission to assume roles in
+				+ roleIdentifierString; // get it from Env. variable
 
-        // all other accounts //667978626758
+		logger.debug("container role is going to assume " + baseAccountRoleArn);
 
-        logger.debug("base ac#-->" + CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME));
+		BasicSessionCredentials temporaryCredentialsForBaseAccount = getTempCredentialsUsingCredProvider(
 
-        String baseAccountRoleArn = "arn:aws:iam::"
+		baseAccountRoleArn, Regions.DEFAULT_REGION, acp,PacmanSdkConstants.TEMPORARY_CREDS_VALID_SECONDS);
 
-                + CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME) + ":"
+		logger.debug("container role is going to assume " + baseAccountRoleArn + " success");
 
-                + roleIdentifierString; // get it from Env. variable
+		logger.debug("now pac ro now going to assume role specific to account");
 
-        logger.debug("container role is going to assume " + baseAccountRoleArn);
+		// now we have base account role, assume required account role now,
 
-        BasicSessionCredentials temporaryCredentialsForBaseAccount = getTempCredentialsUsingCredProvider(
+		// reducing the TTL by 15 secs , assuming parent credentials will expire
 
-                baseAccountRoleArn, Regions.DEFAULT_REGION, acp, PacmanSdkConstants.TEMPORARY_CREDS_VALID_SECONDS);
+		// 15 secs earlier as created earlier
 
-        logger.debug("container role is going to assume " + baseAccountRoleArn + " success");
+		// do this only if target account is not same as base account
 
-        logger.debug("now pac ro now going to assume role specific to account");
+		if (!roleArnWithAdequateAccess.contains(CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME))){
 
-        // now we have base account role, assume required account role now,
+			temporaryCredentialsForBaseAccount = getTempCredentialsUsingCredProvider(
+					roleArnWithAdequateAccess, region,
 
-        // reducing the TTL by 15 secs , assuming parent credentials will expire
+					new AWSStaticCredentialsProvider(temporaryCredentialsForBaseAccount),
 
-        // 15 secs earlier as created earlier
+					PacmanSdkConstants.TEMPORARY_CREDS_VALID_SECONDS - 15);
 
-        // do this only if target account is not same as base account
+			logger.debug("now pac ro now going to assume role specific to account success");
 
-        if(!roleArnWithAdequateAccess.contains(CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME)))
+		} else {
+			logger.debug("role already present for this account, not going to assume again.");
+		}
 
-        {
+		return temporaryCredentialsForBaseAccount;
 
-            temporaryCredentialsForBaseAccount = getTempCredentialsUsingCredProvider(roleArnWithAdequateAccess, region,
-
-                new AWSStaticCredentialsProvider(temporaryCredentialsForBaseAccount),
-
-                PacmanSdkConstants.TEMPORARY_CREDS_VALID_SECONDS - 15);
-
-            logger.debug("now pac ro now going to assume role specific to account success");
-
-        }else{
-
-            logger.debug("role already present for this account, not going to assume again.");
-
-        }
-
-        return temporaryCredentialsForBaseAccount;
-
-    	
-    	
-}
+	}
 
     /**
      * Gets the temp credentials using cred provider.
