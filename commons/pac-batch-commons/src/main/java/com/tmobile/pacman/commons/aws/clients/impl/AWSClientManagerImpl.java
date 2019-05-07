@@ -133,6 +133,7 @@ public class AWSClientManagerImpl implements AWSClientManager {
         }
         try {
             temporaryCredentials = getTempCredentials(roleArnWithAdequateAccess, region, roleIdentifierString);
+            logger.info("temporaryCredentials {}", temporaryCredentials);
         } catch (Exception e) {
             logger.error("error creating client", e);
             throw new UnableToCreateClientException(e);
