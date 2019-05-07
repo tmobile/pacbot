@@ -1005,7 +1005,7 @@
     "ruleArn": "arn:aws:events:us-east-1:***REMOVED***:rule/aws_s3_should_not_be_publicly_accessible",
     "status": "ENABLED",
     "userId": "ASGC",
-    "displayName": "Non whitelisted S3 buckets should not be publicly accessible ",
+    "displayName": "Non Whitelisted S3 buckets should not be publicly accessible ",
     "createdDate": "2018-10-09",
     "modifiedDate": "2018-12-03",
     "severity": null,
