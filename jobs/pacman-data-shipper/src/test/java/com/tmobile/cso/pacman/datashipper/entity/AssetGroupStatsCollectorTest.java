@@ -36,42 +36,9 @@ public class AssetGroupStatsCollectorTest {
         when(AuthManager.getToken()).thenReturn("");
     }
     
-    @Test
-    public void testUploadAssetGroupVulnCompliance() throws Exception{
-        PowerMockito.mockStatic(AssetGroupUtil.class);
-        Map<String,Object> vulnMap = new HashMap<>();
-        vulnMap.put("total", 1345l);
-        vulnMap.put("compliant", 1000l);
-        vulnMap.put("noncompliant", 345l);
-        when(AssetGroupUtil.fetchVulnSummary(anyString(),anyString(),anyString())).thenReturn(vulnMap);
-        
-        PowerMockito.mockStatic(ESManager.class);
-        doNothing().when(ESManager.class);
-        
-        ESManager.uploadData(anyString(), anyString(), anyList(), anyString(), anyBoolean());
-        
-       
-        
-        assetGroupStatsCollector.uploadAssetGroupVulnCompliance(Arrays.asList("pacman"));
-    }
+  
 
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testUploadAssetGroupCertCompliance() throws Exception{
-        PowerMockito.mockStatic(AssetGroupUtil.class);
-        Map<String,Object> comSummaryMap = new HashMap<>();
-        comSummaryMap.put("total", 1345l);
-        comSummaryMap.put("compliant", 1000l);
-        comSummaryMap.put("noncompliant", 345l);
-        when(AssetGroupUtil.fetchCertSummary(anyString(),anyString(),anyString())).thenReturn(comSummaryMap);
-        
-        PowerMockito.mockStatic(ESManager.class);
-        doNothing().when(ESManager.class);
-        ESManager.uploadData(anyString(), anyString(), anyList(), anyString(), anyBoolean());
-        
-        assetGroupStatsCollector.uploadAssetGroupCertCompliance(Arrays.asList("pacman"));
-    }
-    
+  
     @SuppressWarnings("unchecked")
     @Test
     public void testUploadAssetGroupTagCompliance() throws Exception{
@@ -116,23 +83,7 @@ public class AssetGroupStatsCollectorTest {
         assetGroupStatsCollector.uploadAssetGroupRuleCompliance(assetGroups);
     }
     
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testUploadAssetGroupPatchingCompliance() throws Exception{
-        PowerMockito.mockStatic(AssetGroupUtil.class);
-        Map<String,Object> patchingMap = new HashMap<>();
-        patchingMap.put("unpatched_instances", 4463);
-        patchingMap.put("patched_instances", 1368);
-        patchingMap.put("total_instances", 5831);
-        patchingMap.put("patching_percentage", 23);
-        when(AssetGroupUtil.fetchPatchingCompliance(anyString(),anyString(),anyString())).thenReturn(patchingMap);
-        
-        PowerMockito.mockStatic(ESManager.class);
-        doNothing().when(ESManager.class);
-        ESManager.uploadData(anyString(), anyString(), anyList(), anyString(), anyBoolean());
-        
-        assetGroupStatsCollector.uploadAssetGroupPatchingCompliance(Arrays.asList("pacman"));
-    }
+  
     
     @SuppressWarnings("unchecked")
     @Test
@@ -160,28 +111,7 @@ public class AssetGroupStatsCollectorTest {
         assetGroupStatsCollector.uploadAssetGroupCompliance(assetGroups);
     }
     
-    @SuppressWarnings("unchecked")
-    @Test
-    public void testUploadAssetGroupVulnStats() throws Exception{
-        PowerMockito.mockStatic(AssetGroupUtil.class);
-        List<Map<String,Object>>  returnList = new ArrayList<>();
-        Map<String,Object> vulnInfo = new HashMap<>();
-        vulnInfo.put("tags.Application", "pacman");
-        vulnInfo.put("tags.Environment", "Production");
-        vulnInfo.put("severitylevel", "S3");
-        returnList.add(vulnInfo);
-        when(AssetGroupUtil.fetchVulnDistribution(anyString(),anyString(),anyString())).thenReturn(returnList);
-        
-        PowerMockito.mockStatic(ESManager.class);
-        doNothing().when(ESManager.class);
-        ESManager.uploadData(anyString(), anyString(), anyList(), anyString(), anyBoolean());
-        
-        Map<String, List<String>> assetGroups = new HashMap<>();
-        List<String> domains = new ArrayList<>();
-        domains.add("infra");
-        assetGroups.put("pacman", domains);
-        assetGroupStatsCollector.uploadAssetGroupVulnStats(Arrays.asList("pacman"));
-    }
+ 
     
     @SuppressWarnings("unchecked")
     @Test
@@ -256,26 +186,13 @@ public class AssetGroupStatsCollectorTest {
         ESManager.createType(anyString(),anyString(),anyList());
         
         assetGroupStatsCollector = PowerMockito.spy(assetGroupStatsCollector);
-      
         doNothing().when(assetGroupStatsCollector).uploadAssetGroupRuleCompliance(anyMap());
-        doNothing().when(assetGroupStatsCollector).uploadAssetGroupVulnCompliance(anyList());
         doNothing().when(assetGroupStatsCollector).uploadAssetGroupCountStats(anyList());
-        doNothing().when(assetGroupStatsCollector).uploadAssetGroupPatchingCompliance(anyList());
-        doNothing().when(assetGroupStatsCollector).uploadAssetGroupVulnStats(anyList());
-       
         doNothing().when(assetGroupStatsCollector).uploadAssetGroupCompliance(anyMap());
-       
-        doNothing().when(assetGroupStatsCollector).uploadAssetGroupCertCompliance(anyList());
         doNothing().when(assetGroupStatsCollector).uploadAssetGroupTagCompliance(anyList());
         doNothing().when(assetGroupStatsCollector).uploadAssetGroupIssues(anyMap());
-       
         assetGroupStatsCollector.collectAssetGroupStats();
-       
-        
-       
-        
-        
-       
+      
     }
 }
 

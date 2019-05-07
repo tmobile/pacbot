@@ -202,6 +202,7 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.BucketTaggingConfiguration;
 import com.amazonaws.services.s3.model.BucketVersioningConfiguration;
+import com.amazonaws.services.s3.model.BucketWebsiteConfiguration;
 import com.amazonaws.services.s3.model.GetBucketEncryptionResult;
 import com.amazonaws.services.s3.model.ServerSideEncryptionConfiguration;
 import com.amazonaws.services.s3.model.Tag;
@@ -702,7 +703,6 @@ public class InventoryUtil {
 
 					List<ClassicELBVH> classicElbList = new ArrayList<>();
 					if( !elbListTemp.isEmpty() ){
-						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : Classic ELB "+region.getName() + " >> "+elbListTemp.size());
 						List<String> elbNames = elbListTemp.stream().map(elb -> { return elb.getLoadBalancerName();}).collect(Collectors.toList());
 						List<TagDescription> tagDescriptions = new ArrayList<>();
 						List<String> elbNamesTemp = new ArrayList<>();
@@ -719,30 +719,37 @@ public class InventoryUtil {
 						if(!elbNamesTemp.isEmpty())
 							tagDescriptions.addAll(elbClient.describeTags( new com.amazonaws.services.elasticloadbalancing.model.DescribeTagsRequest().withLoadBalancerNames(elbNamesTemp)).getTagDescriptions());
 
-						elbListTemp.parallelStream().forEach(elb->	{
+						elbListTemp.stream().forEach(elb->	{
 								List<List<com.amazonaws.services.elasticloadbalancing.model.Tag>> tagsInfo =  tagDescriptions.stream().filter(tag -> tag.getLoadBalancerName().equals( elb.getLoadBalancerName())).map(x-> x.getTags()).collect(Collectors.toList());
 								List<com.amazonaws.services.elasticloadbalancing.model.Tag> tags = new ArrayList<>();
+								if(!tagsInfo.isEmpty())
+									tags = tagsInfo.get(0);
 								//****** Changes For Federated Rules Start ******
 								String accessLogBucketName = "";
 							    boolean accessLog = false;
 							    String name = elb.getLoadBalancerName();
 								if (name != null) {
-									com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancing classicElbClient = com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClientBuilder.standard().
-										 	withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
+									try{
+										com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancing classicElbClient = com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClientBuilder.standard().
+											 	withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 
-									com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancerAttributesRequest classicELBDescReq = new com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancerAttributesRequest().withLoadBalancerName(name) ;
-									accessLogBucketName = classicElbClient.describeLoadBalancerAttributes(classicELBDescReq).getLoadBalancerAttributes().getAccessLog().getS3BucketName();
-									accessLog = classicElbClient.describeLoadBalancerAttributes(classicELBDescReq).getLoadBalancerAttributes().getAccessLog().getEnabled();
+										com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancerAttributesRequest classicELBDescReq = new com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancerAttributesRequest().withLoadBalancerName(name) ;
+										accessLogBucketName = classicElbClient.describeLoadBalancerAttributes(classicELBDescReq).getLoadBalancerAttributes().getAccessLog().getS3BucketName();
+										accessLog = classicElbClient.describeLoadBalancerAttributes(classicELBDescReq).getLoadBalancerAttributes().getAccessLog().getEnabled();
+									}catch(Exception e){
+										// Do nothing...
 									}
+									
+								}
 								//****** Changes For Federated Rules End ******
-								if(!tagsInfo.isEmpty())
-									tags = tagsInfo.get(0);
 								synchronized(classicElbList){
 									classicElbList.add(new ClassicELBVH(elb,tags, accessLogBucketName, accessLog));
 								}
 							});
 						elbList.put(accountId+delimiter+accountName+delimiter+region.getName(),classicElbList);
 					}
+					
+					log.debug(InventoryConstants.ACCOUNT + accountId + " Type : Classic ELB "+region.getName() + " >> "+classicElbList.size());
 
 
 				}
@@ -1051,23 +1058,12 @@ public class InventoryUtil {
 			String bucketRegion ="";
 			BucketVersioningConfiguration versionconfig = null;
 			List<Tag> tags = new ArrayList<>();
+			boolean hasWebSiteConfiguration = false;
 			try{
-				String bucketEncryp = null;
-				String DPCvalue = "";
 				String bucketLocation = amazonS3Client.getBucketLocation(bucket.getName());
 				bucketRegion = com.amazonaws.services.s3.model.Region.fromValue(bucketLocation).toAWSRegion().getName();
 				AmazonS3 s3Client = regionS3map.get(bucketRegion);
 				versionconfig =  s3Client.getBucketVersioningConfiguration(bucket.getName());
-				//****** Changes For Federated Rules Start ******
-				//Bucket Encryption
-				GetBucketEncryptionResult buckectEncry = s3Client.getBucketEncryption(bucket.getName());
-				if (buckectEncry != null) {
-					ServerSideEncryptionConfiguration sseBucketEncryp = buckectEncry.getServerSideEncryptionConfiguration();
-					if (sseBucketEncryp != null && sseBucketEncryp.getRules() != null) {
-						bucketEncryp = sseBucketEncryp.getRules().get(0).getApplyServerSideEncryptionByDefault()
-								.getSSEAlgorithm();
-					}
-				}
 				BucketTaggingConfiguration tagConfig = s3Client.getBucketTaggingConfiguration(bucket.getName());
 				if(tagConfig!=null){
 					List<TagSet> tagSets = tagConfig.getAllTagSets();
@@ -1077,21 +1073,24 @@ public class InventoryUtil {
 						while(it.hasNext()){
 							Entry<String,String> tag = it.next();
 							tags.add(new Tag(tag.getKey(),tag.getValue()));
-							//Allowing only DPC tags value to pass in S3 bucket
-							if(tag.getKey().contains("DPC")) {
-								DPCvalue = tag.getValue();
-							}
 						}
 					}
 				}
+				String bucketEncryp = fetchS3EncryptInfo(bucket, s3Client);
+				BucketWebsiteConfiguration bucketWebsiteConfiguration = s3Client
+                        .getBucketWebsiteConfiguration(bucket.getName());
+				if(bucketWebsiteConfiguration!=null) {
+	                  hasWebSiteConfiguration=true;
+				}
+	              
 				synchronized(buckets){
-					buckets.add(new BucketVH(bucket,bucketRegion,versionconfig, tags, bucketEncryp, DPCvalue));
+					buckets.add(new BucketVH(bucket,bucketRegion,versionconfig, tags, bucketEncryp,hasWebSiteConfiguration));
 				}
 			}
 			catch(AmazonS3Exception e){
 				if("AccessDenied".equals(e.getErrorCode())){
 					log.info("Access Denied for bucket " + bucket.getName());
-					buckets.add(new BucketVH(bucket,"",versionconfig, tags, null, null));
+					buckets.add(new BucketVH(bucket,"",versionconfig, tags, null,hasWebSiteConfiguration));
 				}else{
 					log.info("Exception fetching S3 Bucket",e);
 				}
@@ -1106,6 +1105,25 @@ public class InventoryUtil {
 			s3Map.put(accountId+delimiter+accountName, buckets);
 		}
 		return s3Map;
+	}
+
+
+	private static String fetchS3EncryptInfo(Bucket bucket, AmazonS3 s3Client) {
+		
+		String bucketEncryp = null;
+		try{
+			GetBucketEncryptionResult buckectEncry = s3Client.getBucketEncryption(bucket.getName());
+			if (buckectEncry != null) {
+				ServerSideEncryptionConfiguration sseBucketEncryp = buckectEncry.getServerSideEncryptionConfiguration();
+				if (sseBucketEncryp != null && sseBucketEncryp.getRules() != null) {
+					bucketEncryp = sseBucketEncryp.getRules().get(0).getApplyServerSideEncryptionByDefault()
+							.getSSEAlgorithm();
+				}
+			}
+		}catch(Exception e){
+			// Exception thrown when there is no bucket encryption available.
+		}
+		return bucketEncryp;
 	}
 
 	/**
