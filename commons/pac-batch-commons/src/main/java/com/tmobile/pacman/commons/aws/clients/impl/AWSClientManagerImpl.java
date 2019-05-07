@@ -381,22 +381,31 @@ public class AWSClientManagerImpl implements AWSClientManager {
      */
     private BasicSessionCredentials getTempCredentials(String roleArnWithAdequateAccess, Regions region,
             String roleIdentifierString) throws Exception {
+    	logger.debug("roleIdentifierString {}",region.getName());
     	logger.debug("region {}",region.getName());
     	logger.debug("roleArnWithAdequateAccess {}",roleArnWithAdequateAccess);
-  BasicSessionCredentials temporaryCredentialsForBaseAccount = null;
- 
-	if (!roleArnWithAdequateAccess.contains(CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME))){
 
-		temporaryCredentialsForBaseAccount = getTempCredentialsUsingCredProvider(roleArnWithAdequateAccess, region,
-				new AWSStaticCredentialsProvider(temporaryCredentialsForBaseAccount),
-				PacmanSdkConstants.TEMPORARY_CREDS_VALID_SECONDS - 15);
-		logger.debug("now going to assume role specific to account success");
-	} else {
-		logger.debug("role already present for this account, not going to assume again.");
-	}
+    	AWSCredentialsProvider acp =  new DefaultAWSCredentialsProviderChain();
+    	String baseAccountRoleArn = "arn:aws:iam::"
+                + CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME) + ":"
+                + roleIdentifierString; // get it from Env. variable
+    	BasicSessionCredentials temporaryCredentialsForBaseAccount = getTempCredentialsUsingCredProvider(
+                baseAccountRoleArn, Regions.DEFAULT_REGION, acp, PacmanSdkConstants.TEMPORARY_CREDS_VALID_SECONDS);
+        
+		if (!roleArnWithAdequateAccess.contains(CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME))){
 
+			temporaryCredentialsForBaseAccount = getTempCredentialsUsingCredProvider(roleArnWithAdequateAccess, region,
+					new AWSStaticCredentialsProvider(temporaryCredentialsForBaseAccount),
+					PacmanSdkConstants.TEMPORARY_CREDS_VALID_SECONDS - 15);
+			logger.debug("now going to assume role specific to account success");
+		} else {
+			logger.debug("role already present for this account, not going to assume again.");
+		}
+      
 
-  return temporaryCredentialsForBaseAccount;
+        return temporaryCredentialsForBaseAccount;
+    	
+    	
 }
 
     /**
