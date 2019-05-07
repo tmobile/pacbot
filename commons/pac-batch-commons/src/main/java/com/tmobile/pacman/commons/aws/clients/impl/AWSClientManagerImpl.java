@@ -381,29 +381,79 @@ public class AWSClientManagerImpl implements AWSClientManager {
      */
     private BasicSessionCredentials getTempCredentials(String roleArnWithAdequateAccess, Regions region,
             String roleIdentifierString) throws Exception {
-    	logger.debug("roleIdentifierString {}",region.getName());
+    	logger.debug("roleIdentifierString {}",roleIdentifierString);
     	logger.debug("region {}",region.getName());
     	logger.debug("roleArnWithAdequateAccess {}",roleArnWithAdequateAccess);
 
-    	AWSCredentialsProvider acp =  new DefaultAWSCredentialsProviderChain();
-    	String baseAccountRoleArn = "arn:aws:iam::"
-                + CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME) + ":"
-                + roleIdentifierString; // get it from Env. variable
-    	BasicSessionCredentials temporaryCredentialsForBaseAccount = getTempCredentialsUsingCredProvider(
-                baseAccountRoleArn, Regions.DEFAULT_REGION, acp, PacmanSdkConstants.TEMPORARY_CREDS_VALID_SECONDS);
-        
-		if (!roleArnWithAdequateAccess.contains(CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME))){
+    	AWSCredentialsProvider acp;
+        try {
 
-			temporaryCredentialsForBaseAccount = getTempCredentialsUsingCredProvider(roleArnWithAdequateAccess, region,
-					new AWSStaticCredentialsProvider(temporaryCredentialsForBaseAccount),
-					PacmanSdkConstants.TEMPORARY_CREDS_VALID_SECONDS - 15);
-			logger.debug("now going to assume role specific to account success");
-		} else {
-			logger.debug("role already present for this account, not going to assume again.");
-		}
-      
+            acp = new ProfileCredentialsProvider(PacmanSdkConstants.PACMAN_DEV_PROFILE_NAME);
+
+            acp.getCredentials();// to make sure profile exists
+
+            logger.info("Dev environment detected, due to presense of aws credentials profile named -- >"
+
+                    + PacmanSdkConstants.PACMAN_DEV_PROFILE_NAME);
+
+        } catch (Exception e) {
+
+            logger.info("non dev environment detected, will use default provider chain");
+
+            acp = new DefaultAWSCredentialsProviderChain();
+
+        }
+
+        // assume role on base account which has permission to assume roles in
+
+        // all other accounts //***REMOVED***
+
+        logger.debug("base ac#-->" + CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME));
+
+        String baseAccountRoleArn = "arn:aws:iam::"
+
+                + CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME) + ":"
+
+                + roleIdentifierString; // get it from Env. variable
+
+        logger.debug("container role is going to assume " + baseAccountRoleArn);
+
+        BasicSessionCredentials temporaryCredentialsForBaseAccount = getTempCredentialsUsingCredProvider(
+
+                baseAccountRoleArn, Regions.DEFAULT_REGION, acp, PacmanSdkConstants.TEMPORARY_CREDS_VALID_SECONDS);
+
+        logger.debug("container role is going to assume " + baseAccountRoleArn + " success");
+
+        logger.debug("now pac ro now going to assume role specific to account");
+
+        // now we have base account role, assume required account role now,
+
+        // reducing the TTL by 15 secs , assuming parent credentials will expire
+
+        // 15 secs earlier as created earlier
+
+        // do this only if target account is not same as base account
+
+        if(!roleArnWithAdequateAccess.contains(CommonUtils.getEnvVariableValue(PacmanSdkConstants.BASE_AWS_ACCOUNT_ENV_VAR_NAME)))
+
+        {
+
+            temporaryCredentialsForBaseAccount = getTempCredentialsUsingCredProvider(roleArnWithAdequateAccess, region,
+
+                new AWSStaticCredentialsProvider(temporaryCredentialsForBaseAccount),
+
+                PacmanSdkConstants.TEMPORARY_CREDS_VALID_SECONDS - 15);
+
+            logger.debug("now pac ro now going to assume role specific to account success");
+
+        }else{
+
+            logger.debug("role already present for this account, not going to assume again.");
+
+        }
 
         return temporaryCredentialsForBaseAccount;
+
     	
     	
 }
