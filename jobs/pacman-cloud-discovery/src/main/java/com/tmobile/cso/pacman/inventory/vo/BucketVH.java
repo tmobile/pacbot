@@ -44,9 +44,9 @@ public class BucketVH {
 
 	/** The Bucket Encryption. */
     String bucketEncryp;
+    
+    Boolean websiteConfiguration;
 
-    /** The DPC Value. */
-    String DPCvalue;
 
 	/**
 	 * Instantiates a new bucket VH.
@@ -56,13 +56,13 @@ public class BucketVH {
 	 * @param versionConfig the version config
 	 * @param tags the tags
 	 */
-	public BucketVH(Bucket bucket,String location,BucketVersioningConfiguration versionConfig, List<Tag> tags, String bucketEncryp, String DPCvalue){
+	public BucketVH(Bucket bucket,String location,BucketVersioningConfiguration versionConfig, List<Tag> tags, String bucketEncryp, boolean websiteConfiguration){
 		this.bucket = bucket;
 		this.location = location;
 		this.versionStatus = versionConfig==null?"":versionConfig.getStatus();
 		this.mfaDelete =  versionConfig==null?null:versionConfig.isMfaDeleteEnabled();
 		this.tags = tags;
 		this.bucketEncryp = bucketEncryp;
-        this.DPCvalue = DPCvalue;
+		this.websiteConfiguration = websiteConfiguration;
 	}
 }
