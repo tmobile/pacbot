@@ -48,7 +48,7 @@ class ApplicationLoadBalancer(LoadBalancerResource):
     def get_api_server_url(cls, service):
         return "%s/%s" % (cls.get_api_base_url(), service)
 
-    def _get_printable_abs_url(dns_name):
+    def _get_printable_abs_url(self, dns_name):
         """
         This function returns the absolute URL of the domain ie. with http/https
 
