@@ -791,18 +791,21 @@ CREATE TABLE IF NOT EXISTS `pac_config_key_metadata` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
-CREATE TABLE IF NOT EXISTS `pac_config_properties` (
-  `cfkey` text COLLATE utf8_bin,
-  `value` text COLLATE utf8_bin,
-  `application` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `profile` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `label` varchar(50) COLLATE utf8_bin DEFAULT NULL,
-  `createdBy` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `createdDate` varchar(20) COLLATE utf8_bin DEFAULT NULL,
-  `modifiedBy` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `modifiedDate` varchar(20) COLLATE utf8_bin DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-
+CREATE TABLE IF NOT EXISTS pac_config_properties
+(
+   cfkey varchar(250),
+   value text,
+   application varchar(50),
+   profile varchar(15),
+   label varchar(10),
+   createdBy varchar(200),
+   createdDate varchar(50),
+   modifiedBy varchar(200),
+   modifiedDate varchar(50)
+);
+/* ALter statement for existing installations */
+alter table pac_config_properties modify column cfkey varchar(250),modify column application varchar(50), modify column profile varchar(15), modify  column label varchar(10);
+alter table pac_config_properties add constraint unique_key UNIQUE (application,cfkey,profile,label);
 
 CREATE TABLE IF NOT EXISTS pacman_field_override
 (
