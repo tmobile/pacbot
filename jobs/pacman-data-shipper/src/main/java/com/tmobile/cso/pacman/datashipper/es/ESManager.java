@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
+ * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
+ * License for the specific language governing permissions and limitations under
+ * the License.
+ ******************************************************************************/
 package com.tmobile.cso.pacman.datashipper.es;
 
 import java.io.IOException;
@@ -28,6 +43,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
+import com.google.gson.JsonParser;
 import com.tmobile.cso.pacman.datashipper.config.ConfigManager;
 import com.tmobile.cso.pacman.datashipper.util.Constants;
 import com.tmobile.cso.pacman.datashipper.util.Util;
@@ -49,6 +65,11 @@ public class ESManager implements Constants {
     /** The log. */
     private static final Logger LOGGER = LoggerFactory.getLogger(ESManager.class);
     
+    /**
+     * Gets the ES port.
+     *
+     * @return the ES port
+     */
     private static int getESPort(){
         try{
             return Integer.parseInt(System.getProperty("elastic-search.port"));
@@ -71,12 +92,10 @@ public class ESManager implements Constants {
     /**
      * Upload data.
      *
-     * @param index
-     *            the index
-     * @param type
-     *            the type
-     * @param docs
-     *            the docs
+     * @param index            the index
+     * @param type            the type
+     * @param docs            the docs
+     * @param loaddate the loaddate
      * @return the map
      */
     public static Map<String, Object> uploadData(String index, String type, List<Map<String, String>> docs, String loaddate) {
@@ -97,13 +116,10 @@ public class ESManager implements Constants {
 
                 String id = Util.concatenate(doc, _keys, "_");
                 StringBuilder _doc = new StringBuilder(createESDoc(doc));
-                _doc.deleteCharAt(_doc.length() - 1); // }
+                _doc.deleteCharAt(_doc.length() - 1); 
                 _doc.append(",\"latest\":true,\"_loaddate\":\"" + loaddate + "\" }");
-
-                if (_doc != null) {
-                    bulkRequest.append(String.format(actionTemplate, index, type, id));
-                    bulkRequest.append(_doc + "\n");
-                }
+                bulkRequest.append(String.format(actionTemplate, index, type, id));
+                bulkRequest.append(_doc + "\n");
                 i++;
                 if (i % 1000 == 0 || bulkRequest.toString().getBytes().length / (1024 * 1024) > 5) {
                     bulkUpload(errors, bulkRequest);
@@ -124,13 +140,20 @@ public class ESManager implements Constants {
 
     }
 
+    /**
+     * Bulk upload.
+     *
+     * @param errors the errors
+     * @param bulkRequest the bulk request
+     */
     private static void bulkUpload(List<String> errors, StringBuilder bulkRequest) {
         try {
             Response resp = invokeAPI("POST", "/_bulk", bulkRequest.toString());
             String responseStr = EntityUtils.toString(resp.getEntity());
             if (responseStr.contains("\"errors\":true")) {
-                LOGGER.error(responseStr);
-                errors.add(responseStr);
+                List<String> errRecords = Util.retrieveErrorRecords(responseStr);
+                LOGGER.error("Upload failed for {}",errRecords);
+                errors.addAll(errRecords);
             }
         } catch (Exception e) {
             LOGGER.error("Bulk upload failed",e);
@@ -221,6 +244,12 @@ public class ESManager implements Constants {
 
     }
 
+    /**
+     * Bulk upload.
+     *
+     * @param endpoint the endpoint
+     * @param bulkRequest the bulk request
+     */
     private static void bulkUpload(String endpoint, StringBuilder bulkRequest) {
         try { 
             Response resp = invokeAPI("POST", endpoint, bulkRequest.toString());
@@ -275,14 +304,11 @@ public class ESManager implements Constants {
     /**
      * Invoke API.
      *
-     * @param method
-     *            the method
-     * @param endpoint
-     *            the endpoint
-     * @param payLoad
-     *            the pay load
+     * @param method            the method
+     * @param endpoint            the endpoint
+     * @param payLoad            the pay load
      * @return the response
-     * @throws IOException 
+     * @throws IOException Signals that an I/O exception has occurred.
      */
     public static Response invokeAPI(String method, String endpoint, String payLoad) throws IOException {
         String uri = endpoint;
@@ -362,8 +388,8 @@ public class ESManager implements Constants {
     /**
      * Configure index and types.
      *
-     * @param ds
-     *            the ds
+     * @param ds            the ds
+     * @param errorList the error list
      */
     public static void configureIndexAndTypes(String ds, List<Map<String, String>> errorList) {
 
@@ -527,8 +553,8 @@ public class ESManager implements Constants {
     /**
      * Creates the index.
      *
-     * @param indexName
-     *            the index name
+     * @param indexName            the index name
+     * @param errorList the error list
      */
     public static void createIndex(String indexName, List<Map<String, String>> errorList) {
         if (!indexExists(indexName)) {
@@ -549,10 +575,9 @@ public class ESManager implements Constants {
     /**
      * Creates the type.
      *
-     * @param indexName
-     *            the index name
-     * @param typename
-     *            the typename
+     * @param indexName            the index name
+     * @param typename            the typename
+     * @param errorList the error list
      */
     public static void createType(String indexName, String typename, List<Map<String, String>> errorList) {
         if (!typeExists(indexName, typename)) {
@@ -644,7 +669,17 @@ public class ESManager implements Constants {
         }
     }
     
-    public static void updateLoadDate(String index, String type, String accountId, String region, String loaddate,boolean checkLatest) {
+    /**
+     * Update load date.
+     *
+     * @param index the index
+     * @param type the type
+     * @param accountId the account id
+     * @param region the region
+     * @param loaddate the loaddate
+     * @param checkLatest the check latest
+     */
+    public static long updateLoadDate(String index, String type, String accountId, String region, String loaddate,boolean checkLatest) {
     	LOGGER.info("Error records are handled for Account : {} Type : {} Region: {} ",accountId,type,region );
     	StringBuilder updateJson = new StringBuilder("{\"script\":{\"inline\":\"ctx._source._loaddate= '");
     	updateJson.append(loaddate).append("'\"},\"query\":{\"bool\":{\"must\":[");
@@ -662,9 +697,12 @@ public class ESManager implements Constants {
     	}
     	updateJson.append("]}}}");
         try {
-            invokeAPI("POST", index + "/" + type + "/" + "_update_by_query", updateJson.toString());
+        	Response updateInfo = invokeAPI("POST", index + "/" + type + "/" + "_update_by_query", updateJson.toString());
+        	String updateInfoJson = EntityUtils.toString(updateInfo.getEntity());
+        	return new JsonParser().parse(updateInfoJson).getAsJsonObject().get("updated").getAsLong();
         } catch (IOException e) {
             LOGGER.error("Error in updateLoadDate",e);
         }
+        return 0l;
     }
 }

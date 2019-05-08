@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.tmobile.pacman.api.admin.domain.Response;
+import com.tmobile.pacman.api.admin.repository.service.AdminService;
 import com.tmobile.pacman.api.admin.repository.service.JobExecutionManagerService;
 import com.tmobile.pacman.api.admin.repository.service.RuleService;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
@@ -56,6 +57,9 @@ public class AdminController {
 	
 	@Autowired
     private JobExecutionManagerService jobService;
+	
+	@Autowired
+	private AdminService adminService;
 
 	/**
      * API to enable disable rule or job
@@ -86,4 +90,36 @@ public class AdminController {
 			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
 		}
 	}
+	
+	@ApiOperation(httpMethod = "POST", value = "API to shutdown all operations", response = Response.class, consumes = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(path = "/operations", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> shutDownAllOperations(@AuthenticationPrincipal Principal user,
+			@ApiParam(value = "select operation ", required = true) @RequestParam("operation") Operation operation,
+			@ApiParam(value = "select job to perform operation ", required = true) @RequestParam("job") Job job) {
+		try {
+			return ResponseUtils.buildSucessResponse(adminService.shutDownAlloperations(operation.toString(),job.toString()));
+		} catch (Exception exception) {
+			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
+			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
+		}
+	}
+	
+	@ApiOperation(httpMethod = "GET", value = "API to get status of all jobs", response = Response.class, produces = MediaType.APPLICATION_JSON_VALUE)
+	@RequestMapping(path = "/system/status", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Object> statusOfSystem() {
+		try {
+			return ResponseUtils.buildSucessResponse(adminService.statusOfSystem());
+		} catch (Exception exception) {
+			log.error(UNEXPECTED_ERROR_OCCURRED, exception);
+			return ResponseUtils.buildFailureResponse(new Exception(UNEXPECTED_ERROR_OCCURRED), exception.getMessage());
+		}
+	}
+}
+
+enum Job {
+	all,job,rule;
+}
+
+enum Operation {
+	enable,disable;
 }

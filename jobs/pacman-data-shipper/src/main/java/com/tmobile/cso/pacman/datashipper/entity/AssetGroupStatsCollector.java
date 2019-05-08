@@ -76,12 +76,8 @@ public class AssetGroupStatsCollector implements Constants{
 
         ESManager.createIndex(AG_STATS, errorList);
         ESManager.createType(AG_STATS, "count_type", errorList);
-        ESManager.createType(AG_STATS, "count_vuln", errorList);
-        ESManager.createType(AG_STATS, "patching", errorList);
         ESManager.createType(AG_STATS, "issuecompliance", errorList);
         ESManager.createType(AG_STATS, "compliance", errorList);
-        ESManager.createType(AG_STATS, "vulncompliance", errorList);
-        ESManager.createType(AG_STATS, "certcompliance", errorList);
         ESManager.createType(AG_STATS, "tagcompliance", errorList);
         ESManager.createType(AG_STATS, "issues", errorList);
 
@@ -104,35 +100,7 @@ public class AssetGroupStatsCollector implements Constants{
             }
         });
 
-        executor.execute(() -> {
-            try {
-                uploadAssetGroupVulnStats(assetGroups);
-            } catch (Exception e) {
-                log.error("Exception in uploadAssetGroupVulnStats " , e);
-                Map<String,String> errorMap = new HashMap<>();
-                errorMap.put(ERROR, "Exception in uploadAssetGroupVulnStats");
-                errorMap.put(ERROR_TYPE, WARN);
-                errorMap.put(EXCEPTION, e.getMessage());
-                synchronized(errorList){
-                    errorList.add(errorMap);
-                }
-            }
-        });
-
-        executor.execute(() -> {
-            try {
-                uploadAssetGroupPatchingCompliance(assetGroups);
-            } catch (Exception e) {
-                log.error("Exception in uploadAssetGroupPatchingCompliance " , e);
-                Map<String,String> errorMap = new HashMap<>();
-                errorMap.put(ERROR, "Exception in uploadAssetGroupPatchingCompliance");
-                errorMap.put(ERROR_TYPE, WARN);
-                errorMap.put(EXCEPTION, e.getMessage());
-                synchronized(errorList){
-                    errorList.add(errorMap);
-                }
-            }
-        });
+     
 
         executor.execute(() -> {
             try {
@@ -163,35 +131,9 @@ public class AssetGroupStatsCollector implements Constants{
             }
         });
 
-        executor.execute(() -> {
-            try {
-                uploadAssetGroupVulnCompliance(assetGroups);
-            } catch (Exception e) {
-                log.error("Exception in uploadAssetGroupVulnCompliance " , e);
-                Map<String,String> errorMap = new HashMap<>();
-                errorMap.put(ERROR, "Exception in uploadAssetGroupVulnCompliance");
-                errorMap.put(ERROR_TYPE, WARN);
-                errorMap.put(EXCEPTION, e.getMessage());
-                synchronized(errorList){
-                    errorList.add(errorMap);
-                }
-            }
-        });
 
-        executor.execute(() -> {
-            try {
-                uploadAssetGroupCertCompliance(assetGroups);
-            } catch (Exception e) {
-                log.error("Exception in uploadAssetGroupCertCompliance " , e);
-                Map<String,String> errorMap = new HashMap<>();
-                errorMap.put(ERROR, "Exception in uploadAssetGroupCertCompliance");
-                errorMap.put(ERROR_TYPE, WARN);
-                errorMap.put(EXCEPTION, e.getMessage());
-                synchronized(errorList){
-                    errorList.add(errorMap);
-                }
-            }
-        });
+
+ 
 
         executor.execute(() -> {
             try {
@@ -234,74 +176,9 @@ public class AssetGroupStatsCollector implements Constants{
         return AuthManager.getToken();
     }
 
-    /**
-     * Upload asset group vuln compliance.
-     *
-     * @param assetGroups
-     *            the asset groups
-     * @throws Exception 
-     */
-    public void uploadAssetGroupVulnCompliance(List<String> assetGroups) throws Exception {
-        
-        
-        log.info("    Start Collecing vuln compliance");
-        List<Map<String, Object>> docs = new ArrayList<>();
-        for (String ag : assetGroups) {
-            try {
-                Map<String, Object> doc = AssetGroupUtil.fetchVulnSummary(COMP_API_URL, ag, getToken());
-                if (!doc.isEmpty()) {
-                    doc.put("ag", ag);
-                    doc.put("date", CURR_DATE);
-                    doc.put("@id", Util.getUniqueID(ag + CURR_DATE));
-                    docs.add(doc);
-                }
-            } catch (Exception e) {
-                log.error("Exception in uploadAssetGroupVulnCompliance" , e);
-                Map<String,String> errorMap = new HashMap<>();
-                errorMap.put(ERROR, "Exception in uploadAssetGroupVulnCompliance for Asset Group"+ag);
-                errorMap.put(ERROR_TYPE, WARN);
-                errorMap.put(EXCEPTION, e.getMessage());
-                synchronized(errorList){
-                    errorList.add(errorMap);
-                }
-            }
-        }
-        ESManager.uploadData(AG_STATS, "vulncompliance", docs, "@id", false);
-        log.info("    End Collecing vuln compliance");
-    }
+ 
 
-    /**
-     * Upload asset group cert compliance.
-     *
-     * @param assetGroups
-     *            the asset groups
-     */
-    public void uploadAssetGroupCertCompliance(List<String> assetGroups) throws Exception {
-        log.info("    Start Collecing cert compliance");
-        List<Map<String, Object>> docs = new ArrayList<>();
-        for (String ag : assetGroups) {
-            try {
-                Map<String, Object> doc = AssetGroupUtil.fetchCertSummary(COMP_API_URL, ag, getToken());
-                if (!doc.isEmpty()) {
-                    doc.put("ag", ag);
-                    doc.put("date", CURR_DATE);
-                    doc.put("@id", Util.getUniqueID(ag + CURR_DATE));
-                    docs.add(doc);
-                }
-            } catch (Exception e) {
-                log.error("Exception in uploadAssetGroupVulnCompliance " ,e);
-                Map<String,String> errorMap = new HashMap<>();
-                errorMap.put(ERROR, "Exception in uploadAssetGroupCertCompliance for Asset Group"+ag);
-                errorMap.put(ERROR_TYPE, WARN);
-                errorMap.put(EXCEPTION, e.getMessage());
-                synchronized(errorList){
-                    errorList.add(errorMap);
-                }
-            }
-        }
-        ESManager.uploadData(AG_STATS, "certcompliance", docs, "@id", false);
-        log.info("    End Collecing cert compliance");
-    }
+ 
 
     /**
      * Upload asset group tag compliance.
@@ -373,38 +250,7 @@ public class AssetGroupStatsCollector implements Constants{
         log.info("    End Collecing Rule  compliance");
     }
 
-    /**
-     * Upload asset group patching compliance.
-     *
-     * @param assetGroups
-     *            the asset groups
-     */
-    public void uploadAssetGroupPatchingCompliance(List<String> assetGroups) throws Exception {
-        log.info("    Start Collecing patching compliance");
-        List<Map<String, Object>> docs = new ArrayList<>();
-        for (String ag : assetGroups) {
-            try {
-                Map<String, Object> doc = AssetGroupUtil.fetchPatchingCompliance(COMP_API_URL, ag,getToken());
-                if (!doc.isEmpty()) {
-                    doc.put("ag", ag);
-                    doc.put("date", CURR_DATE);
-                    doc.put("@id", Util.getUniqueID(ag + CURR_DATE));
-                    docs.add(doc);
-                }
-            } catch (Exception e) {
-                log.error("Exception in uploadAssetGroupPatchingCompliance" , e);
-                Map<String,String> errorMap = new HashMap<>();
-                errorMap.put(ERROR, "Exception in uploadAssetGroupPatchingCompliance for Asset Group"+ag);
-                errorMap.put(ERROR_TYPE, WARN);
-                errorMap.put(EXCEPTION, e.getMessage());
-                synchronized(errorList){
-                    errorList.add(errorMap);
-                }
-            }
-        }
-        ESManager.uploadData(AG_STATS, "patching", docs, "@id", false);
-        log.info("    End Collecing patching compliance");
-    }
+ 
 
     /**
      * Upload asset group compliance.
@@ -441,39 +287,7 @@ public class AssetGroupStatsCollector implements Constants{
         log.info("    End Collecing  compliance");
     }
 
-    /**
-     * Upload asset group vuln stats.
-     *
-     * @param assetGroups
-     *            the asset groups
-     */
-    public void uploadAssetGroupVulnStats(List<String> assetGroups) throws Exception {
-        log.info("    Start Collecting vuln info");
-        List<Map<String, Object>> docs = new ArrayList<>();
-        for (String ag : assetGroups) {
-            try {
-                List<Map<String, Object>> docList = AssetGroupUtil.fetchVulnDistribution(COMP_API_URL, ag,getToken());
-                docList.parallelStream().forEach(doc -> {
-                    doc.put("ag", ag);
-                    doc.put("date", CURR_DATE);
-                    doc.put("@id", Util.getUniqueID(ag + doc.get("tags.Application") + doc.get("tags.Environment")
-                            + doc.get("severitylevel") + CURR_DATE));
-                });
-                docs.addAll(docList);
-            } catch (Exception e) {
-                log.error("Exception in uploadAssetGroupVulnStats" , e);
-                Map<String,String> errorMap = new HashMap<>();
-                errorMap.put(ERROR, "Exception in uploadAssetGroupVulnStats for Asset Group"+ag);
-                errorMap.put(ERROR_TYPE, WARN);
-                errorMap.put(EXCEPTION, e.getMessage());
-                synchronized(errorList){
-                    errorList.add(errorMap);
-                }
-            }
-        }
-        ESManager.uploadData(AG_STATS, "count_vuln", docs, "@id", false);
-        log.info("    End Collecting vuln info");
-    }
+ 
 
     /**
      * Need to collect the asset group stats and upload to ES.

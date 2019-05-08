@@ -16,8 +16,11 @@
 package com.tmobile.pacman.publisher.impl;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.http.HttpHost;
 import org.elasticsearch.action.bulk.BulkItemResponse;
@@ -31,12 +34,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.tmobile.pacman.common.AutoFixAction;
 import com.tmobile.pacman.common.PacmanSdkConstants;
 import com.tmobile.pacman.dto.AutoFixTransaction;
 import com.tmobile.pacman.util.CommonUtils;
 import com.tmobile.pacman.util.ESUtils;
 
-// TODO: Auto-generated Javadoc
 // not using the old way , this is the new class to publish data to ES , all old code will be refactored to use this one
 
 /**
@@ -44,6 +47,11 @@ import com.tmobile.pacman.util.ESUtils;
  */
 public class ElasticSearchDataPublisher {
 
+    
+    
+    /** The Constant BULK_INDEX_REQUEST_TEMPLATE. */
+    private static final String BULK_INDEX_REQUEST_TEMPLATE = "{ \"index\" : { \"_index\" : \"%s\", \"parent\" : \"%s\",  \"_type\" : \"%s\"} }%n";
+    
     /** The Constant logger. */
     private static final Logger logger = LoggerFactory.getLogger(ElasticSearchDataPublisher.class);
     
@@ -77,9 +85,10 @@ public class ElasticSearchDataPublisher {
      * Publish auto fix transactions.
      *
      * @param autoFixTrans the auto fix trans
+     * @param ruleParam 
      * @return the int
      */
-    public int publishAutoFixTransactions(List<AutoFixTransaction> autoFixTrans) {
+    public int publishAutoFixTransactions(List<AutoFixTransaction> autoFixTrans, Map<String, String> ruleParam) {
 
         if (autoFixTrans != null && autoFixTrans.size() == 0) {
             return 0;
@@ -87,15 +96,55 @@ public class ElasticSearchDataPublisher {
 
         BulkRequest bulkRequest = new BulkRequest();
         Gson gson = new Gson();
-
+        StringBuffer bulkRequestBody = new StringBuffer();
+        String response = "";
+        List<Map<String, Map>> responseList = new ArrayList<>();
+        String esUrl = ESUtils.getEsUrl();
+        String bulkPostUrl = esUrl + AnnotationPublisher.BULK_WITH_REFRESH_TRUE;
+        final String autoFixType= PacmanSdkConstants.TYPE_FOR_AUTO_FIX_RECORD+"_"+ruleParam.get(PacmanSdkConstants.TARGET_TYPE);
         for (AutoFixTransaction autoFixTransaction : autoFixTrans) {
+            
+            // first post auto fix as child doc of type
+            if(AutoFixAction.AUTOFIX_ACTION_FIX.equals(autoFixTransaction.getAction()))
+            {   
+                if(!ESUtils.isValidType(ESUtils.getEsUrl(),getIndexName(ruleParam),autoFixType)){
+                try {
+                        ESUtils.createMappingWithParent(ESUtils.getEsUrl(),getIndexName(ruleParam),autoFixType, ruleParam.get(PacmanSdkConstants.TARGET_TYPE));
+                } catch (Exception e) {
+                    logger.error("uanble to create child type");
+                }
+            }
+                try{
+                    // parent child document seems to have some issue
+                    bulkRequestBody.append(String.format(BULK_INDEX_REQUEST_TEMPLATE, getIndexName(ruleParam),getDocId(autoFixTransaction), autoFixType));
+                    bulkRequestBody.append(gson.toJson(autoFixTransaction));
+                    bulkRequestBody.append("\n");
+                    if (bulkRequestBody.toString().getBytes().length
+                            / (1024 * 1024) >= PacmanSdkConstants.ES_MAX_BULK_POST_SIZE) {
+                        response = CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString(),new HashMap());
+                        responseList.add(gson.fromJson(response, Map.class));
+                        bulkRequestBody.setLength(0);
+                    }
+                }catch (Exception e) {
+                    logger.error("error occured while indexing auto fix document",e);
+                    autoFixTransaction.setAdditionalInfo("error occured while indexing auto fix document " + e.getMessage());
+                }
+            }
+            // build transaction log
             IndexRequest indexRequest = new IndexRequest(
                     CommonUtils.getPropValue(PacmanSdkConstants.AUTO_FIX_TRAN_INDEX_NAME_KEY),
                     CommonUtils.getPropValue(PacmanSdkConstants.AUTO_FIX_TRAN_TYPE_NAME_KEY));
             indexRequest.source(gson.toJson(autoFixTransaction), XContentType.JSON);
             bulkRequest.add(indexRequest);
         }
-
+        
+        // post the remaining data if available
+            if (bulkRequestBody.length() > 0) {
+                response = CommonUtils.doHttpPost(bulkPostUrl, bulkRequestBody.toString(),new HashMap<>());
+            }
+            responseList.add(gson.fromJson(response, Map.class));
+        
+        // now post transaction log
         try {
             if(null!=client){
                    BulkResponse bulkResponse = client.bulk(bulkRequest);
@@ -111,7 +160,7 @@ public class ElasticSearchDataPublisher {
                                                 + CommonUtils
                                                         .getPropValue(PacmanSdkConstants.AUTO_FIX_TRAN_INDEX_NAME_KEY),
                                         "");
-                                publishAutoFixTransactions(autoFixTrans); // index should be created now
+                                publishAutoFixTransactions(autoFixTrans,ruleParam); // index should be created now
                             } catch (Exception e) {
 
                         logger.error("error creating index", e);
@@ -127,14 +176,30 @@ public class ElasticSearchDataPublisher {
     }
 
     /**
+     * @param autoFixTransaction
+     * @return
+     */
+    private String getDocId(AutoFixTransaction autoFixTransaction) {
+        return autoFixTransaction.getAccountId()+ "_" + autoFixTransaction.getRegion() + "_" + autoFixTransaction.getResourceId();
+    }
+
+    /**
+     * @param ruleParam
+     * @return
+     */
+    private String getIndexName(Map<String, String> ruleParam) {
+        
+        return ruleParam.get(PacmanSdkConstants.DATA_SOURCE_KEY).replace("_all", "") + "_"
+                + ruleParam.get(PacmanSdkConstants.TARGET_TYPE);
+    }
+
+    /**
      * Checks if is index avaialble.
      *
      * @param bulkItemResponses the bulk item responses
      * @return the boolean
      */
     private Boolean isIndexAvaialble(BulkItemResponse[] bulkItemResponses) {
-        // System.out.println(bulkItemResponses[0].getFailureMessage());
-        // System.out.println(bulkItemResponses[0].getFailure().getMessage());
         return null == Arrays.stream(bulkItemResponses)
                 .filter(x -> x.getFailure().getCause().getMessage().contains("no such index")).findAny().orElse(null);
     }
@@ -153,5 +218,5 @@ public class ElasticSearchDataPublisher {
         
         client = null;
     }
-
+    
 }

@@ -36,7 +36,7 @@ class ESCloudWatchLogResourcePolicy(CloudWatchLogResourcePolicy):
 class ESDomain(ElasticsearchDomainResource):
     domain_name = "data"
     elasticsearch_version = "5.5"
-    instance_type = "m4.large.elasticsearch"
+    instance_type = Settings.get('ES_INSTANCE_TYPE', "m4.large.elasticsearch")
     instance_count = 1
     dedicated_master_enabled = False
     zone_awareness_enabled = False
@@ -51,7 +51,7 @@ class ESDomain(ElasticsearchDomainResource):
 
     @classmethod
     def get_http_url_with_port(cls):
-        return "%s:%s" % (cls.get_http_url(), ":80")
+        return "%s:%s" % (cls.get_http_url(), "80")
 
     @classmethod
     def get_http_url(cls):

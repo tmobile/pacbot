@@ -17,19 +17,31 @@
 package com.tmobile.pacman.util;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.reflections.Reflections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Strings;
 import com.tmobile.pacman.commons.autofix.PacmanFix;
 import com.tmobile.pacman.commons.rule.PacmanRule;
+import com.tmobile.pacman.reactors.PacReactor;
+import com.tmobile.pacman.reactors.ReactorShell;
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ReflectionUtils.
  */
 public class ReflectionUtils {
+    
+    
+    /** The Constant logger. */
+    private static final Logger logger = LoggerFactory.getLogger(ReflectionUtils.class);
+    
 
     /**
      * Find associate class.
@@ -98,6 +110,9 @@ public class ReflectionUtils {
             reflections = new Reflections();
         }
         Set<Class<?>> allClass = reflections.getTypesAnnotatedWith(annotationClass);
+        if(allClass.size()>1){
+            logger.error("multiple classes found with @PacmanJob annotation, will pick first in the classpath");
+        }
         for (Class<?> _class : allClass) {
             return _class;
         }
@@ -142,6 +157,55 @@ public class ReflectionUtils {
         }
         // if control is here that means no execute method found in the class
         throw new NoSuchMethodException("unable to find the execute method");
+    }
+
+    /**
+     * @param eventName
+     * @return
+     */
+    public static Set<ReactorShell> findEventHandlers(String eventName) {
+        Reflections reflections = new Reflections("com.tmobile");
+        Set<Class<?>> allReactors = reflections.getTypesAnnotatedWith(PacReactor.class);
+        Object reactorObject;
+        Method reactMethod = null;
+        Method backupMethod = null;
+        Set<ReactorShell>  reactors = new HashSet();
+        for (Class<?> reactor : allReactors) {
+            PacReactor pacReactor = reactor.getAnnotation(PacReactor.class);
+            if (isAMatchingEvent(eventName, pacReactor.eventsofInterest())) {
+                try {
+                        reactorObject = reactor.newInstance();
+                } catch (InstantiationException e) {
+                    logger.error("unable to create reactor" + e.getMessage());continue;
+                } catch (IllegalAccessException e) {
+                    logger.error("unable to create reactor" + e.getMessage());
+                    continue;
+                }
+                // executeMethod =
+                // ReflectionUtils.findEntryMethod(ruleObject,PacmanExecute.class);
+                try {
+                        reactMethod = findAssociatedMethod(reactorObject, "react");
+                        backupMethod = findAssociatedMethod(reactorObject, "backup");
+                        
+                } catch (NoSuchMethodException e) {
+                    logger.error("unable to find method in reactor" + reactor);
+                    continue;
+                }
+                reactors.add(new ReactorShell(pacReactor,reactorObject, reactMethod, backupMethod));
+            }
+        }
+        return reactors;
+    }
+    
+    /**
+     * 
+     * @param eventName
+     * @param events
+     * @return
+     */
+    private static boolean isAMatchingEvent(String eventName, String events) {
+        List<String> eventsofIntrestList = Arrays.asList(events.split("\\s*,\\s*"));// convert comma separated string to array list 
+        return eventsofIntrestList.contains(eventName);
     }
 
 }
