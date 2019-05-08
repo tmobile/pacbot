@@ -11,6 +11,7 @@ from resources.lambda_rule_engine.utils import get_rule_engine_cloudwatch_rules_
 from core.config import Settings
 from core.providers.aws.boto3 import cloudwatch_event
 from core.mixins import MsgMixin
+from resources.pacbot_app.alb import ApplicationLoadBalancer
 import sys
 
 
@@ -24,7 +25,9 @@ class RuleEngineLambdaFunction(LambdaFunctionResource):
     environment = {
         'variables': {
             'JOB_QUEUE': RuleEngineJobQueue.get_input_attr('name'),
-            'JOB_DEFINITION': SubmitAndRuleEngineJobDefinition.get_input_attr('name')
+            'JOB_DEFINITION': SubmitAndRuleEngineJobDefinition.get_input_attr('name'),
+            'CONFIG_CREDENTIALS': "dXNlcjpwYWNtYW4=",
+            'CONFIG_SERVICE_URL': ApplicationLoadBalancer.get_http_url() + "/api/config/rule/prd/latest"
         }
     }
 

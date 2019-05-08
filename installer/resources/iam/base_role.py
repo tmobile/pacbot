@@ -46,11 +46,29 @@ class BaseAWSSupportPolicyAttach(iam.IAMRolePolicyAttachmentResource):
     policy_arn = "arn:aws:iam::aws:policy/AWSSupportAccess"
 
 
-class BaseS3FullAccessPolicyAttach(iam.IAMRolePolicyAttachmentResource):
-    role = BaseRole.get_output_attr('name')
-    policy_arn = "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+class ECSTaskExecutionRolePolicyDocument(iam.IAMPolicyDocumentData):
+    statement = [
+        {
+            "effect": "Allow",
+            "actions": ["ecr:*"],
+            "resources": [
+                "arn:aws:ecr:%s:%s:repository/%s-*" % (Settings.AWS_REGION, str(Settings.AWS_ACCOUNT_ID), Settings.RESOURCE_NAME_PREFIX)
+            ]
+        },
+        {
+            "effect": "Allow",
+            "actions": ["logs:*"],
+            "resources": ["*"]
+        }
+    ]
+
+
+class ECSTaskExecutionRolePolicy(iam.IAMRolePolicyResource):
+    name = "ecs_task_exec"
+    path = '/'
+    policy = ECSTaskExecutionRolePolicyDocument.get_output_attr('json')
 
 
 class BaseECSTaskExecPolicyAttach(iam.IAMRolePolicyAttachmentResource):
     role = BaseRole.get_output_attr('name')
-    policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+    policy_arn = ECSTaskExecutionRolePolicy.get_output_attr('arn')

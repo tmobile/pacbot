@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -28,16 +28,40 @@ public class CloudFrontVH {
 
 	/** The dist summary. */
 	DistributionSummary distSummary;
-	
+
 	/** The tags. */
 	List<Tag> tags;
+
+	/** The bucketName. */
+	String bucketName;
+
+	/** The accessLogEnabled. */
+	boolean accessLogEnabled;
 	
+<<<<<<< HEAD
 	/** The bucketName. */
 	String bucketName;
 	
 	/** The accessLogEnabled. */
 	boolean accessLogEnabled;
 	
+=======
+	/**  Default Root Object for the distribution *. */
+	String defaultRootObject;
+
+	public String getDefaultRootObject() {
+		return defaultRootObject;
+	}
+
+
+
+	public void setDefaultRootObject(String defaultRootObject) {
+		this.defaultRootObject = defaultRootObject;
+	}
+
+
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	/**
 	 * Gets the dist summary.
 	 *
@@ -47,6 +71,8 @@ public class CloudFrontVH {
 		return distSummary;
 	}
 	
+	
+
 	/**
 	 * Sets the dist summary.
 	 *
@@ -55,7 +81,7 @@ public class CloudFrontVH {
 	public void setDistSummary(DistributionSummary distSummary) {
 		this.distSummary = distSummary;
 	}
-	
+
 	/**
 	 * Gets the tags.
 	 *
@@ -64,7 +90,7 @@ public class CloudFrontVH {
 	public List<Tag> getTags() {
 		return tags;
 	}
-	
+
 	/**
 	 * Sets the tags.
 	 *
@@ -89,6 +115,11 @@ public class CloudFrontVH {
 	public void setAccessLogEnabled(boolean accessLogEnabled) {
 		this.accessLogEnabled = accessLogEnabled;
 	}
+<<<<<<< HEAD
 	
 	
+=======
+
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 }

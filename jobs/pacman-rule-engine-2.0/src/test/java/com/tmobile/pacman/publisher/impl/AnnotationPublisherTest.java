@@ -17,8 +17,10 @@
 package com.tmobile.pacman.publisher.impl;
 
 import static org.mockito.Matchers.anyString;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
 
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.junit.Before;
@@ -30,8 +32,10 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.tmobile.pacman.common.PacmanSdkConstants;
 import com.tmobile.pacman.commons.rule.Annotation;
+import com.tmobile.pacman.config.ConfigManager;
 import com.tmobile.pacman.util.CommonUtils;
 import com.tmobile.pacman.util.ESUtils;
+import com.tmobile.pacman.util.ProgramExitUtils;
 import com.tmobile.pacman.util.ReflectionUtils;
 
 // TODO: Auto-generated Javadoc
@@ -41,7 +45,7 @@ import com.tmobile.pacman.util.ReflectionUtils;
  * @author kkumar
  */
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ReflectionUtils.class,ESUtils.class,CommonUtils.class})
+@PrepareForTest({ReflectionUtils.class,ESUtils.class,CommonUtils.class,ConfigManager.class})
 public class AnnotationPublisherTest {
 
     /** The annotation publisher. */
@@ -53,6 +57,9 @@ public class AnnotationPublisherTest {
     @Before
     public void setup(){
         annotationPublisher = new AnnotationPublisher();
+            mockStatic(ConfigManager.class);
+            ConfigManager ConfigManager = PowerMockito.mock(ConfigManager.class);
+    		PowerMockito.when(ConfigManager.getConfigurationsMap()).thenReturn(new Hashtable<String, Object>());
     }
 
 

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -60,6 +60,7 @@ import com.amazonaws.services.cloudformation.model.DescribeStacksResult;
 import com.amazonaws.services.cloudformation.model.Stack;
 import com.amazonaws.services.cloudfront.AmazonCloudFront;
 import com.amazonaws.services.cloudfront.AmazonCloudFrontClientBuilder;
+import com.amazonaws.services.cloudfront.model.DistributionConfig;
 import com.amazonaws.services.cloudfront.model.DistributionList;
 import com.amazonaws.services.cloudfront.model.DistributionSummary;
 import com.amazonaws.services.cloudfront.model.GetDistributionConfigRequest;
@@ -201,6 +202,10 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.BucketTaggingConfiguration;
 import com.amazonaws.services.s3.model.BucketVersioningConfiguration;
+<<<<<<< HEAD
+=======
+import com.amazonaws.services.s3.model.BucketWebsiteConfiguration;
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 import com.amazonaws.services.s3.model.GetBucketEncryptionResult;
 import com.amazonaws.services.s3.model.ServerSideEncryptionConfiguration;
 import com.amazonaws.services.s3.model.Tag;
@@ -262,29 +267,31 @@ import com.tmobile.cso.pacman.inventory.vo.VpcVH;
  * The Class InventoryUtil.
  */
 public class InventoryUtil {
-	
+
 	/** The log. */
 	private static Logger log = LoggerFactory.getLogger(InventoryUtil.class);
-	
+
 	/** The delimiter. */
 	private static String delimiter = FileGenerator.DELIMITER;
-	
+
 	/** The asg max record. */
 	private static int asgMaxRecord = 100;
-	
+
 	/**
 	 * Instantiates a new inventory util.
 	 */
 	private InventoryUtil(){
 	}
-	
-	
+
+
 	/**
 	 * Fetch instances.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
+	 * @param ec2Filters the ec 2 filters
 	 * @return the map
 	 */
 	public static Map<String,List<Instance>> fetchInstances(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName,String ec2Filters){
@@ -292,9 +299,9 @@ public class InventoryUtil {
 		AmazonEC2 ec2Client ;
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"EC2\" , \"region\":\"" ;
 		List<String> stateNameFilters = Arrays.asList(ec2Filters.split(","));
-		for(Region region : RegionUtils.getRegions()) { 
+		for(Region region : RegionUtils.getRegions()) {
 			try{
-			if(!skipRegions.contains(region.getName())){ 
+			if(!skipRegions.contains(region.getName())){
 				ec2Client = AmazonEC2ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 				List<Instance> instanceList = new ArrayList<>();
 				DescribeInstancesResult  descInstResult ;
@@ -305,7 +312,7 @@ public class InventoryUtil {
 							reservation -> instanceList.addAll(reservation.getInstances().stream().filter(instance->stateNameFilters.contains(instance.getState().getName())).collect(Collectors.toList())));
 					nextToken = descInstResult.getNextToken();
 				}while(nextToken!=null);
-				
+
 				if(!instanceList.isEmpty() ) {
 					log.debug(InventoryConstants.ACCOUNT + accountId + " Type : EC2 "+ region.getName()+" >> " + instanceList.size());
 					instanceMap.put(accountId+delimiter+accountName+delimiter+region.getName(), instanceList);
@@ -318,23 +325,24 @@ public class InventoryUtil {
 		}
 		return instanceMap;
 	}
-	
+
 	/**
 	 * Fetch network intefaces.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<NetworkInterface>> fetchNetworkIntefaces(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
-		
+
 		Map<String,List<NetworkInterface>> niMap = new LinkedHashMap<>();
 		AmazonEC2 ec2Client ;
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Network Interface\" , \"region\":\"" ;
-		for(Region region : RegionUtils.getRegions()) { 
+		for(Region region : RegionUtils.getRegions()) {
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					ec2Client = AmazonEC2ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					DescribeNetworkInterfacesResult  descNIRslt =  ec2Client.describeNetworkInterfaces();
 					List<NetworkInterface> niList = descNIRslt.getNetworkInterfaces();
@@ -342,7 +350,7 @@ public class InventoryUtil {
 						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : Network Interface " +region.getName()+" >> " + niList.size());
 						niMap.put(accountId+delimiter+accountName+delimiter+region.getName(),niList);
 					}
-					
+
 				}
 			}catch(Exception e){
 				log.error("Exception fetching Network Interfaces for "+region.getName() + e);
@@ -352,13 +360,14 @@ public class InventoryUtil {
 		}
 		return niMap;
 	}
-	
+
 	/**
 	 * Fetch security groups.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<SecurityGroup>> fetchSecurityGroups(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -367,9 +376,13 @@ public class InventoryUtil {
 		AmazonEC2 ec2Client ;
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Security Group\" , \"region\":\"" ;
 		log.info("sgregion" + RegionUtils.getRegions().toString());
+<<<<<<< HEAD
 		for(Region region : RegionUtils.getRegions()) { 
+=======
+		for(Region region : RegionUtils.getRegions()) {
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					ec2Client = AmazonEC2ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					DescribeSecurityGroupsResult rslt =  ec2Client.describeSecurityGroups();
 					List<SecurityGroup> secGrpListTemp = rslt.getSecurityGroups();
@@ -377,7 +390,7 @@ public class InventoryUtil {
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : Security Group "+region.getName()+" >> " + secGrpListTemp.size());
 						secGrpList.put(accountId+delimiter+accountName+delimiter+region.getName(),secGrpListTemp);
 					}
-	
+
 				}
 			}catch(Exception e){
 				log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
@@ -387,22 +400,23 @@ public class InventoryUtil {
 		return secGrpList;
 	}
 
-	
+
 	/**
 	 * Fetch asg.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<AutoScalingGroup>> fetchAsg(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
-		
+
 		AmazonAutoScaling asgClient;
 		Map<String,List<AutoScalingGroup>> asgList = new LinkedHashMap<>();
-		
+
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"ASG\" , \"region\":\"" ;
-		for(Region region : RegionUtils.getRegions()){ 
+		for(Region region : RegionUtils.getRegions()){
 			try{
 				if(!skipRegions.contains(region.getName())){
 					List<AutoScalingGroup> asgListTemp = new ArrayList<>();
@@ -414,7 +428,7 @@ public class InventoryUtil {
 						asgListTemp.addAll(describeResult.getAutoScalingGroups());
 						nextToken = describeResult.getNextToken();
 					}while(nextToken!=null);
-					
+
 					if(!asgListTemp.isEmpty() ){
 						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : ASG "+region.getName()+" >> " + asgListTemp.size());
 						asgList.put(accountId+delimiter+accountName+delimiter+region.getName(), asgListTemp);
@@ -427,22 +441,23 @@ public class InventoryUtil {
 		}
 		return asgList;
 	}
-	
+
 	/**
 	 * Fetch cloud formation stack.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<Stack>> fetchCloudFormationStack(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		AmazonCloudFormation cloudFormClient ;
 		Map<String,List<Stack>> stacks = new LinkedHashMap<>();
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Stack\" , \"region\":\"" ;
-		for(Region region : RegionUtils.getRegions()){ 
+		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					List<Stack> stacksTemp = new ArrayList<>();
 					String nextToken = null;
 					cloudFormClient = AmazonCloudFormationClientBuilder.standard().
@@ -453,7 +468,7 @@ public class InventoryUtil {
 						stacksTemp.addAll(describeResult.getStacks());
 						nextToken = describeResult.getNextToken();
 					}while(nextToken!=null);
-					
+
 					if(! stacksTemp.isEmpty() ){
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : Cloud Formation Stack "+region.getName() + " >> " + stacksTemp.size());
 						stacks.put(accountId+delimiter+accountName+delimiter+region.getName(), stacksTemp);
@@ -466,22 +481,23 @@ public class InventoryUtil {
 		}
 		return stacks;
 	}
-	
+
 	/**
 	 * Fetch dynamo DB tables.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<DynamoVH>> fetchDynamoDBTables(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
 		Map<String,List<DynamoVH>> dynamodbtables = new LinkedHashMap<>();
-		
+
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"DynamoDB\" , \"region\":\"" ;
-		for(Region region : RegionUtils.getRegions()){ 
+		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					AmazonDynamoDB awsClient= AmazonDynamoDBClientBuilder.standard().
 						 withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					String marker = null;
@@ -492,7 +508,7 @@ public class InventoryUtil {
 						marker = listTableResult.getLastEvaluatedTableName();
 						tables.addAll(listTableResult.getTableNames());
 					}while(marker!=null);
-					
+
 					List<DynamoVH> dynamodbtablesTemp = new ArrayList<>();
 					tables.parallelStream().forEach(tblName -> {
 						TableDescription table = awsClient.describeTable(tblName).getTable();
@@ -500,13 +516,13 @@ public class InventoryUtil {
 						synchronized (dynamodbtablesTemp) {
 							dynamodbtablesTemp.add(new DynamoVH(table,tags));
 						}
-					
+
 					});
 					if(!dynamodbtablesTemp.isEmpty() ){
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : DynamoDB "+region.getName() + " >> "+dynamodbtablesTemp.size());
 						dynamodbtables.put(accountId+delimiter+accountName+delimiter+region.getName(), dynamodbtablesTemp);
 					}
-					
+
 				}
 			}catch(Exception e){
 				if(region.isServiceSupported(AmazonDynamoDB.ENDPOINT_PREFIX)){
@@ -517,13 +533,14 @@ public class InventoryUtil {
 		}
 		return dynamodbtables;
 	}
-	
+
 	/**
 	 * Fetch EFS info.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<EfsVH>> fetchEFSInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -532,7 +549,7 @@ public class InventoryUtil {
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"EFS\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					efsClient = AmazonElasticFileSystemClientBuilder.standard().
 							 withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					List<FileSystemDescription> efsListTemp = new ArrayList<>();
@@ -543,7 +560,7 @@ public class InventoryUtil {
 						 efsListTemp.addAll(descRslt.getFileSystems());
 						 nextToken = descRslt.getNextMarker();
 					}while(nextToken!=null);
-					
+
 					List<EfsVH> efsList = new ArrayList<>();
 					for(FileSystemDescription efs :efsListTemp ){
 						efsList.add( new EfsVH(efs,
@@ -563,23 +580,24 @@ public class InventoryUtil {
 		}
 		return efsMap;
 	}
-	
-	
+
+
 	/**
 	 * Fetch EMR info.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<Cluster>> fetchEMRInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
-		
+
 		Map<String,List<Cluster>> clusterList = new LinkedHashMap<>();
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"EMR\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					AmazonElasticMapReduce emrClient = AmazonElasticMapReduceClientBuilder.standard().
 					 	withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					List<ClusterSummary> clusters = new ArrayList<>();
@@ -590,19 +608,19 @@ public class InventoryUtil {
 						clusters.addAll(clusterResult.getClusters());
 						marker = clusterResult.getMarker();
 					}while(marker!=null);
-					
+
 					List<Cluster> clustersList = new ArrayList<>();
-					clusters.forEach(cluster -> 
+					clusters.forEach(cluster ->
 						{
 							DescribeClusterResult descClstrRslt = emrClient.describeCluster(new DescribeClusterRequest().withClusterId(cluster.getId()));
 							clustersList.add(descClstrRslt.getCluster());
 						});
-					
+
 					if( !clustersList.isEmpty() ){
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : EMR "+region.getName() + " >> "+clustersList.size());
 						clusterList.put(accountId+delimiter+accountName+delimiter+region.getName(),clustersList);
 					}
-				}	
+				}
 			}catch(Exception e){
 				if(region.isServiceSupported(AmazonElasticMapReduce.ENDPOINT_PREFIX)){
 					log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
@@ -612,17 +630,18 @@ public class InventoryUtil {
 		}
 		return clusterList;
 	}
-	
+
 	/**
 	 * Fetch lambda info.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static  Map<String,List<LambdaVH>> fetchLambdaInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
-		
+
 		Map<String,List<LambdaVH>> functions = new LinkedHashMap<>();
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Lambda\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
@@ -646,7 +665,7 @@ public class InventoryUtil {
 						}
 						nextMarker = listFnRslt.getNextMarker();
 					}while(nextMarker!=null);
-					
+
 					if( !lambdaList.isEmpty() ) {
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : Lambda " +region.getName() + " >> "+lambdaList.size());
 						functions.put(accountId+delimiter+accountName+delimiter+region.getName(),lambdaList);
@@ -661,22 +680,23 @@ public class InventoryUtil {
 		}
 		return functions ;
 	}
-	
+
 	/**
 	 * Fetch classic elb info.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<ClassicELBVH>> fetchClassicElbInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
-		
+
 		Map<String,List<ClassicELBVH>> elbList = new LinkedHashMap<>();
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Classic ELB\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					AmazonElasticLoadBalancing elbClient = AmazonElasticLoadBalancingClientBuilder.standard().
 							 	withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					String nextMarker = null;
@@ -685,12 +705,11 @@ public class InventoryUtil {
 					do{
 						elbDescResult = elbClient.describeLoadBalancers(new DescribeLoadBalancersRequest().withMarker(nextMarker));
 						elbListTemp.addAll(elbDescResult.getLoadBalancerDescriptions());
-						nextMarker = elbDescResult.getNextMarker();	
+						nextMarker = elbDescResult.getNextMarker();
 					}while(nextMarker!=null);
-				
+
 					List<ClassicELBVH> classicElbList = new ArrayList<>();
 					if( !elbListTemp.isEmpty() ){
-						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : Classic ELB "+region.getName() + " >> "+elbListTemp.size());
 						List<String> elbNames = elbListTemp.stream().map(elb -> { return elb.getLoadBalancerName();}).collect(Collectors.toList());
 						List<TagDescription> tagDescriptions = new ArrayList<>();
 						List<String> elbNamesTemp = new ArrayList<>();
@@ -702,12 +721,12 @@ public class InventoryUtil {
 								tagDescriptions.addAll(elbClient.describeTags( new com.amazonaws.services.elasticloadbalancing.model.DescribeTagsRequest().withLoadBalancerNames(elbNamesTemp)).getTagDescriptions());
 								elbNamesTemp = new ArrayList<>();
 							}
-							
+
 						}
 						if(!elbNamesTemp.isEmpty())
 							tagDescriptions.addAll(elbClient.describeTags( new com.amazonaws.services.elasticloadbalancing.model.DescribeTagsRequest().withLoadBalancerNames(elbNamesTemp)).getTagDescriptions());
-							
-						elbListTemp.parallelStream().forEach(elb->	{		
+
+						elbListTemp.stream().forEach(elb->	{
 								List<List<com.amazonaws.services.elasticloadbalancing.model.Tag>> tagsInfo =  tagDescriptions.stream().filter(tag -> tag.getLoadBalancerName().equals( elb.getLoadBalancerName())).map(x-> x.getTags()).collect(Collectors.toList());
 								List<com.amazonaws.services.elasticloadbalancing.model.Tag> tags = new ArrayList<>();
 								//****** Changes For Federated Rules Start ******
@@ -725,14 +744,34 @@ public class InventoryUtil {
 								//****** Changes For Federated Rules End ******
 								if(!tagsInfo.isEmpty())
 									tags = tagsInfo.get(0);
+								//****** Changes For Federated Rules Start ******
+								String accessLogBucketName = "";
+							    boolean accessLog = false;
+							    String name = elb.getLoadBalancerName();
+								if (name != null) {
+									try{
+										com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancing classicElbClient = com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClientBuilder.standard().
+											 	withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
+
+										com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancerAttributesRequest classicELBDescReq = new com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancerAttributesRequest().withLoadBalancerName(name) ;
+										accessLogBucketName = classicElbClient.describeLoadBalancerAttributes(classicELBDescReq).getLoadBalancerAttributes().getAccessLog().getS3BucketName();
+										accessLog = classicElbClient.describeLoadBalancerAttributes(classicELBDescReq).getLoadBalancerAttributes().getAccessLog().getEnabled();
+									}catch(Exception e){
+										// Do nothing...
+									}
+									
+								}
+								//****** Changes For Federated Rules End ******
 								synchronized(classicElbList){
 									classicElbList.add(new ClassicELBVH(elb,tags, accessLogBucketName, accessLog));
 								}
-							});			
+							});
 						elbList.put(accountId+delimiter+accountName+delimiter+region.getName(),classicElbList);
 					}
 					
-					
+					log.debug(InventoryConstants.ACCOUNT + accountId + " Type : Classic ELB "+region.getName() + " >> "+classicElbList.size());
+
+
 				}
 			}catch(Exception e){
 				log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
@@ -741,13 +780,14 @@ public class InventoryUtil {
 		}
 		return elbList;
 	}
-	
+
 	/**
 	 * Fetch elb info.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<LoadBalancerVH>> fetchElbInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -756,7 +796,7 @@ public class InventoryUtil {
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Application ELB\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					elbClient = com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancingClientBuilder.standard().
 						 	withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					String nextMarker = null;
@@ -767,7 +807,7 @@ public class InventoryUtil {
 						elbList.addAll(descElbRslt.getLoadBalancers());
 						nextMarker = descElbRslt.getNextMarker();
 					}while(nextMarker!=null);
-					
+
 					if(! elbList.isEmpty() ) {
 						List<LoadBalancerVH> elbListTemp = new ArrayList<>();
 						List<String> elbArns = elbList.stream().map(LoadBalancer::getLoadBalancerArn).collect(Collectors.toList());
@@ -781,15 +821,19 @@ public class InventoryUtil {
 								tagDescriptions.addAll(elbClient.describeTags(new com.amazonaws.services.elasticloadbalancingv2.model.DescribeTagsRequest().withResourceArns(elbArnsTemp)).getTagDescriptions());
 								elbArnsTemp  = new ArrayList<>();
 							}
-							
+
 						}
 						if(!elbArnsTemp.isEmpty())
 							tagDescriptions.addAll(elbClient.describeTags(new com.amazonaws.services.elasticloadbalancingv2.model.DescribeTagsRequest().withResourceArns(elbArnsTemp)).getTagDescriptions());
-						
-						elbList.parallelStream().forEach(elb->	{		
+
+						elbList.parallelStream().forEach(elb->	{
 							List<List<com.amazonaws.services.elasticloadbalancingv2.model.Tag>> tagsInfo =  tagDescriptions.stream().filter(tag -> tag.getResourceArn().equals( elb.getLoadBalancerArn())).map(x-> x.getTags()).collect(Collectors.toList());
 							List<com.amazonaws.services.elasticloadbalancingv2.model.Tag> tags = new ArrayList<>();
+<<<<<<< HEAD
 							//****** Changes For Federated Rules Start ****** 
+=======
+							//****** Changes For Federated Rules Start ******
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 							String name = elb.getLoadBalancerArn();
 							String accessLogBucketName = "";
 							boolean accessLog = false;
@@ -822,8 +866,13 @@ public class InventoryUtil {
 								elbListTemp.add(elbTemp);
 							}
 						 }
+<<<<<<< HEAD
 						});	
 						
+=======
+						});
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : Application ELB " +region.getName() + " >> "+elbListTemp.size());
 						elbMap.put(accountId+delimiter+accountName+delimiter+region.getName(),elbListTemp);
 					}
@@ -833,15 +882,16 @@ public class InventoryUtil {
 				ErrorManageUtil.uploadError(accountId,region.getName(),"appelb",e.getMessage());
 			}
 		}
-		return elbMap;	
+		return elbMap;
 	}
-	
+
 	/**
 	 * Fetch target groups.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<TargetGroupVH>> fetchTargetGroups(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -850,7 +900,7 @@ public class InventoryUtil {
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Target Group\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					elbClient = com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancingClientBuilder.standard().
 						 	withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					String nextMarker = null;
@@ -864,12 +914,12 @@ public class InventoryUtil {
 						}
 						nextMarker = trgtGrpRslt.getNextMarker();
 					}while(nextMarker!=null);
-					
+
 					if( !targetGrpList.isEmpty() ) {
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : Target Group " +region.getName() + "-"+targetGrpList.size());
 						targetGrpMap.put(accountId+delimiter+accountName+delimiter+region.getName(), targetGrpList);
 					}
-					
+
 				}
 			}catch(Exception e){
 				log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
@@ -878,13 +928,14 @@ public class InventoryUtil {
 		}
 		return targetGrpMap;
 	}
-	
+
 	/**
 	 * Fetch NAT gateway info.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<NatGateway>> fetchNATGatewayInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -893,7 +944,7 @@ public class InventoryUtil {
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Nat Gateway\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					ec2Client = AmazonEC2ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					DescribeNatGatewaysResult rslt = ec2Client.describeNatGateways(new DescribeNatGatewaysRequest());
 					List<NatGateway> natGatwayList =rslt.getNatGateways();
@@ -901,7 +952,7 @@ public class InventoryUtil {
 						log.debug(InventoryConstants.ACCOUNT + accountId + " Type : Nat Gateway "+region.getName() + " >> "+natGatwayList.size());
 						natGatwayMap.put(accountId+delimiter+accountName+delimiter+region.getName(), natGatwayList);
 					}
-					
+
 				}
 			}catch(Exception e){
 				log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
@@ -910,13 +961,14 @@ public class InventoryUtil {
 		}
 		return natGatwayMap;
 	}
-	
+
 	/**
 	 * Fetch RDS cluster info.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<DBClusterVH>> fetchRDSClusterInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -925,7 +977,7 @@ public class InventoryUtil {
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"RDS Cluster\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					rdsClient = AmazonRDSClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					DescribeDBClustersResult rslt ;
 					String nextMarker = null;
@@ -941,8 +993,8 @@ public class InventoryUtil {
 						}
 						nextMarker = rslt.getMarker();
 					}while(nextMarker!=null);
-					
-					if( !rdsList.isEmpty() ){ 
+
+					if( !rdsList.isEmpty() ){
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : RDS Cluster "+region.getName() + " >> "+rdsList.size());
 						rdsMap.put(accountId+delimiter+accountName+delimiter+region.getName(), rdsList);
 					}
@@ -956,13 +1008,14 @@ public class InventoryUtil {
 		}
 		return rdsMap;
 	}
-	
+
 	/**
 	 * Fetch RDS instance info.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<DBInstanceVH>> fetchRDSInstanceInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -971,7 +1024,7 @@ public class InventoryUtil {
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"RDS Instance\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					rdsClient = AmazonRDSClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					String nextMarker = null;
 					DescribeDBInstancesResult rslt;
@@ -990,7 +1043,7 @@ public class InventoryUtil {
 						}
 						nextMarker = rslt.getMarker();
 					}while(nextMarker!=null);
-					
+
 					if(! dbInstList.isEmpty() ){
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : RDS Instance" +region.getName() + " >> "+dbInstList.size());
 						dbInstMap.put(accountId+delimiter+accountName+delimiter+region.getName(),  dbInstList);
@@ -1005,13 +1058,14 @@ public class InventoryUtil {
 		}
 		return dbInstMap;
 	}
-	
+
 	/**
 	 * Fetch S 3 info.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the list
 	 */
 	public static Map<String,List<BucketVH>>  fetchS3Info(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -1025,14 +1079,15 @@ public class InventoryUtil {
 		log.debug(InventoryConstants.ACCOUNT + accountId +" Type : S3 "+  " >> "+s3buckets.size());
 		Map<String,AmazonS3> regionS3map = new HashMap<>();
 		for(Region region : RegionUtils.getRegions()){
-			if(!skipRegions.contains(region.getName())){ 
+			if(!skipRegions.contains(region.getName())){
 				regionS3map.put(region.getName(), AmazonS3ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build());
-			}	
+			}
 		}
 		s3buckets.parallelStream().forEach(bucket -> {
 			String bucketRegion ="";
 			BucketVersioningConfiguration versionconfig = null;
 			List<Tag> tags = new ArrayList<>();
+			boolean hasWebSiteConfiguration = false;
 			try{
 				String bucketEncryp = null;
 				String DPCvalue = "";
@@ -1066,14 +1121,29 @@ public class InventoryUtil {
 						}
 					}
 				}
+				String bucketEncryp = fetchS3EncryptInfo(bucket, s3Client);
+				BucketWebsiteConfiguration bucketWebsiteConfiguration = s3Client
+                        .getBucketWebsiteConfiguration(bucket.getName());
+				if(bucketWebsiteConfiguration!=null) {
+	                  hasWebSiteConfiguration=true;
+				}
+	              
 				synchronized(buckets){
+<<<<<<< HEAD
 					buckets.add(new BucketVH(bucket,bucketRegion,versionconfig, tags, bucketEncryp, DPCvalue));
+=======
+					buckets.add(new BucketVH(bucket,bucketRegion,versionconfig, tags, bucketEncryp,hasWebSiteConfiguration));
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				}
 			}
 			catch(AmazonS3Exception e){
 				if("AccessDenied".equals(e.getErrorCode())){
 					log.info("Access Denied for bucket " + bucket.getName());
+<<<<<<< HEAD
 					buckets.add(new BucketVH(bucket,"",versionconfig, tags, null, null));
+=======
+					buckets.add(new BucketVH(bucket,"",versionconfig, tags, null,hasWebSiteConfiguration));
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				}else{
 					log.info("Exception fetching S3 Bucket",e);
 				}
@@ -1090,12 +1160,32 @@ public class InventoryUtil {
 		return s3Map;
 	}
 
+
+	private static String fetchS3EncryptInfo(Bucket bucket, AmazonS3 s3Client) {
+		
+		String bucketEncryp = null;
+		try{
+			GetBucketEncryptionResult buckectEncry = s3Client.getBucketEncryption(bucket.getName());
+			if (buckectEncry != null) {
+				ServerSideEncryptionConfiguration sseBucketEncryp = buckectEncry.getServerSideEncryptionConfiguration();
+				if (sseBucketEncryp != null && sseBucketEncryp.getRules() != null) {
+					bucketEncryp = sseBucketEncryp.getRules().get(0).getApplyServerSideEncryptionByDefault()
+							.getSSEAlgorithm();
+				}
+			}
+		}catch(Exception e){
+			// Exception thrown when there is no bucket encryption available.
+		}
+		return bucketEncryp;
+	}
+
 	/**
 	 * Fetch subnets.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<Subnet>> fetchSubnets(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
@@ -1104,7 +1194,7 @@ public class InventoryUtil {
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Subnet\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					ec2Client = AmazonEC2ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					DescribeSubnetsResult rslt = ec2Client.describeSubnets();
 					List<Subnet> subnetsTemp =rslt.getSubnets();
@@ -1112,14 +1202,14 @@ public class InventoryUtil {
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : Subnet "+region.getName() + " >> "+subnetsTemp.size());
 						subnets.put(accountId+delimiter+accountName+delimiter+region.getName(),subnetsTemp);
 					}
-					
+
 				}
 			}catch(Exception e){
 				log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
 				ErrorManageUtil.uploadError(accountId,region.getName(),"subnet",e.getMessage());
 			}
 		}
-		
+
 		return subnets;
 	}
 
@@ -1128,6 +1218,7 @@ public class InventoryUtil {
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the list
 	 */
 	public static Map<String,List<CheckVH>> fetchTrusterdAdvisorsChecks(BasicSessionCredentials temporaryCredentials,String accountId,String accountName ) {
@@ -1136,7 +1227,7 @@ public class InventoryUtil {
 		AWSSupport awsSupportClient = AWSSupportClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion("us-east-1").build();
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource\" ,\"type\": \"Trusted Advisor Check\"" ;
 		List<String> checkids = new ArrayList<>();
-		try{ 
+		try{
 			DescribeTrustedAdvisorChecksResult rslt = awsSupportClient.describeTrustedAdvisorChecks(new DescribeTrustedAdvisorChecksRequest().withLanguage("en"));
 			List<TrustedAdvisorCheckDescription> trstdAdvsrList = rslt.getChecks();
 			for(TrustedAdvisorCheckDescription check : trstdAdvsrList){
@@ -1145,9 +1236,9 @@ public class InventoryUtil {
 					DescribeTrustedAdvisorCheckResultResult result =
 								awsSupportClient.describeTrustedAdvisorCheckResult(new DescribeTrustedAdvisorCheckResultRequest().withCheckId(check.getId()));
 					List<String> metadata = check.getMetadata();
-					
+
 					if(!"OK".equalsIgnoreCase(result.getResult().getStatus())){
-						
+
 						CheckVH checkVH = new CheckVH(check,result.getResult().getStatus());
 						List<Resource> resources = new ArrayList<>();
 						checkVH.setResources(resources);
@@ -1158,13 +1249,13 @@ public class InventoryUtil {
 								metadata.add(0, "Status");
 							}
 						}
-						
+
 						result.getResult().getFlaggedResources().forEach(
 							rsrc -> {
 								List<String> data = rsrc.getMetadata();
 								StringBuilder resounceInfo =  new StringBuilder("{");
 								if(data.size() == metadata.size() ){
-									
+
 									for(int i=0;i<metadata.size();i++){
 										resounceInfo.append("\""+metadata.get(i)+"\":\""+data.get(i)+"\",");
 									}
@@ -1172,21 +1263,21 @@ public class InventoryUtil {
 								}
 								resounceInfo.append("}");
 								resources.add(new Resource(check.getId(),rsrc.getResourceId(),rsrc.getStatus(),resounceInfo.toString()));
-								
+
 							}
 					    );
 						checkList.add(checkVH);
 					}
 				}catch(Exception e){
-					log.debug("Erro fetching Advisor Check ",e);	
-				}	
+					log.debug("Erro fetching Advisor Check ",e);
+				}
 			}
 		}catch(Exception e){
 			log.error(expPrefix +", \"cause\":\"" +e.getMessage()+"\"}");
 			ErrorManageUtil.uploadError(accountId,"","checks",e.getMessage());
-		}	
+		}
 		log.debug(InventoryConstants.ACCOUNT + accountId + " Type : Trusted Advisor Check " +checkList.size());
-		
+
 		for(String checkId : checkids){
 			try{
 				awsSupportClient.refreshTrustedAdvisorCheck(new RefreshTrustedAdvisorCheckRequest().withCheckId(checkId));
@@ -1197,7 +1288,7 @@ public class InventoryUtil {
 		if(!checkList.isEmpty()){
 			checkMap.put(accountId+delimiter+accountName, checkList);
 		}
-		
+
 		return checkMap;
 	}
 
@@ -1207,6 +1298,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<RedshiftVH>> fetchRedshiftInfo(BasicSessionCredentials temporaryCredentials,String skipRegions,String accountId,String accountName) {
@@ -1215,7 +1307,7 @@ public class InventoryUtil {
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Redshift\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					redshiftClient = AmazonRedshiftClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					String nextMarker = null;
 					DescribeClustersResult result;
@@ -1225,7 +1317,7 @@ public class InventoryUtil {
 						 redshiftList.addAll(result.getClusters());
 						 nextMarker = result.getMarker();
 					}while(nextMarker!=null);
-					
+
 					List<RedshiftVH> redshiftVHList = new ArrayList<>();
 					for(com.amazonaws.services.redshift.model.Cluster cluster : redshiftList ){
 					    RedshiftVH redshift = new RedshiftVH(cluster);
@@ -1235,12 +1327,12 @@ public class InventoryUtil {
 					        redshift.setSubnets(subnetGroup.getSubnets().stream().map(com.amazonaws.services.redshift.model.Subnet::getSubnetIdentifier).collect(Collectors.toList()));
                         });
 					}
-					
+
 					if(!redshiftVHList.isEmpty() ) {
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : Redshift " +region.getName() + " >> "+redshiftVHList.size());
 						redshiftMap.put(accountId+delimiter+accountName+delimiter+region.getName(),redshiftVHList);
 					}
-					
+
 				}
 
 			}catch(Exception e){
@@ -1259,6 +1351,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<Volume>> fetchVolumetInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
@@ -1267,17 +1360,17 @@ public class InventoryUtil {
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Volume\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					ec2Client = AmazonEC2ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					DescribeVolumesResult  rslt = ec2Client.describeVolumes(); // No need to paginate as all volumes will be returned.
 					List<Volume> volumeListTemp = rslt.getVolumes();
-					
+
 					if( !volumeListTemp.isEmpty() ) {
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : Volume "+region.getName() + " >> "+volumeListTemp.size());
 						volumeList.put(accountId+delimiter+accountName+delimiter+region.getName(),volumeListTemp);
 					}
 				}
-					
+
 			}catch(Exception e){
 				log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
 				ErrorManageUtil.uploadError(accountId,region.getName(),"volume",e.getMessage());
@@ -1292,6 +1385,7 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<Snapshot>> fetchSnapshots(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
@@ -1299,15 +1393,15 @@ public class InventoryUtil {
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Snapshot\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					AmazonEC2 ec2Client = AmazonEC2ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					List<Snapshot> snapShotsList = ec2Client.describeSnapshots(new DescribeSnapshotsRequest().withOwnerIds(accountId)).getSnapshots();// No need to paginate as all results will be returned
 					if( !snapShotsList.isEmpty() ){
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : Snapshot " +region.getName() + " >> "+snapShotsList.size());
 						snapShots.put(accountId+delimiter+accountName+delimiter+region.getName(),snapShotsList);
-					}      
+					}
 				}
-					
+
 			}catch(Exception e){
 				log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
 				ErrorManageUtil.uploadError(accountId,region.getName(),"snapshot",e.getMessage());
@@ -1322,16 +1416,17 @@ public class InventoryUtil {
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	@SuppressWarnings("rawtypes")
 	public static Map<String,List<VpcVH>> fetchVpcInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
 		Map<String,List<VpcVH>> vpcMap = new LinkedHashMap<>();
-		
+
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Vpc\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					List<VpcVH> vpcList = new ArrayList<>();
 					AmazonEC2 ec2Client = AmazonEC2ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					List<Vpc> tmpVpcList = ec2Client.describeVpcs().getVpcs();
@@ -1371,23 +1466,24 @@ public class InventoryUtil {
 		}
 		return vpcMap;
 	}
-	
+
 	/**
 	 * Fetch api gateways.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<RestApi>> fetchApiGateways(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
 		Map<String,List<RestApi>> apiGateWays = new LinkedHashMap<>();
-		
+
 		AmazonApiGateway apiGatWayClient ;
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"API\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					apiGatWayClient = AmazonApiGatewayClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					List<RestApi> apiGateWaysList = new ArrayList<>();
 					String position = null;
@@ -1397,12 +1493,12 @@ public class InventoryUtil {
 						apiGateWaysList.addAll(rslt.getItems());
 						position = rslt.getPosition();
 					}while(position!=null);
-					
+
 					if( !apiGateWaysList.isEmpty() ) {
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : ApiGateway "+region.getName() + " >> "+apiGateWaysList.size());
 						apiGateWays.put(accountId+delimiter+accountName+delimiter+region.getName(),apiGateWaysList);
 					}
-					
+
 				}
 			}catch(Exception e){
 				log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
@@ -1411,18 +1507,19 @@ public class InventoryUtil {
 		}
 		return apiGateWays;
 	}
-	
+
 	/**
 	 * Fetch IAM users.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<UserVH>> fetchIAMUsers(BasicSessionCredentials temporaryCredentials,String accountId,String accountName) {
-	
+
 	    String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"IAM\"" ;
-	    
+
 		AmazonIdentityManagement iamClient = AmazonIdentityManagementClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(InventoryConstants.REGION_US_WEST_2).build();
 		String marker = null;
 		List<User> users = new ArrayList<>();
@@ -1432,7 +1529,7 @@ public class InventoryUtil {
 			users.addAll(rslt.getUsers());
 			marker = rslt.getMarker();
 		}while(marker!=null);
-		
+
 		List<UserVH> userList = new ArrayList<>();
 		Map<String,List<UserVH>> iamUsers = new HashMap<>();
 		iamUsers.put(accountId+delimiter+accountName, userList);
@@ -1450,7 +1547,7 @@ public class InventoryUtil {
 						accessKeysTemp.add(accessKeyVH);
 						if(accessKeyLastUsedResult != null) {
 							accessKeyVH.setLastUsedDate(accessKeyLastUsedResult.getAccessKeyLastUsed().getLastUsedDate());
-							
+
 						}
 					});
 				}
@@ -1459,7 +1556,7 @@ public class InventoryUtil {
 			    log.warn(expPrefix+ InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
 			    ErrorManageUtil.uploadError(accountId,"","IAM",e.getMessage());
 			}
-			
+
 			try{
 				LoginProfile logProf =  iamClient.getLoginProfile(new GetLoginProfileRequest().withUserName(userName)).getLoginProfile();
 				userTemp.setPasswordCreationDate(logProf.getCreateDate());
@@ -1481,16 +1578,17 @@ public class InventoryUtil {
 		log.debug(InventoryConstants.ACCOUNT + accountId +" Type : IAM User >> "+userList.size());
 		return iamUsers;
 	}
-	
+
 	/**
 	 * Fetch IAM roles.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static  Map<String,List<Role>>  fetchIAMRoles(BasicSessionCredentials temporaryCredentials,String accountId,String accountName) {
-		
+
 		AmazonIdentityManagement iamClient = AmazonIdentityManagementClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(InventoryConstants.REGION_US_WEST_2).build();
 		List<Role> roles = new ArrayList<>();
 		ListRolesResult rslt;
@@ -1500,19 +1598,20 @@ public class InventoryUtil {
 			roles.addAll(rslt.getRoles());
 			marker = rslt.getMarker();
 		}while(marker!=null);
-		
+
 		log.debug(InventoryConstants.ACCOUNT + accountId +" Type : IAM Roles >> "+roles.size());
 		Map<String,List<Role>> iamRoles = new HashMap<>();
 		iamRoles.put(accountId+delimiter+accountName, roles);
 		return iamRoles;
 	}
-	
+
 	/**
 	 * Fetch RDSDB snapshots.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<DBSnapshot>> fetchRDSDBSnapshots(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName){
@@ -1520,7 +1619,7 @@ public class InventoryUtil {
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"RDS Snapshot\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					AmazonRDS rdsClient = AmazonRDSClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					DescribeDBSnapshotsResult rslt ;
 					List<DBSnapshot> snapshotsTemp = new ArrayList<>();
@@ -1530,13 +1629,13 @@ public class InventoryUtil {
 						snapshotsTemp.addAll(rslt.getDBSnapshots());
 						marker = rslt.getMarker();
 					}while(marker!=null);
-		
+
 					if(! snapshotsTemp.isEmpty() ){
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : RDS Snapshot" +region.getName() + " >> "+snapshotsTemp.size());
 						snapshots.put(accountId+delimiter+accountName+delimiter+region.getName(),  snapshotsTemp);
 					}
 				}
-				
+
 			}catch(Exception e){
 				if(region.isServiceSupported(AmazonRDS.ENDPOINT_PREFIX)){
 					log.warn(expPrefix+ region.getName()+InventoryConstants.ERROR_CAUSE +e.getMessage()+"\"}");
@@ -1546,23 +1645,24 @@ public class InventoryUtil {
 		}
 		return snapshots;
 	}
-	
+
 	/**
 	 * Fetch KMS keys.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<KMSKeyVH>> fetchKMSKeys(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
-		
+
 		Map<String,List<KMSKeyVH>> kmsKeys = new LinkedHashMap<>();
 		AWSKMS awskms;
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"KMS\" , \"region\":\"" ;
-		for(Region region : RegionUtils.getRegions()) { 
+		for(Region region : RegionUtils.getRegions()) {
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					awskms = AWSKMSClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					List<KeyListEntry> regionKeys = awskms.listKeys().getKeys();
 					List<AliasListEntry> regionKeyAliases = awskms.listAliases().getAliases();
@@ -1594,7 +1694,7 @@ public class InventoryUtil {
 						}
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : KMSKey "+region.getName() + " >> "+kmsKeysList.size());
 						kmsKeys.put(accountId+delimiter+accountName+delimiter+region.getName(),kmsKeysList);
-						
+
 					}
 				}
 			}catch(Exception e){
@@ -1604,16 +1704,17 @@ public class InventoryUtil {
 		}
 		return kmsKeys;
 	}
-	
+
 	/**
 	 * Fetch cloud front info.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<CloudFrontVH>> fetchCloudFrontInfo(BasicSessionCredentials temporaryCredentials,String accountId,String accountName) {
-		
+
 		Map<String,List<CloudFrontVH>> cloudFront = new LinkedHashMap<>();
 		List<DistributionSummary> distributionSummary = new ArrayList<>();
 		AmazonCloudFront amazonCloudFront;
@@ -1621,8 +1722,8 @@ public class InventoryUtil {
 		boolean accessLogEnabled = false;
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource \" ,\"type\": \"CloudFront\"" ;
 		try{
-			amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion("us-east-1").build();
-			
+			amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion("us-west-2").build();
+
 			String marker = null;
 			List<CloudFrontVH> cloudFrontList = new ArrayList<>();
 			DistributionList distributionList ;
@@ -1642,13 +1743,19 @@ public class InventoryUtil {
 					//****** Changes For Federated Rules End ******
 					CloudFrontVH cf = new CloudFrontVH();
 					cf.setDistSummary(ds);
+<<<<<<< HEAD
 					cf.setTags(amazonCloudFront.listTagsForResource(new com.amazonaws.services.cloudfront.model.ListTagsForResourceRequest().withResource(ds.getARN())).getTags().getItems());
 					cf.setAccessLogEnabled(accessLogEnabled);
 					cf.setBucketName(bucketName);
+=======
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 					cloudFrontList.add(cf);
 				}
 			}while(marker!=null);
-			
+
+			setCloudFrontTags(temporaryCredentials,cloudFrontList);
+			setConfigDetails(temporaryCredentials,cloudFrontList);
+
 			log.debug(InventoryConstants.ACCOUNT + accountId +" Type : CloudFront "+ " >> "+cloudFrontList.size());
 			cloudFront.put(accountId+delimiter+accountName,cloudFrontList);
 		}catch(Exception e){
@@ -1657,23 +1764,68 @@ public class InventoryUtil {
 		}
 		return cloudFront;
 	}
-	
+
+	/**
+	 * Sets the cloud front tags.
+	 *
+	 * @param temporaryCredentials the temporary credentials
+	 * @param cloudFrontList the cloud front list
+	 */
+	private static void setCloudFrontTags(BasicSessionCredentials temporaryCredentials,List<CloudFrontVH> cloudFrontList){
+		String[] regions = {"us-west-2","us-east-1"};
+		int index = 0;
+		AmazonCloudFront amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(regions[index]).build();
+		for(CloudFrontVH cfVH: cloudFrontList){
+			try{
+				cfVH.setTags(amazonCloudFront.listTagsForResource(new com.amazonaws.services.cloudfront.model.ListTagsForResourceRequest().withResource(cfVH.getDistSummary().getARN())).getTags().getItems());
+			}catch(Exception e){
+				index = index==0?1:0;
+				amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(regions[index]).build();
+			}
+		}
+	}
+
+	/**
+	 * Sets the default root object.
+	 *
+	 * @param temporaryCredentials the temporary credentials
+	 * @param cloudFrontList the cloud front list
+	 */
+	private static void setConfigDetails(BasicSessionCredentials temporaryCredentials, List<CloudFrontVH> cloudFrontList){
+
+		String[] regions = {"us-east-2","us-west-1"};
+		int index = 0;
+		AmazonCloudFront amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(regions[index]).build();
+		for(CloudFrontVH cfVH: cloudFrontList){
+			try{
+				DistributionConfig distConfig = amazonCloudFront.getDistributionConfig(new GetDistributionConfigRequest().withId(cfVH.getDistSummary().getId())).getDistributionConfig();
+				cfVH.setDefaultRootObject(distConfig.getDefaultRootObject());
+				cfVH.setBucketName(distConfig.getLogging().getBucket());
+				cfVH.setAccessLogEnabled(distConfig.getLogging().getEnabled());
+			}catch(Exception e){
+				index = index==0?1:0;
+				amazonCloudFront = AmazonCloudFrontClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(regions[index]).build();
+			}
+		}
+	}
+
 	/**
 	 * Fetch EBS info.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param skipRegions the skip regions
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<EbsVH>> fetchEBSInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
-		
+
 		Map<String,List<EbsVH>> ebs = new LinkedHashMap<>();
-		
+
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"beanstalk\" , \"region\":\"" ;
-		for(Region region : RegionUtils.getRegions()) { 
+		for(Region region : RegionUtils.getRegions()) {
 			try{
-				if(!skipRegions.contains(region.getName())){ 
+				if(!skipRegions.contains(region.getName())){
 					AWSElasticBeanstalk awsElasticBeanstalk  = AWSElasticBeanstalkClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					List<ApplicationDescription> appDesList = awsElasticBeanstalk.describeApplications().getApplications();
 					List<EbsVH> ebsList = new ArrayList<>();
@@ -1683,7 +1835,7 @@ public class InventoryUtil {
 							EbsVH ebsObj = new EbsVH();
 							ebsObj.setApp(appDes);
 							ebsList.add(ebsObj);
-						} 
+						}
 						else {
 							for(EnvironmentDescription envDes : envDesList) {
 								EbsVH ebsObj = new EbsVH();
@@ -1710,16 +1862,17 @@ public class InventoryUtil {
 		}
 		return ebs;
 	}
-	
+
 	/**
 	 * Fetch PHD info.
 	 *
 	 * @param temporaryCredentials the temporary credentials
 	 * @param accountId the accountId
+	 * @param accountName the account name
 	 * @return the map
 	 */
 	public static Map<String,List<PhdVH>> fetchPHDInfo(BasicSessionCredentials temporaryCredentials,String accountId,String accountName) {
-		
+
 		Map<String,List<PhdVH>> phd = new LinkedHashMap<>();
 		AWSHealth awsHealth;
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource\" ,\"type\": \"PHD\"" ;
@@ -1773,15 +1926,24 @@ public class InventoryUtil {
 		}
 		return phd;
 	}
-	
+
+	/**
+	 * Fetch SQS info.
+	 *
+	 * @param temporaryCredentials the temporary credentials
+	 * @param skipRegions the skip regions
+	 * @param accountId the account id
+	 * @param accountName the account name
+	 * @return the map
+	 */
 	public static Map<String,List<SQSVH>> fetchSQSInfo(BasicSessionCredentials temporaryCredentials, String skipRegions,String accountId,String accountName) {
-        
+
 	    ObjectMapper objectMapper = new ObjectMapper();
 	    objectMapper.configure(MapperFeature.ACCEPT_CASE_INSENSITIVE_PROPERTIES, true);
         Map<String,List<SQSVH>> sqs = new LinkedHashMap<>();
         AmazonSQS amazonSQS;
         String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource\" ,\"type\": \"sqs\"" ;
-        for(Region region : RegionUtils.getRegions()) { 
+        for(Region region : RegionUtils.getRegions()) {
             try{
                 if(!skipRegions.contains(region.getName())){
                     amazonSQS = AmazonSQSClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
@@ -1801,7 +1963,7 @@ public class InventoryUtil {
                     		log.debug("Error fetching info for the queue {}",queueUrl);
                     	}
                     }
-                    
+
                     if( !sqsList.isEmpty() ) {
                         log.debug(InventoryConstants.ACCOUNT + accountId +" Type : SQS "+region.getName() + " >> "+sqsList.size());
                         sqs.put(accountId+delimiter+accountName+delimiter+region.getName(),sqsList);
@@ -1812,10 +1974,14 @@ public class InventoryUtil {
                 ErrorManageUtil.uploadError(accountId,region.getName(),"sqs",e.getMessage());
             }
         }
- 
+
         return sqs;
     }
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	//****** Changes For Federated Rules Started ******
 	/**
 	 * Fetch ACMCertficate info.
@@ -1836,9 +2002,15 @@ public class InventoryUtil {
 		String domainName  = null;
 		List<String> issuerDetails = null;
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"ACM Certificate \" , \"region\":\"" ;
+<<<<<<< HEAD
 		for(Region region : RegionUtils.getRegions()) { 
 			try{
 				if(!skipRegions.contains(region.getName())){ 
+=======
+		for(Region region : RegionUtils.getRegions()) {
+			try{
+				if(!skipRegions.contains(region.getName())){
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 					AWSCertificateManager awsCertifcateManagerClient  = AWSCertificateManagerClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					listCertificateSummary = awsCertifcateManagerClient.listCertificates(new ListCertificatesRequest()).getCertificateSummaryList();
 					if(!CollectionUtils.isEmpty(listCertificateSummary)) {
@@ -1850,7 +2022,11 @@ public class InventoryUtil {
 						domainName = certificateDetail.getDomainName();
 						certificateARN = certificateDetail.getCertificateArn();
 						expiryDate = certificateDetail.getNotAfter();
+<<<<<<< HEAD
 						 
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 						SSLCertificateVH sslCertificate = new SSLCertificateVH();
 						sslCertificate.setDomainName(domainName);
 						sslCertificate.setCertificateARN(certificateARN);
@@ -1860,7 +2036,11 @@ public class InventoryUtil {
 					}
 					sslVH.put(account+delimiter+accountName+delimiter+region.getName(), sslCertList);
 				  }else {
+<<<<<<< HEAD
 					  log.info("List is empty"); 
+=======
+					  log.info("List is empty");
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				  }
 				 }
 				}catch(Exception e){
@@ -1870,7 +2050,11 @@ public class InventoryUtil {
 		}
 		return sslVH;
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	/**
 	 * Fetch IAM certificate info.
 	 *
@@ -1884,8 +2068,13 @@ public class InventoryUtil {
 		AmazonIdentityManagement amazonIdentityManagement;
 		List<ServerCertificateMetadata> listServerCertificatesMetadata = new ArrayList<>();
 		String serverCertificateName = null;
+<<<<<<< HEAD
 		String arn = null; 
 		Date expiryDate = null; 
+=======
+		String arn = null;
+		Date expiryDate = null;
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource \" ,\"type\": \"IAMCertificate\"" ;
 			try {
 					amazonIdentityManagement = AmazonIdentityManagementClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials))
@@ -1906,7 +2095,11 @@ public class InventoryUtil {
 					}
 					iamCertificateVH.put(account+delimiter+accountName, iamCerttList);
 					}else {
+<<<<<<< HEAD
 						log.info("List is empty"); 
+=======
+						log.info("List is empty");
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 					}
 			} catch (Exception e) {
 				log.error(expPrefix + InventoryConstants.ERROR_CAUSE + e.getMessage() + "\"}");
@@ -1914,7 +2107,11 @@ public class InventoryUtil {
 			}
 		return iamCertificateVH;
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	/**
 	 * Fetch Accounts info.
 	 *
@@ -2024,14 +2221,22 @@ public class InventoryUtil {
 			groups.addAll(rslt.getGroups());
 			marker = rslt.getMarker();
 		}while(marker!=null);
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 		List<GroupVH> groupList = new ArrayList<>();
 		Map<String,List<GroupVH>> iamGroups = new HashMap<>();
 		iamGroups.put(account+delimiter+accountName,  groupList);
 		groups.parallelStream().forEach(group -> {
 			GroupVH groupTemp = new GroupVH(group);
 			String groupName = group.getGroupName();
+<<<<<<< HEAD
 						
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			List<AttachedPolicy> policies = iamClient.listAttachedGroupPolicies(new ListAttachedGroupPoliciesRequest().withGroupName(groupName)).getAttachedPolicies();
 			List<String> policyList = new ArrayList<>();
 			for(AttachedPolicy pol : policies){
@@ -2042,7 +2247,11 @@ public class InventoryUtil {
 				groupList.add(groupTemp);
 			}
 		});
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 		return iamGroups;
 	}
 	/**
@@ -2058,11 +2267,19 @@ public class InventoryUtil {
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Cloud Trail\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
+<<<<<<< HEAD
 				if(!skipRegions.contains(region.getName())){ 
 					AWSCloudTrail cloudTrailClient =  AWSCloudTrailClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					DescribeTrailsResult rslt = cloudTrailClient.describeTrails();
 					List<Trail> trailTemp = rslt.getTrailList();
 				
+=======
+				if(!skipRegions.contains(region.getName())){
+					AWSCloudTrail cloudTrailClient =  AWSCloudTrailClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
+					DescribeTrailsResult rslt = cloudTrailClient.describeTrails();
+					List<Trail> trailTemp = rslt.getTrailList();
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 					if(! trailTemp.isEmpty() ){
 						cloudTrails.put(account+delimiter+accountName+delimiter+region.getName(),  trailTemp);
 					}
@@ -2076,6 +2293,10 @@ public class InventoryUtil {
 		}
 		return cloudTrails;
 	}
+<<<<<<< HEAD
 	
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	//****** Changes For Federated Rules End ******
 }

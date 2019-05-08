@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2019 T Mobile, Inc. or its affiliates. All Rights Reserved.
+<<<<<<< HEAD
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -7,6 +8,15 @@
  * 
  *   http://www.apache.org/licenses/LICENSE-2.0
  * 
+=======
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -16,9 +26,15 @@
 /**
   Copyright (C) 2019 T Mobile Inc - All Rights Reserve
   Purpose:
+<<<<<<< HEAD
   Author :Avinash 
   Date: Feb 27, 2019
   
+=======
+  Author :Avinash
+  Date: Feb 27, 2019
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
  **/
 package com.tmobile.cloud.awsrules.federated;
 
@@ -53,6 +69,7 @@ public class ACMCertificateExpiryRule extends BaseRule{
 
 	/**
 	 * The method will get triggered from Rule Engine with following parameters
+<<<<<<< HEAD
 	 * 
 	 * @param ruleParam
 	 * 
@@ -64,6 +81,19 @@ public class ACMCertificateExpiryRule extends BaseRule{
 	 * 
 	 * severity : Enter the value of severity <br><br>
 	 * 
+=======
+	 *
+	 * @param ruleParam
+	 *
+	 **************Following are the Rule Parameters********* <br><br>
+	 *
+	 * ruleKey : check-for-acm-certificate-expiry <br><br>
+	 *
+	 * targetExpireDuration : specify the expiry duration in numbers <br><br>
+	 *
+	 * severity : Enter the value of severity <br><br>
+	 *
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	 * ruleCategory : Enter the value of category <br><br>
 	 *
 	 * @param resourceAttributes this is a resource in context which needs to be scanned this is provided by execution engine
@@ -79,10 +109,17 @@ public class ACMCertificateExpiryRule extends BaseRule{
 		String targetExpiryDurationInString = ruleParam.get(PacmanRuleConstants.EXPIRED_DURATION);
 		String severity = ruleParam.get(PacmanRuleConstants.SEVERITY);
 		String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
+<<<<<<< HEAD
 		
 		MDC.put("executionId", ruleParam.get("executionId")); 
 		MDC.put("ruleId", ruleParam.get(PacmanSdkConstants.RULE_ID)); 
 		
+=======
+
+		MDC.put("executionId", ruleParam.get("executionId"));
+		MDC.put("ruleId", ruleParam.get(PacmanSdkConstants.RULE_ID));
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 		List<LinkedHashMap<String,Object>>issueList = new ArrayList<>();
 		LinkedHashMap<String,Object>issue = new LinkedHashMap<>();
 
@@ -102,7 +139,11 @@ public class ACMCertificateExpiryRule extends BaseRule{
 					annotation.put(PacmanSdkConstants.DESCRIPTION,"SSL(ACM) Expiry within "+ targetExpiryDurationInString+ " days found!!");
 					annotation.put(PacmanRuleConstants.SEVERITY, severity);
 					annotation.put(PacmanRuleConstants.CATEGORY, category);
+<<<<<<< HEAD
 					
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 					issue.put(PacmanRuleConstants.VIOLATION_REASON, "SSL(ACM) Expiry within "+ targetExpiryDurationInString+ " days found!!");
 					issueList.add(issue);
 					annotation.put("issueDetails",issueList.toString());
@@ -123,7 +164,11 @@ public class ACMCertificateExpiryRule extends BaseRule{
 	/**
 	 * This method calculates the difference between the current date and the
 	 * validto date It uses the TimeUnit utility for conversion purpose.
+<<<<<<< HEAD
 	 * 
+=======
+	 *
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	 * @param formattedDateString - String
 	 * @return expiredDuration - Long
 	 * @throws ParseException

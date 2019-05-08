@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2019 T Mobile, Inc. or its affiliates. All Rights Reserved.
+<<<<<<< HEAD
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -7,6 +8,15 @@
  * 
  *   http://www.apache.org/licenses/LICENSE-2.0
  * 
+=======
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -16,9 +26,15 @@
 /**
   Copyright (C) 2019 T Mobile Inc - All Rights Reserve
   Purpose:
+<<<<<<< HEAD
   Author :Avinash 
   Date: Jan 17, 2019
   
+=======
+  Author :Avinash
+  Date: Jan 17, 2019
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
  **/
 package com.tmobile.cloud.awsrules.federated;
 
@@ -41,6 +57,7 @@ public class AccessLogForAppLB extends BaseRule {
 
 	/**
 	 * The method will get triggered from Rule Engine with following parameters
+<<<<<<< HEAD
 	 * 
 	 * @param ruleParam
 	 * 
@@ -50,6 +67,17 @@ public class AccessLogForAppLB extends BaseRule {
 	 *
 	 *severity : Enter the value of severity <br><br>
 	 * 
+=======
+	 *
+	 * @param ruleParam
+	 *
+	 ************** Following are the Rule Parameters********* <br><br>
+	 *
+	 *ruleKey : check-for-access-log-for-application-elb <br><br>
+	 *
+	 *severity : Enter the value of severity <br><br>
+	 *
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	 *ruleCategory : Enter the value of category <br><br>
 	 *
 	 *accessLogBucketName : Name of the access log bucket name <br><br>

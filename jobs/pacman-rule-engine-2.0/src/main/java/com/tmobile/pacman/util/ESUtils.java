@@ -54,10 +54,10 @@ public class ESUtils {
 
     /** The Constant COUNT. */
     private static final String COUNT = "_count";
-
+    
     /** The Constant QUERY. */
     private static final String QUERY = "query";
-
+    
     /** The Constant logger. */
     private static final Logger logger = LoggerFactory.getLogger(ESUtils.class);
 
@@ -140,7 +140,7 @@ public class ESUtils {
         Gson gson = new GsonBuilder().create();
         try {
             String requestJson = gson.toJson(requestBody, Object.class);
-            responseDetails = CommonUtils.doHttpPost(urlToQuery, requestJson);
+            responseDetails = CommonUtils.doHttpPost(urlToQuery, requestJson,new HashMap<>());
             Map<String, Object> response = (Map<String, Object>) gson.fromJson(responseDetails, Object.class);
             return (long) (Double.parseDouble(response.get("count").toString()));
         } catch (Exception e) {
@@ -370,7 +370,7 @@ public class ESUtils {
                     request = buildScrollRequest(_scroll_id, PacmanSdkConstants.ES_PAGE_SCROLL_TTL);
                     urlToQuery = urlToScroll;
                 }
-                responseDetails = CommonUtils.doHttpPost(urlToQuery, request);
+                responseDetails = CommonUtils.doHttpPost(urlToQuery, request,new HashMap<>());
                 _scroll_id = processResponseAndSendTheScrollBack(responseDetails, results);
             } catch (Exception e) {
                 logger.error("error retrieving inventory from ES", e);
@@ -477,10 +477,9 @@ public class ESUtils {
      * @param evalResults the eval results
      * @return the boolean
      */
-    public static Boolean publishMetrics(Map<String, Object> evalResults) {
+    public static Boolean publishMetrics(Map<String, Object> evalResults,String type) {
         //logger.info(Joiner.on("#").withKeyValueSeparator("=").join(evalResults));
         String indexName = CommonUtils.getPropValue(PacmanSdkConstants.STATS_INDEX_NAME_KEY);// "fre-stats";
-        String type = CommonUtils.getPropValue(PacmanSdkConstants.STATS_TYPE_NAME_KEY); // "execution-stats";
         return doESPublish(evalResults, indexName, type);
     }
 
@@ -511,8 +510,42 @@ public class ESUtils {
      * @param type the type
      * @return the boolean
      */
-    private static Boolean doESPublish(Map<String, Object> evalResults, String indexName, String type) {
+    public static Boolean doESPublish(Map<String, Object> evalResults, String indexName, String type) {
+        
+        Gson serializer = new GsonBuilder().create();
+        String postBody = serializer.toJson(evalResults);
+        return postJsonDocumentToIndexAndType(evalResults.get(PacmanSdkConstants.EXECUTION_ID).toString(),indexName, type,postBody,Boolean.FALSE);
+    }
+    
+    /**
+     * Do ES publish.
+     *
+     * @param evalResults the eval results
+     * @param indexName the index name
+     * @param type the type
+     * @return the boolean
+     */
+    public static Boolean doESUpdate(String docId,Map<String, Object> evalResults, String indexName, String type) {
+        Gson serializer = new GsonBuilder().create();
+        String postBody = serializer.toJson(evalResults);
+        return postJsonDocumentToIndexAndType(docId,indexName, type,postBody,Boolean.TRUE);
+    }
+    
+    /**
+     * 
+     * @param evalResults
+     * @param indexName
+     * @param type
+     * @param postBody
+     * @return
+     */
+    private static Boolean postJsonDocumentToIndexAndType(String executionId, String indexName, String type,
+            String postBody,Boolean isUpdate) {
         String url = ESUtils.getEsUrl();
+        if(Strings.isNullOrEmpty(url)){
+            logger.error("unable to find ES url");
+            return false;
+        }
         try {
             if (!ESUtils.isValidIndex(url, indexName)) {
                 ESUtils.createIndex(url, indexName);
@@ -521,9 +554,12 @@ public class ESUtils {
                 ESUtils.createMapping(url, indexName, type);
             }
             String esUrl = new StringBuilder(url).append("/").append(indexName).append("/").append(type).append("/")
-                    .append(evalResults.get(PacmanSdkConstants.EXECUTION_ID)).toString();
-            Gson serializer = new GsonBuilder().create();
-            CommonUtils.doHttpPost(esUrl, serializer.toJson(evalResults));
+                    .append(executionId).toString();
+            if(isUpdate){
+                esUrl += "/_update";
+            }
+            
+            CommonUtils.doHttpPost(esUrl,postBody,new HashMap<>());
         } catch (Exception e) {
             logger.error("unable to publish execution stats");
             return Boolean.FALSE;
@@ -541,27 +577,4 @@ public class ESUtils {
         return new StringBuilder(key).append(".").append(PacmanSdkConstants.ES_KEYWORD_KEY).toString();
     }
 
-//    /**
-//     * The main method.
-//     *
-//     * @param args the arguments
-//     */
-//    @SuppressWarnings("serial")
-//    public static void main(String[] args) {
-//        String json = "[{\"title\":\"Red Hat Update for libgcrypt (RHSA-2013:1457)\",\"severity\":\"S3\",\"assetsAffected\":3,\"qid\":121548,\"category\":\"Local\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Failed Login Attempts Information\",\"severity\":\"S3\",\"assetsAffected\":23,\"qid\":125006,\"category\":\"Forensics\",\"vulntype\":\"Information Gathered\",\"patchable\":false,\"severitylevel\":4},{\"title\":\"Red Hat Update for gnupg2 (RHSA-2013:1459)\",\"severity\":\"S3\",\"assetsAffected\":3,\"qid\":121549,\"category\":\"Local\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":4},{\"title\":\"Oracle Enterprise Linux Security Update for libssh2 (ELSA-2016-0428)\",\"severity\":\"S3\",\"assetsAffected\":1,\"qid\":157150,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Oracle Enterprise Linux Security Update for kernel (ELSA-2017-2795)\",\"severity\":\"S3\",\"assetsAffected\":10,\"qid\":157565,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Oracle Enterprise Linux Security Update for httpd (ELSA-2017-1721)\",\"severity\":\"S3\",\"assetsAffected\":3,\"qid\":157492,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":5},{\"title\":\"Red Hat Update for postgresql (RHSA-2017:2728)\",\"severity\":\"S3\",\"assetsAffected\":12,\"qid\":236497,\"category\":\"RedHat\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":5},{\"title\":\"Oracle Enterprise Linux Security Update for Unbreakable Enterprise kernel (ELSA-2017-3605)\",\"severity\":\"S3\",\"assetsAffected\":10,\"qid\":157540,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":5},{\"title\":\"Oracle Enterprise Linux Security Update for Unbreakable Enterprise kernel (ELSA-2015-3101)\",\"severity\":\"S3\",\"assetsAffected\":2,\"qid\":155390,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":5},{\"title\":\" Red Hat Update for kernel security (RHSA-2016:0715) \",\"severity\":\"S3\",\"assetsAffected\":5,\"qid\":120245,\"category\":\"Local\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":5},{\"title\":\"Red Hat Update for file (RHSA-2014:1606)\",\"severity\":\"S3\",\"assetsAffected\":3,\"qid\":122730,\"category\":\"Local\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":5},{\"title\":\"Amazon Linux Security Advisory for java-1.7.0-openjdk: ALAS-2017-869\",\"severity\":\"S3\",\"assetsAffected\":1,\"qid\":351057,\"category\":\"Amazon Linux\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":5},{\"title\":\"Oracle Enterprise Linux Security Update for Unbreakable Enterprise kernel (ELSA-2017-3609)\",\"severity\":\"S3\",\"assetsAffected\":10,\"qid\":157547,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":5},{\"title\":\"Apache HTTP Server multiple vulnerabilities\",\"severity\":\"S3\",\"assetsAffected\":1,\"qid\":86975,\"category\":\"Web server\",\"vulntype\":\"Vulnerability or Potential Vulnerability\",\"patchable\":true,\"severitylevel\":4},{\"title\":\"Red Hat Update for xorg-x11-server (RHSA-2015:0797)\",\"severity\":\"S3\",\"assetsAffected\":1,\"qid\":123517,\"category\":\"Local\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":4},{\"title\":\"Windows Remote Desktop Protocol Weak Encryption Method Allowed\",\"severity\":\"S3\",\"assetsAffected\":3,\"qid\":90882,\"category\":\"Windows\",\"vulntype\":\"Vulnerability\",\"patchable\":false,\"severitylevel\":4},{\"title\":\"Oracle Enterprise Linux Security Update for kernel (ELSA-2015-1623)\",\"severity\":\"S3\",\"assetsAffected\":4,\"qid\":155298,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":4},{\"title\":\"Red Hat Update for curl Security (RHSA-2017:0847) \",\"severity\":\"S3\",\"assetsAffected\":103,\"qid\":236312,\"category\":\"RedHat\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":5},{\"title\":\"Amazon Linux Security Advisory for java-1.7.0-openjdk: ALAS-2017-797\",\"severity\":\"S3\",\"assetsAffected\":1,\"qid\":350955,\"category\":\"Amazon Linux\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Oracle Enterprise Linux Security Update for vim (ELSA-2016-2972)\",\"severity\":\"S3\",\"assetsAffected\":5,\"qid\":157343,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Oracle Enterprise Linux Security Update for Unbreakable Enterprise kernel (ELSA-2015-3078)\",\"severity\":\"S3\",\"assetsAffected\":2,\"qid\":155320,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Amazon Linux Security Advisory for expat: ALAS-2016-775\",\"severity\":\"S3\",\"assetsAffected\":1,\"qid\":350933,\"category\":\"Amazon Linux\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Red Hat Update for libjpeg-turbo (RHSA-2013:1803)\",\"severity\":\"S3\",\"assetsAffected\":3,\"qid\":121635,\"category\":\"Local\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":4},{\"title\":\"Red Hat Update for Bind Security (RHSA-2017:0276)\",\"severity\":\"S3\",\"assetsAffected\":48,\"qid\":236264,\"category\":\"RedHat\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":4},{\"title\":\"Amazon Linux Security Advisory for kernel: ALAS-2016-718\",\"severity\":\"S3\",\"assetsAffected\":6,\"qid\":350749,\"category\":\"Amazon Linux\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":4},{\"title\":\"Red Hat Update for openjpeg Security (RHSA-2017:0559)\",\"severity\":\"S3\",\"assetsAffected\":104,\"qid\":236294,\"category\":\"RedHat\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":4},{\"title\":\"Red Hat Update for bash Security (RHSA-2017:0725)\",\"severity\":\"S3\",\"assetsAffected\":103,\"qid\":236306,\"category\":\"RedHat\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":4},{\"title\":\"Oracle Enterprise Linux Security Update for Unbreakable Enterprise kernel (ELSA-2017-3515)\",\"severity\":\"S3\",\"assetsAffected\":10,\"qid\":157379,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Red Hat Update for libssh2 (RHSA-2016:0428)\",\"severity\":\"S3\",\"assetsAffected\":3,\"qid\":124778,\"category\":\"Local\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Red Hat Update for gtk-vnc (RHSA-2017:2258) \",\"severity\":\"S3\",\"assetsAffected\":1,\"qid\":236428,\"category\":\"RedHat\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Red Hat Update for libtiff Security (RHSA-2017:0225)\",\"severity\":\"S3\",\"assetsAffected\":110,\"qid\":236254,\"category\":\"RedHat\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Oracle Enterprise Linux Security Update for Unbreakable Enterprise kernel (ELSA-2015-3092)\",\"severity\":\"S3\",\"assetsAffected\":2,\"qid\":155342,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Oracle Enterprise Linux Security Update for gnutls (ELSA-2016-0012)\",\"severity\":\"S3\",\"assetsAffected\":1,\"qid\":157101,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Oracle Enterprise Linux Security Update for Unbreakable Enterprise kernel (ELSA-2016-3565)\",\"severity\":\"S3\",\"assetsAffected\":3,\"qid\":157194,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Oracle Enterprise Linux Security Update for Unbreakable Enterprise kernel (ELSA-2015-3064)\",\"severity\":\"S3\",\"assetsAffected\":2,\"qid\":155288,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Red Hat Update for tomcat Security (RHSA-2017:0935) \",\"severity\":\"S3\",\"assetsAffected\":18,\"qid\":236323,\"category\":\"RedHat\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Red Hat Update for sshd (RHSA-2017:3379)\",\"severity\":\"S3\",\"assetsAffected\":14,\"qid\":236570,\"category\":\"RedHat\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Red Hat Update for samba4 Security (RHSA-2017:0744)\",\"severity\":\"S3\",\"assetsAffected\":103,\"qid\":236307,\"category\":\"RedHat\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Oracle Enterprise Linux Security Update for samba4 (ELSA-2017-0744)\",\"severity\":\"S3\",\"assetsAffected\":10,\"qid\":157413,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Amazon Linux Security Advisory for curl: ALAS-2016-730\",\"severity\":\"S3\",\"assetsAffected\":1,\"qid\":350869,\"category\":\"Amazon Linux\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Red Hat Update for java-1.7.0-openjdk (RHSA-2017:1204) \",\"severity\":\"S3\",\"assetsAffected\":3,\"qid\":236346,\"category\":\"RedHat\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Red Hat Update for mariadb (RHSA-2017:2192) \",\"severity\":\"S3\",\"assetsAffected\":234,\"qid\":236427,\"category\":\"RedHat\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Oracle Enterprise Linux Security Update for unbreakable enterprise kernel  (ELSA-2017-3621)\",\"severity\":\"S3\",\"assetsAffected\":9,\"qid\":157559,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Amazon Linux Security Advisory for sudo: ALAS-2017-843\",\"severity\":\"S3\",\"assetsAffected\":1,\"qid\":351008,\"category\":\"Amazon Linux\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Oracle Enterprise Linux Security Update for java-1.7.0-openjdk (ELSA-2017-3392)\",\"severity\":\"S3\",\"assetsAffected\":1,\"qid\":157608,\"category\":\"OEL\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"Elasticsearch Logstash Information Disclosure Vulnerability (ESA-2016-08)\",\"severity\":\"S3\",\"assetsAffected\":8,\"qid\":370520,\"category\":\"Local\",\"vulntype\":\"Vulnerability\",\"patchable\":true,\"severitylevel\":3},{\"title\":\"NTP Multiple Security Vulnerabilities\",\"severity\":\"S3\",\"assetsAffected\":9,\"qid\":370017,\"category\":\"Local\",\"vulntype\":\"Vulnerability or Potential Vulnerability\",\"patchable\":true,\"severitylevel\":3}]";
-//        Gson gson = new Gson();
-//        Type typeToken = new TypeToken<List<Map<String, Object>>>() {
-//        }.getType();
-//        List<Map<String, Object>> items = gson.fromJson(json, typeToken);
-//
-//        List<Map<String, Object>> result = items.stream()
-//                .sorted((h1,
-//                        h2) -> (int) (Double.parseDouble(h2.get("assetsAffected").toString())
-//                                - (Double.parseDouble(h1.get("assetsAffected").toString()))))
-//                .sorted((h1,
-//                        h2) -> (int) (Double.parseDouble(h2.get("severitylevel").toString())
-//                                - (Double.parseDouble(h1.get("severitylevel").toString()))))
-//                .collect(Collectors.toList());
-//        System.out.println(gson.toJson(result));
-//    }
 }

@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -27,19 +27,19 @@ import com.amazonaws.services.elasticloadbalancingv2.model.Tag;
  * The Class LoadBalancerVH.
  */
 public class LoadBalancerVH {
-	
+
 	/** The availability zones. */
 	private List<String> availabilityZones;
-	
+
 	/** The lb. */
 	private LoadBalancer lb;
-	
+
 	/** The instances. */
 	private List<Instance> instances;
-	
+
 	/** The tags. */
 	private List<Tag> tags;
-	
+
 	/** The availability zones. */
     private List<String> subnets;
     
@@ -49,7 +49,13 @@ public class LoadBalancerVH {
 	 /** The accessLog. */
 	 boolean accessLog;
 
-    
+    /** The accessLogBucketName. */
+	 String accessLogBucketName;
+
+	 /** The accessLog. */
+	 boolean accessLog;
+
+
 	/**
 	 * Instantiates a new load balancer VH.
 	 *
@@ -64,7 +70,7 @@ public class LoadBalancerVH {
             subnets.add(e.getSubnetId());});
 		}
 	}
-	
+
 	/**
 	 * Instantiates a new load balancer VH.
 	 *
@@ -83,9 +89,9 @@ public class LoadBalancerVH {
 		    lb.getAvailabilityZones().forEach(e-> { availabilityZones.add(e.getZoneName());
 			                                        subnets.add(e.getSubnetId());});
 		}
-		
+
 	}
-	
+
 	/**
 	 * Sets the instances.
 	 *

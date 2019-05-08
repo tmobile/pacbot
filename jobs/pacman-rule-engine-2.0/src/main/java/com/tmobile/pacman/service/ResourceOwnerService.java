@@ -16,12 +16,15 @@
 
 package com.tmobile.pacman.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.tmobile.pacman.common.PacmanSdkConstants;
 import com.tmobile.pacman.commons.AWSService;
 import com.tmobile.pacman.dto.ResourceOwner;
 import com.tmobile.pacman.util.CommonUtils;
@@ -79,6 +82,8 @@ public class ResourceOwnerService {
     private ResourceOwner fetchAndBuildResourceOwnerDetails(final String resourceId) throws Exception {
         String heimdallUrl = PROTOCOL + "://" + CommonUtils.getPropValue(HEIMDALL_HOST) + ":"
                 + CommonUtils.getPropValue(HEIMDALL_PORT);
+        ResourceOwner resourceOwner = new ResourceOwner();
+        List<Map<String, String>> resourceDetails = new ArrayList<>();
         List<String> fields = Lists.newArrayList();
         fields.add(EMAIL);
         fields.add(USER);
@@ -86,12 +91,17 @@ public class ResourceOwnerService {
         Map<String, Object> mustFilter = Maps.newHashMap();
         mustFilter.put(ESUtils.createKeyword("resourceid"), resourceId);
         HashMultimap<String, Object> shouldFilter = null;
-        List<Map<String, String>> resourceDetails = ESUtils.getDataFromES(heimdallUrl, HEIMDALL_RESOURCE_INDEX, "",
+        try{
+        resourceDetails = ESUtils.getDataFromES(heimdallUrl, HEIMDALL_RESOURCE_INDEX, "",
                 mustFilter, Maps.newHashMap(), shouldFilter, fields, 0, 10);
-        ResourceOwner resourceOwner = new ResourceOwner();
+        
         if (resourceDetails.size() > 0) {
             resourceOwner.setEmailId(findEmail(resourceDetails));
             resourceOwner.setName(resourceDetails.get(0).get(USER));
+        }
+        }catch(Exception e){
+        	resourceOwner.setEmailId(CommonUtils.getPropValue(PacmanSdkConstants.PACBOT_AUTOFIX_RESOURCE_OWNER_FALLBACK_MAIL));
+        	resourceOwner.setName("Team");
         }
         return resourceOwner;
     }

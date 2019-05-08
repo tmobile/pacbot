@@ -101,7 +101,11 @@ public class CheckCloudTrailMultiRegionEnabled extends BaseRule {
         logger.debug("========CheckAWSCloudTrailConfig ended=========");
 		return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);
     }
+<<<<<<< HEAD
     
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
     public String getHelpText() {
 		return "This rule checks for AWS CloudTrail multi region enabled";
 	}

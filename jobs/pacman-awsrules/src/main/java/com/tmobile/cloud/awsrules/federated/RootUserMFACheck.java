@@ -1,5 +1,6 @@
 /*******************************************************************************
  * Copyright 2019 T Mobile, Inc. or its affiliates. All Rights Reserved.
+<<<<<<< HEAD
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -7,6 +8,15 @@
  * 
  *   http://www.apache.org/licenses/LICENSE-2.0
  * 
+=======
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not
+ * use this file except in compliance with the License.  You may obtain a copy
+ * of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -16,7 +26,11 @@
 /**
   Copyright (C) 2019 T Mobile Inc - All Rights Reserve
   Purpose: Rule for checking whether access keys been rotated after a particular duration of dayss
+<<<<<<< HEAD
   
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
  **/
 package com.tmobile.cloud.awsrules.federated;
 
@@ -41,6 +55,7 @@ import com.tmobile.pacman.commons.rule.RuleResult;
 
 @PacmanRule(key = "check-for-MFA-RootUser", desc = "checks for MFA for Root User", severity = PacmanSdkConstants.SEV_HIGH, category = PacmanSdkConstants.GOVERNANCE)
 public class RootUserMFACheck extends BaseRule {
+<<<<<<< HEAD
 	
 	private static final Logger logger = LoggerFactory.getLogger(RootUserMFACheck.class);
 	
@@ -65,6 +80,32 @@ public class RootUserMFACheck extends BaseRule {
 	public RuleResult execute(final Map<String, String> ruleParam, Map<String, String> resourceAttributes) {
 		logger.debug("========CheckMFAforRootUser started=========");
 		Annotation annotation = null; 
+=======
+
+	private static final Logger logger = LoggerFactory.getLogger(RootUserMFACheck.class);
+
+	/**
+	 * The method will get triggered from Rule Engine with following parameters
+	 * @param ruleParam
+	 *
+	 * ************* Following are the Rule Parameters********* <br><br>
+	 *
+	 * ruleKey : check-for-accesskeys-iamuser-federated-for-180-and-360-days <br><br>
+	 *
+	 * severity : Enter the value of severity <br><br>
+	 *
+	 * ruleCategory : Enter the value of category <br><br>
+	 *
+	 * roleIdentifyingString : Configure it as role/pac_ro <br><br>
+	 *
+	 * @param resourceAttributes this is a resource in context which needs to be scanned this is provided by execution engine
+	 *
+	 */
+
+	public RuleResult execute(final Map<String, String> ruleParam, Map<String, String> resourceAttributes) {
+		logger.debug("========CheckMFAforRootUser started=========");
+		Annotation annotation = null;
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 		Map<String, String> temp = new HashMap<>();
 	        temp.putAll(ruleParam);
 	        temp.put("region", "us-west-2");
@@ -72,7 +113,11 @@ public class RootUserMFACheck extends BaseRule {
 		String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
 		String roleIdentifyingString = ruleParam
 	                .get(PacmanSdkConstants.Role_IDENTIFYING_STRING);
+<<<<<<< HEAD
 		
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 		Map<String, Object> map = null;
         AmazonIdentityManagementClient identityManagementClient = null;
 
@@ -97,11 +142,19 @@ public class RootUserMFACheck extends BaseRule {
         }
 		logger.debug("========CheckMFAforRootUser ended=========");
 		return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);
+<<<<<<< HEAD
         
 	}
 	
     @Override
 	public String getHelpText() {		
+=======
+
+	}
+
+    @Override
+	public String getHelpText() {
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 		return "This rule checks for accesskeys which are not rotated in past 90 days from current day";
 	}
 

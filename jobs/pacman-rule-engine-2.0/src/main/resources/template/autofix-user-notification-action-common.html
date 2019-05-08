@@ -1,0 +1,123 @@
+<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-3.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>PacMan Auto fix Report</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<style>
+table {
+	border-collapse: collapse;
+	/*width: 100%;*/
+}
+
+th, td {
+	text-align: left;
+	padding: 8px;
+}
+
+tr:nth-child(even) {
+	background-color: #f2f2f2
+}
+
+th {
+	background-color: #e20074;
+	color: white;
+}
+</style>
+
+</head>
+<body>
+
+<div
+	class="_rp_55 ms-font-weight-regular ms-font-color-neutralDark rpHighlightAllClass rpHighlightBodyClass"
+	id="Item.MessageUniqueBody"
+	style="font-family: wf_segoe-ui_normal,&amp; quot;Segoe UI&amp;quot;, &amp;quot;Segoe WP&amp;quot;, Tahoma, Arial, sans-serif, serif, EmojiFont;">
+	<div class="rps_50b9">
+		<div>
+			<div>
+				<div class="x_3DWordSection1">
+		<table width="700" style="">
+							<tbody>
+								<tr style="">
+									<td width="3D624" valign="3Dtop" style=""><img width="700"
+										data-imagetype="External"
+										src="${EMAIL_BANNER}"
+										alt="T-Mobile Cloud Security Operations"
+										title="T-Mobile Cloud Security Operations"></td>
+								</tr>
+								<tr style="">
+									<td width="3D624" valign="3Dtop" style="">
+										<p class="x_MsoNormal" align="center"
+											style="margin-bottom: 0in; margin-bottom: .0001pt; text-align: left; line-height: normal">
+											<i style=""><span style="font-size: 9.0pt">You are
+													receiving this email because one of your AWS resource were
+													found vulnerable under T-Mobile policy. </span></i>
+										</p>
+										<p class="x_MsoNormal"
+											style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal">
+											<span style="font-size: 12.0pt" Hello th:text="${NAME}"></span>
+										</p>
+										<p class="x_MsoNormal"
+											style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal">
+											<span style="font-size: 12.0pt"
+												th:text="${AUTOFIX_POST_FIX_MESSAGE}" /> ,<br>
+												<a th:href="${POLICY_URL}">T-Mobile Cloud Governance
+												Policy</a> </span>
+										</p>
+										<p class="x_MsoNormal"
+											style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal">
+											<span style="font-size: 12.0pt" Total Auto fixes Applied
+												th:text="${RESOURCE_TYPE}"></span>
+										</p>
+										<p class="x_MsoNormal"
+											style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal">
+											<span style="font-size: 12.0pt" Total Auto fixes Applied
+												th:text="${AUTO_FIX_APPLIED}"></span>
+										</p>
+
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					<br>
+
+						<table width="1000" border=1>
+							<tr>
+								<th th:each="column : ${columns}" th:text="${column}">key
+								</th>
+							</tr>
+							<tr th:each="resource : ${resources}">
+								<td th:if="${resource.resourceId != null}" th:text="${resource.resourceId}">The resource id</td>
+								<td th:if="${resource.accountId != null}" th:text="${resource.accountId}">The account id</td>
+								<td th:if="${resource.region != null}" th:text="${resource.region}">The region</td>
+								<td th:if="${resource.ruleId != null}" th:text="${resource.ruleId}">The ruleId </td>
+								<td th:if="${resource.allocationId != null}" th:text="${resource.allocationId}">The allocationId </td>
+								<td th:if="${resource.attachedSg != null}" th:text="${resource.attachedSg}">The attachedSg </td>
+								<td th:if="${resource.detachedSg != null}" th:text="${resource.detachedSg}">The detachedSg </td>
+								<td th:if="${resource.groupName != null}" th:text="${resource.groupName}">The groupName </td>
+								<td th:if="${resource.desc != null}" th:text="${resource.desc}">The allocationId </td>
+								<td th:if="${resource.applicationTag != null}" th:text="${resource.applicationTag}">The attachedSg </td>
+								<td th:if="${resource.type != null}" th:text="${resource.type}">The detachedSg </td>
+								<td th:if="${resource.additionalInfo != null}" th:text="${resource.additionalInfo}">The transationTime </td>
+								<td th:if="${resource.inlinePolicy != null}" th:text="${resource.inlinePolicy}">The executionId </td>
+								<td th:if="${resource.managedPolicy != null}" th:text="${resource.managedPolicy}">The transactionId  </td>
+								<td th:if="${resource.policy != null}" th:text="${resource.policy}">The policy  </td>
+								
+							</tr>
+						</table>
+
+
+						<p class="x_MsoNormal"
+										style="margin-bottom: 0in; margin-bottom: .0001pt; line-height: normal">
+										<span style="font-size: 12.0pt">For questions,
+											comments, or concerns, please contact <a
+											href="mailto:CloudSecOps@T-Mobile.com" target="_blank"
+											rel="noopener noreferrer"><span style="color: #E20074">CloudSecOps@T-Mobile.com</span></a>.
+										</span>
+									</p>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>

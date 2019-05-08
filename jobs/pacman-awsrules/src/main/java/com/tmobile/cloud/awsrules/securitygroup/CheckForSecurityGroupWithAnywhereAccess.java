@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -16,9 +16,9 @@
 /**
   Copyright (C) 2017 T Mobile Inc - All Rights Reserve
   Purpose:
-  Author :U55262,santoshi
+  Author :U55262,Sgorle
   Modified Date: Jun 20, 2017
-
+  
  **/
 package com.tmobile.cloud.awsrules.securitygroup;
 
@@ -47,39 +47,31 @@ import com.tmobile.pacman.commons.rule.RuleResult;
 
 @PacmanRule(key = "check-for-security-group-global-access", desc = "checks entirely for security group's global access", severity = PacmanSdkConstants.SEV_HIGH, category = PacmanSdkConstants.SECURITY)
 public class CheckForSecurityGroupWithAnywhereAccess extends BaseRule {
-    private static final Logger logger = LoggerFactory
-            .getLogger(CheckForSecurityGroupWithAnywhereAccess.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckForSecurityGroupWithAnywhereAccess.class);
 
     /**
      * The method will get triggered from Rule Engine with following parameters
-     *
+     * 
      * @param ruleParam
-     *
-     *            ************* Following are the Rule Parameters********* <br>
-     * <br>
-     *
-     *            portToCheck : Value of the port<br>
-     * <br>
-     *
-     *            ruleKey : check-for-security-group-global-access <br>
-     * <br>
-     *
-     *            severity : Enter the value of severity <br>
-     * <br>
-     *
-     *            ruleCategory : Enter the value of category <br>
-     * <br>
-     *
-     *            esSgRulesUrl : Enter the SG rules ES URL <br>
-     * <br>
-     *
-     *            cidrIp : Enter the ip as 0.0.0.0/0 <br>
-     * <br>
-     *
-     *            threadsafe : if true , rule will be executed on multiple
-     *            threads <br>
-     * <br>
-     *
+     * 
+     ************** Following are the Rule Parameters********* <br><br>
+     * 
+     * portToCheck : Value of the port<br><br>
+     * 
+     * ruleKey : check-for-security-group-global-access <br><br>
+     * 
+     * severity : Enter the value of severity <br><br>
+     * 
+     * ruleCategory : Enter the value of category <br><br>
+     * 
+     * esSgRulesUrl : Enter the SG rules ES URL <br><br>
+     * 
+     * cidrIp : Enter the ip as 0.0.0.0/0 <br><br>
+     * 
+     * cidripv6 : Enter the ip as ::/0 <br><br>
+     * 
+     * threadsafe : if true , rule will be executed on multiple threads <br><br>
+     * 
      * @param resourceAttributes
      *            this is a resource in context which needs to be scanned this
      *            is provided by execution engine
@@ -87,8 +79,7 @@ public class CheckForSecurityGroupWithAnywhereAccess extends BaseRule {
      */
 
     @SuppressWarnings("deprecation")
-    public RuleResult execute(final Map<String, String> ruleParam,
-            Map<String, String> resourceAttributes) {
+    public RuleResult execute(final Map<String, String> ruleParam, Map<String, String> resourceAttributes) {
 
         logger.debug("========CheckForSecurityGroupWithAnywhereAccess started=========");
         Annotation annotation = null;
@@ -101,9 +92,11 @@ public class CheckForSecurityGroupWithAnywhereAccess extends BaseRule {
         String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
         String sgRulesUrl = null;
         String cidrIp = ruleParam.get(PacmanRuleConstants.CIDR_IP);
-
+        String cidrIpv6 = ruleParam.get(PacmanRuleConstants.CIDRIPV6);
+        String description = null;
+        
         String formattedUrl = PacmanUtils.formatUrl(ruleParam,PacmanRuleConstants.ES_SG_RULES_URL);
-
+        
         if(!StringUtils.isEmpty(formattedUrl)){
             sgRulesUrl =  formattedUrl;
         }
@@ -114,8 +107,7 @@ public class CheckForSecurityGroupWithAnywhereAccess extends BaseRule {
         List<LinkedHashMap<String, Object>> issueList = new ArrayList<>();
         LinkedHashMap<String, Object> issue = new LinkedHashMap<>();
 
-        if (!PacmanUtils.doesAllHaveValue(portToCheck, severity, category,
-                sgRulesUrl, cidrIp)) {
+        if (!PacmanUtils.doesAllHaveValue(cidrIpv6,portToCheck, severity, category, sgRulesUrl, cidrIp)) {
             logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
             throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
         }
@@ -126,30 +118,31 @@ public class CheckForSecurityGroupWithAnywhereAccess extends BaseRule {
             securityGroupsSet.addAll(list);
 
             try {
-                Map<String, Boolean> sgOpen = PacmanUtils.checkAccessibleToAll(securityGroupsSet,
-                        portToCheck, sgRulesUrl, cidrIp);
+                Map<String, Boolean> sgOpen = PacmanUtils.checkAccessibleToAll(securityGroupsSet, portToCheck, sgRulesUrl, cidrIp,cidrIpv6,"");
                 if (!sgOpen.isEmpty()) {
-                    annotation = Annotation.buildAnnotation(ruleParam,
-                            Annotation.Type.ISSUE);
-                    annotation.put(PacmanSdkConstants.DESCRIPTION,
-                            "EC2 has port : " + portToCheck + " publicly open");
+                    annotation = Annotation.buildAnnotation(ruleParam,Annotation.Type.ISSUE);
+                   
                     annotation.put(PacmanRuleConstants.SEVERITY, severity);
                     annotation.put(PacmanRuleConstants.CATEGORY, category);
 
-                    issue.put(PacmanRuleConstants.VIOLATION_REASON,
-                            "EC2 has port : " + portToCheck + " publicly open");
+					if (!portToCheck.equalsIgnoreCase("any")) {
+						description = "Security Group has port : " + portToCheck + " publicly open";
+						annotation.put(PacmanSdkConstants.DESCRIPTION, description);
+						issue.put(PacmanRuleConstants.VIOLATION_REASON, description);
+					} else {
+						description = "One of the inbound rule is open to internet for this sg";
+						annotation.put(PacmanSdkConstants.DESCRIPTION, description);
+						issue.put(PacmanRuleConstants.VIOLATION_REASON, description);
+					}
                     issue.put("cidr_ip", cidrIp);
+                    issue.put("cidr_ip_v6", cidrIpv6);
                     issueList.add(issue);
                     annotation.put("issueDetails", issueList.toString());
 
-                    logger.debug(
-                            "========CheckForSecurityGroupWithAnywhereAccess ended with an annotation {} :=========",
-                            annotation);
-                    return new RuleResult(PacmanSdkConstants.STATUS_FAILURE,
-                            PacmanRuleConstants.FAILURE_MESSAGE, annotation);
+                    logger.debug("========CheckForSecurityGroupWithAnywhereAccess ended with an annotation {} :=========", annotation);
+                    return new RuleResult(PacmanSdkConstants.STATUS_FAILURE, PacmanRuleConstants.FAILURE_MESSAGE, annotation);
                 } else {
-                    logger.info(
-                            "Security group doesn't have any port with global access : {} ",securityGroupId);
+                    logger.info("Security group doesn't have any port with global access : {} ",securityGroupId);
                 }
             } catch (Exception e) {
                 logger.error(e.getMessage());
@@ -160,8 +153,7 @@ public class CheckForSecurityGroupWithAnywhereAccess extends BaseRule {
             throw new RuleExecutionFailedExeption("Resource Id not found!!");
         }
         logger.debug("========CheckForSecurityGroupWithAnywhereAccess ended=========");
-        return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS,
-                PacmanRuleConstants.SUCCESS_MESSAGE);
+        return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);
 
     }
 

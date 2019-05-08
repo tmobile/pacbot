@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -47,27 +47,27 @@ import com.tmobile.cso.pacman.inventory.util.SNSInventoryUtil;
  */
 @Component
 public class AssetFileGenerator {
-	
+
 	/** The log. */
 	private static Logger log = LoggerFactory.getLogger(AssetFileGenerator.class);
-	
+
 	/** The cred provider. */
 	@Autowired
 	CredentialProvider credProvider;
-	
+
 	/** The target types. */
 	@Value("${target-types:}")
 	private String targetTypes;
-	
+
 	/** The target types. */
 	@Value("${discovery.role}")
 	private  String roleName;
-	
+
 	/** The target types. */
 	@Value("${ec2.statenames:running,stopped,stopping}")
 	private  String ec2StatenameFilters;
-	
-	
+
+
 	/**
 	 * Generate files.
 	 *
@@ -76,7 +76,7 @@ public class AssetFileGenerator {
 	 * @param filePath the file path
 	 */
 	public void generateFiles(List<Map<String,String>> accounts,String skipRegions,String filePath){
-		
+
 		try {
 			FileManager.initialise(filePath);
 			ErrorManageUtil.initialise();
@@ -84,12 +84,12 @@ public class AssetFileGenerator {
 			log.error("Error initialising File ",e1);
 		}
 		Iterator<Map<String, String>> it = accounts.iterator();
-		
+
 		while(it.hasNext()){
 			Map<String, String> account = it.next();
 			String accountId = account.get(InventoryConstants.ACCOUNT_ID);
 			String accountName = account.get(InventoryConstants.ACCOUNT_NAME);
-			
+
 			log.info("Started Discovery for account {}", accountId);
 			BasicSessionCredentials tempCredentials = null;
 			try{
@@ -102,10 +102,10 @@ public class AssetFileGenerator {
 			final BasicSessionCredentials temporaryCredentials = tempCredentials;
 			String expPrefix = "{\"errcode\": \"NO_RES\" ,\"account\": \""+accountId + "\",\"Message\": \"Exception in fetching info for resource\" ,\"type\": \"" ;
 			String infoPrefix = "Fetching for Account : "+accountId + " Type : ";
-			
+
 			ExecutorService executor = Executors.newCachedThreadPool();
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("ec2"))) {
 			        return;
@@ -118,8 +118,8 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "ec2", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("asg"))) {
                     return;
@@ -132,13 +132,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "asg", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("stack"))) {
                     return;
                 }
-				try{				
+				try{
 					log.info(infoPrefix + "Cloud Formation Stack");
 					FileManager.generateCloudFormationStackFiles(InventoryUtil.fetchCloudFormationStack(temporaryCredentials, skipRegions,accountId,accountName));
 				}catch(Exception e){
@@ -146,8 +146,8 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "stack", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("dynamodb"))) {
                     return;
@@ -160,8 +160,8 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "dynamodb", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("efs"))) {
 			        return;
@@ -174,9 +174,9 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "efs", e.getMessage());
 				}
 			});
-			
-			
-			executor.execute(() -> 
+
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("emr"))) {
                     return;
@@ -189,8 +189,8 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "emr", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("lambda"))) {
                     return;
@@ -203,8 +203,8 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "lambda", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("classicelb"))) {
                     return;
@@ -217,8 +217,8 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "classicelb", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("appelb"))) {
                     return;
@@ -231,9 +231,9 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "appelb", e.getMessage());
 				}
 			});
-			
-			
-			executor.execute(() -> 
+
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("targetgroup"))) {
                     return;
@@ -246,15 +246,15 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "targergroup", e.getMessage());
 				}
 			});
-			
-			
-		
-			executor.execute(() -> 
+
+
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("nat"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Nat Gateway");
 					FileManager.generateNatGatewayFiles(InventoryUtil.fetchNATGatewayInfo(temporaryCredentials, skipRegions,accountId,accountName));
@@ -263,13 +263,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "nat", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("rdsdb"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "RDS Instance");
 					FileManager.generateRDSInstanceFiles(InventoryUtil.fetchRDSInstanceInfo(temporaryCredentials, skipRegions,accountId,accountName));
@@ -278,13 +278,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "rdsdb", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("rdscluster"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "RDS Cluster");
 					FileManager.generateRDSClusterFiles(InventoryUtil.fetchRDSClusterInfo(temporaryCredentials, skipRegions,accountId,accountName));
@@ -293,13 +293,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "rdscluster", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("s3"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "S3");
 					FileManager.generateS3Files(InventoryUtil.fetchS3Info(temporaryCredentials, skipRegions,accountId,accountName));
@@ -308,13 +308,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "s3", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("eni"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Network Interface");
 					FileManager.generateNwInterfaceFiles(InventoryUtil.fetchNetworkIntefaces(temporaryCredentials,skipRegions,accountId,accountName));
@@ -323,13 +323,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "eni", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("sg"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Security Group");
 					FileManager.generateSecGroupFile(InventoryUtil.fetchSecurityGroups(temporaryCredentials,skipRegions,accountId,accountName));
@@ -338,13 +338,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "sg", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("subnet"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Subnet");
 					FileManager.generateSubnetFiles(InventoryUtil.fetchSubnets(temporaryCredentials,skipRegions,accountId,accountName));
@@ -353,13 +353,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "subnet", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("checks"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Trusted Advisor Check");
 					FileManager.generateTrustedAdvisorFiles(InventoryUtil.fetchTrusterdAdvisorsChecks(temporaryCredentials,accountId,accountName));
@@ -368,14 +368,14 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "checks", e.getMessage());
 				}
 			});
-			
-			
-			executor.execute(() -> 
+
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("redshift"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Redshift");
 					FileManager.generateRedshiftFiles(InventoryUtil.fetchRedshiftInfo(temporaryCredentials,skipRegions,accountId,accountName));
@@ -383,13 +383,13 @@ public class AssetFileGenerator {
 					log.error(expPrefix+ "Redshift\", \"cause\":\"" +e.getMessage()+"\"}");
 					ErrorManageUtil.uploadError(accountId, "", "redshift", e.getMessage());		}
 			});
-		
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("volume"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Volume");
 					FileManager.generatefetchVolumeFiles(InventoryUtil.fetchVolumetInfo(temporaryCredentials,skipRegions,accountId,accountName));
@@ -398,13 +398,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "volume", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("snapshot"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Snapshot");
 					FileManager.generateSnapshotFiles(InventoryUtil.fetchSnapshots(temporaryCredentials,skipRegions,accountId,accountName));
@@ -413,13 +413,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "snapshot", e.getMessage());
 				}
 			});
-		
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("vpc"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "VPC");
 					FileManager.generateVpcFiles(InventoryUtil.fetchVpcInfo(temporaryCredentials,skipRegions,accountId,accountName));
@@ -428,13 +428,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "vpc", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("api"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "ApiGateway");
 					 FileManager.generateApiGatewayFiles(InventoryUtil.fetchApiGateways(temporaryCredentials,skipRegions,accountId,accountName));
@@ -443,13 +443,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "api", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("iamuser"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "IAM User");
 					FileManager.generateIamUserFiles(InventoryUtil.fetchIAMUsers(temporaryCredentials,accountId,accountName));
@@ -458,13 +458,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "iamuser", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("rdssnapshot"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "RDS Snapshot");
 					FileManager.generateRDSSnapshotFiles(InventoryUtil.fetchRDSDBSnapshots(temporaryCredentials,skipRegions,accountId,accountName));
@@ -473,13 +473,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "rdssnapshot", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("iamrole"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "IAM Roles");
 					FileManager.generateIamRoleFiles(InventoryUtil.fetchIAMRoles(temporaryCredentials,accountId,accountName));
@@ -488,14 +488,14 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "iamrole", e.getMessage());
 				}
 			});
-			
-			
-			executor.execute(() -> 
+
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("kms"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "KMS");
 					FileManager.generateKMSFiles(InventoryUtil.fetchKMSKeys(temporaryCredentials,skipRegions,accountId,accountName));
@@ -504,13 +504,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "kms", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("cloudfront"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "CloudFront");
 					FileManager.generateCloudFrontFiles(InventoryUtil.fetchCloudFrontInfo(temporaryCredentials,accountId,accountName));
@@ -519,13 +519,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "cloudfront", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("beanstalk"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "beanstalk");
 					FileManager.generateEBSFiles(InventoryUtil.fetchEBSInfo(temporaryCredentials,skipRegions,accountId,accountName));
@@ -534,13 +534,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "beanstalk", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("phd"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "PHD");
 					FileManager.generatePHDFiles(InventoryUtil.fetchPHDInfo(temporaryCredentials,accountId,accountName));
@@ -549,13 +549,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "phd", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("routetable"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "EC2 Route table");
 					FileManager.generateEC2RouteTableFiles(EC2InventoryUtil.fetchRouteTables(temporaryCredentials,skipRegions,accountId,accountName));
@@ -564,13 +564,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "routetable", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("networkacl"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "EC2 Network Acl");
 					FileManager.generateNetworkAclFiles(EC2InventoryUtil.fetchNetworkACL(temporaryCredentials,skipRegions,accountId,accountName));
@@ -579,13 +579,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "networkacl", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("elasticip"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "EC2 Elastic IP");
 					FileManager.generateElasticIPFiles(EC2InventoryUtil.fetchElasticIPAddresses(temporaryCredentials,skipRegions,accountId,accountName));
@@ -594,13 +594,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "elasticip", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("launchconfig"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "ASG Launch Configurations");
 					FileManager.generateLaunchConfigurationsFiles(ASGInventoryUtil.fetchLaunchConfigurations(temporaryCredentials,skipRegions,accountId,accountName));
@@ -609,13 +609,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "launchconfig", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("internetgw"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "EC2 Internet Gateway");
 					FileManager.generateInternetGatewayFiles(EC2InventoryUtil.fetchInternetGateway(temporaryCredentials,skipRegions,accountId,accountName));
@@ -624,13 +624,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "internetgw", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("vpngw"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "EC2 Vpn Gateway");
 					FileManager.generateVPNGatewayFiles(EC2InventoryUtil.fetchVPNGateway(temporaryCredentials,skipRegions,accountId,accountName));
@@ -639,13 +639,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "vpngw", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("asgpolicy"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "ASG Scaling Policy");
 					FileManager.generateScalingPolicies(ASGInventoryUtil.fetchScalingPolicies(temporaryCredentials,skipRegions,accountId,accountName));
@@ -654,13 +654,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "asgpolicy", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("snstopic"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "SNS Topics");
 					FileManager.generateSNSTopics(SNSInventoryUtil.fetchSNSTopics(temporaryCredentials, skipRegions,accountId,accountName));
@@ -669,13 +669,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "snstopic", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("egressgateway"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Egress Gateway");
 					FileManager.generateEgressGateway(EC2InventoryUtil.fetchEgressGateway(temporaryCredentials, skipRegions,accountId,accountName));
@@ -684,13 +684,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "egressgateway", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("dhcpoption"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Dhcp Options");
 					FileManager.generateDhcpOptions(EC2InventoryUtil.fetchDHCPOptions(temporaryCredentials, skipRegions,accountId,accountName));
@@ -699,13 +699,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "dhcpoption", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("peeringconnection"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Peering Connections");
 					FileManager.generatePeeringConnections(EC2InventoryUtil.fetchPeeringConnections(temporaryCredentials, skipRegions,accountId,accountName));
@@ -714,13 +714,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "peeringconnection", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("customergateway"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Customer Gateway");
 					FileManager.generateCustomerGateway(EC2InventoryUtil.fetchCustomerGateway(temporaryCredentials, skipRegions,accountId,accountName));
@@ -729,13 +729,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "customergateway", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("vpnconnection"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "VPN Connection");
 					FileManager.generateVpnConnection(EC2InventoryUtil.fetchVPNConnections(temporaryCredentials, skipRegions,accountId,accountName));
@@ -744,13 +744,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "vpnconnection", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("directconnect"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Direct Connection");
 					FileManager.generateDirectConnection(DirectConnectionInventoryUtil.fetchDirectConnections(temporaryCredentials, skipRegions,accountId,accountName));
@@ -759,13 +759,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "directconnect", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("virtualinterface"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "Direct Connection Virtual Interfaces");
 					FileManager.generateDirectConnectionVirtualInterfaces(DirectConnectionInventoryUtil.fetchDirectConnectionsVirtualInterfaces(temporaryCredentials, skipRegions,accountId,accountName));
@@ -774,13 +774,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "virtualinterface", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("elasticsearch"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "ES Domain");
 					FileManager.generateESDomain(ESInventoryUtil.fetchESInfo(temporaryCredentials, skipRegions,accountId,accountName));
@@ -789,13 +789,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "elasticsearch", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("reservedinstance"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "reservedinstance");
 					FileManager.generateReservedInstances(EC2InventoryUtil.fetchReservedInstances(temporaryCredentials, skipRegions,accountId,accountName));
@@ -804,14 +804,14 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "reservedinstance", e.getMessage());
 				}
 			});
-			
-		
-			executor.execute(() -> 
+
+
+			executor.execute(() ->
 			{
 			    if(!(isTypeInScope("ssm"))) {
                     return;
                 }
-            
+
 				try{
 					log.info(infoPrefix + "ssm");
 					FileManager.generateSsmFiles(EC2InventoryUtil.fetchSSMInfo(temporaryCredentials, skipRegions,accountId,accountName));
@@ -820,13 +820,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "ssm", e.getMessage());
 				}
 			});
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
             {
                 if(!(isTypeInScope("elasticache"))) {
                     return;
                 }
-            
+
                 try{
                     log.info(infoPrefix + "elasticache");
                     FileManager.generateElastiCacheFiles(ElastiCacheUtil.fetchElastiCacheInfo(temporaryCredentials, skipRegions,accountId,accountName));
@@ -835,13 +835,13 @@ public class AssetFileGenerator {
                     ErrorManageUtil.uploadError(accountId, "", "elasticache", e.getMessage());
                 }
             });
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
             {
                 if(!(isTypeInScope("datastream"))) {
                     return;
                 }
-            
+
                 try{
                     log.info(infoPrefix + "datastream");
                     FileManager.generateKinesisDataStreamFiles(KinesisInventoryUtil.fetchDataStreamInfo(temporaryCredentials,skipRegions,accountId,accountName));
@@ -850,13 +850,13 @@ public class AssetFileGenerator {
                     ErrorManageUtil.uploadError(accountId, "", "datastream", e.getMessage());
                 }
             });
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
             {
                 if(!(isTypeInScope("sqs"))) {
                     return;
                 }
-            
+
                 try{
                     log.info(infoPrefix + "sqs");
                     FileManager.generateSQSFiles(InventoryUtil.fetchSQSInfo(temporaryCredentials,skipRegions,accountId,accountName));
@@ -865,13 +865,13 @@ public class AssetFileGenerator {
                     ErrorManageUtil.uploadError(accountId, "", "sqs", e.getMessage());
                 }
             });
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
             {
                 if(!(isTypeInScope("deliverystream"))) {
                     return;
                 }
-            
+
                 try{
                     log.info(infoPrefix + "deliverystream");
                     FileManager.generateKinesisDeliveryStreamFiles(KinesisInventoryUtil.fetchDeliveryStreamInfo(temporaryCredentials,skipRegions,accountId,accountName));
@@ -880,13 +880,13 @@ public class AssetFileGenerator {
                     ErrorManageUtil.uploadError(accountId, "", "deliverystream", e.getMessage());
                 }
             });
-			
-			executor.execute(() -> 
+
+			executor.execute(() ->
             {
                 if(!(isTypeInScope("videostream"))) {
                     return;
                 }
-            
+
                 try{
                     log.info(infoPrefix + "videostream");
                     FileManager.generateKinesisVideoStreamFiles(KinesisInventoryUtil.fetchVideoStreamInfo(temporaryCredentials,skipRegions,accountId,accountName));
@@ -896,12 +896,20 @@ public class AssetFileGenerator {
                 }
             });
 			//****** Changes For Federated Rules Start ******
+<<<<<<< HEAD
 			executor.execute(() -> 
+=======
+			executor.execute(() ->
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			{
 			    if(!(isTypeInScope("acmcertificate"))) {
                     return;
                 }
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				try{
 					log.info(infoPrefix + "acmcertificate");
 					FileManager.generateACMCertificateFiles(InventoryUtil.fetchACMCertficateInfo(temporaryCredentials, skipRegions, accountId, accountName));
@@ -910,13 +918,22 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "acmcertificate", e.getMessage());
 				}
 			});
+<<<<<<< HEAD
 			
 			executor.execute(() -> 
+=======
+
+			executor.execute(() ->
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			{
 			    if(!(isTypeInScope("iamcertificate"))) {
                     return;
                 }
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				try{
 					log.info(infoPrefix + "iamcertificate");
 					FileManager.generateIAMCertificateFiles(InventoryUtil.fetchIAMCertificateInfo(temporaryCredentials, skipRegions, accountId, accountName));
@@ -925,7 +942,11 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "iamcertificate", e.getMessage());
 				}
 			});
+<<<<<<< HEAD
 			
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			executor.execute(() ->
             {
                 if(!(isTypeInScope("account"))) {
@@ -940,13 +961,22 @@ public class AssetFileGenerator {
                     ErrorManageUtil.uploadError(accountId, "", "AccountInfo", e.getMessage());
                 }
             });
+<<<<<<< HEAD
 			
 			executor.execute(() -> 
+=======
+
+			executor.execute(() ->
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			{
 			    if(!(isTypeInScope("iamgroup"))) {
                     return;
                 }
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				try{
 					log.info(infoPrefix + "IAM Groups");
 					FileManager.generateIamGroupFiles(InventoryUtil.fetchIAMGroups(temporaryCredentials, accountId, accountName));
@@ -955,13 +985,22 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "iamgroup", e.getMessage());
 				}
 			});
+<<<<<<< HEAD
 			
 			executor.execute(() -> 
+=======
+
+			executor.execute(() ->
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			{
 			    if(!(isTypeInScope("cloudtrail"))) {
                     return;
                 }
+<<<<<<< HEAD
             
+=======
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				try{
 					log.info(infoPrefix + "CloudTrail");
 					FileManager.generateCloudTrailFiles(InventoryUtil.fetchCloudTrails(temporaryCredentials, skipRegions, accountId, accountName));
@@ -969,17 +1008,23 @@ public class AssetFileGenerator {
 					log.error(expPrefix+ "Cloud Trailt\", \"cause\":\"" +e.getMessage()+"\"}");
 					ErrorManageUtil.uploadError(accountId, "", "cloudtrail", e.getMessage());
 				}
+<<<<<<< HEAD
 			});	
 			//****** Changes For Federated Rules End ******
 			
+=======
+			});
+			//****** Changes For Federated Rules End ******
+
+>>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			executor.shutdown();
 			while (!executor.isTerminated()) {
-				 
+
 			}
-			
-			log.info("Completed Discovery for accountId "+ accountId); 
+
+			log.info("Completed Discovery for accountId "+ accountId);
 		}
-		
+
 		ErrorManageUtil.writeErrorFile();
 		try {
 			FileManager.finalise();
@@ -988,7 +1033,7 @@ public class AssetFileGenerator {
 			log.error("Error Writing File",e);
 		}
 	}
-	
+
 	/**
 	 * Checks if is type in scope.
 	 *

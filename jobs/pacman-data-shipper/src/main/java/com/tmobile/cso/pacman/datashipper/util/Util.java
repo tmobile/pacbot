@@ -1,6 +1,8 @@
 package com.tmobile.cso.pacman.datashipper.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
@@ -20,8 +22,18 @@ import org.apache.http.entity.ContentType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.auth.AWSStaticCredentialsProvider;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3ClientBuilder;
+import com.amazonaws.services.s3.model.GetObjectRequest;
+import com.amazonaws.services.s3.model.S3Object;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
+import com.tmobile.cso.pacman.datashipper.config.CredentialProvider;
 
 
 /**
@@ -160,4 +172,33 @@ public class Util {
         return authToken;
     }
 
+	public static List<Map<String, String>> fetchDataFromS3(String s3Account,String s3Region,String s3Role, String bucketName,String path) throws IOException{
+		AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
+                .withCredentials(new AWSStaticCredentialsProvider(new CredentialProvider().getCredentials(s3Account,s3Role))).withRegion(s3Region).build();
+		S3Object entitiesData = s3Client.getObject(new GetObjectRequest(bucketName, path));
+		try (BufferedReader reader = new BufferedReader(new InputStreamReader(entitiesData.getObjectContent()))) {
+			return new ObjectMapper().readValue(reader.lines().collect(Collectors.joining("\n")),new TypeReference<List<Map<String, String>>>() {});
+	    }
+	}
+	
+	public static List<String> retrieveErrorRecords(String responseStr){
+		List<String> errorList = new ArrayList<>();
+		try{
+			JsonObject response = new JsonParser().parse(responseStr).getAsJsonObject();
+			JsonArray items = response.getAsJsonArray("items");
+			
+			int status;
+			for(JsonElement item : items){
+				JsonObject updateInfo = item.getAsJsonObject();
+				status = updateInfo.getAsJsonObject("index").get("status").getAsInt();
+				if(!(status == 200 || status== 201)){
+					errorList.add(updateInfo.getAsJsonObject("index").toString());
+				}
+			}
+		}catch(Exception e){
+			 LOGGER.error("Error retrieving errror records",e);
+		}
+		
+		return errorList;
+	}
 }
