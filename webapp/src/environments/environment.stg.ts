@@ -809,5 +809,13 @@ export const environment = {
     ruleCategory : {
         url: '{{baseUrl}}/admin/rule/categories',
         method: 'GET'
+    },
+    systemOperations: {
+        url: '{{baseUrl}}/admin/operations',
+        method: 'POST'
+    },
+    systemJobStatus: {
+        url: '{{baseUrl}}/admin/system/status',
+        method: 'GET'
     }
 };

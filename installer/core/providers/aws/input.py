@@ -71,6 +71,13 @@ class SystemDestroyInput(SystemInput):
 
     def read_input(self):
         super().read_input()
+        # for item in Settings.get('INSTALL_INPUTS_REQUIRED', []):
+        #     key_val = input("\n\t%s" % item['input_msg'])
+        #     if item['required']:
+        #         if key_val.strip() == "":
+        #             raise Exception("Value required for %s" % item['input_key'])
+        #     Settings.set(item['input_key'], key_val)
+        #     setattr(self, item['input_key'], key_val)
 
 
 class SystemStatusInput(SystemInput):

@@ -318,4 +318,22 @@ public class PacmanRuleConstants {
     public static final String HEIMDALL_URI = "HEIMDALL_URI";
     public static final String KERNEL_VERSION_BY_INSTANCEID_API = "kernelVersionByInstanceIdAPI";
     public static final String PACMAN_API_URI = "PACMAN_API_URI";
+    public static final String IAM_USER_NAME = "username";
+	public static final String UNAPPROVED_IAM_ACTIONS = "unApprovedIamActions";
+	public static final String UNABLE_TO_GET_CLIENT = "Unable to get client";
+	public static final String GLOBAL_ACCESS = "global";
+	public static final String CIDRIPV6 = "cidripv6";
+	public static final String DEST_CIDR_IPV6_BLOCK = "destinationipv6cidrblock";
+	public static final String ANY_PORT = "ANY";
+	public static final String SSH_PORT = "22";
+	public static final String RDP_PORT = "3389";
+	public static final String DEFAULT_CIDR_IP = "defaultCidrIp";
+	public static final String END_POINT = "endpoint";
+	public static final String ENTITY_TYPE = "_entitytype";
+	public static final String ACCESS_POLICIES = "accesspolicies";
+	public static final String RESOURCE_DISPLAY_ID = "resourceDisplayId";
+	public static final String SCHEME = "scheme";
+	public static final String ES_ELB_WITH_SECURITYGROUP_URL = "esElbWithSGUrl";
+	public static final String SUBNETS_LIST = "subnets";
+	public static final String INTERNET_FACING = "internet-facing";
 }

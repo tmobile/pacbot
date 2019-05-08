@@ -75,7 +75,7 @@ public class CheckForApiGatewayProtected extends BaseRule {
      *            ruleCategory : Enter the value of category <br>
      * <br>
      * 
-     *            roleIdentifyingString : Configure it as role/pac_ro <br>
+     *            roleIdentifyingString : Configure it as role/pacbot_ro <br>
      * <br>
      * 
      * @param resourceAttributes

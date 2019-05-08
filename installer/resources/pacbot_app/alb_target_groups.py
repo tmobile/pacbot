@@ -10,8 +10,11 @@ HEALTH_CHECK_INTERVAL = 300
 
 
 class BaseTG:
+    # port = 80 if Settings.get('ALB_PROTOCOL', "HTTP") != "HTTPS" else 443
+    # protocol = Settings.get('ALB_PROTOCOL', "HTTP")
     port = 80
     protocol = "HTTP"
+
     target_type = "ip"
     create_before_destroy = True
     vpc_id = Settings.get('VPC')['ID']

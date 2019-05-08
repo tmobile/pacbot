@@ -146,25 +146,4 @@ public class ExceptionManagerImpl implements ExceptionManager {
         return exceptionResourceSetMap;
     }
 
-//    /**
-//     * The main method.
-//     *
-//     * @param args the arguments
-//     * @throws Exception the exception
-//     */
-//    public static void main(String[] args) throws Exception {
-//         Map<String, List<IssueException>> data = new
-//         ExceptionManagerImpl().getStickyExceptions("PacMan_cloud-kernel-compliance_version-1_Ec2-Kernel-Compliance-Rule_ec2","ec2");
-//         data.entrySet().parallelStream().forEach(
-//         obj-> System.out.print(obj.getKey() + "=" +
-//         obj.getValue().get(0).getAssetGroup())
-//         );
-//
-//
-//         new ExceptionManagerImpl().getIndividualExceptions("ec2").entrySet().parallelStream().forEach(
-//                 obj-> System.out.print(obj.getKey() + "=" +
-//                 obj.getValue().getIssueId())
-//                 );
-//    }
-
 }

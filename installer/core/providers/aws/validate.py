@@ -91,23 +91,30 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
             boolean: True if all policies are present else False
         """
         access_key, secret_key = Settings.AWS_ACCESS_KEY, Settings.AWS_SECRET_KEY
-        user_name = iam.get_user_name(access_key, secret_key)
+        current_aws_user = iam.get_current_user(access_key, secret_key)
+        user_name = current_aws_user.user_name
 
-        # warning_message = "Policies (" + ", ".join(Settings.AWS_POLICIES_REQUIRED) + ") are required"
-        # self.show_step_inner_warning(warning_message)
+        if user_name:
+            # warning_message = "Policies (" + ", ".join(Settings.AWS_POLICIES_REQUIRED) + ") are required"
+            # self.show_step_inner_warning(warning_message)
 
-        if self._check_user_policies(access_key, secret_key, user_name):
+            if self._check_user_policies(access_key, secret_key, user_name):
+                return True
+
+            if self._check_group_policies(access_key, secret_key, user_name):
+                return True
+
+            yes_or_no = input("\n\t%s: " % self._input_message_in_color(K.POLICY_YES_NO))
+
+            if yes_or_no.lower() == "yes":
+                return True
+
+            return False
+        elif "root" in current_aws_user.arn:
             return True
+        else:
+            False
 
-        if self._check_group_policies(access_key, secret_key, user_name):
-            return True
-
-        yes_or_no = input("\n\t%s: " % self._input_message_in_color(K.POLICY_YES_NO))
-
-        if yes_or_no.lower() == "yes":
-            return True
-
-        return False
 
     def _check_group_policies(self, access_key, secret_key, user_name):
         """

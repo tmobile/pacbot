@@ -90,6 +90,11 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_MAIL_SMTP_AUTH': Settings.MAIL_SMTP_AUTH,
                         'ENV_MAIL_SMTP_SSL_ENABLE': Settings.MAIL_SMTP_SSL_ENABLE,
                         'ENV_MAIL_SMTP_SSL_TEST_CONNECTION': Settings.MAIL_SMTP_SSL_TEST_CONNECTION,
+                        'ENV_PACMAN_LOGIN_USER_NAME': "admin@pacbot.org",
+                        'ENV_PACMAN_LOGIN_PASSWORD': "pacman",
+                        'ENV_CONFIG_CREDENTIALS': "dXNlcjpwYWNtYW4=",
+                        'ENV_CONFIG_SERVICE_URL': ApplicationLoadBalancer.get_http_url() + "/api/config/rule/prd/latest",
+                        'ENV_PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID': Settings.get('USER_EMAIL_ID', "")
                     },
                     'interpreter': [Settings.PYTHON_INTERPRETER]
                 }

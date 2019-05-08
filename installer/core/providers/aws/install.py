@@ -174,7 +174,8 @@ class Install(BaseAction):
         self.current_install_status = self.install_statuses.get('tf_init_complete')
 
         self.current_install_status = self.install_statuses.get('tf_plan_start')
-        py_terraform.terraform_plan(apply_resources)
+        response = py_terraform.terraform_plan(apply_resources)
+        self._set_resource_creation_count(response)
         self.current_install_status = self.install_statuses.get('tf_plan_complete')
 
         for resource in resources:
@@ -187,6 +188,27 @@ class Install(BaseAction):
             self.terraform_outputs = py_terraform.save_terraform_output()  # Save Output if there is no exception
             for resource in resources:
                 resource.post_terraform_apply()
+
+    def _set_resource_creation_count(self, plan_response):
+        """
+        Set resources craetion count from terraform plan
+
+        Args:
+            resources (list): Resources created
+        """
+        to_add = to_change = 0
+        try:
+            lines = plan_response[1].split("\n")
+            for line in lines:
+                if "Plan:" in line and "to add" in line and "to change" in line:  # This needs to be changed with reqular expression
+                    req_str = line.split("Plan:")[1].strip()
+                    to_add = int(req_str.split("to add,")[0].strip())
+                    to_change = int(req_str.split("to add,")[1].strip().split("to change,")[0].strip())
+                    break
+        except Exception as e:
+            return
+
+        self.total_resources_count = to_add + to_change
 
     def render_resource_outputs(self, resources):
         """
@@ -278,7 +300,7 @@ class Install(BaseAction):
                 if counter:
                     try:
                         # output_count = len(py_terraform.load_terraform_output())  # This uses terraform output command
-                        output_count = self.files_count_in_output_status_dir()
+                        output_count = self.files_count_in_output_status_dir() - 1
                         prev_output_count = output_count
                     except:
                         output_count = prev_output_count

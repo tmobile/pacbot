@@ -15,12 +15,12 @@ class Buildpacbot(object):
         mvn_build_command (str): Maven build command to be executed
         mvn_clean_command (str): Maven clean command to be executed
         archive_type (str): Archive format
-        html_handlebars_uri (str): file to make public after uploading to s3
+        issue_email_template (str): file to make public after uploading to s3
     """
     mvn_build_command = "mvn install -DskipTests=true -Dmaven.javadoc.skip=true -B -V"
     mvn_clean_command = "mvn clean"
     archive_type = "zip"  # What type of archive is required
-    html_handlebars_uri = ''
+    issue_email_template = ''
 
     def __init__(self, api_domain_url, upload_dir, log_dir, pacbot_code_dir):
         self.api_domain_url = api_domain_url
@@ -73,8 +73,7 @@ class Buildpacbot(object):
             extra_args = {'ACL': 'public-read'}  # To make this public
             key = folder_to_upload + '/' + file_name
 
-            if file_name == 'html.handlebars':
-                self.html_handlebars_uri = '%s/%s/%s' % (s3_client.meta.endpoint_url, bucket, key)  # To be added in config.ts
+            self.issue_email_template = '%s/%s/%s' % (s3_client.meta.endpoint_url, bucket, folder_to_upload)  # To be added in config.ts
 
             s3_client.upload_file(file_path, bucket, key, ExtraArgs=extra_args)
 
@@ -167,7 +166,7 @@ class Buildpacbot(object):
                 lines[idx] = lines[idx].replace("AD_AUTHENTICATION: false", "AD_AUTHENTICATION: true")
 
             if "ISSUE_MAIL_TEMPLATE_URL: ''" in line:
-                lines[idx] = lines[idx].replace("ISSUE_MAIL_TEMPLATE_URL: ''", "ISSUE_MAIL_TEMPLATE_URL: '" + self.html_handlebars_uri + "'")
+                lines[idx] = lines[idx].replace("ISSUE_MAIL_TEMPLATE_URL: ''", "ISSUE_MAIL_TEMPLATE_URL: '" + self.issue_email_template + "'")
 
         with open(config_file, 'w') as f:
             f.writelines(lines)
