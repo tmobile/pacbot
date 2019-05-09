@@ -129,4 +129,4 @@ See detailed instruction with screenshots on how to use the admin feature [here]
 Wiki is [here](https://github.com/tmobile/pacbot/wiki) 
 
 ## License
-PacBot is open-sourced under the terms of section 7 of the Apache 2.0 license and is released AS-IS WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND.
+PacBot is open-sourced under the terms of section 7 of the Apache 2.0 license and is released AS-IS WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND. 
