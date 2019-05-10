@@ -4,18 +4,6 @@ import java.util.Date;
 import java.util.List;
 
 public class SSLCertificateVH {
-<<<<<<< HEAD
-	
-	/** The domainName. */
-	String domainName;
-	
-	/** The certificateARN. */
-	String certificateARN;
-	
-	/** The expiryDate. */
-	Date expiryDate;
-	
-=======
 
 	/** The domainName. */
 	String domainName;
@@ -26,7 +14,6 @@ public class SSLCertificateVH {
 	/** The expiryDate. */
 	Date expiryDate;
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	List<String> issuerDetails;
 
 	public String getDomainName() {

@@ -1,14 +1,5 @@
 /*******************************************************************************
  * Copyright 2019 T Mobile, Inc. or its affiliates. All Rights Reserved.
-<<<<<<< HEAD
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License.  You may obtain a copy
- * of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
-=======
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -16,7 +7,6 @@
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -26,15 +16,8 @@
 /**
   Copyright (C) 2017 T Mobile Inc - All Rights Reserve
   Purpose:
-<<<<<<< HEAD
-  Author :Anukriti 
-  Date: Feb 27, 2019
-  
-=======
   Author :Anukriti
   Date: Feb 27, 2019
-
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
  **/
 package com.tmobile.cloud.awsrules.federated;
 import java.util.ArrayList;
@@ -61,38 +44,22 @@ public class CheckPowerUserGroupIsMFAEnabled extends BaseRule{
 
 	/**
 	 * The method will get triggered from Rule Engine with following parameters
-<<<<<<< HEAD
-	 * 
-	 * @param ruleParam
-	 * 
-	 ************** Following are the Rule Parameters********* <br>
-	 * 			<br>
-	 * 
-=======
 	 *
 	 * @param ruleParam
 	 *
 	 ************** Following are the Rule Parameters********* <br>
 	 * 			<br>
 	 *
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	 *            ruleKey : check-for-inactive-iam-users <br>
 	 * 			<br>
 	 *
 	 *            powerUserGroupName : specify the name of the group to be
 	 *            checked <br>
 	 * 			<br>
-<<<<<<< HEAD
-	 * 
-	 *            severity : Enter the value of severity <br>
-	 * 			<br>
-	 * 
-=======
 	 *
 	 *            severity : Enter the value of severity <br>
 	 * 			<br>
 	 *
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	 *            ruleCategory : Enter the value of category <br>
 	 * 			<br>
 	 *
@@ -117,11 +84,7 @@ public class CheckPowerUserGroupIsMFAEnabled extends BaseRule{
         sourcesverified.add("HTTP Get-From Public IP");
         accessLevels.put("HTTP Get-From Public IP", PacmanRuleConstants.PUBLIC);
 		if(resourceAttributes.get("groups")!= null || resourceAttributes.get("policies")!= null){
-<<<<<<< HEAD
-			
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			List<String> policyNameList = Arrays.asList(resourceAttributes.get("policies").split(":;"));
 			if(resourceAttributes.get("groupname").equalsIgnoreCase(powerUserGroupName) && !policyNameList.contains(powerUserPolicyInput)){
 				annotation = Annotation.buildAnnotation(ruleParam,Annotation.Type.ISSUE);
@@ -131,21 +94,12 @@ public class CheckPowerUserGroupIsMFAEnabled extends BaseRule{
 				return new RuleResult(PacmanSdkConstants.STATUS_FAILURE, PacmanRuleConstants.FAILURE_MESSAGE,annotation);
 			}
 		}
-<<<<<<< HEAD
-		
-		logger.debug("========CheckPowerUserGroupIsMFAEnabled ended=========");
-		return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);
-		
-	}
-	
-=======
 
 		logger.debug("========CheckPowerUserGroupIsMFAEnabled ended=========");
 		return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);
 
 	}
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 
 	public String getHelpText() {
 		return "This rule should look for IAM users of PowerUser Group with MFA enabled";

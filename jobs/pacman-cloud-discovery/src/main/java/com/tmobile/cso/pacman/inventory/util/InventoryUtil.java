@@ -202,10 +202,7 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.Bucket;
 import com.amazonaws.services.s3.model.BucketTaggingConfiguration;
 import com.amazonaws.services.s3.model.BucketVersioningConfiguration;
-<<<<<<< HEAD
-=======
 import com.amazonaws.services.s3.model.BucketWebsiteConfiguration;
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 import com.amazonaws.services.s3.model.GetBucketEncryptionResult;
 import com.amazonaws.services.s3.model.ServerSideEncryptionConfiguration;
 import com.amazonaws.services.s3.model.Tag;
@@ -376,11 +373,7 @@ public class InventoryUtil {
 		AmazonEC2 ec2Client ;
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+accountId + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Security Group\" , \"region\":\"" ;
 		log.info("sgregion" + RegionUtils.getRegions().toString());
-<<<<<<< HEAD
-		for(Region region : RegionUtils.getRegions()) { 
-=======
 		for(Region region : RegionUtils.getRegions()) {
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			try{
 				if(!skipRegions.contains(region.getName())){
 					ec2Client = AmazonEC2ClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
@@ -729,19 +722,6 @@ public class InventoryUtil {
 						elbListTemp.stream().forEach(elb->	{
 								List<List<com.amazonaws.services.elasticloadbalancing.model.Tag>> tagsInfo =  tagDescriptions.stream().filter(tag -> tag.getLoadBalancerName().equals( elb.getLoadBalancerName())).map(x-> x.getTags()).collect(Collectors.toList());
 								List<com.amazonaws.services.elasticloadbalancing.model.Tag> tags = new ArrayList<>();
-								//****** Changes For Federated Rules Start ******
-								String accessLogBucketName = "";
-							    boolean accessLog = false;
-							    String name = elb.getLoadBalancerName();
-								if (name != null) {
-									com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancing classicElbClient = com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancingClientBuilder.standard().
-										 	withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
-									
-									com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancerAttributesRequest classicELBDescReq = new com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancerAttributesRequest().withLoadBalancerName(name) ;
-									accessLogBucketName = classicElbClient.describeLoadBalancerAttributes(classicELBDescReq).getLoadBalancerAttributes().getAccessLog().getS3BucketName();
-									accessLog = classicElbClient.describeLoadBalancerAttributes(classicELBDescReq).getLoadBalancerAttributes().getAccessLog().getEnabled();
-									}
-								//****** Changes For Federated Rules End ******
 								if(!tagsInfo.isEmpty())
 									tags = tagsInfo.get(0);
 								//****** Changes For Federated Rules Start ******
@@ -829,11 +809,7 @@ public class InventoryUtil {
 						elbList.parallelStream().forEach(elb->	{
 							List<List<com.amazonaws.services.elasticloadbalancingv2.model.Tag>> tagsInfo =  tagDescriptions.stream().filter(tag -> tag.getResourceArn().equals( elb.getLoadBalancerArn())).map(x-> x.getTags()).collect(Collectors.toList());
 							List<com.amazonaws.services.elasticloadbalancingv2.model.Tag> tags = new ArrayList<>();
-<<<<<<< HEAD
-							//****** Changes For Federated Rules Start ****** 
-=======
 							//****** Changes For Federated Rules Start ******
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 							String name = elb.getLoadBalancerArn();
 							String accessLogBucketName = "";
 							boolean accessLog = false;
@@ -866,13 +842,8 @@ public class InventoryUtil {
 								elbListTemp.add(elbTemp);
 							}
 						 }
-<<<<<<< HEAD
-						});	
-						
-=======
 						});
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 						log.debug(InventoryConstants.ACCOUNT + accountId +" Type : Application ELB " +region.getName() + " >> "+elbListTemp.size());
 						elbMap.put(accountId+delimiter+accountName+delimiter+region.getName(),elbListTemp);
 					}
@@ -1089,22 +1060,10 @@ public class InventoryUtil {
 			List<Tag> tags = new ArrayList<>();
 			boolean hasWebSiteConfiguration = false;
 			try{
-				String bucketEncryp = null;
-				String DPCvalue = "";
 				String bucketLocation = amazonS3Client.getBucketLocation(bucket.getName());
 				bucketRegion = com.amazonaws.services.s3.model.Region.fromValue(bucketLocation).toAWSRegion().getName();
 				AmazonS3 s3Client = regionS3map.get(bucketRegion);
 				versionconfig =  s3Client.getBucketVersioningConfiguration(bucket.getName());
-				//****** Changes For Federated Rules Start ******
-				//Bucket Encryption
-				GetBucketEncryptionResult buckectEncry = s3Client.getBucketEncryption(bucket.getName());
-				if (buckectEncry != null) {
-					ServerSideEncryptionConfiguration sseBucketEncryp = buckectEncry.getServerSideEncryptionConfiguration();
-					if (sseBucketEncryp != null && sseBucketEncryp.getRules() != null) {
-						bucketEncryp = sseBucketEncryp.getRules().get(0).getApplyServerSideEncryptionByDefault()
-								.getSSEAlgorithm();
-					}
-				}
 				BucketTaggingConfiguration tagConfig = s3Client.getBucketTaggingConfiguration(bucket.getName());
 				if(tagConfig!=null){
 					List<TagSet> tagSets = tagConfig.getAllTagSets();
@@ -1114,10 +1073,6 @@ public class InventoryUtil {
 						while(it.hasNext()){
 							Entry<String,String> tag = it.next();
 							tags.add(new Tag(tag.getKey(),tag.getValue()));
-							//Allowing only DPC tags value to pass in S3 bucket
-							if(tag.getKey().contains("DPC")) {
-								DPCvalue = tag.getValue();
-							}
 						}
 					}
 				}
@@ -1129,21 +1084,13 @@ public class InventoryUtil {
 				}
 	              
 				synchronized(buckets){
-<<<<<<< HEAD
-					buckets.add(new BucketVH(bucket,bucketRegion,versionconfig, tags, bucketEncryp, DPCvalue));
-=======
 					buckets.add(new BucketVH(bucket,bucketRegion,versionconfig, tags, bucketEncryp,hasWebSiteConfiguration));
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				}
 			}
 			catch(AmazonS3Exception e){
 				if("AccessDenied".equals(e.getErrorCode())){
 					log.info("Access Denied for bucket " + bucket.getName());
-<<<<<<< HEAD
-					buckets.add(new BucketVH(bucket,"",versionconfig, tags, null, null));
-=======
 					buckets.add(new BucketVH(bucket,"",versionconfig, tags, null,hasWebSiteConfiguration));
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				}else{
 					log.info("Exception fetching S3 Bucket",e);
 				}
@@ -1732,23 +1679,8 @@ public class InventoryUtil {
 				distributionSummary = distributionList.getItems();
 				marker = distributionList.getNextMarker();
 				for(DistributionSummary ds : distributionSummary) {
-					//****** Changes For Federated Rules Start ******
-					GetDistributionConfigRequest request = new GetDistributionConfigRequest().withId(ds.getId());
-					log.info("request" + request);
-					if(request != null) {
-					bucketName =  amazonCloudFront.getDistributionConfig(request).getDistributionConfig().getLogging().getBucket();
-					accessLogEnabled =  amazonCloudFront.getDistributionConfig(request).getDistributionConfig().getLogging().getEnabled();
-					log.info("bucketName" + bucketName + "accessLogEnabled" + accessLogEnabled);
-					}
-					//****** Changes For Federated Rules End ******
 					CloudFrontVH cf = new CloudFrontVH();
 					cf.setDistSummary(ds);
-<<<<<<< HEAD
-					cf.setTags(amazonCloudFront.listTagsForResource(new com.amazonaws.services.cloudfront.model.ListTagsForResourceRequest().withResource(ds.getARN())).getTags().getItems());
-					cf.setAccessLogEnabled(accessLogEnabled);
-					cf.setBucketName(bucketName);
-=======
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 					cloudFrontList.add(cf);
 				}
 			}while(marker!=null);
@@ -1977,11 +1909,7 @@ public class InventoryUtil {
 
         return sqs;
     }
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	//****** Changes For Federated Rules Started ******
 	/**
 	 * Fetch ACMCertficate info.
@@ -2002,15 +1930,9 @@ public class InventoryUtil {
 		String domainName  = null;
 		List<String> issuerDetails = null;
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"ACM Certificate \" , \"region\":\"" ;
-<<<<<<< HEAD
-		for(Region region : RegionUtils.getRegions()) { 
-			try{
-				if(!skipRegions.contains(region.getName())){ 
-=======
 		for(Region region : RegionUtils.getRegions()) {
 			try{
 				if(!skipRegions.contains(region.getName())){
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 					AWSCertificateManager awsCertifcateManagerClient  = AWSCertificateManagerClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					listCertificateSummary = awsCertifcateManagerClient.listCertificates(new ListCertificatesRequest()).getCertificateSummaryList();
 					if(!CollectionUtils.isEmpty(listCertificateSummary)) {
@@ -2022,11 +1944,7 @@ public class InventoryUtil {
 						domainName = certificateDetail.getDomainName();
 						certificateARN = certificateDetail.getCertificateArn();
 						expiryDate = certificateDetail.getNotAfter();
-<<<<<<< HEAD
-						 
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 						SSLCertificateVH sslCertificate = new SSLCertificateVH();
 						sslCertificate.setDomainName(domainName);
 						sslCertificate.setCertificateARN(certificateARN);
@@ -2036,11 +1954,7 @@ public class InventoryUtil {
 					}
 					sslVH.put(account+delimiter+accountName+delimiter+region.getName(), sslCertList);
 				  }else {
-<<<<<<< HEAD
-					  log.info("List is empty"); 
-=======
 					  log.info("List is empty");
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				  }
 				 }
 				}catch(Exception e){
@@ -2050,11 +1964,7 @@ public class InventoryUtil {
 		}
 		return sslVH;
 	}
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	/**
 	 * Fetch IAM certificate info.
 	 *
@@ -2068,13 +1978,8 @@ public class InventoryUtil {
 		AmazonIdentityManagement amazonIdentityManagement;
 		List<ServerCertificateMetadata> listServerCertificatesMetadata = new ArrayList<>();
 		String serverCertificateName = null;
-<<<<<<< HEAD
-		String arn = null; 
-		Date expiryDate = null; 
-=======
 		String arn = null;
 		Date expiryDate = null;
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource \" ,\"type\": \"IAMCertificate\"" ;
 			try {
 					amazonIdentityManagement = AmazonIdentityManagementClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials))
@@ -2095,11 +2000,7 @@ public class InventoryUtil {
 					}
 					iamCertificateVH.put(account+delimiter+accountName, iamCerttList);
 					}else {
-<<<<<<< HEAD
-						log.info("List is empty"); 
-=======
 						log.info("List is empty");
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 					}
 			} catch (Exception e) {
 				log.error(expPrefix + InventoryConstants.ERROR_CAUSE + e.getMessage() + "\"}");
@@ -2107,11 +2008,7 @@ public class InventoryUtil {
 			}
 		return iamCertificateVH;
 	}
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	/**
 	 * Fetch Accounts info.
 	 *
@@ -2221,22 +2118,14 @@ public class InventoryUtil {
 			groups.addAll(rslt.getGroups());
 			marker = rslt.getMarker();
 		}while(marker!=null);
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 		List<GroupVH> groupList = new ArrayList<>();
 		Map<String,List<GroupVH>> iamGroups = new HashMap<>();
 		iamGroups.put(account+delimiter+accountName,  groupList);
 		groups.parallelStream().forEach(group -> {
 			GroupVH groupTemp = new GroupVH(group);
 			String groupName = group.getGroupName();
-<<<<<<< HEAD
-						
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			List<AttachedPolicy> policies = iamClient.listAttachedGroupPolicies(new ListAttachedGroupPoliciesRequest().withGroupName(groupName)).getAttachedPolicies();
 			List<String> policyList = new ArrayList<>();
 			for(AttachedPolicy pol : policies){
@@ -2247,11 +2136,7 @@ public class InventoryUtil {
 				groupList.add(groupTemp);
 			}
 		});
-<<<<<<< HEAD
-		
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 		return iamGroups;
 	}
 	/**
@@ -2267,19 +2152,11 @@ public class InventoryUtil {
 		String expPrefix = InventoryConstants.ERROR_PREFIX_CODE+account + "\",\"Message\": \"Exception in fetching info for resource in specific region\" ,\"type\": \"Cloud Trail\" , \"region\":\"" ;
 		for(Region region : RegionUtils.getRegions()){
 			try{
-<<<<<<< HEAD
-				if(!skipRegions.contains(region.getName())){ 
-					AWSCloudTrail cloudTrailClient =  AWSCloudTrailClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
-					DescribeTrailsResult rslt = cloudTrailClient.describeTrails();
-					List<Trail> trailTemp = rslt.getTrailList();
-				
-=======
 				if(!skipRegions.contains(region.getName())){
 					AWSCloudTrail cloudTrailClient =  AWSCloudTrailClientBuilder.standard().withCredentials(new AWSStaticCredentialsProvider(temporaryCredentials)).withRegion(region.getName()).build();
 					DescribeTrailsResult rslt = cloudTrailClient.describeTrails();
 					List<Trail> trailTemp = rslt.getTrailList();
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 					if(! trailTemp.isEmpty() ){
 						cloudTrails.put(account+delimiter+accountName+delimiter+region.getName(),  trailTemp);
 					}
@@ -2293,10 +2170,6 @@ public class InventoryUtil {
 		}
 		return cloudTrails;
 	}
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	//****** Changes For Federated Rules End ******
 }

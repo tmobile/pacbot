@@ -42,12 +42,6 @@ public class LoadBalancerVH {
 
 	/** The availability zones. */
     private List<String> subnets;
-    
-    /** The accessLogBucketName. */
-	 String accessLogBucketName;
-	 
-	 /** The accessLog. */
-	 boolean accessLog;
 
     /** The accessLogBucketName. */
 	 String accessLogBucketName;
@@ -102,4 +96,3 @@ public class LoadBalancerVH {
 	}
 
 }
-

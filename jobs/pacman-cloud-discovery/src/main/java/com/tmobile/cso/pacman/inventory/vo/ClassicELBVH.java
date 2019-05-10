@@ -31,15 +31,6 @@ public class ClassicELBVH {
 
 	/** The tags. */
 	List<Tag> tags;
-<<<<<<< HEAD
-	
-	/** The accessLogBucketName. */
-	String accessLogBucketName;
-	
-	/** The accessLog. */
-	boolean accessLog;
-	
-=======
 
 	/** The accessLogBucketName. */
 	String accessLogBucketName;
@@ -47,7 +38,6 @@ public class ClassicELBVH {
 	/** The accessLog. */
 	boolean accessLog;
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	/**
 	 * Instantiates a new classic ELBVH.
 	 *

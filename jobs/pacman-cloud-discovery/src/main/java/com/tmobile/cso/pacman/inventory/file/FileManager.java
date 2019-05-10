@@ -248,11 +248,7 @@ public class FileManager {
         FileGenerator.writeToFile("aws-account.data",InventoryConstants.OPEN_ARRAY, false);
         FileGenerator.writeToFile("aws-iamgroup.data",InventoryConstants.OPEN_ARRAY, false);
         FileGenerator.writeToFile("aws-cloudtrail.data",InventoryConstants.OPEN_ARRAY, false);
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	}
 
 	public static void finalise() throws IOException{
@@ -391,11 +387,7 @@ public class FileManager {
         FileGenerator.writeToFile("aws-account.data",InventoryConstants.CLOSE_ARRAY, true);
         FileGenerator.writeToFile("aws-iamgroup.data",InventoryConstants.CLOSE_ARRAY, true);
         FileGenerator.writeToFile("aws-cloudtrail.data",InventoryConstants.CLOSE_ARRAY, true);
-<<<<<<< HEAD
-        
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	}
 
 	/**
@@ -770,13 +762,8 @@ public class FileManager {
 	public static void generateS3Files(Map<String, List<BucketVH>> bucketMap) throws IOException {
 		String fieldNames;
 		String keys;
-<<<<<<< HEAD
-		fieldNames = "bucket.Name`bucket.CreationDate`bucket.owner.displayname`bucket.owner.id`versionStatus`mfaDelete`location`bucketEncryp`dpcvalue";
-		keys = "discoverydate`accountid`accountname`name`creationdate`ownerdisplayname`ownerid`versionstatus`mfadelete`region`bucketencryp`dpcvalue";
-=======
 		fieldNames = "bucket.Name`bucket.CreationDate`bucket.owner.displayname`bucket.owner.id`versionStatus`mfaDelete`location`bucketEncryp`websiteConfiguration";
 		keys = "discoverydate`accountid`accountname`name`creationdate`ownerdisplayname`ownerid`versionstatus`mfadelete`region`bucketencryp`websiteConfiguration";
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 		FileGenerator.generateJson(bucketMap, fieldNames, "aws-s3.data",keys);
 		fieldNames = "location`bucket.Name`tags.key`tags.value";
 		keys = "discoverydate`accountid`accountname`region`name`key`value";
@@ -1088,15 +1075,9 @@ public class FileManager {
 		String keys;
 		fieldNames = "distSummary.id`distSummary.aRN`distSummary.status`distSummary.lastModifiedTime`distSummary.domainName`distSummary.enabled"
 				+"`distSummary.comment`distSummary.priceClass`distSummary.webACLId`distSummary.httpVersion`distSummary.isIPV6Enabled`distSummary.viewerCertificate.iAMCertificateId"
-<<<<<<< HEAD
-				+"`distSummary.viewerCertificate.aCMCertificateArn`distSummary.viewerCertificate.cloudFrontDefaultCertificate`distSummary.viewerCertificate.sSLSupportMethod`distSummary.viewerCertificate.minimumProtocolVersion`distSummary.aliases.items`bucketName`accessLogEnabled";
-		keys = "discoverydate`accountid`accountname`id`arn`status`lastmodifiedtime`domainName`enabled`comment`priceclass`webaclid`httpversion`ipv6enabled`viewercertificateid"
-				+"`viewercertificatearn`viewercertificatedefaultcertificate`viewercertificatesslsupportmethod`viewercertificateminprotocolversion`aliases`bucketname`accesslogenabled";
-=======
 				+"`distSummary.viewerCertificate.aCMCertificateArn`distSummary.viewerCertificate.cloudFrontDefaultCertificate`distSummary.viewerCertificate.sSLSupportMethod`distSummary.viewerCertificate.minimumProtocolVersion`distSummary.aliases.items`bucketName`accessLogEnabled`defaultRootObject";
 		keys = "discoverydate`accountid`accountname`id`arn`status`lastmodifiedtime`domainName`enabled`comment`priceclass`webaclid`httpversion`ipv6enabled`viewercertificateid"
 				+"`viewercertificatearn`viewercertificatedefaultcertificate`viewercertificatesslsupportmethod`viewercertificateminprotocolversion`aliases`bucketname`accesslogenabled`defaultRootObject";
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 		FileGenerator.generateJson(cfMap, fieldNames, "aws-cloudfront.data",keys);
 		fieldNames = "distSummary.id`tags.key`tags.value";
 		keys = "discoverydate`accountid`accountname`id`key`value";
@@ -1623,11 +1604,7 @@ public class FileManager {
         keys = "discoverydate`accountid`accountname`region`streamarn`key`value";
         FileGenerator.generateJson(kinesisVideoStreamMap, fieldNames, "aws-videostream-tags.data",keys);
     }
-<<<<<<< HEAD
-	
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	//****** Changes For Federated Rules Start ******
 	/**
 	 * Generate ACM SSL certificate files.
@@ -1640,15 +1617,9 @@ public class FileManager {
 		String keys;
 		fieldNames = "domainName`certificateARN`expiryDate";
 		keys = "discoverydate`accountid`accountname`region`domainname`certificatearn`expirydate";
-<<<<<<< HEAD
-		FileGenerator.generateJson(acmCertificate, fieldNames, "aws-acmcertificate.data", keys);	
-	}
-	
-=======
 		FileGenerator.generateJson(acmCertificate, fieldNames, "aws-acmcertificate.data", keys);
 	}
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	/**
 	 * Generate IAM certificate files.
 	 *
@@ -1660,15 +1631,9 @@ public class FileManager {
 		String keys;
 		fieldNames = "serverCertificateName`arn`expiryDate";
 		keys = "discoverydate`accountid`accountname`servercertificatename`arn`expirydate";
-<<<<<<< HEAD
-		FileGenerator.generateJson(iamCertificate, fieldNames, "aws-iamcertificate.data", keys);	
-	}
-	
-=======
 		FileGenerator.generateJson(iamCertificate, fieldNames, "aws-iamcertificate.data", keys);
 	}
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	/**
 	 * Generate Account files.
 	 *
@@ -1680,11 +1645,7 @@ public class FileManager {
 		String keys;
 		fieldNames = "cloudtrailName`securityTopicARN`securityTopicEndpoint";
 		keys = "discoverydate`accountid`accountname`cloudtrailname`securitytopicarn`securitytopicendpoint";
-<<<<<<< HEAD
-		FileGenerator.generateJson(account, fieldNames, "aws-account.data", keys);	
-=======
 		FileGenerator.generateJson(account, fieldNames, "aws-account.data", keys);
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	}
 	/**
 	 * Generate IamGroup files.
@@ -1697,11 +1658,7 @@ public class FileManager {
 		String keys;
 		fieldNames = "group.groupName`group.groupID`group.arn`group.createDate`policies";
 		keys = "discoverydate`accountid`accountname`groupname`groupid`grouparn`createdate`policies";
-<<<<<<< HEAD
-		FileGenerator.generateJson(iamGroupMap, fieldNames, "aws-iamgroup.data", keys);	
-=======
 		FileGenerator.generateJson(iamGroupMap, fieldNames, "aws-iamgroup.data", keys);
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	}
 	/**
 	 * Generate CloudTrail files.
@@ -1714,11 +1671,7 @@ public class FileManager {
 		String keys;
 		fieldNames = "Name`S3BucketName`IncludeGlobalServiceEvents`IsMultiRegionTrail`HomeRegion`TrailARN`LogFileValidationEnabled`HasCustomEventSelectors";
 		keys = "discoverydate`accountid`accountname`region`name`s3bucketname`includeglobalserviceevents`ismultiregiontrail`homeregion`trailarn`logfilevalidationenabled`hascustomeventselectors";
-<<<<<<< HEAD
-		FileGenerator.generateJson(dbSnapShots, fieldNames, "aws-cloudtrail.data", keys);	
-=======
 		FileGenerator.generateJson(dbSnapShots, fieldNames, "aws-cloudtrail.data", keys);
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	}
 	//****** Changes For Federated Rules End ******
 }

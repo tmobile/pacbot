@@ -18,7 +18,6 @@
   Purpose:
   Author :Avinash
   Modified Date: Feb 27, 2019
-
  **/
 package com.tmobile.cloud.awsrules.federated;
 
@@ -46,28 +45,6 @@ public class S3DPCEncryFederatedRule extends BaseRule {
 
 	/**
 	 * The method will get triggered from Rule Engine with following parameters
-<<<<<<< HEAD
-	 * 
-	 * @param ruleParam
-	 * 
-	 *            ************* Following are the Rule Parameters********* <br><br>
-	 * 
-	 *            apiKeyName : Value of API key <br><br>
-	 * 
-	 *            apiKeyValue : Value of the API key name <br><br>
-	 * 
-	 *            apiGWURL : API gateway URL <br><br>
-	 * 
-	 *            ruleKey : check-for-s3-global-write-access <br><br>
-	 *            severity : Enter the value of severity <br><br>
-	 * 
-	 *            ruleCategory : Enter the value of category <br><br>
-	 *            
-	 *            checkId : value of check id <br><br>
-	 *            
-	 *            esServiceURL : Enter the Es url <br><br>
-	 * 
-=======
 	 *
 	 * @param ruleParam
 	 *
@@ -88,7 +65,6 @@ public class S3DPCEncryFederatedRule extends BaseRule {
 	 *
 	 *            esServiceURL : Enter the Es url <br><br>
 	 *
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	 * @param resourceAttributes this is a resource in context which needs to be scanned this is provided by execution engine
 	 *
 	 */
@@ -111,15 +87,6 @@ public class S3DPCEncryFederatedRule extends BaseRule {
 		accessLevels.put("ACL", PacmanRuleConstants.PUBLIC);
 		String checkEsUrl = null;
 		Map<String, Boolean> s3HasOpenAccess;
-<<<<<<< HEAD
-		
-		String checkId = ruleParam.get(PacmanRuleConstants.CHECK_ID);
-		boolean aclFound = false;
-		boolean bucketPolicyFound = false;
-		
-		String formattedUrl = PacmanUtils.formatUrl(ruleParam,PacmanRuleConstants.ES_CHECK_SERVICE_SEARCH_URL_PARAM);
-        
-=======
 
 		String checkId = ruleParam.get(PacmanRuleConstants.CHECK_ID);
 		boolean aclFound = false;
@@ -127,7 +94,6 @@ public class S3DPCEncryFederatedRule extends BaseRule {
 
 		String formattedUrl = PacmanUtils.formatUrl(ruleParam,PacmanRuleConstants.ES_CHECK_SERVICE_SEARCH_URL_PARAM);
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
         if(!StringUtils.isEmpty(formattedUrl)){
             checkEsUrl =  formattedUrl;
         }
@@ -159,11 +125,7 @@ public class S3DPCEncryFederatedRule extends BaseRule {
 						}else {
 							return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);
 						}
-<<<<<<< HEAD
-						
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 					}else {
 						return new RuleResult(PacmanSdkConstants.STATUS_FAILURE,
 								PacmanRuleConstants.FAILURE_MESSAGE,

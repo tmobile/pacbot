@@ -1,14 +1,5 @@
 /*******************************************************************************
  * Copyright 2019 T Mobile, Inc. or its affiliates. All Rights Reserved.
-<<<<<<< HEAD
- * 
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License.  You may obtain a copy
- * of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
-=======
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
@@ -16,7 +7,6 @@
  *
  *   http://www.apache.org/licenses/LICENSE-2.0
  *
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -26,15 +16,8 @@
 /**
   Copyright (C) 2019 T Mobile Inc - All Rights Reserve
   Purpose:
-<<<<<<< HEAD
-  Author :Avinash 
-  Date: Jan 30, 2019
-  
-=======
   Author :Avinash
   Date: Jan 30, 2019
-
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
  **/
 package com.tmobile.cloud.awsrules.federated;
 
@@ -60,18 +43,6 @@ public class AccessLogForCloudFront extends BaseRule {
 
 	/**
 	 * The method will get triggered from Rule Engine with following parameters
-<<<<<<< HEAD
-	 * 
-	 * @param ruleParam
-	 * 
-	 ************** Following are the Rule Parameters********* <br><br>
-	 * 
-	 *ruleKey : check-for-access-log-for-cloudfront <br><br>
-	 *
-	 *severity : Enter the value of severity <br><br>
-	 * 
-	 *ruleCategory : Enter the value of category <br><br> 
-=======
 	 *
 	 * @param ruleParam
 	 *
@@ -82,7 +53,6 @@ public class AccessLogForCloudFront extends BaseRule {
 	 *severity : Enter the value of severity <br><br>
 	 *
 	 *ruleCategory : Enter the value of category <br><br>
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	 *
 	 *accessLogBucketName : ARN of the access log bucket name <br><br>
 	 *
@@ -113,11 +83,7 @@ public class AccessLogForCloudFront extends BaseRule {
 					annotation.put(PacmanRuleConstants.SEVERITY, severity);
 					annotation.put(PacmanRuleConstants.SUBTYPE, Annotation.Type.RECOMMENDATION.toString());
 					annotation.put(PacmanRuleConstants.CATEGORY, category);
-<<<<<<< HEAD
-					
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 					issue.put(PacmanRuleConstants.VIOLATION_REASON, "Access log is not enabled and not attached to any bucket ");
 					issueList.add(issue);
 					annotation.put("issueDetails",issueList.toString());

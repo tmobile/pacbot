@@ -896,20 +896,12 @@ public class AssetFileGenerator {
                 }
             });
 			//****** Changes For Federated Rules Start ******
-<<<<<<< HEAD
-			executor.execute(() -> 
-=======
 			executor.execute(() ->
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			{
 			    if(!(isTypeInScope("acmcertificate"))) {
                     return;
                 }
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				try{
 					log.info(infoPrefix + "acmcertificate");
 					FileManager.generateACMCertificateFiles(InventoryUtil.fetchACMCertficateInfo(temporaryCredentials, skipRegions, accountId, accountName));
@@ -918,22 +910,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "acmcertificate", e.getMessage());
 				}
 			});
-<<<<<<< HEAD
-			
-			executor.execute(() -> 
-=======
 
 			executor.execute(() ->
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			{
 			    if(!(isTypeInScope("iamcertificate"))) {
                     return;
                 }
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				try{
 					log.info(infoPrefix + "iamcertificate");
 					FileManager.generateIAMCertificateFiles(InventoryUtil.fetchIAMCertificateInfo(temporaryCredentials, skipRegions, accountId, accountName));
@@ -942,11 +925,7 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "iamcertificate", e.getMessage());
 				}
 			});
-<<<<<<< HEAD
-			
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			executor.execute(() ->
             {
                 if(!(isTypeInScope("account"))) {
@@ -961,22 +940,13 @@ public class AssetFileGenerator {
                     ErrorManageUtil.uploadError(accountId, "", "AccountInfo", e.getMessage());
                 }
             });
-<<<<<<< HEAD
-			
-			executor.execute(() -> 
-=======
 
 			executor.execute(() ->
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			{
 			    if(!(isTypeInScope("iamgroup"))) {
                     return;
                 }
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				try{
 					log.info(infoPrefix + "IAM Groups");
 					FileManager.generateIamGroupFiles(InventoryUtil.fetchIAMGroups(temporaryCredentials, accountId, accountName));
@@ -985,22 +955,13 @@ public class AssetFileGenerator {
 					ErrorManageUtil.uploadError(accountId, "", "iamgroup", e.getMessage());
 				}
 			});
-<<<<<<< HEAD
-			
-			executor.execute(() -> 
-=======
 
 			executor.execute(() ->
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			{
 			    if(!(isTypeInScope("cloudtrail"))) {
                     return;
                 }
-<<<<<<< HEAD
-            
-=======
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 				try{
 					log.info(infoPrefix + "CloudTrail");
 					FileManager.generateCloudTrailFiles(InventoryUtil.fetchCloudTrails(temporaryCredentials, skipRegions, accountId, accountName));
@@ -1008,15 +969,9 @@ public class AssetFileGenerator {
 					log.error(expPrefix+ "Cloud Trailt\", \"cause\":\"" +e.getMessage()+"\"}");
 					ErrorManageUtil.uploadError(accountId, "", "cloudtrail", e.getMessage());
 				}
-<<<<<<< HEAD
-			});	
-			//****** Changes For Federated Rules End ******
-			
-=======
 			});
 			//****** Changes For Federated Rules End ******
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 			executor.shutdown();
 			while (!executor.isTerminated()) {
 

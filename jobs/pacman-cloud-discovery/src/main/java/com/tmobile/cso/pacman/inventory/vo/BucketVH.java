@@ -41,15 +41,6 @@ public class BucketVH {
 
 	/** The mfa delete. */
 	Boolean mfaDelete;
-<<<<<<< HEAD
-	
-	/** The Bucket Encryption. */
-    String bucketEncryp;
-    
-    /** The DPC Value. */
-    String DPCvalue;
-	
-=======
 
 	/** The Bucket Encryption. */
     String bucketEncryp;
@@ -57,7 +48,6 @@ public class BucketVH {
     Boolean websiteConfiguration;
 
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	/**
 	 * Instantiates a new bucket VH.
 	 *
@@ -66,21 +56,13 @@ public class BucketVH {
 	 * @param versionConfig the version config
 	 * @param tags the tags
 	 */
-<<<<<<< HEAD
-	public BucketVH(Bucket bucket,String location,BucketVersioningConfiguration versionConfig, List<Tag> tags, String bucketEncryp, String DPCvalue){
-=======
 	public BucketVH(Bucket bucket,String location,BucketVersioningConfiguration versionConfig, List<Tag> tags, String bucketEncryp, boolean websiteConfiguration){
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 		this.bucket = bucket;
 		this.location = location;
 		this.versionStatus = versionConfig==null?"":versionConfig.getStatus();
 		this.mfaDelete =  versionConfig==null?null:versionConfig.isMfaDeleteEnabled();
 		this.tags = tags;
 		this.bucketEncryp = bucketEncryp;
-<<<<<<< HEAD
-        this.DPCvalue = DPCvalue;
-=======
 		this.websiteConfiguration = websiteConfiguration;
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	}
 }

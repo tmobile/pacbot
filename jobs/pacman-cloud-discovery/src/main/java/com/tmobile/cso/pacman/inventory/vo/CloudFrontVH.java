@@ -38,14 +38,6 @@ public class CloudFrontVH {
 	/** The accessLogEnabled. */
 	boolean accessLogEnabled;
 	
-<<<<<<< HEAD
-	/** The bucketName. */
-	String bucketName;
-	
-	/** The accessLogEnabled. */
-	boolean accessLogEnabled;
-	
-=======
 	/**  Default Root Object for the distribution *. */
 	String defaultRootObject;
 
@@ -61,7 +53,6 @@ public class CloudFrontVH {
 
 
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 	/**
 	 * Gets the dist summary.
 	 *
@@ -115,11 +106,6 @@ public class CloudFrontVH {
 	public void setAccessLogEnabled(boolean accessLogEnabled) {
 		this.accessLogEnabled = accessLogEnabled;
 	}
-<<<<<<< HEAD
-	
-	
-=======
 
 
->>>>>>> cfdbfd0614b3defe9f0a27cf7508b392546c050d
 }
