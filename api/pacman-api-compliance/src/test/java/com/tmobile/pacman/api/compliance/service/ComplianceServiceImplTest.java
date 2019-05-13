@@ -409,21 +409,20 @@ public class ComplianceServiceImplTest {
 
         when(
                 complianceRepository.getRuleDetailsByEnvironmentFromES(
-                        anyString(), anyString(), anyString(), anyString()))
+                        anyString(), anyString(), anyString(), anyString(), anyString()))
                 .thenReturn(CommonTestUtil.getJsonArray());
 
         when(complianceRepository.getTargetTypeByRuleId(anyString()))
                 .thenReturn(CommonTestUtil.getMapList());
 
         when(
-                complianceRepository.getTotalAssetCountForEnvironment(
-                        anyString(), anyString(), anyString(), anyString()))
-                .thenReturn(500l);
+        		complianceRepository.getTotalAssetCountByEnvironment(
+                        anyString(), anyString(), anyString()))
+                .thenReturn(CommonTestUtil.getMapLong());
         
         when(
-                complianceRepository.getInstanceCountForQualysByAppsOrEnv(
-                        anyString(), anyString(),anyString(), anyString())).thenReturn(
-                CommonTestUtil.getMapLong());
+        		complianceRepository.getInstanceCountForQualys(
+                        anyString(), anyString(),anyString(), anyString())).thenReturn(5000l);
 
         assertThat(
                 complianceService.getRuleDetailsbyEnvironment(
