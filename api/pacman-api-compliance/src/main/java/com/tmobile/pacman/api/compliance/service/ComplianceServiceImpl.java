@@ -610,51 +610,24 @@ public class ComplianceServiceImpl implements ComplianceService, Constants {
         List<Map<String, Object>> environmentList = new ArrayList<>();
         JsonElement docCount = null;
         Long assetCount = 0l;
-        String targetType = null;
+        String targetType = getTargetTypeByRuleId(ruleId);
         JsonArray buckets;
         try {
-            buckets = repository.getRuleDetailsByEnvironmentFromES(assetGroup, ruleId, application, searchText);
+            buckets = repository.getRuleDetailsByEnvironmentFromES(assetGroup, ruleId, application, searchText,targetType);
 
         } catch (DataException e) {
             throw new ServiceException(e);
         }
-        targetType = getTargetTypeByRuleId(ruleId);
-        for (int i = 0; i < buckets.size(); i++) {
-            environmentDetails = new HashMap<>();
-            environment = buckets.get(i).getAsJsonObject().get(KEY).getAsString();
-            if (!StringUtils.isEmpty(targetType)) {
 
-                assetCount = repository.getTotalAssetCountForEnvironment(assetGroup, application, environment,
-                        targetType);
-                if ((ruleId.equalsIgnoreCase(CLOUD_QUALYS_RULE) && qualysEnabled) || ruleId.equalsIgnoreCase(SSM_AGENT_RULE)) {
-                    try {
-                        assetCount = repository.getInstanceCountForQualys(assetGroup, "policydetailsbyenvironment", application, environment);
-                    }catch (DataException e) {
-                        throw new ServiceException(e);
-                    }
-                }
-
-            }
-            if (assetCount > 0) {
-                docCount = buckets.get(i).getAsJsonObject().get(DOC_COUNT);
-
-                if (docCount != null && assetCount <= Long.parseLong(docCount.toString())) {
-
-                    assetCount = Long.parseLong(docCount.toString());
-
-                    environmentDetails.put(TOTAL, assetCount);
-                    environmentDetails.put(ENV, buckets.get(i).getAsJsonObject().get(KEY).getAsString());
-                    environmentDetails.put(NON_COMPLIANT, Long.parseLong(docCount.toString()));
-                    environmentDetails.put("compliant", (assetCount - Long.parseLong(docCount.toString())));
-                    environmentDetails
-                            .put(COMPLIANTPERCENTAGE,
-                                    Math.floor(((assetCount - Double.parseDouble(docCount.toString())) / assetCount)
-                                            * HUNDRED));
-                    environmentList.add(environmentDetails);
-                }
-
-            }
-        }
+        Gson googleJson = new Gson();
+        List<Map<String, Object>> issuesForApplcationByEnvList = googleJson.fromJson(buckets, ArrayList.class);
+        Map<String, Long> issuesByApplcationListMap = issuesForApplcationByEnvList.parallelStream().collect(
+                Collectors.toMap(issue -> issue.get(KEY).toString(),
+                        issue -> (long) Double.parseDouble(issue.get(DOC_COUNT).toString())));
+         
+        Map<String,Long>  assetCountByEnv = repository.getTotalAssetCountByEnvironment(assetGroup, application, targetType);
+        
+        formComplianceDetailsForApplicationByEnvironment(ruleId, assetCountByEnv, issuesByApplcationListMap,assetGroup,application,environmentList);
         return environmentList;
 
     }
@@ -1181,5 +1154,51 @@ public class ComplianceServiceImpl implements ComplianceService, Constants {
         } catch (DataException e) {
             throw new ServiceException(e);
         }
+    }
+    
+    private List<Map<String, Object>> formComplianceDetailsForApplicationByEnvironment(String ruleId,
+            Map<String, Long> assetCountbyEnvs, Map<String, Long> issuesForApplcationByEnvMap,String assetGroup,String application,List<Map<String, Object>> environmentList) throws ServiceException {
+        Map<String, Object> environment;
+        Long assetCount;
+        long issueCount = 0;
+        long complaintAssets;
+        String envFromAsset;
+        double compliancePercentage;
+        // Form Compliance Details for Application by Envi
+        for (Map.Entry<String, Long> assetCountByEnv : assetCountbyEnvs.entrySet()) {
+        	environment = new HashMap<>();
+            assetCount = assetCountByEnv.getValue();
+            envFromAsset = assetCountByEnv.getKey();
+
+            if ((ruleId.equalsIgnoreCase(CLOUD_QUALYS_RULE) && qualysEnabled) || ruleId.equalsIgnoreCase(SSM_AGENT_RULE)) {
+                try {
+                    assetCount = repository.getInstanceCountForQualys(assetGroup, "policydetailsbyenvironment", application, envFromAsset);
+                }catch (DataException e) {
+                    throw new ServiceException(e);
+                }
+            }
+
+            issueCount = (null != issuesForApplcationByEnvMap.get(envFromAsset)) ? issuesForApplcationByEnvMap
+                    .get(envFromAsset) : 0l;
+            if (issueCount > 0) {
+                if (issueCount > assetCount) {
+                    issueCount = assetCount;
+                }
+                complaintAssets = assetCount - issueCount;
+                compliancePercentage = (complaintAssets * HUNDRED / assetCount);
+                compliancePercentage = Math.floor(compliancePercentage);
+            } else {
+                complaintAssets = assetCount;
+                compliancePercentage = HUNDRED;
+            }
+
+            environment.put(TOTAL, assetCount);
+            environment.put(ENV, envFromAsset);
+            environment.put("compliant", complaintAssets);
+            environment.put(NON_COMPLIANT, issueCount);
+            environment.put(COMPLIANTPERCENTAGE, compliancePercentage);
+            environmentList.add(environment);
+        }
+        return environmentList;
     }
 }

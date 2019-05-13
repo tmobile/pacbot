@@ -391,12 +391,13 @@ public interface ComplianceRepository {
      * @param ruleId            the rule id
      * @param application            the application
      * @param searchText            the search text
+     * @param targetType the target type
      * @return JsonArray
      * @throws DataException the data exception
      */
 
     public JsonArray getRuleDetailsByEnvironmentFromES(String assetGroup,
-            String ruleId, String application, String searchText)
+            String ruleId, String application, String searchText,String targetType)
             throws DataException;
 
     /**
@@ -624,4 +625,14 @@ public interface ComplianceRepository {
      * @throws DataException the data exception
      */
     public IssueExceptionResponse revokeAndUpdateMultipleIssueDetails(List<String> issueIds) throws DataException;
+    
+    /**
+ 	 * Gets the total asset count by environment.
+ 	 *
+ 	 * @param assetGroup the asset group
+ 	 * @param application the application
+ 	 * @param targetType the target type
+ 	 * @return the total asset count by environment
+ 	 */
+ 	public Map<String,Long> getTotalAssetCountByEnvironment(String assetGroup, String application,String targetType);
 }
