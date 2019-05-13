@@ -16,7 +16,6 @@
 package com.tmobile.pacman.api.compliance.repository;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -468,7 +467,11 @@ public class ComplianceRepositoryImpl implements ComplianceRepository, Constants
         if (totaluntagged > totalAssets) {
             totaluntagged = totalAssets;
         }
-        totalTagged = totalAssets - totaluntagged;
+        if (totalAssets >= totaluntagged) {
+			totalTagged = totalAssets - totaluntagged;
+		} else {
+			totalTagged = 0;
+		}
         if (totalAssets > 0) {
             compliance = (totalTagged * HUNDRED / totalAssets);
             compliance = Math.floor(compliance);
