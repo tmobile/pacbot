@@ -48,8 +48,7 @@ public interface ComplianceRepository {
      *
      * @param assetGroup
      *            the asset group
-     * @param ruleId
-     *            the rule id
+     * @param ruleId the rule id
      * @param domain
      *            the domain
      * @return long
