@@ -52,7 +52,7 @@ class RuleEngineBatchJobEnv(BatchComputeEnvironmentResource):
             return True
 
     def pre_generate_terraform(self):
-        warn_msg = "Batch Jobs are running, please try after it gets completed."
+        warn_msg = "Batch Jobs are running, please try after it gets completed and desired CPUs comes to 0."
         if self.check_batch_jobs_running():
             message = "\n\t ** %s **\n" % warn_msg
             print(MsgMixin.BERROR_ANSI + message + MsgMixin.RESET_ANSI)
