@@ -467,11 +467,7 @@ public class ComplianceRepositoryImpl implements ComplianceRepository, Constants
         if (totaluntagged > totalAssets) {
             totaluntagged = totalAssets;
         }
-        if (totalAssets >= totaluntagged) {
-			totalTagged = totalAssets - totaluntagged;
-		} else {
-			totalTagged = 0;
-		}
+        totalTagged = totalAssets - totaluntagged;
         if (totalAssets > 0) {
             compliance = (totalTagged * HUNDRED / totalAssets);
             compliance = Math.floor(compliance);
