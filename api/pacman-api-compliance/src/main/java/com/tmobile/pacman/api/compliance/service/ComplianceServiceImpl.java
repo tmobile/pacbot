@@ -605,11 +605,7 @@ public class ComplianceServiceImpl implements ComplianceService, Constants {
      */
     public List<Map<String, Object>> getRuleDetailsbyEnvironment(String assetGroup, String ruleId, String application,
             String searchText) throws ServiceException {
-        Map<String, Object> environmentDetails;
-        String environment;
         List<Map<String, Object>> environmentList = new ArrayList<>();
-        JsonElement docCount = null;
-        Long assetCount = 0l;
         String targetType = getTargetTypeByRuleId(ruleId);
         JsonArray buckets;
         try {
