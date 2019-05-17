@@ -15,7 +15,7 @@ def get_rule_engine_cloudwatch_rules_var():
 
     variable_dict_input = json.loads(data)
     for index in range(len(variable_dict_input)):
-        mod = index % 25 + 5
+        mod = index % 20 + 5
         item = {
             'ruleId': variable_dict_input[index]['ruleUUID'],
             'ruleParams': variable_dict_input[index]['ruleParams'],
