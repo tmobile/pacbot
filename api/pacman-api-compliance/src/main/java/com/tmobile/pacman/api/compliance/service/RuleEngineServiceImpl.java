@@ -94,12 +94,14 @@ public class RuleEngineServiceImpl implements RuleEngineService, Constants {
     @Override
     public Map<String, Object> getLastAction(final String resourceId) {
         Map<String, Object> response = Maps.newHashMap();
+        SimpleDateFormat dateFormatUTC = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+    	dateFormatUTC.setTimeZone(TimeZone.getTimeZone("UTC"));
         try {
-            List<Date> lastActions = Lists.newArrayList();
+            List<String> lastActions = Lists.newArrayList();
             List<PacRuleEngineAutofixActions> pacRuleEngineAutofixActions = ruleEngineAutofixRepository
                     .findLastActionByResourceId(resourceId);
             pacRuleEngineAutofixActions.forEach(autofixLastAction -> {
-                lastActions.add(autofixLastAction.getLastActionTime());
+			lastActions.add(dateFormatUTC.format(autofixLastAction.getLastActionTime()));
             });
             if (lastActions.isEmpty()) {
                 response.put(RESPONSE_CODE, 0);
