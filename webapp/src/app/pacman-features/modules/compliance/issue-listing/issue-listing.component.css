@@ -69,6 +69,10 @@
 .issue-listing-wrapper /deep/ .data-table-wrap .table-cells {
     width: 130px;
 }
+.issue-listing-wrapper /deep/ .data-table-wrap {
+    border: 1px solid #dce1e8;
+    border-top: none;
+}
 
 .data-table-desc{
     margin: 1em 0 0;
@@ -117,4 +121,4 @@
     .floating-widgets-container {
         overflow: auto;
     }
-} 
+}

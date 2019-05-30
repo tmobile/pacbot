@@ -64,7 +64,7 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
     public footerData;
     public showMenu;
     public environment;
-
+    profilePictureSrc: any = '/assets/icons/profile-picture.svg';
 
     ngOnInit() {
         try {

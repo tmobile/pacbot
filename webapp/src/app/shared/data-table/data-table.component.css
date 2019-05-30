@@ -99,7 +99,7 @@
     border-bottom: 2px solid #dce3e9;
     padding: 0.45em 0px;
     font-size: 0.83em;
-    position: relative;
+    position: absolute;
     min-width: calc(100% - 1.66em);
     left: 0;
     background-color: #fff;
@@ -305,7 +305,7 @@
     right: 0;
     bottom: 0;
     transform: translateX(101%);
-    z-index: 2;
+    z-index: 12;
     background: white;
     width: 32em;
     transition: 0.3s ease;
@@ -337,6 +337,8 @@
     padding: 0.6em 0.8em;
     border: 1px solid #ccccccaa;
     line-height: 1.9;
+    flex-direction: row !important;
+    height: inherit !important;
 }
 
 .details-bar.active {
@@ -528,4 +530,8 @@
 
 .menu-rows:hover {
     background: #ededed;
+}
+
+.list-sortable-arrow {
+    display: inline !important;
 }
