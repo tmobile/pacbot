@@ -38,9 +38,9 @@
     overflow: hidden;
 }
 
-.data-table-wrap.loading {
+/* .data-table-wrap.loading {
     min-height: 34em;
-}
+} */
 
 .data-table-wrap.small-content {
     min-height: 1em;
