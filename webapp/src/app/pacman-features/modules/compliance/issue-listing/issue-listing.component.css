@@ -133,6 +133,13 @@
     transform: translateX(108%);
 }
 
+.table-wrapper , .table-wrapper .relative {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden;
+}
+
 /* css for edge browser */
 @supports (-ms-ime-align: auto) { 
     .floating-widgets-container {

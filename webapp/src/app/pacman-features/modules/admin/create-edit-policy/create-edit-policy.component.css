@@ -593,7 +593,7 @@ li.list-inputs:hover {
 }
 
 .data-content {
-    max-height: calc(100vh - 26em);
+    max-height: calc(100vh - 30em);
     overflow: auto;
     padding-left: 20%;
     padding-right: 20%;
