@@ -71,7 +71,8 @@
                      <div class="menu-underline"></div>
                  </div>
                  <div class="menu-content-item" *ngFor="let row of data.rows">
-                     <span routerLinkActive="active" routerLink={{row.route}} [queryParams]=agAndDomain (click)='clearPageLevel()'>{{row.name}}</span>
+                    <span *ngIf="row.overlay" routerLinkActive="active" [routerLink]="[  {outlets: { modalBGMenu : [row.route] } } ]" [queryParams]=agAndDomain (click)='clearPageLevel()'>{{row.name}}</span>
+                    <span *ngIf="!row.overlay" routerLinkActive="active" routerLink={{row.route}} [queryParams]=agAndDomain (click)='clearPageLevel()'>{{row.name}}</span>
                  </div>
              </div>
          </ng-container>

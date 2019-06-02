@@ -20,11 +20,12 @@
         <router-outlet #o="outlet" (deactivate)='onDeactivate($event)'></router-outlet>
     </section>
 </div>
+<router-outlet name="modalBGMenu"></router-outlet>
 <router-outlet name="kydModal"></router-outlet>
 <router-outlet name="helpTextModal"></router-outlet>
 <router-outlet name="modal"></router-outlet>
 <app-toast-notification></app-toast-notification>
-<div [class.hide]='!showPacLoader.length' class='pacman-anim'><img src='../assets/icons/download-magenta.svg'></div>
+<div [class.hide]='!showPacLoader.length' class='pacman-anim'><img src='../assets/icons/Download-active.svg'></div>
 
 <img src="/assets/images/bg/background.png" width="0px" height="0px" class="hide"/>
 <img src="/assets/images/bg/bg-domain3.png" width="0px" height="0px" class="hide"/>
