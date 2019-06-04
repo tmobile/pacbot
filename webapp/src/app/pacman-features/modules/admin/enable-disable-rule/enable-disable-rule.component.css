@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
- .floating-widgets-section {
+.floating-widgets-section {
     height: 100%;
     width: 100%;
 }
@@ -48,6 +48,34 @@
     text-transform: capitalize;
 }
 
+/* .issue-listing-wrapper /deep/ .data-table-wrap {
+    min-height: calc( 100vh - 24em);
+}
+
+.issue-listing-wrapper /deep/ .data-table-content {
+    min-height: calc( 100vh - 32em);
+}
+
+.issue-listing-wrapper /deep/ .data-table-inner-wrap {
+    max-height: calc(100vh - 35em)
+}
+
+.issue-listing-wrapper /deep/ .data-table-wrap.loading {
+    min-height: calc( 100vh - 24em);
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-wrap {
+    min-height: calc(100vh - 20em);
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-content {
+    min-height: calc( 100vh - 28em);
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
+    max-height: calc(100vh - 31em)
+} */
+
 .details-bar[_ngcontent-c14] {
     width: 50em !important;
 }
@@ -71,7 +99,7 @@ input.login {
 
 p.label {
     font-size: 11px;
-    font-family: ex2-bold;
+    font-weight: bold;
     color: #808080;
     display: block;
 }
@@ -700,7 +728,7 @@ li.list-inputs:hover {
 .header-text {
     padding-top: 7px;
     padding-bottom: 7px;
-    font-family: ex2-bold;
+    font-weight: bold;
 }
 
 .data-content {
@@ -723,7 +751,7 @@ li.list-inputs:hover {
     background-color: #e20074;
     color: #fff;
     display: inline-block;
-    font-family: ex2-bold;
+    font-weight: bold;
     padding: 0.6em 1.5em;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -793,7 +821,7 @@ li.list-inputs:hover {
 label {
     display: block;
     font-size: 12px;
-    font-family: ex2-bold;
+    font-weight: bold;
     color: #7b7b7b;
     margin-bottom: 7px;
 }
@@ -985,7 +1013,7 @@ p.inputnote {
     line-height: 19px;
     display: block;
     font-size: 12px;
-    font-family: ex2-bold;
+    font-weight: bold;
     color: #232323;
 }
 
@@ -1852,7 +1880,7 @@ button.tmbutton:disabled:hover {
 }
 
 .invocationId {
-    font-family: ex2-bold;
+    font-weight: bold;
 }
 
 .lowercase {

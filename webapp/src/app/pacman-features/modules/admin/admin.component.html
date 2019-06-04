@@ -13,6 +13,7 @@
  -->
 
  <div class="admin-wrapper flex flex-between">
+    <app-canvas-side-panel *ngIf="tvState!=true && tvState!='true'" [rightPointing]='true' class="panel"></app-canvas-side-panel>
     <div class="main-panel flex flex-between" [class.tv-selected]="tvState==true || tvState=='true'">
         <div class="contextual-menu-container" *ngIf="tvState!=true && tvState!='true'">
             <app-contextual-menu [pageTitle]="pageTitle" [listOfMenus]="listOfContextualMenuItems"></app-contextual-menu>
@@ -21,4 +22,5 @@
             <router-outlet #route="outlet"></router-outlet>
         </div>
     </div>
+    <app-canvas-side-panel *ngIf="tvState!=true && tvState!='true'" [moduleName]="'tools'" [rightPointing]='false' class="panel" [displayProperty]="false"></app-canvas-side-panel>
 </div>

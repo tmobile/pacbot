@@ -42,6 +42,35 @@
     width: 130px;
 }
 
+
+.issue-listing-wrapper /deep/ .data-table-wrap {
+    min-height: calc(100vh - 22em );
+}
+
+.issue-listing-wrapper /deep/ .data-table-content {
+    min-height: calc( 100vh - 30em )!important;
+}
+
+.issue-listing-wrapper /deep/ .data-table-inner-wrap {
+    max-height: calc(100vh - 32em)
+}
+
+.issue-listing-wrapper /deep/ .data-table-wrap.loading {
+    min-height: calc( 100vh - 21em );
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-wrap {
+    min-height: calc(100vh - 19em );
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-content {
+    min-height: calc( 100vh - 27em )!important;
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
+    max-height: calc(100vh - 30em)
+}
+
 /* css for edge browser */
 @supports (-ms-ime-align: auto) { 
     .floating-widgets-container {
