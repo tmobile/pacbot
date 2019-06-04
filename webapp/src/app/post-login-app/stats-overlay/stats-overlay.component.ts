@@ -28,7 +28,7 @@ import { AutorefreshService } from '../../pacman-features/services/autorefresh.s
 import { environment } from '../../../environments/environment';
 import { ErrorHandlingService } from '../../shared/services/error-handling.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import * as html2canvas from 'html2canvas';
+import html2canvas from 'html2canvas';
 import * as _ from 'lodash';
 import { RefactorFieldsService } from '../../shared/services/refactor-fields.service';
 import { CONFIGURATIONS } from './../../../config/configurations';
