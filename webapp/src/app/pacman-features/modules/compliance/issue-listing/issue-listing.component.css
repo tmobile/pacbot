@@ -69,9 +69,33 @@
 .issue-listing-wrapper /deep/ .data-table-wrap .table-cells {
     width: 130px;
 }
+
 .issue-listing-wrapper /deep/ .data-table-wrap {
-    border: 1px solid #dce1e8;
-    border-top: none;
+    min-height: calc(100vh - 26em );
+}
+
+.issue-listing-wrapper /deep/ .data-table-content {
+    min-height: calc( 100vh - 35em )!important;
+}
+
+.issue-listing-wrapper /deep/ .data-table-inner-wrap {
+    max-height: calc(100vh - 37em)
+}
+
+.issue-listing-wrapper /deep/ .data-table-wrap.loading {
+    min-height: calc( 100vh - 26em );
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-wrap {
+    min-height: calc(100vh - 22em );
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-content {
+    min-height: calc( 100vh - 30em )!important;
+}
+
+.filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
+    max-height: calc(100vh - 33em)
 }
 
 .data-table-desc{
@@ -109,16 +133,9 @@
     transform: translateX(108%);
 }
 
-.table-wrapper , .table-wrapper .relative {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    overflow: hidden;
-}
-
 /* css for edge browser */
 @supports (-ms-ime-align: auto) { 
     .floating-widgets-container {
         overflow: auto;
     }
-}
+} 

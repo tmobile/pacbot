@@ -714,8 +714,8 @@ li.list-inputs:hover {
 }
 
 .data-content {
-    min-height: calc(100vh - 30em);
-    max-height: calc(100vh - 30em);
+    min-height: calc(100vh - 26em);
+    max-height: calc(100vh - 26em);
     overflow: auto;
 }
 
