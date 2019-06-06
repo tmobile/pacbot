@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -72,9 +72,10 @@
     url(/assets/fonts/ex2/Ex2_ttf/Exo2-ExtraLight.ttf) format('ttf');
 }
 
-body {
-    overflow-x: hidden;
-}
+
+
+
+
 
 
 /* Utility classes */
@@ -124,15 +125,7 @@ body {
     text-align: center;
 }
 
-.text-right {
-    text-align: right;
-}
-
 .hide {
-    display: none!important;
-}
-
-th.table-cells.hide, tr.table-cells.hide, td.hide.table-cells {
     display: none!important;
 }
 
@@ -146,7 +139,6 @@ h1 {
     font-size: 2em;
     font-family: ex2-regular;
     font-weight: 500;
-    padding-bottom: 2px;
 }
 
 h2 {
@@ -173,19 +165,14 @@ h6 {
     letter-spacing: 0.1px;
 }
 
-b {
-    font-family: ex2-bold;
-    font-family: ex2-medium;
-}
-
 
 
 /********* Temporarily placed D3 styles ********/
 
 
-/*
-   TODO:
-   Below styles to be moved inside multiline-brush-zoom component
+/* 
+   TODO: 
+   Below styles to be moved inside multiline-brush-zoom component 
 */
 
 .axis {
@@ -557,10 +544,6 @@ text.axis-title {
     width: 100%;
 }
 
-.full-height {
-    height: 100%;
-}
-
 .bold-text {
     font-family: ex2-bold;
 }
@@ -590,9 +573,7 @@ text.axis-title {
     flex-direction: column;
 }
 
-.magenta-riddim {
-    color: #ed0274;
-}
+
 
 
 /* ::selection {
@@ -857,7 +838,7 @@ input:-webkit-autofill {
     width: 100%;
     display: flex;
     position: relative;
-    height: 100%;
+    height: calc(100vh - 19em);
     flex-direction: column;
     align-items: center;
     background: #fff;
@@ -938,6 +919,13 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
     display: flex;
 }
 
+
+
+
+
+
+
+
 /* Right side section */
 
 .fixed-widgets-section {
@@ -963,14 +951,6 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
     border: solid 1px #d6e2f1;
     color: #555;
     font-size: 1em;
-    position: sticky;
-    top: 0;
-    background-color: #ffffff;
-    z-index: 11;
-}
-
-.sub-head {
-    border-block-end: 1px solid #ddd;
 }
 
 .widget-container {
@@ -1098,7 +1078,7 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
 /* doughnut chart center text classes */
 
 .units-label {
-    font-size: 1.5em;
+    font-size: 1.7em;
 }
 
 .units-label-text {
@@ -1171,7 +1151,7 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
 .widget-form-header{
     padding: 1em 0.8em;
     display: flex;
-    position: relative;
+    position: absolute;
     right: 0;
     top: 0;
     justify-content:flex-start;
@@ -1180,9 +1160,9 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
     color: #555;
     width: 100%;
     font-size: 1em;
-    font-family: ex2-bold;
+    font-weight: bolder;
     z-index: 3;
-    letter-spacing: 0.1 px;
+    letter-spacing: 0.1 px; 
     border-bottom: 1px solid #e0e0e0;
 }
 
@@ -1198,11 +1178,13 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
     color: #555;
     width: 100%;
     font-size: 1em;
-    font-family: ex2-bold;
+    font-weight: bolder;
     z-index: 3;
-    letter-spacing: 0.1 px;
+    letter-spacing: 0.1 px; 
     border-top: 1px solid #e0e0e0;
 }
+
+
 
 
 
@@ -1230,6 +1212,7 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
     overflow-x: overlay;
 }
 
+
 .scroll-on-hover-y {
     overflow: hidden;
 }
@@ -1237,10 +1220,6 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
 .scroll-on-hover-y:hover {
     overflow-y: auto;
     overflow-y: overlay;
-}
-
-.scroll {
-    overflow: auto;
 }
 
 ::-webkit-scrollbar {
@@ -1307,7 +1286,7 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
 
 .link-text-secondary:hover {
     color: #e20074 !important;
-    letter-spacing: 1px !important;
+    letter-spacing: 1.5px !important;
 }
 
 .anchor-link {
@@ -1321,15 +1300,14 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
 .pacman-anim {
     position: fixed;
     bottom: 4.5%;
-    /*left: a calculation of 1% margin of the main view + (15% of the remaining contextual menu of remaining 98% of main view) / 2 */
-    left: 8.35%;
+    left: 9.82449%;
     z-index: 2;
     transform: scale(0.9) translate(-50%, 0);
     animation: download-jump 0.8s infinite ease;
 }
 
 @keyframes download-jump {
-
+    
     0%, 100% {
         transform: scale(0.9) translate(-50%, -7px);
         opacity: 0.4;
@@ -1444,7 +1422,6 @@ textarea:disabled {
 
 .underline-link-num {
     border-bottom: 1px solid rgba(60, 80, 121, .5);
-    cursor: pointer;
 }
 
 .underline-link-num:hover {
@@ -1457,11 +1434,6 @@ textarea:disabled {
 
 .highlight-link a:hover {
     border-bottom: 1px solid #e20074 !important;
-}
-
-.data-table-desc {
-    padding-right: 1em;
-    line-height: 1.3;
 }
 
 /**********************START CSS OF VULNERABILITY DETAILS PAGE************************************/
@@ -1533,36 +1505,17 @@ li .details-left-value {
     /* letter-spacing: 1px; */
 }
 
-/* Post login panel classes */
-
-.contextual-content-container {
-    position: relative;
-    flex-grow: 1;
-    width: 85%;
-    height: 100%;
-    max-width: 100%;
-}
-
 .contextual-menu-container {
     flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    width: 15%;
-    height: 100%;
 }
 
 .main-panel {
-    width: 100%;
-    height: 100%;
-    max-width: 100%;
-    overflow: hidden;
-    margin: 0 1%;
-    border-radius: 5px;
-    background-color: #fbfbfb;
-    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    max-width: 94.3%;
 }
 
-/* End of post login panel classes */
+.contextual-content-container {
+    flex-grow: 1;
+}
 
 .ngx-datepicker-container .ngx-datepicker-calendar-container {
     z-index: 1;
@@ -1607,7 +1560,6 @@ input.common-cb + label img {
 
 input.common-cb:checked + label img {
     display: block;
-    user-select: none;
 }
 
 input.common-cb:checked + label {
@@ -1615,251 +1567,9 @@ input.common-cb:checked + label {
     background: #ed0074;
 }
 
-.data-table-container, .data-table-container ul, .data-table-container section, .data-table-container app-data-table, .data-table-container li, .data-table-container section ul li .relative  {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
 
 @media print {
     .hide-in-print {
         visibility: hidden;
-        display: none;
     }
-
-    .main-panel {
-        max-width: 100%;
-    }
-}
-
-/* Styles for d3 graph job execution manager */
-
-.job-execution-frequency-component .line {
-    fill: none;
-    stroke: #e20074;
-    stroke-width: .5;
-}
-
-
-/* !!!!!! Keep these lines at end of css always !!!!!! */
-/* Add module name here whenever a new module is added in order to make it flexible and occupy full height */
-
-app-compliance, app-assets, app-omnisearch, app-tools, app-admin, app-issue-details, app-myboard, app-reports {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-}
-
-app-contextual-menu, app-tools-landing-page {
-    height: 100%;
-}
-
-.full-page-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    display: block;
-    z-index: 16;
-    opacity: 0.5;
-    background-color: #18212c80;
-    pointer-events: none;
-}
-
-@keyframes scale {
-    0% {
-        transform: scale(0);
-    }
-    100% {
-        transform: scale(1);
-    }
-  }
-
-.layer-breadcrumb-wrapper {
-    padding: 0.5em 0.5em 0.7em 0;
-}
-
-.admin-widgets-header {
-    height: 6em;
-    padding: 1.9em 1.8em;
-}
-
-
-/* treemap icon classes */
-
-img.aws-img-holder {
-    height: 60%;
-    width: 60%;
-    position: absolute;
-    opacity: 0.55;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    object-fit: contain;
-}
-
-img.trend-img-holder {
-    opacity: 0.82;
-    z-index: 3;
-    height: 1em;
-    width: 1em;
-    vertical-align: text-bottom;
-    margin-left: 4px;
-}
-
-.sticky-header {
-    position: sticky;
-    top: 0;
-    z-index: 13;
-}
-
-.apps {
-    z-index: 1;
-    text-transform: capitalize;
-    position: absolute;
-    display: flex;
-    cursor: pointer;
-    padding: .5em;
-    color: #fff;
-    font-weight: 600;
-    opacity: 1;
-}
-
-.apps:hover {
-    z-index: 2;
-    opacity: 0.85;
-}
-
-.apps .treemap-pop {
-    opacity: 0;
-    pointer-events: none;
-    transition: 0.3s ease;
-    top: 50%;
-    left: 0;
-    cursor: default;
-    transform: translate(-100%, -50%);
-    min-width: 135px;
-    min-height: 100px;
-    background: #fff;
-    border-radius: 3px;
-    box-shadow: 0 0 4px 1px rgba(0,0,0, 0.2);
-    z-index: 3;
-    border: 1px solid #ededed;
-    color: #000;
-    padding: 0.7em;
-}
-
-.apps:hover .treemap-pop {
-    opacity: 1;
-    pointer-events: auto;
-    z-index: 4;
-}
-
-.apps .treemap-pop:after, .apps .treemap-pop:before {
-	left: 100%;
-	top: 50%;
-	border: solid transparent;
-	content: " ";
-	height: 0;
-	width: 0;
-	position: absolute;
-	pointer-events: none;
-}
-
-.apps .treemap-pop:after {
-	border-color: rgba(255, 255, 255, 0);
-	border-left-color: #ffffff;
-	border-width: 7px;
-	margin-top: -7px;
-}
-.apps .treemap-pop:before {
-	border-color: rgba(237, 237, 237, 0);
-	border-left-color: #ededed;
-	border-width: 8px;
-	margin-top: -8px;
-}
-
-.apps.left-tile .treemap-pop {
-    right: 0;
-    left: initial;
-    transform: translate(100%, -50%);
-}
-
-.apps.left-tile .treemap-pop:after, .apps.left-tile .treemap-pop:before {
-    right: 100%;
-    left: initial;
-}
-
-.apps.left-tile .treemap-pop:after {
-	border-right-color: #ffffff;
-	border-left-color: #ffffff00;
-}
-.apps.left-tile .treemap-pop:before {
-	border-right-color: #ededed;
-	border-left-color: #ededed00;
-}
-
-
-@page {
-    size: A4 portrait;
-    margin: 0;
-    -webkit-print-color-adjust: exact;
-}
-
-.axisRed path, .axisRed line{
-    stroke:#c3cbd7;
-}
-.axisFullScreen text{
-    stroke:white;
-  }
-  g.arc .bubble-text {
-    font-size: 10px;
-    letter-spacing: .6px;
-  }
-  .bubble-count{
-    font-size: 10px;
-    font-weight: bolder;
-    letter-spacing: .6px;
-  }
-  .bubble{
-      overflow: visible;
-  }
-  .bubble-text{
-      font-size:10px;
-      letter-spacing: 0.6px;
-      font-family: sans-serif;
-  }
-  .label-font{
-      font-size:9px;
-      font-family: sans-serif;
-  }
-
-  .accountId-font{
-    text-anchor: middle;
-    font-family: sans-serif;
-    /* letter-spacing: .4px; */
-    /* font-weight: 800; */
-  }
-.tooltip{
-    box-shadow: 0px 0px 5px #888;
-    min-width: 12em;
-    min-height: 7em;
-    display: flex;
-    flex-direction: column;
-    /* justify-content: space-around; */
-    align-items: flex-start;
-    padding: 0.5em;
-    font-size: 12px;
-    text-align: left;
-}
-.tooltip-val{
-   font-weight: bold;
-}
-.tooltip-key{
-    opacity: .7;
-    padding-right: .3em;
-}
-.tooltip div{
-    padding: .4em 0;
 }

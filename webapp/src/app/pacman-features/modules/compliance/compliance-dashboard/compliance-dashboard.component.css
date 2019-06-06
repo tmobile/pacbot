@@ -42,5 +42,17 @@
 }
 
 .compliance-dashboard-wrapper /deep/ .data-table-wrap {
-    height: calc( 70vh - 5em );
+    min-height: calc( 70vh - 5em );
+}
+
+.compliance-dashboard-wrapper /deep/ .data-table-inner-wrap {
+    max-height: calc(100vh - 32em)
+}
+
+.compliance-dashboard-wrapper /deep/ .data-table-content {
+    min-height: calc( 70vh - 11em );
+}
+
+.compliance-dashboard-wrapper /deep/ .data-table-wrap.loading {
+    min-height: calc( 70vh - 5em );
 }

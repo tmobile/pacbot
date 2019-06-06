@@ -12,29 +12,21 @@
  * limitations under the License.
  */
 
- .post-login-header-wrapper {
+.post-login-header-wrapper {
     font-size: 1em;
     padding-top: 1em;
-    /* height: 4em; */
+    height: 4em;
     white-space: nowrap;
-    position: relative;
-    z-index: 14;
 }
 
 .header-left {
     padding-left: 2.805%;
-    flex: 1;
-    padding-bottom: 1em;
-    padding-right: 1em;
 }
 
 .header-right {
-    padding-right: 3%;
+    padding-right: 2.805%;
     z-index: 5;
-    padding-bottom: 1em;
-    flex: 1;
-    justify-content: flex-end;
-    margin-left: 1.5em;
+    ;
 }
 
 .header-right img {
@@ -66,7 +58,6 @@ nav .nav-icon:last-child {
 .burger-container {
     height: 2.5em;
     cursor: pointer;
-    display: inline-block;
     opacity: 0.99;
 }
 
@@ -74,23 +65,26 @@ nav .nav-icon:last-child {
     transform: rotateX(180deg);
 }
 
+.header-center {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 25%;
+    z-index: 0;
+}
+
 
 /* user options dropdown  */
 
 .header-user-image {
     position: relative;
-    flex: 1;
-}
-
-.burger-wrap {
-    flex: 1;
 }
 
 .user-options {
     position: absolute;
     right: 100%;
     top: 150%;
-    transform: translateX(29%);
+    transform: translateX(30%);
     transition: all 0.5s;
     opacity: 1;
 }
@@ -100,10 +94,11 @@ nav .nav-icon:last-child {
 }
 
 .username {
-    font-family: ex2-light;
-    font-size: 1.1em;
+    font-family: ex2-Thin;
+    font-size: 1em;
     color: #ffffff;
     padding: 0 5px 0 0;
+    text-transform: capitalize;
 }
 
 .pacman-menu {
@@ -117,7 +112,7 @@ nav .nav-icon:last-child {
     background-color: #424850;
     box-shadow: 4px 0 18px 0 #000000bd;
     min-width: 40em;
-    z-index: 31;
+    z-index: 5;
     transition: 0.3s ease;
     transform: translateX(-101%);
     padding: 4.8em 4em 3.4em;
@@ -153,7 +148,7 @@ nav .nav-icon:last-child {
 
 .menu-head {
     text-transform: uppercase;
-    font-family: ex2-bold;
+    font-weight: bold;
     padding-left: 0.83em;
 }
 
@@ -217,6 +212,10 @@ nav .nav-icon:last-child {
     opacity: 1;
 }
 
+.domain-dropdown-wrapper {
+    padding-right: 1.5em;
+}
+
 .pacman-version {
     position: absolute;
     top: 10px;
@@ -226,161 +225,4 @@ nav .nav-icon:last-child {
     font-family: ex2-light;
     font-size: 1em;
     color: #999999;
-}
-
-.header-top-section {
-    background: rgb(90, 97, 107);
-    padding: 0.6em 2.805%;
-    position: relative;
-    height: 50px;
-    z-index: 15;
-    box-shadow: 0 0px 4px 1px rgba(0,0,0,0.2);
-}
-
-.recently-viewed-wrap {
-    border: 1px solid #7a7a7a;
-    border-radius: 5px;
-    padding: .4em 1em .5em;
-    font-size: 1em;
-    user-select: none;
-    width: 17em;
-    align-self: stretch;
-    background: #f3f3f3;
-    margin-left: 1em;
-    color: #333;
-    visibility: hidden;
-    position: relative;
-    z-index: 30;
-    opacity: 0;
-    transition: 0.3s ease;
-}
-
-.show-recents.recently-viewed-wrap {
-    visibility: visible;
-    opacity: 1;
-}
-
-.recently-viewed-list {
-    bottom: -1px;
-    left: 0;
-    right: 0;
-    transform: translateY(100%);
-    background: #fff;
-    box-shadow: 0 2px 5px 0px rgba(0,0,0,0.2);
-    border-radius: 3px;
-    max-height: 0px;
-    overflow: hidden;
-    transition: 0.6s ease;
-    transition-delay: 0.1s;
-}
-
-.show-recents.recently-viewed-wrap .recently-viewed-list {
-    max-height: 100vh;
-}
-
-.each-recent {
-    padding: .66em 1em;
-    font-size: 1.15em;
-    border-bottom: 1px solid #ededed;
-    white-space: normal;
-    line-height: 1.3;
-    text-transform: capitalize;
-    cursor: pointer;
-}
-
-.view-more-list {
-    padding: 0.9em 1em;
-    font-size: 1em;
-    color: #fff;
-    background: #ed0274;
-    font-family: ex2-bold;
-    text-align: center;
-    border-radius: 2px;
-    cursor: pointer;
-}
-
-.each-recent:hover {
-    background: #f7f7f7;
-}
-
-.asset-group-selection {
-    transition: 0.2s ease;
-}
-
-.asset-group-selection:hover {
-    background: rgba(0, 0, 0, 0.1);
-}
-
-.asset-group-selection.active:hover, .asset-group-selection.active {
-    background: rgba(0, 0, 0, 0.2);
-}
-
-.overlay-bg {
-    position: fixed;
-    z-index: 14;
-    height: 100vh;
-    width: 100vw;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background: rgba(0, 0, 0, 0.3);
-}
-
-.nav-holder {
-    overflow-x: auto;
-    overflow-x: overlay;
-    overflow-y: hidden;
-    min-width: 15em;
-    position: relative;
-}
-
-.nav-holder::-webkit-scrollbar {
-    max-width: 7px;
-    background-color: transparent;
-    max-height: 7px;
-    transition: 0.28s ease;
-}
-
-.nav-holder::-webkit-scrollbar-button {
-    /* 2 */
-    background-color: transparent;
-    display: none;
-}
-
-.nav-holder::-webkit-scrollbar-track {
-    /* 3 */
-    background-color: transparent;
-}
-
-.nav-holder::-webkit-scrollbar-track-piece {
-    /* 4 */
-    background-color: transparent;
-}
-
-.nav-holder::-webkit-scrollbar-thumb {
-    /* 5 */
-    width: 7px;
-    background-color: #b0b0b0;
-    border-radius: 4px;
-}
-
-.nav-holder::-webkit-scrollbar-corner {
-    /* 6 */
-    display: none;
-    background-color: transparent;
-}
-
-.nav-holder::-webkit-resizer {
-    display: none;
-    background-color: transparent;
-}
-
-.profile {
-    border-radius: 33px;
-    transition: all .2s ease-in-out;
-}
-
-.user-profile-wrapper:hover > .profile {
-    transform: scale(1.2);
 }

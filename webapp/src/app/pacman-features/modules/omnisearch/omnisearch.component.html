@@ -13,9 +13,11 @@
  -->
 
  <div class="compliance-wrapper flex flex-between">
+  <app-canvas-side-panel *ngIf="tvState!=true && tvState!='true'" [moduleName]="'assets'" [rightPointing]='true' class="panel"></app-canvas-side-panel>
   <div class="main-panel flex flex-between" [class.tv-selected]="tvState==true || tvState=='true'">
     <div class="contextual-content-container">
       <router-outlet #route="outlet"></router-outlet>
     </div>
   </div>
+  <app-canvas-side-panel *ngIf="tvState!=true && tvState!='true'" [moduleName]="'tools'" [rightPointing]='false' [displayProperty]='false' class="panel"></app-canvas-side-panel>
 </div>

@@ -57,19 +57,18 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
     FirstName: string;
     userType;
     haveAdminPageAccess = false;
-    dynamicIconPath;
+
     public agAndDomain = {};
     private selectedDomainName;
     public burgerMenuModuleLinks;
     public footerData;
     public showMenu;
     public environment;
-    profilePictureSrc: any = '/assets/icons/profile-picture.svg';
+
 
     ngOnInit() {
         try {
             this.haveAdminPageAccess = this.permissions.checkAdminPermission();
-            this.dynamicIconPath = '../assets/icons/' + this.config.required.APP_NAME.toLowerCase() + '-white-text-logo.svg';
             this.userType = this.haveAdminPageAccess ? 'Admin' : '';
             this.FirstName = 'Guest';
             const detailsData = this.dataCacheService.getUserDetailsValue();
@@ -244,7 +243,7 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
 
 
     ngOnDestroy() {
-        if (this.assetGroupSubscription) {this.assetGroupSubscription.unsubscribe(); }
+        this.assetGroupSubscription.unsubscribe();
         if (this.subscriptionToDomainType) { this.subscriptionToDomainType.unsubscribe(); }
     }
 
