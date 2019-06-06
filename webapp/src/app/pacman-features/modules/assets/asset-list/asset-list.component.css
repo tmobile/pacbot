@@ -41,38 +41,6 @@
     color: rgb(85, 85, 85);
 }
 
-.issue-listing-wrapper /deep/ .data-table-wrap .table-cells:nth-child(1) {
-    /*width: 230px;*/
-}
-
-.issue-listing-wrapper /deep/ .data-table-wrap {
-    min-height: calc( 100vh - 24em );
-}
-
-.issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 32em )!important;
-}
-
-.issue-listing-wrapper /deep/ .data-table-inner-wrap {
-    max-height: calc(100vh - 35em)
-}
-
-.issue-listing-wrapper /deep/ .data-table-wrap.loading {
-    min-height: calc( 100vh - 24em );
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-wrap {
-    min-height: calc(100vh - 20em );
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-content {
-    min-height: calc( 100vh - 28em )!important;
-}
-
-.filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
-    max-height: calc(100vh - 31em)
-}
-
  /* css for edge browser */
 @supports (-ms-ime-align: auto) { 
     .floating-widgets-container {

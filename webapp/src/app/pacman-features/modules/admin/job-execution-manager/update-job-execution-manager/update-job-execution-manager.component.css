@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-.floating-widgets-section {
+ .floating-widgets-section {
     height: 100%;
     width: 100%;
 }
@@ -101,7 +101,7 @@ input.login {
 
 p.label {
     font-size: 11px;
-    font-weight: bold;
+    font-family: ex2-bold;
     color: #808080;
     display: block;
 }
@@ -698,7 +698,7 @@ li.list-inputs:hover {
 .header-text {
     padding-top: 7px;
     padding-bottom: 7px;
-    font-weight: bold;
+    font-family: ex2-bold;
 }
 
 .data-content {
@@ -721,7 +721,7 @@ li.list-inputs:hover {
     background-color: #e20074;
     color: #fff;
     display: inline-block;
-    font-weight: bold;
+    font-family: ex2-bold;
     padding: 0.6em 1.5em;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -781,7 +781,7 @@ li.list-inputs:hover {
 label {
     display: block;
     font-size: 12px;
-    font-weight: bold;
+    font-family: ex2-bold;
     color: #7b7b7b;
     margin-bottom: 7px;
 }
@@ -973,7 +973,7 @@ p.inputnote {
     line-height: 19px;
     display: block;
     font-size: 12px;
-    font-weight: bold;
+    font-family: ex2-bold;
     color: #232323;
 }
 
