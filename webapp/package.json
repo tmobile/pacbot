@@ -38,7 +38,7 @@
     "core-js": "^2.4.1",
     "d3": "^4.11.0",
     "font-awesome": "^4.7.0",
-    "html2canvas": "^1.0.0-alpha.8",
+    "html2canvas": "^1.0.0-alpha.12",
     "lodash": "^4.17.4",
     "moment": "^2.21.0",
     "ng2-datepicker": "~2.1.7",

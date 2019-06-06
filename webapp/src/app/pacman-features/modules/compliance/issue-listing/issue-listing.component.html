@@ -32,11 +32,11 @@
     <div class='floating-widgets-filter-wrapper' *ngIf='filters.length'>
         <app-filtered-selector (deleteAllFilters)="deleteFilters($event)" (deleteFilter)="deleteFilters($event)" [(filteredArray)]="filters"></app-filtered-selector>
     </div>
-    <div class="floating-widgets-container">
+    <div class="floating-widgets-container data-table-container">
         <section>
             <ul>
                 <li class="widget-wrapper relative">
-                    <div>
+                    <div class="table-wrapper">
                         <div class='relative'>
                             <app-data-table [(cbModel)]='cbModel' (cbClicked)='checkBoxClicked($event)' [checkBox]='adminAccess' [searchTextValues]='searchTxt' [showGenericMessage]='showGenericMessage' [errorValue]='errorValue' [parentName]="'policyDetailsTableMessage'" [showingArr]='showingArr' [outerArr]='outerArr' [searchableHeader]='true' [allColumns]='allColumns'
                             [dataHead]="'Policy Violations'" (selectedRow)='goToDetails($event)' [columnWhiteList]="['Issue ID', 'Policy Name', 'Resource ID', 'Status', 'Severity', 'Rule Category', 'Account Name', 'Account ID', 'AWS Region', 'Created On', 'Modified On', 'Target Type', 'Description', 'Application', 'Environment']"

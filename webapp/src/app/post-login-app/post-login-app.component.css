@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-.pacman-logged-in-section {
+ .pacman-logged-in-section {
     background-image: url('../../assets/images/bg/background.png');
     width: 100%;
     height: 100%;
@@ -25,14 +25,106 @@
 }
 
 .post-login-header {
-    height: 6.25em;
     font-size: 1em;
-}
-
-.post-login-footer {
-    height: 2.083em;
+    flex-shrink: 0;
 }
 
 .post-login-body {
-    height: calc(100vh - 8.33em);
+    height: 100%!important;
+    position: relative!important;
+    padding-bottom: 2.083em;
+    /* top: 75px; */
+}
+
+.opaque-layer{
+    position: fixed;
+    display: none;
+    z-index: 17;
+    margin: auto;
+    width: calc(100%);
+    height: calc(100%);
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+
+.top-layer-page {
+    position: fixed;
+    background-color: #FBFBFB;
+    z-index: 17;
+    margin: auto;
+    width: calc(100% - 5.5em);
+    height: calc(100% - 8em);
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+}
+
+.nextLevel-close {
+    position: fixed;
+    display: block;
+    z-index: 19;
+    top: 4.5em;
+    right: 3.5em;
+    pointer-events: none;
+    opacity: 0;
+    transition: .5s ease;
+    transform: scale(0);
+}
+
+.layer-delete-icon {
+    width: 3em;
+    height: 3em;
+    cursor: pointer;
+    -webkit-transition: 0.4s ease;
+    transition: 0.4s ease;
+}
+
+.layer-delete-icon:hover {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+
+.layer-delete-icon:not(focus) {
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
+@keyframes next-level-container-open {
+    0% { transform: translateY(100px) scale(1.02) }
+    100% { transform: translateY(0) scale(1) }
+}
+
+.next-level-routing-container.active .nextLevel-close {
+    opacity: 1;
+    pointer-events: all;
+    transform: scale(1);
+}
+
+.next-level-routing-container.active .opaque-layer {
+    display: block;
+}
+
+.next-level-routing-container.active .top-layer-page {
+    animation-name: next-level-container-open;
+    animation-duration: .5s;
+    animation-timing-function: ease-in-out;
+    display: block;
+}
+
+.next-level-routing-container.inactive .top-layer-page {
+    display: none;
+}
+
+@media print {
+    .post-login-header {
+        display: none;
+    }
+    .post-login-body {
+        padding-bottom: 0%
+    }
 }
