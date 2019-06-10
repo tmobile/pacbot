@@ -2542,5 +2542,28 @@ public class PacmanUtils {
         }
         return securityGrouplist;
     }
+    
+    /**
+     * Creates the S3 annotation.
+     *
+     * @param ruleParam the rule param
+     * @param description the description
+     * @return the annotation
+     */
+    public static Annotation createS3Annotation(Map<String, String> ruleParam, String description) {
+		String severity = ruleParam.get(PacmanRuleConstants.SEVERITY);
+        String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
+		Annotation annotation = Annotation.buildAnnotation(ruleParam, Annotation.Type.ISSUE);
+		annotation.put(PacmanSdkConstants.DESCRIPTION, description);
+		annotation.put(PacmanRuleConstants.SEVERITY, severity);
+		annotation.put(PacmanRuleConstants.CATEGORY, category);
+		List<LinkedHashMap<String, Object>> issueList = new ArrayList<>();
+		LinkedHashMap<String, Object> issue = new LinkedHashMap<>();
+		issue.put(PacmanRuleConstants.VIOLATION_REASON, description);
+		issueList.add(issue);
+		annotation.put(PacmanRuleConstants.ISSUE_DETAILS, issueList.toString());
+		logger.debug("S3HostsWebsiteRule ended with an annotation : {} =========", annotation);
+		return annotation;
+	}
 
 }
