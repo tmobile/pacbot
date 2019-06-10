@@ -363,7 +363,6 @@ public class ConfigPropertyServiceImplTest {
 		configPropertyRequest.setConfigProperties(configPropertyItemList);
 
 		assertTrue(configPropertyService.isAllPropertiesExisting(configPropertyRequest) == false);
-
 	}
 
 	@Test
