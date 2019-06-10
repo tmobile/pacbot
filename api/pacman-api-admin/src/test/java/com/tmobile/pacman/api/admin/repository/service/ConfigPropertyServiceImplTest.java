@@ -383,7 +383,6 @@ public class ConfigPropertyServiceImplTest {
 		relList.add(rel);
 		
 		when(configRelationRepository.findAll()).thenReturn(relList );
-
 		assertTrue(configPropertyService.isAllApplicationsExisting(configPropertyRequest) == true);
 
 	}
