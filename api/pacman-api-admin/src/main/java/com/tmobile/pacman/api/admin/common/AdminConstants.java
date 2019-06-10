@@ -102,5 +102,9 @@ public final class AdminConstants {
     
 	public static final String ES_EXCEPTION_INDEX					= 	"/exceptions";
 	public static final String INIT_ES_CREATE_INDEX					= 	"INIT_ES_CREATE_INDEX";
+	
+	public static final String ERROR_CONFIG_MANDATORY				=	"Config key, Config value and application are mandatory";
+    public static final String LATEST								=	"latest";
+    public static final String CONFIG_ROLLBACK_MSG					=	"Rollback to an older timestamp through API invocation";
 }
 
