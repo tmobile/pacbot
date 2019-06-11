@@ -16,7 +16,6 @@
 package com.tmobile.pacman.api.compliance.repository;
 
 import java.io.IOException;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
