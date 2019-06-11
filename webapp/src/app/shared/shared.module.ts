@@ -59,7 +59,7 @@ import { StatsOverlayComponent } from '../post-login-app/stats-overlay/stats-ove
 import { DoughnutChartComponent } from './doughnut-chart/doughnut-chart.component';
 import { GenericSummaryComponent } from './generic-summary/generic-summary.component';
 import { FilterInfoComponent } from './filter-info/filter-info.component';
-
+import { InputModalComponent } from './input-modal/input-modal.component';
 import { MulitidoughnutbandComponent } from './mulitidoughnutband/mulitidoughnutband.component';
 import { ToastNotificationComponent } from './toast-notification/toast-notification.component';
 import { HelpTextComponent } from './help-text/help-text.component';
@@ -85,7 +85,7 @@ import { ConfirmationBoxComponent } from './confirmation-box/confirmation-box.co
 import { FormService } from './services/form.service';
 import { LoaderMsgComponent } from './loader-msg/loader-msg.component';
 import { GenericModalComponent } from './generic-modal/generic-modal.component';
-
+import { ConfigHistoryDropdownComponent } from './config-history-dropdown/config-history-dropdown.component';
 @NgModule({
     imports: [
         CommonModule,
@@ -147,7 +147,9 @@ import { GenericModalComponent } from './generic-modal/generic-modal.component';
         FormsComponent,
         ConfirmationBoxComponent,
         LoaderMsgComponent,
-        GenericModalComponent
+        GenericModalComponent,
+        ConfigHistoryDropdownComponent,
+        InputModalComponent
     ],
     exports: [CommonModule,
         FormsModule,
@@ -199,8 +201,9 @@ import { GenericModalComponent } from './generic-modal/generic-modal.component';
         FormsComponent,
         ConfirmationBoxComponent,
         LoaderMsgComponent,
-        GenericModalComponent
-
+        GenericModalComponent,
+        ConfigHistoryDropdownComponent,
+        InputModalComponent
     ],
     providers: [HttpService, UtilsService, RefactorFieldsService, OrderByPipe, SearchFilterPipe, MainRoutingAnimationEventService, AuthGuardService, RouterUtilityService, LoggerService, ErrorHandlingService, FilterManagementService, CommonResponseService, CopytoClipboardService, FormService]
 })

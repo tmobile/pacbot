@@ -67,6 +67,7 @@ import { AccountManagementDetailsComponent } from '../../pacman-features/modules
 import { PluginManagementComponent } from '../../pacman-features/modules/admin/plugin-management/plugin-management.component';
 import { PluginManagementDetailsComponent } from '../../pacman-features/modules/admin/plugin-management-details/plugin-management-details.component';
 import { SystemManagementComponent } from '../../pacman-features/modules/admin/system-management/system-management.component';
+import { ConfigManagementComponent } from '../../pacman-features/modules/admin/config-management/config-management.component';
 
 export const COMPLIANCE_ROUTES = [
     {
@@ -505,6 +506,15 @@ export const ADMIN_ROUTES = [
             roles: ['ROLE_ADMIN']
         }
     }*/
+    {
+        path: 'config-management',
+        component: ConfigManagementComponent,
+        data: {
+            title: 'Configuration Management',
+            roles: ['ROLE_ADMIN'],
+            pageLevel: 0
+        }
+    },
     {
         path: 'system-management',
         component: SystemManagementComponent,
