@@ -804,8 +804,23 @@ CREATE TABLE IF NOT EXISTS pac_config_properties
    modifiedDate varchar(50)
 );
 /* ALter statement for existing installations */
-alter table pac_config_properties modify column cfkey varchar(250),modify column application varchar(50), modify column profile varchar(15), modify  column label varchar(10);
-alter table pac_config_properties add constraint unique_key UNIQUE (application,cfkey,profile,label);
+ALTER TABLE pac_config_properties MODIFY COLUMN cfkey varchar(250), MODIFY COLUMN application varchar(50), MODIFY COLUMN profile varchar(15), MODIFY COLUMN label varchar(10);
+
+
+-- This procedure create unique_key contraint if not exists
+DELIMITER $$
+DROP PROCEDURE IF EXISTS create_unique_key_if_not_exists $$
+CREATE PROCEDURE create_unique_key_if_not_exists()
+BEGIN
+ IF((SELECT COUNT(1) AS index_exists FROM information_schema.statistics WHERE TABLE_SCHEMA = DATABASE() and table_name='pac_config_properties' AND index_name='unique_key') < 1) THEN
+   SET @query = 'ALTER TABLE pac_config_properties ADD CONSTRAINT unique_key UNIQUE (application,cfkey,profile,label)';
+   PREPARE stmt FROM @query;
+   EXECUTE stmt;
+ END IF;
+END $$
+DELIMITER ;
+CALL create_unique_key_if_not_exists();
+
 
 CREATE TABLE IF NOT EXISTS pacman_field_override
 (

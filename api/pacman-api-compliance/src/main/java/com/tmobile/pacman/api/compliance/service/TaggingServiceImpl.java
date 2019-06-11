@@ -430,31 +430,38 @@ public class TaggingServiceImpl implements TaggingService, Constants {
      * @throws ServiceException the service exception
      */
     private List<Map<String, Object>> getUnTaggedListData(List<Map<String, Object>> unTagsList,String assetGroup,List<String> mandatoryTagsList, Map<String, Long> tagMap) throws ServiceException{
-        Long docCount;
+        Long unTagged;
+        Long tagged= 0l;
         for (String mandatoryTag : mandatoryTagsList) {
             Map<String, Object> data = new HashMap<>();
             Long totalAssets = getTotalAssets(tagMap);
             try {
-                docCount = repository.getUntaggedIssues(assetGroup, mandatoryTag);
+            	unTagged = repository.getUntaggedIssues(assetGroup, mandatoryTag);
             } catch (DataException e) {
                 throw new ServiceException(e);
             }
+            
+            if (unTagged > totalAssets) {
+            	unTagged = totalAssets;
+            }
+            
+            tagged = totalAssets - unTagged;
             data.put("name", mandatoryTag);
-            data.put("untagged", docCount);
-            data.put("tagged", (totalAssets - docCount));
+            data.put("untagged", unTagged);
+            data.put("tagged", tagged);
 
-            if (totalAssets < docCount) {
-                totalAssets = docCount;
+            if (totalAssets < unTagged) {
+                totalAssets = unTagged;
             }
 
-            if (docCount == 0 && totalAssets == 0) {
+            if (unTagged == 0 && totalAssets == 0) {
                 data.put(COMP_PERCENTAGE, INT_HUNDRED);
             }
 
             if (totalAssets > 0) {
                 data.put(
                         COMP_PERCENTAGE,
-                        Math.floor(((totalAssets - Double.parseDouble(String.valueOf(docCount))) / totalAssets)
+                        Math.floor(((totalAssets - Double.parseDouble(String.valueOf(unTagged))) / totalAssets)
                                 * INT_HUNDRED));
             }
             unTagsList.add(data);
