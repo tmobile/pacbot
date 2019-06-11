@@ -359,7 +359,7 @@ public class PacmanUtilsTest {
         
         
         when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
-        assertThat(pacmanUtils.getEBSVolumeWithCheckId("123","prd","123","123","123"),is(nullValue()));
+        assertThat(pacmanUtils.getEBSVolumeWithCheckId("123","prd","123","123","123"),is(notNullValue()));
     }
     
     @SuppressWarnings("static-access")
