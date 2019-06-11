@@ -817,6 +817,34 @@ export const environment = {
     systemJobStatus: {
         url: '{{baseUrl}}/admin/system/status',
         method: 'GET'
+    },
+    getConfigProperties : {
+        url: '{{baseUrl}}/admin/config-properties',
+        method: 'GET'
+    },
+    updateConfigProperties: {
+        url: '{{baseUrl}}/admin/config-properties',
+        method: 'PUT'
+    },
+    createConfigProperties: {
+        url: '{{baseUrl}}/admin/config-properties',
+        method: 'POST'
+    },
+    getConfigkeys: {
+        url: '{{baseUrl}}/admin/config-properties/keys',
+        method: 'GET'
+    },
+    deleteConfigKey: {
+        url: '{{baseUrl}}/admin/config-properties',
+        method: 'DELETE'
+    },
+    auditTrailConfigProperties: {
+        url: '{{baseUrl}}/admin/config-properties/audittrail',
+        method: 'GET'
+    },
+    rollbackConfigProperties: {
+        url: '{{baseUrl}}/admin/config-properties/rollback',
+        method: 'PUT'
     }
 
 };

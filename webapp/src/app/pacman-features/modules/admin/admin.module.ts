@@ -49,6 +49,7 @@ import { AccountManagementDetailsComponent } from './account-management-details/
 import { PluginManagementDetailsComponent } from './plugin-management-details/plugin-management-details.component';
 import { PluginManagementComponent } from './plugin-management/plugin-management.component';
 import { SystemManagementComponent } from './system-management/system-management.component';
+import { ConfigManagementComponent } from './config-management/config-management.component';
 
 @NgModule({
   imports: [
@@ -85,7 +86,8 @@ import { SystemManagementComponent } from './system-management/system-management
     AccountManagementDetailsComponent,
     PluginManagementDetailsComponent,
     PluginManagementComponent,
-    SystemManagementComponent
+    SystemManagementComponent,
+    ConfigManagementComponent
   ]
 })
 export class AdminModule { }

@@ -1,0 +1,31 @@
+<app-overlay (click)='cancel();'></app-overlay>
+<div class="fixed modal">
+  <div class='flex flex-col content-wrapper'>
+    <div class='flex flex-between'>
+        <div class="conf-text bold">Add New Field</div>
+        <img class="delete-icon" (click)='cancel();' src='../assets/png/delete.png'>
+    </div>  
+    <div class='flex flex-col flex-center flex-align-center form-wrapper' *ngIf="errorValue  == 1">
+      <form>
+      <div class='flex flex-col each-field'>
+        <label class="input-label">Select Field: </label>
+        <div class='input-box select-input dropdown-wrapper'>
+            <app-searchable-dropdown *ngIf='dropdownArray.length' [firstDD]='true'  (selection)='selected($event)' [placeholder]="'Select field type'" [items]='dropdownArray'></app-searchable-dropdown>
+        </div>
+        
+      </div>
+      <div class='flex flex-col each-field'> 
+        <label class="input-label">Field Input: </label>
+        <input name='input' class='input-box' placeholder="Enter field value" [(ngModel)]="value">
+      </div>
+      <div class="flex flex-col flex-center buttons-wrap">
+        <app-button [disabled]='!key || !value' class="app-button" (click)='save();'>SAVE</app-button>
+        <app-button [type]="'secondary'" class="app-button" (click)='cancel();'>CANCEL</app-button>
+      </div>
+    </form>
+    </div>
+  </div>
+  <div class="error-msg-block center" *ngIf="errorValue == -1">
+      <app-error-message [selectedValue]="errorMessage"></app-error-message>
+  </div>
+</div>
