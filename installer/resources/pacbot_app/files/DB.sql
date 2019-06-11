@@ -1636,16 +1636,16 @@ INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pa
 INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.common.email.notifications.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','Description PlaceHolder');
 INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.policy.url.path','Description PlaceHolder');
 
-INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('autofix.whitelist.accounts.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','Description PlaceHolder');
-INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.mail.subject.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','Description PlaceHolder');
-INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.warning.mail.subject.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','Description PlaceHolder');
-INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.rule.violation.message.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','Description PlaceHolder');
-INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.rule.warning.message.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','Description PlaceHolder');
-INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.rule.post.fix.message.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','Description PlaceHolder');
-INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.waittime.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','Description PlaceHolder');
-INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.max.email.notifications.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','Description PlaceHolder');
-INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.mail.template.columns.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','Description PlaceHolder');
-INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.common.email.notifications.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','Description PlaceHolder');
+INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('autofix.whitelist.accounts.PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb','Description PlaceHolder');
+INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.mail.subject.PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb','Description PlaceHolder');
+INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.warning.mail.subject.PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb','Description PlaceHolder');
+INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.rule.violation.message.PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb','Description PlaceHolder');
+INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.rule.warning.message.PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb','Description PlaceHolder');
+INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.rule.post.fix.message.PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb','Description PlaceHolder');
+INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.autofix.waittime.PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb','Description PlaceHolder');
+INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.max.email.notifications.PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb','Description PlaceHolder');
+INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.mail.template.columns.PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb','Description PlaceHolder');
+INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('pacman.auto.fix.common.email.notifications.PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb','Description PlaceHolder');
 
 
 INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('autofix.whitelist.accounts.PacMan_RedShiftPublicAccess_version-1_RedShiftPublicAccess_redshift','Description PlaceHolder');
@@ -1877,7 +1877,7 @@ INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `pr
 INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.autofix.waittime.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','48','rule','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.max.email.notifications.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','4','rule','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.mail.template.columns.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','Resource Id,Account Id,Region,Attached Sg,Detached Sg','rule','prd','latest',NULL,NULL,NULL,NULL);
-INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.common.email.notifications.PacMan_EC2WithPublicIPAccess_version-1_Ec2WithPublicAccess_ec2','commonTemplate','rule','prd','latest',NULL,NULL,NULL,NULL);
+INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('pacman.auto.fix.common.email.notifications.PacMan_ElbWithPublicAccess_version-1_ApplicationElbWithPublicAccess_appelb','commonTemplate','rule','prd','latest',NULL,NULL,NULL,NULL);
 
 
 INSERT IGNORE INTO `pac_config_properties` (`cfkey`, `value`, `application`, `profile`, `label`, `createdBy`, `createdDate`, `modifiedBy`, `modifiedDate`) values('autofix.whitelist.accounts.PacMan_ElbWithPublicAccess_version-1_ClassicElbWithPublicAccess_classicelb','','rule','prd','latest',NULL,NULL,NULL,NULL);
