@@ -78,7 +78,7 @@ public class NextStepManager {
      * @return the next step
      */
     @SuppressWarnings("unchecked")
-    public AutoFixAction getNextStep(String ruleId , String resourceId,  Map<String, Object> clientMap, AWSService serviceType) {
+    public AutoFixAction getNextStep(String ruleId , String normalizedResourceId,String resourceId,  Map<String, Object> clientMap, AWSService serviceType) {
 
         try {
             
@@ -88,7 +88,7 @@ public class NextStepManager {
             }
             // if the resource was ever exempted we will send mail to CSR and
             // Exception Owner
-            if (isServiceTaggable(serviceType) && null != wasResourceEverExempted(resourceId, clientMap, serviceType)) {
+            if (isServiceTaggable(serviceType) && null != wasResourceEverExempted(normalizedResourceId, clientMap, serviceType)) {
                 return AutoFixAction.AUTOFIX_ACTION_EMAIL_REMIND_EXCEPTION_EXPIRY;
             }
             String url = CommonUtils.getPropValue(PacmanSdkConstants.RESOURCE_GET_LASTACTION);
