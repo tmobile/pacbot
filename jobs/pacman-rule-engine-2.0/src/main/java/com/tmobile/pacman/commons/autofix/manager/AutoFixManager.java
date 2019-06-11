@@ -221,7 +221,7 @@ public class AutoFixManager {
 
             // find resource owner
             resourceOwner = ownerService.findResourceOwnerByIdAndType(resourceId, serviceType);
-            autoFixAction = nextStepManager.getNextStep(ruleParam.get(PacmanSdkConstants.RULE_ID),resourceId, clientMap, serviceType);
+            autoFixAction = nextStepManager.getNextStep(ruleParam.get(PacmanSdkConstants.RULE_ID),normalizeResourceId(resourceId, serviceType,annotation),resourceId, clientMap, serviceType);
             if(AutoFixAction.UNABLE_TO_DETERMINE==autoFixAction){
                 autoFixTrans.add(new AutoFixTransaction(AutoFixAction.UNABLE_TO_DETERMINE, resourceId,ruleId,
                         executionId, transactionId, "unable to determine the next set of action , not processing for this pass",type,annotation.get("targetType"),annotationId,annotation.get(PacmanSdkConstants.ACCOUNT_ID),annotation.get(PacmanSdkConstants.REGION)));
@@ -242,7 +242,7 @@ public class AutoFixManager {
 
                     if (AutoFixAction.AUTOFIX_ACTION_FIX == autoFixAction) {
                         Map<String, String> pacTag = createPacTag(exceptionExpiryDate);
-                        taggingManager.tagResource(resourceId, clientMap, serviceType, pacTag);
+                        taggingManager.tagResource(normalizeResourceId(resourceId, serviceType,annotation), clientMap, serviceType, pacTag);
                         autoFixTrans.add(new AutoFixTransaction(AutoFixAction.AUTOFIX_ACTION_TAG, resourceId,ruleId,
                                 executionId, transactionId, "resource tagged",type,annotation.get("targetType"),annotationId,annotation.get(PacmanSdkConstants.ACCOUNT_ID),annotation.get(PacmanSdkConstants.REGION)));
                         resourcesTaggedCounter++;
@@ -708,4 +708,24 @@ public class AutoFixManager {
 
 
 }
+    
+	/**
+	 * return the right id needed for operation
+	 * 
+	 * @param resourceId
+	 * @param serviceType
+	 * @param annotation
+	 * @return
+	 */
+	private String normalizeResourceId(String resourceId,AWSService serviceType, Map<String, String> annotation) {
+
+		switch (serviceType) {
+
+		case ELB_APP:
+			return annotation
+					.get(PacmanSdkConstants.APP_ELB_ARN_ATTRIBUTE_NAME);
+		default:
+			return resourceId;
+		}
+	}
 }
