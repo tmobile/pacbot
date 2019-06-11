@@ -178,8 +178,8 @@ public class ElbPublicAccessRule extends BaseRule {
 				}
 			
 				if (!openPortsMap.isEmpty()) {
-					annotation.put(PacmanRuleConstants.SCHEME,scheme);
 					annotation = PacmanUtils.setAnnotation(openPortsMap, ruleParam,subnet,description, issue);
+					annotation.put(PacmanRuleConstants.SCHEME,scheme);
 					if (null != annotation) {
 						if("appelb".equals(targetType)){
 							annotation.put(PacmanRuleConstants.TYPE_OF_ELB,elbType);
