@@ -336,4 +336,7 @@ public class PacmanRuleConstants {
 	public static final String ES_ELB_WITH_SECURITYGROUP_URL = "esElbWithSGUrl";
 	public static final String SUBNETS_LIST = "subnets";
 	public static final String INTERNET_FACING = "internet-facing";
+	public static final String WEB_SITE_CONFIGURATION = "websiteConfiguration";
+	public static final String ELB_TYPE = "type";
+	public static final String TYPE_OF_ELB = "elbType";
 }

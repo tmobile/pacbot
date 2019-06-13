@@ -48,7 +48,7 @@
     text-transform: capitalize;
 }
 
-.issue-listing-wrapper /deep/ .data-table-wrap {
+/* .issue-listing-wrapper /deep/ .data-table-wrap {
     min-height: calc( 100vh - 24em);
 }
 
@@ -74,7 +74,7 @@
 
 .filter-absent.issue-listing-wrapper /deep/ .data-table-inner-wrap {
     max-height: calc(100vh - 31em)
-}
+} */
 
 .details-bar[_ngcontent-c14] {
     width: 50em !important;

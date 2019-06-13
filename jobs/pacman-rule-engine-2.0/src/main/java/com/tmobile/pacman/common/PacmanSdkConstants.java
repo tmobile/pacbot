@@ -593,5 +593,11 @@ public interface PacmanSdkConstants extends com.tmobile.pacman.commons.PacmanSdk
     
     /** The pacbot autofix resourceowner fallback mail. */
     String PACBOT_AUTOFIX_RESOURCE_OWNER_FALLBACK_MAIL = "pacbot.autofix.resourceowner.fallbak.email";
+    
+    /** The policy url path. */
+    String POLICY_URL_PATH = "pacman.autofix.policy.url.path";
+    
+    /** The app elb arn attribute name. */
+    String APP_ELB_ARN_ATTRIBUTE_NAME="resourceDisplayId";
 
 }

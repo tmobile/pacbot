@@ -93,18 +93,14 @@ public class MailUtils {
     /**
      * Send auto fix notification.
      *
-     * @param ruleParam
-     *            the rule param
-     * @param resourceOwner
-     *            the resource owner
-     * @param targetType
-     *            the target type
-     * @param resourceid
-     *            the resourceid
-     * @param expiringTime
-     *            the expiring time
-     * @param autofixActionEmail
-     *            the autofix action email
+     * @param ruleParam            the rule param
+     * @param resourceOwner            the resource owner
+     * @param targetType            the target type
+     * @param resourceid            the resourceid
+     * @param expiringTime            the expiring time
+     * @param autofixActionEmail            the autofix action email
+     * @param addDetailsToLogTrans the add details to log trans
+     * @param annotation the annotation
      * @return true, if successful
      */
     public static boolean sendAutoFixNotification(Map<String, String> ruleParam, final ResourceOwner resourceOwner,
@@ -193,12 +189,13 @@ public class MailUtils {
 
     
     /**
-     * 
-     * @param mailBody
-     * @param ruleParam
-     * @param resourceOwner
-     * @param targetType
-     * @return
+     * Send common fix notification.
+     *
+     * @param silentautoFixTrans the silentauto fix trans
+     * @param ruleParam the rule param
+     * @param resourceOwner the resource owner
+     * @param targetType the target type
+     * @return true, if successful
      */
      public static boolean sendCommonFixNotification(List<AutoFixTransaction> silentautoFixTrans, Map<String, String> ruleParam,
              ResourceOwner resourceOwner, String targetType) {
@@ -229,10 +226,12 @@ public class MailUtils {
      }
      
      /**
-      * 
-      * @param silentautoFixTrans
-      * @param ruleParam
-      * @return
+      * Formate common fix body.
+      *
+      * @param silentautoFixTrans the silentauto fix trans
+      * @param ruleParam the rule param
+      * @param resourceOwner the resource owner
+      * @return the string
       */
       public static String formateCommonFixBody(List<AutoFixTransaction> silentautoFixTrans,Map<String, String> ruleParam,ResourceOwner resourceOwner) {
           TemplateEngine templateEngine = new TemplateEngine();
@@ -248,8 +247,7 @@ public class MailUtils {
   
           context.setVariable("columns", columnsList);
           context.setVariable("resources", silentautoFixTrans);
-          String policyUrl = CommonUtils.getPropValue(PacmanSdkConstants.POLICY_URL_PREFIX_KEY
-                  + ruleParam.get(PacmanSdkConstants.RULE_ID));
+          String policyUrl = getPolicyKnowledgeBasePathURL(ruleParam);
           String name =CommonUtils.getPropValue(PacmanSdkConstants.SEND_EMAIL_SILENT_FIX_ADMIN
                   + ruleParam.get(PacmanSdkConstants.RULE_ID));
           
@@ -273,6 +271,20 @@ public class MailUtils {
           }
           return writer.toString();
           
+      }
+      
+      /**
+       * Gets the policy knowledge base path URL.
+       *
+       * @param ruleParam the rule param
+       * @return the policy knowledge base path URL
+       */
+      private static String getPolicyKnowledgeBasePathURL(Map<String,String> ruleParam){
+    	  String policyUrl = CommonUtils.getPropValue(PacmanSdkConstants.POLICY_URL_PATH);
+          Map<String, String> policyUrlMap = new HashMap<>();
+          policyUrlMap.put("RULE_ID", ruleParam.get(PacmanSdkConstants.RULE_ID));
+          policyUrl = StrSubstitutor.replace(policyUrl, policyUrlMap);
+          return policyUrl;
       }
 
 }
