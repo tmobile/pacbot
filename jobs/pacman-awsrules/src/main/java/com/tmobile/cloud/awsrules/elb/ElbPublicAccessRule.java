@@ -111,6 +111,7 @@ public class ElbPublicAccessRule extends BaseRule {
 		String cidrIpv6 = ruleParam.get(PacmanRuleConstants.CIDRIPV6);
 		String targetType = resourceAttributes.get(PacmanRuleConstants.ENTITY_TYPE);
 		String description = targetType+" Elb has publicly accessible ports";
+		String elbType = resourceAttributes.get(PacmanRuleConstants.ELB_TYPE);
 
 		String pacmanHost = PacmanUtils.getPacmanHost(PacmanRuleConstants.ES_URI);
 		logger.debug("========pacmanHost {}  =========", pacmanHost);
@@ -178,8 +179,10 @@ public class ElbPublicAccessRule extends BaseRule {
 			
 				if (!openPortsMap.isEmpty()) {
 					annotation = PacmanUtils.setAnnotation(openPortsMap, ruleParam,subnet,description, issue);
+					annotation.put(PacmanRuleConstants.SCHEME,scheme);
 					if (null != annotation) {
 						if("appelb".equals(targetType)){
+							annotation.put(PacmanRuleConstants.TYPE_OF_ELB,elbType);
 							annotation.put(PacmanRuleConstants.RESOURCE_DISPLAY_ID, resourceAttributes.get("loadbalancerarn"));
 						}
 						return new RuleResult(PacmanSdkConstants.STATUS_FAILURE,PacmanRuleConstants.FAILURE_MESSAGE, annotation);

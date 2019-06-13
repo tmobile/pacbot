@@ -1,6 +1,6 @@
 from core.terraform.resources.aws.aws_lambda import LambdaFunctionResource, LambdaPermission
 from core.terraform.resources.aws.cloudwatch import CloudWatchEventRuleResource, CloudWatchEventTargetResource
-from resources.datastore.es import ESDomain
+from resources.datastore.es import ESDomainPolicy
 from resources.datastore.db import MySQLDatabase
 from resources.iam.lambda_role import LambdaRole
 from resources.iam.base_role import BaseRole
@@ -22,7 +22,7 @@ class SubmitJobLambdaFunction(LambdaFunctionResource):
     environment = {
         'variables': {
             'JOB_QUEUE': BatchJobsQueue.get_input_attr('name'),
-            'JOB_DEFINITION': SubmitAndRuleEngineJobDefinition.get_input_attr('name'),
+            'JOB_DEFINITION': SubmitAndRuleEngineJobDefinition.get_output_attr('arn'),
             'CONFIG_URL': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,inventory/prd/latest",
             'CONFIG_CREDENTIALS': "dXNlcjpwYWNtYW4=",
             'CONFIG_SERVICE_URL': ApplicationLoadBalancer.get_http_url() + "/api/config/rule/prd/latest"
@@ -51,7 +51,7 @@ class DataShipperEventRule(CloudWatchEventRuleResource):
     name = "aws-redshift-es-data-shipper"
     schedule_expression = "cron(0 * * * ? *)"
 
-    DEPENDS_ON = [SubmitJobLambdaFunction]
+    DEPENDS_ON = [SubmitJobLambdaFunction, ESDomainPolicy]
 
 
 class DataShipperEventRuleLambdaPermission(LambdaPermission):
@@ -80,15 +80,6 @@ class DataCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
             {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile.cso.pacman"},
             {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
             {'encrypt': False, 'key': "accountinfo", 'value': AwsAccount.get_output_attr('account_id')},
-            # {'encrypt': False, 'key': "base-account", 'value': AwsAccount.get_output_attr('account_id')},
-            # {'encrypt': False, 'key': "discovery-role", 'value': BaseRole.get_output_attr('name')},
-            # {'encrypt': False, 'key': "s3", 'value': BucketStorage.get_output_attr('bucket')},
-            # {'encrypt': False, 'key': "s3-data", 'value': "inventory"},  # TODO: need to be changed with s3obj class
-            # {'encrypt': False, 'key': "s3-processed", 'value': "backup"},
-            # {'encrypt': False, 'key': "s3-role", 'value': BaseRole.get_output_attr('name')},
-            # {'encrypt': False, 'key': "s3-region", 'value': AwsRegion.get_output_attr('name')},
-            # {'encrypt': False, 'key': "file-path", 'value': "/home/ec2-user/data"},
-            # {'encrypt': False, 'key': "base-region", 'value': AwsRegion.get_output_attr('name')}
         ]
     })
 
@@ -103,10 +94,6 @@ class DataShipperCloudWatchEventTarget(CloudWatchEventTargetResource):
         'jobType': "jar",
         'jobDesc': "Ship aws data periodically from redshfit to ES",
         'environmentVariables': [
-            # {'name': "ES_HOST", 'value': ESDomain.get_output_attr('endpoint')},
-            # {'name': "RDS_DB_URL", 'value': MySQLDatabase.get_rds_db_url()},
-            # {'name': "ES_PORT", 'value': "80"},
-            # {'name': "STAT_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('statistics')},
             {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,data-shipper/prd/latest"},
             {'name': "ASSET_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('asset')},
             {'name': "CMPL_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('compliance')},
