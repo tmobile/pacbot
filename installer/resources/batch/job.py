@@ -25,7 +25,7 @@ class SubmitAndRuleEngineJobDefinition(BatchJobDefinitionResource):
             "Ref::entryPoint"
         ],
         'image': RuleEngineEcrRepository.get_output_attr('repository_url'),
-        'memory': 5000,
+        'memory': 3072,
         'vcpus': 1,
         'environment': [
             {'name': "ES_HOST", 'value': ESDomain.get_http_url_with_port()},
