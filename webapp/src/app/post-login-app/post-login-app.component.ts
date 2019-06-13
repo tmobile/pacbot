@@ -13,7 +13,7 @@
  */
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { mainRouterTransition } from './common/animations/animations';
+import { moduleTransition } from './common/animations/animations';
 import {
   ActivatedRoute,
   Router
@@ -33,9 +33,7 @@ declare var Offline: any;
   selector: 'app-post-login-app',
   templateUrl: './post-login-app.component.html',
   styleUrls: ['./post-login-app.component.css'],
-  animations: [mainRouterTransition],
-  providers: [
-  ]
+  animations: [moduleTransition()]
 })
 export class PostLoginAppComponent implements OnInit, OnDestroy {
   navigationDetails: any;

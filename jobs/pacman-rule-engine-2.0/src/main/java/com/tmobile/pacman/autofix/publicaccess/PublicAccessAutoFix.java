@@ -43,10 +43,12 @@ import com.amazonaws.services.ec2.model.RouteTable;
 import com.amazonaws.services.ec2.model.SecurityGroup;
 import com.amazonaws.services.ec2.model.UserIdGroupPair;
 import com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancing;
+import com.amazonaws.services.elasticloadbalancing.model.ApplySecurityGroupsToLoadBalancerRequest;
 import com.amazonaws.services.elasticloadbalancing.model.LoadBalancerDescription;
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeLoadBalancersRequest;
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeLoadBalancersResult;
 import com.amazonaws.services.elasticloadbalancingv2.model.LoadBalancer;
+import com.amazonaws.services.elasticloadbalancingv2.model.SetSecurityGroupsRequest;
 import com.amazonaws.services.rds.AmazonRDS;
 import com.amazonaws.services.rds.model.DBInstance;
 import com.amazonaws.services.rds.model.DescribeDBInstancesRequest;
@@ -390,5 +392,128 @@ public class PublicAccessAutoFix {
 		return decorated.apply(1);
 	
     }
+    
+    /**
+     * Gets the sg list for app elb resource.
+     *
+     * @param clientMap the client map
+     * @param resourceId the resource id
+     * @return the sg list for app elb resource
+     * @throws Exception the exception
+     */
+    public static List<String> getSgListForAppElbResource(Map<String,Object> clientMap,String resourceId) throws Exception {
+        com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancing amazonApplicationElasticLoadBalancing = (com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancing) clientMap.get("client");
+        DescribeLoadBalancersRequest describeLoadBalancersRequest = new DescribeLoadBalancersRequest();
+        describeLoadBalancersRequest.setLoadBalancerArns(Arrays.asList(resourceId));
+        DescribeLoadBalancersResult balancersResult = amazonApplicationElasticLoadBalancing.describeLoadBalancers(describeLoadBalancersRequest);
+        List<LoadBalancer> balancers = balancersResult.getLoadBalancers();
+        return balancers.get(0).getSecurityGroups();
+    }
+    
+    /**
+     * Gets the sg list for classic elb resource.
+     *
+     * @param clientMap the client map
+     * @param resourceId the resource id
+     * @return the sg list for classic elb resource
+     * @throws Exception the exception
+     */
+    public static List<String> getSgListForClassicElbResource(Map<String,Object> clientMap,String resourceId) throws Exception {
+        AmazonElasticLoadBalancing amazonApplicationElasticLoadBalancing = (AmazonElasticLoadBalancing) clientMap.get("client");
+        com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancersRequest describeLoadBalancersRequest = new com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancersRequest();
+        describeLoadBalancersRequest.setLoadBalancerNames(Arrays.asList(resourceId));
+        com.amazonaws.services.elasticloadbalancing.model.DescribeLoadBalancersResult balancersResult = amazonApplicationElasticLoadBalancing.describeLoadBalancers(describeLoadBalancersRequest);
+        List<LoadBalancerDescription> balancers = balancersResult.getLoadBalancerDescriptions();
+        return balancers.get(0).getSecurityGroups();
+    }
+    
+    /**
+	 * Apply security groups to classic ELB.
+	 *
+	 * @param amazonClassicElasticLoadBalancing the amazon classic elastic load balancing
+	 * @param sgIdToBeAttached the sg id to be attached
+	 * @param resourceId the resource id
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
+	public static boolean applySecurityGroupsToClassicELB(AmazonElasticLoadBalancing amazonClassicElasticLoadBalancing, List<String> sgIdToBeAttached, String resourceId) throws Exception {
+		boolean applysgFlg = false;
+		try {
+			ApplySecurityGroupsToLoadBalancerRequest groupsRequest = new ApplySecurityGroupsToLoadBalancerRequest();
+			groupsRequest.setSecurityGroups(sgIdToBeAttached);
+			groupsRequest.setLoadBalancerName(resourceId);
+			amazonClassicElasticLoadBalancing.applySecurityGroupsToLoadBalancer(groupsRequest);
+			applysgFlg = true;
+		} catch (Exception e) {
+			logger.error("Apply Security Group operation failed for classic ELB {}",resourceId);
+			return applysgFlg;
+		}
+		return applysgFlg;
+	}
 
+	/**
+	 * Apply security groups to app ELB.
+	 *
+	 * @param amazonApplicationElasticLoadBalancing the amazon application elastic load balancing
+	 * @param sgIdToBeAttached the sg id to be attached
+	 * @param resourceId the resource id
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
+	public static boolean applySecurityGroupsToAppELB(com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancing amazonApplicationElasticLoadBalancing,Set<String> sgIdToBeAttached, String resourceId) throws Exception {
+		boolean applysgFlg = false;
+		try {
+			SetSecurityGroupsRequest groupsRequest = new SetSecurityGroupsRequest();
+			groupsRequest.setSecurityGroups(sgIdToBeAttached);
+			groupsRequest.setLoadBalancerArn(resourceId);
+			amazonApplicationElasticLoadBalancing.setSecurityGroups(groupsRequest);
+			applysgFlg = true;
+		} catch (Exception e) {
+			logger.error("Apply Security Group operation failed for app ELB {}", resourceId);
+			throw new Exception(e);
+		}
+		return applysgFlg;
+	}
+	
+	 /**
+     * Gets the cluster for redhift resource.
+     *
+     * @param clientMap the client map
+     * @param resourceId the resource id
+     * @return the cluster for redhift resource
+     * @throws Exception the exception
+     */
+    public static List<Cluster> getClusterForRedhiftResource(Map<String,Object> clientMap,String resourceId) throws Exception {
+    	AmazonRedshift amazonRedshift = (AmazonRedshift) clientMap.get("client");
+		DescribeClustersRequest describeClustersRequest = new DescribeClustersRequest();
+		describeClustersRequest.setClusterIdentifier(resourceId);
+		DescribeClustersResult clustersResult = amazonRedshift.describeClusters(describeClustersRequest);
+		
+		return clustersResult.getClusters();
+    }
+
+    
+    /**
+     * Apply security groups to redshift.
+     *
+     * @param amazonRedshift the amazon redshift
+     * @param sgIdToBeAttached the sg id to be attached
+     * @param resourceId the resource id
+     * @return true, if successful
+     * @throws Exception the exception
+     */
+    public static boolean applySecurityGroupsToRedshift(AmazonRedshift amazonRedshift, Set<String> sgIdToBeAttached, String resourceId) throws Exception {
+         boolean applysgFlg = false;
+         try {
+         	ModifyClusterRequest clusterRequest = new ModifyClusterRequest();
+         	clusterRequest.setClusterIdentifier(resourceId);
+         	clusterRequest.setVpcSecurityGroupIds(sgIdToBeAttached);
+         	amazonRedshift.modifyCluster(clusterRequest);
+             applysgFlg = true;
+         } catch (Exception e) {
+             logger.error("Apply Security Group operation failed for redshift {}" ,resourceId );
+          throw new Exception(e);
+         }
+         return applysgFlg;
+     }
 }
