@@ -1,0 +1,122 @@
+.content-wrapper {
+    width: 100%;
+    height: 100%;
+}
+
+.delete-icon {
+    height: 2em;
+    width: 2em;
+    transition: 0.4s ease;
+    cursor: pointer;
+    right: 1em;
+    top: 1em;
+}
+
+.delete-icon:hover {
+    transform: rotate(-90deg);
+}
+
+.modal {
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    width: 45vw;
+    height: 50vh;
+    padding: 2em;
+    max-width: 50em;
+    max-height: 40em;
+    background: #fff;
+    z-index: 30;
+    border-radius: 4px;
+    box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.2);
+    margin: auto;
+}
+
+.conf-text {
+    font-size: 1.2em;
+    text-align: center;
+    line-height: 1.5;
+}
+
+.bold {
+    font-family: ex2-bold;
+}
+
+.conf-text.bold {
+    font-size: 1.3em;
+}
+
+.app-button {
+    padding: 0.66em 0;
+}
+
+.buttons-wrap {
+    padding-top: 1.5em;
+    align-items: center;
+}
+
+.input-label {
+    display: inline-block;
+    margin-bottom: 5px;
+    color: #333333;
+}
+
+.input-box{
+    height: 3em;
+    padding: auto;
+    width: 100%;
+    border-radius: 3px;
+    background-color: #ffffff;
+    border: solid 1px #c3cbd7;
+    position: relative;
+    transition: 0.3s ease;
+    padding: 0 0.66em 0 0.6em;
+    cursor: pointer;
+    line-height: 2.8em;
+    font-size: 1em;
+}
+
+.form-wrapper {
+    padding: 1em;
+    width: 100%;
+    height: 100%;
+    padding-top: 3em;
+}
+
+.each-field {
+    padding: 1em 0;
+}
+
+.filter-arrow {
+    width: 0;
+    height: 0;
+    border-left: 0.3em solid transparent;
+    border-right: 0.3em solid transparent;
+    border-top: 0.4em solid #e20074;
+    margin-left: 0.4em;
+    cursor: pointer;
+    pointer-events: none;
+    top: 0.75em;
+    right: 0.5em;
+}
+
+.form-wrapper form {
+    width: 100%;
+}
+
+/deep/ .searchable-dropdown-wrapper {
+    z-index: 20;
+}
+
+/deep/ .filter-arrow {
+    top: 50% !important;
+}
+
+.select-input {
+    padding-left: 0;
+}
+
+/deep/ .dropdown-wrapper .ngx-dropdown-container button {
+    border: none !important;
+}

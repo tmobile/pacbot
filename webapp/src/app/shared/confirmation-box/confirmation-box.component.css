@@ -12,17 +12,19 @@
 }
 
 .confirmation-box {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
     top: 0;
     right: 0;
     left: 0;
     bottom: 0;
     width: 45vw;
-    height: 45vh;
+    height: fit-content;
     padding: 3em;
     max-width: 50em;
-    max-height: 40em;
     background: #fff;
-    z-index: 13;
+    z-index: 30;
     border-radius: 4px;
     box-shadow: 0px 0px 4px 1px rgba(0,0,0,0.2);
     margin: auto;
