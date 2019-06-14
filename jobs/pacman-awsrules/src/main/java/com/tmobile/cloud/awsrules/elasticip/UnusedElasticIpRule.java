@@ -36,7 +36,6 @@ import com.tmobile.cloud.awsrules.utils.PacmanUtils;
 import com.tmobile.cloud.constants.PacmanRuleConstants;
 import com.tmobile.pacman.commons.PacmanSdkConstants;
 import com.tmobile.pacman.commons.exception.InvalidInputException;
-import com.tmobile.pacman.commons.exception.RuleExecutionFailedExeption;
 import com.tmobile.pacman.commons.rule.Annotation;
 import com.tmobile.pacman.commons.rule.BaseRule;
 import com.tmobile.pacman.commons.rule.PacmanRule;
@@ -55,14 +54,8 @@ public class UnusedElasticIpRule extends BaseRule {
 	 ************** Following are the Rule Parameters********* <br><br>
 	 * 
 	 * ruleKey : check-for-unused-elastic-ip <br><br>
-	 *
-	 * esElasticIpUrl : Enter the classic elb with instance es api <br><br>
-	 *
-	 * threadsafe : if true , rule will be executed on multiple threads <br><br>
-	 *
-	 * severity : Enter the value of severity <br><br>
 	 * 
-	 * ruleCategory : Enter the value of category <br><br>
+	 * threadsafe   : if true , rule will be executed on multiple threads <br><br>
 	 *
 	 * @param resourceAttributes this is a resource in context which needs to be scanned this is provided by execution engine
 	 *
@@ -72,16 +65,10 @@ public class UnusedElasticIpRule extends BaseRule {
 
 		logger.debug("========UnusedElasticIpRule started=========");
 		Annotation annotation = null;
-		String elasticIp = null;
-		String region = null;
+		String associationId = null;
 		String severity = ruleParam.get(PacmanRuleConstants.SEVERITY);
 		String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
-		String elasticIpEsUrl = null;
 		
-		String formattedUrl = PacmanUtils.formatUrl(ruleParam,PacmanRuleConstants.ES_ELASTIC_IP_URL);
-        if(!StringUtils.isNullOrEmpty(formattedUrl)){
-            elasticIpEsUrl =  formattedUrl;
-        }
 		
 		MDC.put("executionId", ruleParam.get("executionId")); // this is the logback Mapped Diagnostic Contex
 		MDC.put("ruleId", ruleParam.get(PacmanSdkConstants.RULE_ID)); // this is the logback Mapped Diagnostic Contex
@@ -89,28 +76,21 @@ public class UnusedElasticIpRule extends BaseRule {
 		List<LinkedHashMap<String,Object>>issueList = new ArrayList<>();
 		LinkedHashMap<String,Object>issue = new LinkedHashMap<>();
 		
-		if (!PacmanUtils.doesAllHaveValue(severity,category,elasticIpEsUrl)) {
+		if (!PacmanUtils.doesAllHaveValue(severity,category)) {
 			logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
 			throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
 		}
 
 		if (resourceAttributes != null) {
-			elasticIp = StringUtils.trim(resourceAttributes.get(PacmanSdkConstants.RESOURCE_ID));
-			region = StringUtils.trim(resourceAttributes.get(PacmanRuleConstants.REGION_ATTR));
-			boolean isElasticIpWithEc2Exists = false;
-			try {
-				isElasticIpWithEc2Exists = PacmanUtils.checkResourceIdFromElasticSearch(elasticIp,elasticIpEsUrl, PacmanSdkConstants.RESOURCE_ID,region);
-			} catch (Exception e) {
-				logger.error("unable to determine",e);
-				throw new RuleExecutionFailedExeption("unable to determine"+e);
-			}
-			if (!isElasticIpWithEc2Exists) {
+			associationId = StringUtils.trim(resourceAttributes.get(PacmanRuleConstants.ASSOCIATION_ID));
+           
+			if (StringUtils.isNullOrEmpty(associationId)) {
 				annotation = Annotation.buildAnnotation(ruleParam,Annotation.Type.ISSUE);
 				annotation.put(PacmanSdkConstants.DESCRIPTION,"Unused Elastic Ip found!!");
 				annotation.put(PacmanRuleConstants.SEVERITY, severity);
 				annotation.put(PacmanRuleConstants.SUBTYPE, Annotation.Type.RECOMMENDATION.toString());
 				annotation.put(PacmanRuleConstants.CATEGORY, category);
-				
+				annotation.put(PacmanRuleConstants.ALLOCATION_ID, resourceAttributes.get(PacmanRuleConstants.ALLOCATION_ID));
 				issue.put(PacmanRuleConstants.VIOLATION_REASON, "ElasticIp doesn't associated to an EC2 instance!!");
 				issueList.add(issue);
 				annotation.put("issueDetails",issueList.toString());
@@ -125,4 +105,5 @@ public class UnusedElasticIpRule extends BaseRule {
 	public String getHelpText() {
 		return "This rule checks unused elastic ip which are not associated with any instance";
 	}
+	
 }

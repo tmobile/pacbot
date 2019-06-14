@@ -339,4 +339,7 @@ public class PacmanRuleConstants {
 	public static final String WEB_SITE_CONFIGURATION = "websiteConfiguration";
 	public static final String ELB_TYPE = "type";
 	public static final String TYPE_OF_ELB = "elbType";
+	public static final String ES_REDSHIFT_SG_URL = "esRedshiftSgURL";
+	public static final String ALLOCATION_ID = "allocationid";
+	public static final String ASSOCIATION_ID = "associationid";
 }
