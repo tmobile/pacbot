@@ -46,7 +46,6 @@ import com.tmobile.pacman.commons.rule.Annotation;
 import com.tmobile.pacman.commons.rule.BaseRule;
 import com.tmobile.pacman.commons.rule.PacmanRule;
 import com.tmobile.pacman.commons.rule.RuleResult;
-import com.tmobile.pacman.executor.RuleExecutor;
 
 @PacmanRule(key = "check-for-redshift-public-access", desc = "checks redshift server has public access", severity = PacmanSdkConstants.SEV_HIGH, category = PacmanSdkConstants.SECURITY)
 public class RedShiftPublicAccessRule extends BaseRule {
@@ -200,10 +199,6 @@ public class RedShiftPublicAccessRule extends BaseRule {
 
 	public String getHelpText() {
 		return "This rule checks redshift cluster has public access";
-	}
-	
-	public static void main(String[] args) {
-		new RuleExecutor().main(args);
 	}
 
 }
