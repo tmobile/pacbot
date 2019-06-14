@@ -118,8 +118,7 @@ public class MailUtils {
             } else {
                 toRecipients.add(CommonUtils.getPropValue(PacmanSdkConstants.ORPHAN_RESOURCE_OWNER_EMAIL));
             }
-            String policyUrl = CommonUtils.getPropValue(PacmanSdkConstants.POLICY_URL_PREFIX_KEY
-                    + ruleParam.get(PacmanSdkConstants.RULE_ID));
+            String policyUrl = getPolicyKnowledgeBasePathURL(ruleParam);
             String violationMessage = CommonUtils.getPropValue(PacmanSdkConstants.EMAIL_VIOLATION_MESSAGE_PREFIX
                     + ruleParam.get(PacmanSdkConstants.RULE_ID));
             String postFixMessage = CommonUtils.getPropValue(PacmanSdkConstants.EMAIL_FIX_MESSAGE_PREFIX
