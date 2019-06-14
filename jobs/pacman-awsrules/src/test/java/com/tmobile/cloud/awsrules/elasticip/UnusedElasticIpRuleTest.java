@@ -45,20 +45,14 @@ public class UnusedElasticIpRuleTest {
     @Test
     public void executeTest() throws Exception {
         mockStatic(PacmanUtils.class);
-        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString())).thenReturn(
+        when(PacmanUtils.doesAllHaveValue(anyString(),anyString())).thenReturn(
                 true);
         when(PacmanUtils.formatUrl(anyObject(),anyString())).thenReturn("host");
-        when(PacmanUtils.checkResourceIdFromElasticSearch(anyString(),anyString(),anyString(),anyString())).thenReturn(false);
         assertThat(unusedElasticIpRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
         
-        when(PacmanUtils.checkResourceIdFromElasticSearch(anyString(),anyString(),anyString(),anyString())).thenReturn(true);
-        assertThat(unusedElasticIpRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
+        assertThat(unusedElasticIpRule.execute(CommonTestUtils.getAnotherMapString("r_123 "),CommonTestUtils.getAnotherMapString("r_123 ")), is(notNullValue()));
         
-        when(PacmanUtils.checkResourceIdFromElasticSearch(anyString(),anyString(),anyString(),anyString())).thenThrow(new Exception());
-        assertThatThrownBy( 
-                () -> unusedElasticIpRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 "))).isInstanceOf(RuleExecutionFailedExeption.class);
-        
-        when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString())).thenReturn(
+        when(PacmanUtils.doesAllHaveValue(anyString(),anyString())).thenReturn(
                 false);
         assertThatThrownBy(
                 () -> unusedElasticIpRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 "))).isInstanceOf(InvalidInputException.class);

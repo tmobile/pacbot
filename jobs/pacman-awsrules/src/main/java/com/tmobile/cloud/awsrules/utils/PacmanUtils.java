@@ -2565,5 +2565,46 @@ public class PacmanUtils {
 		logger.debug("S3HostsWebsiteRule ended with an annotation : {} =========", annotation);
 		return annotation;
 	}
+    
+    /**
+     * Gets the security groups by resource id.
+     *
+     * @param resourceId the resourceId
+     * @param esUrl the es url
+     * @param resourceField the resource field
+     * @param sgField the sgField
+     * @param sgStatusField the sgStatusField
+     * @return the security groups by resource id
+     * @throws Exception the exception
+     */
+    public static List<GroupIdentifier> getSecurityGroupsByResourceId(String resourceId, String esUrl,String resourceField,String sgField,String sgStatusField) throws Exception {
+        List<GroupIdentifier> list = new ArrayList<>();
+        JsonParser jsonParser = new JsonParser();
+        Map<String, Object> mustFilter = new HashMap<>();
+        Map<String, Object> mustNotFilter = new HashMap<>();
+        HashMultimap<String, Object> shouldFilter = HashMultimap.create();
+        Map<String, Object> mustTermsFilter = new HashMap<>();
+        mustFilter.put(convertAttributetoKeyword(resourceField), resourceId);
+        JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(esUrl, mustFilter,
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,null);
+        if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
+            JsonObject hitsJson = (JsonObject) jsonParser.parse(resultJson.get(PacmanRuleConstants.HITS).toString());
+            JsonArray hitsArray = hitsJson.getAsJsonArray(PacmanRuleConstants.HITS);
+            for (int i = 0; i < hitsArray.size(); i++) {
+                JsonObject source = hitsArray.get(i).getAsJsonObject().get(PacmanRuleConstants.SOURCE)
+                        .getAsJsonObject();
+                String securitygroupid = source.get(sgField).getAsString();
+                String vpcSecuritygroupStatus = source.get(sgStatusField).getAsString();
+                if("active".equals(vpcSecuritygroupStatus)){
+                GroupIdentifier groupIdentifier = new GroupIdentifier();
+                if (!com.amazonaws.util.StringUtils.isNullOrEmpty(securitygroupid)) {
+                    groupIdentifier.setGroupId(securitygroupid);
+                    list.add(groupIdentifier);
+                }
+            }
+            }
+        }
+        return list;
+    }
 
 }
