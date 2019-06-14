@@ -36,6 +36,9 @@ export class FormsComponent implements OnInit, ControlValueAccessor  {
   @Input() parentForm;
 
   @Input() _value  = '';
+
+  // metadata for the field
+  @Input() metadata;
   onChange: any = () => { };
   onTouched: any = () => { };
 
@@ -52,21 +55,21 @@ export class FormsComponent implements OnInit, ControlValueAccessor  {
   set value(val) {
     this._value = val;
     this.onChange(val);
-    this.onTouched();
+    this.onTouched(val);
   }
 
-  writeValue(value: any): void {
+  writeValue(value): void {
     if (value) {
       this.value = value;
     }
   }
-  registerOnChange(fn: any): void {
+  registerOnChange(fn): void {
     this.onChange = fn;
   }
-  registerOnTouched(fn: any): void {
+  registerOnTouched(fn) {
     this.onTouched = fn;
   }
-  setDisabledState?(isDisabled: boolean): void {
+  setDisabledState?(isDisabled): void {
     throw new Error('Method not implemented.');
   }
 }
