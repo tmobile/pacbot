@@ -201,7 +201,7 @@ public class PublicAccessAutoFix {
 
 				for (Ipv6Range ip6RangeValue : ipPermission.getIpv6Ranges()) {
 
-					if (ip6RangeValue.getCidrIpv6().equals(cidrIpv6)) {
+					if (ip6RangeValue.getCidrIpv6()!=null && ip6RangeValue.getCidrIpv6().equals(cidrIpv6)) {
 						if((portToCheck > 0 && ipPermission.getFromPort().equals(portToCheck)) || portToCheck.equals(0)){
 							publiclyAccessible.add("Yes");
 							for (UserIdGroupPair usergroupPair : ipPermission.getUserIdGroupPairs()) {
@@ -223,7 +223,7 @@ public class PublicAccessAutoFix {
 					ipPermission.setIpv4Ranges(updatedIpranges);
 					for (Ipv6Range ip6RangeValue : ipPermission.getIpv6Ranges()) {
 
-						if (ip6RangeValue.getCidrIpv6().equals(cidrIpv6)) {
+						if (ip6RangeValue.getCidrIpv6()!=null && ip6RangeValue.getCidrIpv6().equals(cidrIpv6)) {
 							List<Ipv6Range> clearIpv6ranges = new ArrayList<>();
 							ipPermission.setIpv6Ranges(clearIpv6ranges);
 						}
