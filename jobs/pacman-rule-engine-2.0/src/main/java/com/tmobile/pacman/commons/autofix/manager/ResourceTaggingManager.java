@@ -339,6 +339,9 @@ public class ResourceTaggingManager {
         case ELB_CLASSIC: {
             return "";
         }
+        case REDSHIFT: {
+            return "";
+        }
 
         default:
             throw new OperationNotPermittedException("this resource tagging is not imlemented yet");
