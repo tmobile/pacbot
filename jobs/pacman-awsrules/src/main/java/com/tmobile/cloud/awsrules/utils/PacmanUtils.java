@@ -2606,5 +2606,52 @@ public class PacmanUtils {
         }
         return list;
     }
+    
+    /**
+     * Gets the environment variable.
+     *
+     * @param envVar the env var
+     * @return the environment variable
+     */
+    public static String getEnvironmentVariable(String envVar){
+    	return System.getenv(envVar);
+    }
+    
+    /**
+     * Gets the header.
+     *
+     * @param base64Creds the base 64 creds
+     * @return the header
+     */
+    public static Map<String,String> getHeader(String base64Creds){
+        Map<String,String> authToken = new HashMap<>();
+        authToken.put("Content-Type", ContentType.APPLICATION_JSON.toString());
+        authToken.put("Authorization", "Basic "+base64Creds);
+        return authToken;
+    }
+    
+    /**
+     * Method for getting the configurations via PACMAN API
+     *  
+     *
+     * @param url the url
+     * @param headers the headers
+     * @return configurations JsonObject
+     */
+	public static JsonObject getConfigurationsFromConfigApi(String url,Map<String,String> headers) {
+		String resultStringPost = null;
+		Gson gson = new Gson();
+		try {
+			resultStringPost = doHttpGet(url,headers);
+			if (!StringUtils.isEmpty(resultStringPost)) {
+				return gson.fromJson(resultStringPost, JsonObject.class);
+			}
+
+		} catch (Exception e) {
+			logger.error("Exceptions occured in getConfigurationsFromConfigApi========",e);
+			return null;
+		}
+		return null;
+	}
 
 }
