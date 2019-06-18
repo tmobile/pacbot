@@ -271,4 +271,24 @@ public interface PacmanSdkConstants {
 
 	/** The correct app tag key. */
 	String CORRECT_APP_TAG_KEY= "correct_application_tag";
+	
+	/** The config credentials. */
+    String CONFIG_CREDENTIALS = "CONFIG_CREDENTIALS";
+    
+    /** The config service url. */
+    String CONFIG_SERVICE_URL = "CONFIG_SERVICE_URL";
+    
+    /** The missing configuration. */
+    String MISSING_CONFIGURATION = "Missing value in the env configuration";
+    
+    /** The missing db configuration. */
+    String MISSING_DB_CONFIGURATION = "Missing db configurations";
+    
+    /** The name. */
+    String NAME = "name";
+    
+    /** The source. */
+    String SOURCE = "source";
+    
+    String TAGGING_MANDATORY_TAGS = "tagging.mandatoryTags";
 }
