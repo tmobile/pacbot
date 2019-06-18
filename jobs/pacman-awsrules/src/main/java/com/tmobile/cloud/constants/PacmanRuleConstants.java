@@ -342,4 +342,6 @@ public class PacmanRuleConstants {
 	public static final String ES_REDSHIFT_SG_URL = "esRedshiftSgURL";
 	public static final String ALLOCATION_ID = "allocationid";
 	public static final String ASSOCIATION_ID = "associationid";
+	public static final String SECURITY_GROUPS = "securitygroups";
+	public static final String ES_RDSDB_SG_URL = "esRdsDbSgUrl";
 }
