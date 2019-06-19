@@ -198,7 +198,7 @@ public class PacmanUtils {
         List<String> keyList = new ArrayList<>();
         Set<String> mandatoryTagSetFinal = new HashSet<>();
         for (Map.Entry<String, String> entry : attributes.entrySet()) {
-            keyList.add(entry.getKey());
+            keyList.add(entry.getKey().trim());
         }
 
         Set<String> mandatoryTagSet = new TreeSet<>(String.CASE_INSENSITIVE_ORDER);
@@ -2045,7 +2045,7 @@ public class PacmanUtils {
         annotation.put(PacmanRuleConstants.SUBTYPE, Annotation.Type.RECOMMENDATION.toString());
         annotation.put(PacmanRuleConstants.CATEGORY, category);
 
-        issue.put(PacmanRuleConstants.VIOLATION_REASON, elbType + " ELB doesn't attached to an ec2 instance!!");
+        issue.put(PacmanRuleConstants.VIOLATION_REASON, description);
         issueList.add(issue);
         annotation.put(PacmanRuleConstants.ISSUE_DETAILS, issueList.toString());
         logger.debug("========Unused ElbRule ended with annotation {} :=========", annotation);

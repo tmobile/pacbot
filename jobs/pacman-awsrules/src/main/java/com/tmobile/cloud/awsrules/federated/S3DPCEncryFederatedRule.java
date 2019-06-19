@@ -57,7 +57,8 @@ public class S3DPCEncryFederatedRule extends BaseRule {
 	 *
 	 *            apiGWURL : API gateway URL <br><br>
 	 *
-	 *            ruleKey : check-for-s3-global-write-access <br><br>
+	 *            ruleKey : check-for-s3-DPC-Encrypted-ACL <br><br>
+	 *            
 	 *            severity : Enter the value of severity <br><br>
 	 *
 	 *            ruleCategory : Enter the value of category <br><br>
@@ -72,12 +73,12 @@ public class S3DPCEncryFederatedRule extends BaseRule {
 	public static final String NOT_ENCRYPTED = "notEncrypted";
     public static final String INVALID_DPC_VALUES = "Invalid_DPC_Value";
 	public RuleResult execute(Map<String, String> ruleParam, Map<String, String> resourceAttributes) {
-		logger.debug("========S3GlobalWriteAccessRule started=========");
+		logger.debug("========S3DPCEncryFederatedRule started=========");
 		String s3BucketName = ruleParam.get(PacmanSdkConstants.RESOURCE_ID);
 		String apiKeyName = ruleParam.get(PacmanRuleConstants.API_KEY_NAME);
 		String apiKeyValue = ruleParam.get(PacmanRuleConstants.API_KEY_VALUE);
 		String apiGWURL = ruleParam.get(PacmanRuleConstants.APIGW_URL);
-		String DPCvalue = resourceAttributes.get("dpcvalue");
+		String valueOfDpc = resourceAttributes.get("dpcvalue");
 		String bucketEncryption = resourceAttributes.get("bucketencryp");
 		String description = "S3 bucket has DPC key";
 		String severity = ruleParam.get(PacmanRuleConstants.SEVERITY);
@@ -98,15 +99,15 @@ public class S3DPCEncryFederatedRule extends BaseRule {
         if(!StringUtils.isEmpty(formattedUrl)){
             checkEsUrl =  formattedUrl;
         }
-        if (!PacmanUtils.doesAllHaveValue(apiGWURL, apiKeyValue, apiKeyName, severity, category, checkEsUrl)) {
+        if (!PacmanUtils.doesAllHaveValue(apiGWURL, apiKeyValue, apiKeyName, severity, category, checkEsUrl,checkId)) {
 			logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
 			throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
 		}
 		if (!resourceAttributes.isEmpty()) {
 			try {
 				//Check for S3 bucket DPC exists or not
-				if (DPCvalue != null && (DPCvalue.equalsIgnoreCase("Confidential")
-						|| DPCvalue.equalsIgnoreCase("Internal") || DPCvalue.equalsIgnoreCase("Public"))) {
+				if (valueOfDpc != null && (("Confidential").equalsIgnoreCase(valueOfDpc)
+						|| ("Internal").equalsIgnoreCase(valueOfDpc) || ("Public").equalsIgnoreCase(valueOfDpc))) {
 					//Checking Bucket is encrypted or not
 					if(bucketEncryption != null) {
 						//Checking S3 bucket is public
@@ -146,7 +147,7 @@ public class S3DPCEncryFederatedRule extends BaseRule {
 			}
 		}
 
-		logger.debug("========S3GlobalWriteAccessRule ended=========");
+		logger.debug("========S3DPCEncryFederatedRule ended=========");
 		return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);
 
 	}
