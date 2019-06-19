@@ -32,6 +32,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
 
 import com.google.common.base.Joiner;
+import com.tmobile.cloud.awsrules.utils.ConfigUtils;
 import com.tmobile.cloud.awsrules.utils.PacmanUtils;
 import com.tmobile.cloud.constants.PacmanRuleConstants;
 import com.tmobile.pacman.commons.PacmanSdkConstants;
@@ -70,7 +71,7 @@ public class TaggingRule extends BaseRule {
 
 		logger.debug("========TaggingRule started=========");
 		Set<String> missingTags = new HashSet<>();
-		String mandatoryTags = ruleParam.get(PacmanSdkConstants.MANDATORY_TAGS_KEY);
+		String mandatoryTags = ConfigUtils.getPropValue(PacmanSdkConstants.TAGGING_MANDATORY_TAGS);
 		String tagsSplitter = ruleParam.get(PacmanSdkConstants.SPLITTER_CHAR);
 		String entityId = ruleParam.get(PacmanSdkConstants.RESOURCE_ID);
 
@@ -116,5 +117,4 @@ public class TaggingRule extends BaseRule {
 	public String getHelpText() {
 		return "This rule checks for the missing tags of services";
 	}
-	
 }
