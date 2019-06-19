@@ -51,10 +51,14 @@ public class CheckPowerUserGroupIsMFAEnabled extends BaseRule{
 	 ************** Following are the Rule Parameters********* <br>
 	 * 			<br>
 	 *
-	 *            ruleKey : check-for-inactive-iam-users <br>
+	 *            ruleKey : check-PowerUserGroup-is-mfa-enabled <br>
 	 * 			<br>
 	 *
 	 *            powerUserGroupName : specify the name of the group to be
+	 *            checked <br>
+	 * 			<br>
+	 * 
+	 *			 powerUserPolicyInput : specify the name of the user to be
 	 *            checked <br>
 	 * 			<br>
 	 *
@@ -78,7 +82,10 @@ public class CheckPowerUserGroupIsMFAEnabled extends BaseRule{
         LinkedHashMap<String, Object> accessLevels = new LinkedHashMap<>();
         String powerUserGroupName = ruleParam.get("powerUserGroupName");
 		String powerUserPolicyInput = ruleParam.get("powerUserPolicyInput");
-		if (!PacmanUtils.doesAllHaveValue(powerUserGroupName, severity, category)) {
+		List<LinkedHashMap<String,Object>>issueList = new ArrayList<>();
+		LinkedHashMap<String,Object>issue = new LinkedHashMap<>();
+		
+		if (!PacmanUtils.doesAllHaveValue(powerUserGroupName, powerUserPolicyInput,severity, category)) {
 			logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
 			throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
 		}
@@ -92,6 +99,10 @@ public class CheckPowerUserGroupIsMFAEnabled extends BaseRule{
 				annotation.put(PacmanSdkConstants.DESCRIPTION,"Power User Group Is MFA Not Enabled!!");
 				annotation.put(PacmanRuleConstants.SEVERITY, severity);
 				annotation.put(PacmanRuleConstants.CATEGORY, category);
+				issue.put(PacmanRuleConstants.VIOLATION_REASON,	"Power User Group Is MFA Not Enabled!!");
+				issue.put(PacmanRuleConstants.SOURCE_VERIFIED, String.join(",", sourcesverified));
+				issueList.add(issue);
+				annotation.put("issueDetails", issueList.toString());
 				return new RuleResult(PacmanSdkConstants.STATUS_FAILURE, PacmanRuleConstants.FAILURE_MESSAGE,annotation);
 			}
 		}

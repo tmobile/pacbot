@@ -90,7 +90,7 @@ public class ACMCertificateExpiryRule extends BaseRule{
 			logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
 			throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
 		}
-		if (resourceAttributes != null && expiredDate != null) {
+		if (expiredDate != null) {
 			try {
 				validTo = dateFormat.parse(expiredDate);
 			} catch (ParseException e) {
@@ -131,19 +131,19 @@ public class ACMCertificateExpiryRule extends BaseRule{
 
 	private boolean calculateSslExpiredDuration(Date expiryDateFormat, int targetExpiryDurationInt) {
 		boolean isFlag = false;
-		logger.debug("targetExpiryDurationInt" + targetExpiryDurationInt);
+		logger.debug("targetExpiryDurationInt {}", targetExpiryDurationInt);
 		if(expiryDateFormat!=null){
 			DateTime expiryDate = new DateTime(expiryDateFormat);
-			logger.debug("expiryDate" + expiryDate);
+			logger.debug("expiryDate {}", expiryDate);
 			DateTime currentDate = new DateTime();
-			logger.debug("currentDate" + currentDate);
+			logger.debug("currentDate {}", currentDate);
 			int day = Days.daysBetween(currentDate, expiryDate).getDays();
-			logger.debug("day" + day);
+			logger.debug("day {}", day);
 			if (Days.daysBetween(currentDate, expiryDate).getDays() <= targetExpiryDurationInt) {
 				isFlag = true;
 			}
 		}
-		logger.debug("isFlag" + isFlag);
+		logger.debug("isFlag {}" , isFlag);
 		 return isFlag;
 	}
 

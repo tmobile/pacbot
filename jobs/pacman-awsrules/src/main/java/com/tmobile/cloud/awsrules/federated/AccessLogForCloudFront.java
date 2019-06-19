@@ -72,11 +72,10 @@ public class AccessLogForCloudFront extends BaseRule {
 		Annotation annotation = null;
 		List<LinkedHashMap<String,Object>>issueList = new ArrayList<>();
 		LinkedHashMap<String,Object>issue = new LinkedHashMap<>();
-		if (resourceAttributes != null) {
-			if (loggingTags == null || loggingTags.equalsIgnoreCase("true")) {
+			if (loggingTags == null || "true".equalsIgnoreCase(loggingTags)) {
 				if (accessLogBucketName != null && accessLogBucketName.equalsIgnoreCase(ruleParamBucketKey)
-						&& accessLogEnabled.equalsIgnoreCase("true")) {
-					logger.info("Access log for Cloud front is available in bucket " + accessLogBucketName);
+						&& "true".equalsIgnoreCase(accessLogEnabled)) {
+					logger.info("Access log for Cloud front is available in bucket {}", accessLogBucketName);
 					return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);
 				} else {
 					annotation = Annotation.buildAnnotation(ruleParam,Annotation.Type.ISSUE);
@@ -90,10 +89,7 @@ public class AccessLogForCloudFront extends BaseRule {
 					annotation.put("issueDetails",issueList.toString());
 					return new RuleResult(PacmanSdkConstants.STATUS_FAILURE,PacmanRuleConstants.FAILURE_MESSAGE,annotation);
 				}
-			} else {
-				return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);
-			}
-		}
+			} 
 		return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS,PacmanRuleConstants.SUCCESS_MESSAGE);
 	}
 
