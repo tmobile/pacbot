@@ -91,7 +91,7 @@ public class IAMCertificateExpiryRule extends BaseRule{
 			logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
 			throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
 		}
-		if (resourceAttributes != null && expiredDate != null) {
+		if (expiredDate != null) {
 			try {
 				validTo = dateFormat.parse(expiredDate);
 			} catch (ParseException e) {
@@ -122,14 +122,12 @@ public class IAMCertificateExpiryRule extends BaseRule{
 	}
 
 	/**
-	 * This method calculates the difference between the current date and the
-	 * validto date It uses the TimeUnit utility for conversion purpose.
+	 * Calculate ssl expired duration.
 	 *
-	 * @param formattedDateString - String
-	 * @return expiredDuration - Long
-	 * @throws ParseException
+	 * @param expiryDateFormat the expiry date format
+	 * @param targetExpiryDurationInt the target expiry duration int
+	 * @return true, if successful
 	 */
-
 	private boolean calculateSslExpiredDuration(Date expiryDateFormat, int targetExpiryDurationInt) {
 		boolean isFlag = false;
 		if(expiryDateFormat!=null){
@@ -141,9 +139,4 @@ public class IAMCertificateExpiryRule extends BaseRule{
 		}
 		 return isFlag;
 	}
-
-
-
-
-
 }

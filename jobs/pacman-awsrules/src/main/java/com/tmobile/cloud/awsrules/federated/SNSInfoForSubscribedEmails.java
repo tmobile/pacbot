@@ -37,7 +37,7 @@ import com.tmobile.pacman.commons.rule.BaseRule;
 import com.tmobile.pacman.commons.rule.PacmanRule;
 import com.tmobile.pacman.commons.rule.RuleResult;
 
-@PacmanRule(key = "check-fmb-awssoc-subscribed-in-sns", desc = "checks for FMB AWS-Soc email are subscribed under TSI_Base_Security_Incident topic in N.virginia region only", severity = PacmanSdkConstants.SEV_HIGH, category = PacmanSdkConstants.GOVERNANCE)
+@PacmanRule(key = "check-fmb-subscribed-in-sns", desc = "checks for FMB email are subscribed under mentioned topic in specified region only", severity = PacmanSdkConstants.SEV_HIGH, category = PacmanSdkConstants.GOVERNANCE)
 public class SNSInfoForSubscribedEmails extends BaseRule {
 
 	private static final Logger logger = LoggerFactory.getLogger(SNSInfoForSubscribedEmails.class);
@@ -49,7 +49,7 @@ public class SNSInfoForSubscribedEmails extends BaseRule {
 	 *
 	 ************** Following are the Rule Parameters********* <br><br>
 	 *
-	 *ruleKey : check-FMB_AWSSOC-subscribed-in-SNS <br><br>
+	 *ruleKey : check-fmb-subscribed-in-sns <br><br>
 	 *
 	 *severity : Enter the value of severity <br><br>
 	 *
@@ -69,15 +69,13 @@ public class SNSInfoForSubscribedEmails extends BaseRule {
 		Annotation annotation = null;
 		List<LinkedHashMap<String,Object>>issueList = new ArrayList<>();
 		LinkedHashMap<String,Object>issue = new LinkedHashMap<>();
-		if (resourceAttributes != null) {
 				if (topicARN != null && topicARN.contains("TSI_Base_Security_Incident") &&  subscriptionEndPoint != null && subscriptionEndPoint.contains(endPoint)) {
-					logger.info("Subscription is enabled for " + endPoint);
+					logger.info("Subscription is enabled for {}", endPoint);
 					return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS, PacmanRuleConstants.SUCCESS_MESSAGE);
 				} else {
 					annotation = Annotation.buildAnnotation(ruleParam,Annotation.Type.ISSUE);
 					annotation.put(PacmanSdkConstants.DESCRIPTION,"SNS is not subscribed into TSI_Based_Security_Incident topic!!");
 					annotation.put(PacmanRuleConstants.SEVERITY, severity);
-					annotation.put(PacmanRuleConstants.SUBTYPE, Annotation.Type.RECOMMENDATION.toString());
 					annotation.put(PacmanRuleConstants.CATEGORY, category);
 
 					issue.put(PacmanRuleConstants.VIOLATION_REASON, "SNS is not subscribed into TSI_Based_Security_Incident topic ");
@@ -85,11 +83,9 @@ public class SNSInfoForSubscribedEmails extends BaseRule {
 					annotation.put("issueDetails",issueList.toString());
 					return new RuleResult(PacmanSdkConstants.STATUS_FAILURE,PacmanRuleConstants.FAILURE_MESSAGE,annotation);
 				}
-		}
-		return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS,PacmanRuleConstants.SUCCESS_MESSAGE);
 	}
 
 	public String getHelpText() {
-		return "This rule checks for FMB AWS-Soc email are subscribed under TSI_Base_Security_Incident topic in N.virginia region only";
+		return "This rule checks for FMB email are subscribed under mentioned topic in specified region only";
 	}
 }
