@@ -20,7 +20,10 @@
  **/
 package com.tmobile.cloud.awsrules.federated;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -50,13 +53,13 @@ public class RootUserMFACheck extends BaseRule {
 	 *
 	 * ************* Following are the Rule Parameters********* <br><br>
 	 *
-	 * ruleKey : check-for-accesskeys-iamuser-federated-for-180-and-360-days <br><br>
+	 * ruleKey : check-for-MFA-RootUser <br><br>
 	 *
 	 * severity : Enter the value of severity <br><br>
 	 *
 	 * ruleCategory : Enter the value of category <br><br>
 	 *
-	 * roleIdentifyingString : Configure it as role/pac_ro <br><br>
+	 * roleIdentifyingString : Configure it as role/pacbot_ro <br><br>
 	 *
 	 * @param resourceAttributes this is a resource in context which needs to be scanned this is provided by execution engine
 	 *
@@ -70,16 +73,17 @@ public class RootUserMFACheck extends BaseRule {
 	        temp.put("region", "us-west-2");
 		String severity = ruleParam.get(PacmanRuleConstants.SEVERITY);
 		String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
-		String roleIdentifyingString = ruleParam
-	                .get(PacmanSdkConstants.Role_IDENTIFYING_STRING);
+		String roleIdentifyingString = ruleParam.get(PacmanSdkConstants.Role_IDENTIFYING_STRING);
+		
+		List<LinkedHashMap<String,Object>>issueList = new ArrayList<>();
+		LinkedHashMap<String,Object>issue = new LinkedHashMap<>();
 
 		Map<String, Object> map = null;
         AmazonIdentityManagementClient identityManagementClient = null;
 
         try {
             map = getClientFor(AWSService.IAM, roleIdentifyingString, temp);
-            identityManagementClient = (AmazonIdentityManagementClient) map
-                    .get(PacmanSdkConstants.CLIENT);
+            identityManagementClient = (AmazonIdentityManagementClient) map.get(PacmanSdkConstants.CLIENT);
         } catch (UnableToCreateClientException e) {
             logger.error("unable to get client for following input", e);
             throw new InvalidInputException(e.toString());
@@ -88,10 +92,15 @@ public class RootUserMFACheck extends BaseRule {
         GetAccountSummaryResult response = identityManagementClient.getAccountSummary(request);
         Map<String, Integer> summaryMap = response.getSummaryMap();
         for(Map.Entry<String, Integer> sumMap : summaryMap.entrySet()){
-        	if(sumMap.getKey().equalsIgnoreCase("AccountMFAEnabled") && sumMap.getValue() == 0){
+        	if("AccountMFAEnabled".equalsIgnoreCase(sumMap.getKey()) && sumMap.getValue() == 0){
 				annotation = Annotation.buildAnnotation(ruleParam,Annotation.Type.ISSUE);
+				annotation.put(PacmanSdkConstants.DESCRIPTION,"");
 				annotation.put(PacmanRuleConstants.SEVERITY, severity);
 				annotation.put(PacmanRuleConstants.CATEGORY, category);
+				
+				issue.put(PacmanRuleConstants.VIOLATION_REASON, "");
+				issueList.add(issue);
+				annotation.put("issueDetails",issueList.toString());
         		return new RuleResult(PacmanSdkConstants.STATUS_FAILURE, PacmanRuleConstants.FAILURE_MESSAGE,annotation);
         	}
         }

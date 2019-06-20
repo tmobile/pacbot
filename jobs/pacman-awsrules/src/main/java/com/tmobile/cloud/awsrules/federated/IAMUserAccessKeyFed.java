@@ -55,7 +55,7 @@ public class IAMUserAccessKeyFed extends BaseRule {
 	 *
 	 * ************* Following are the Rule Parameters********* <br><br>
 	 *
-	 * ruleKey : check-for-accesskeys-iamuser-federated-for-180-and-360-days <br><br>
+	 * ruleKey : check-for-accesskeys-iamuser-federated <br><br>
 	 *
 	 * severity : Enter the value of severity <br><br>
 	 *
@@ -70,7 +70,7 @@ public class IAMUserAccessKeyFed extends BaseRule {
 	 */
 
 	public RuleResult execute(final Map<String, String> ruleParam, Map<String, String> resourceAttributes) {
-		logger.debug("========AccessKeyRotatedRule started=========");
+		logger.debug("========IAMUserAccessKeyFed started=========");
 		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		String userName = resourceAttributes.get(PacmanSdkConstants.RESOURCE_ID);
 		int accessKeyInactivityDuration = Integer.parseInt(ruleParam.get("accessKeyInactivityDuration"));
@@ -130,7 +130,7 @@ public class IAMUserAccessKeyFed extends BaseRule {
                 issue.put(PacmanRuleConstants.VIOLATION_REASON, "access keys not rotated from either create date or last used date");
                 issueList.add(issue);
                 annotation.put("issueDetails",issueList.toString());
-                logger.debug("========AccessKeyRotatedRule ended with annotation {} :=========",annotation);
+                logger.debug("========IAMUserAccessKeyFed ended with annotation {} :=========",annotation);
                 return new RuleResult(PacmanSdkConstants.STATUS_FAILURE,PacmanRuleConstants.FAILURE_MESSAGE,annotation);
             }else{
                 logger.info(userName,"Access key is already rotated for username ");
@@ -140,7 +140,7 @@ public class IAMUserAccessKeyFed extends BaseRule {
 			throw new InvalidInputException(e.toString());
 		}
 
-		logger.debug("========AccessKeyRotatedRule ended=========");
+		logger.debug("========IAMUserAccessKeyFed ended=========");
 		return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS,PacmanRuleConstants.SUCCESS_MESSAGE);
 	}
 
