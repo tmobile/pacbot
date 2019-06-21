@@ -29,9 +29,12 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
+import com.tmobile.cloud.awsrules.utils.PacmanUtils;
 import com.tmobile.cloud.constants.PacmanRuleConstants;
 import com.tmobile.pacman.commons.PacmanSdkConstants;
+import com.tmobile.pacman.commons.exception.InvalidInputException;
 import com.tmobile.pacman.commons.rule.Annotation;
 import com.tmobile.pacman.commons.rule.BaseRule;
 import com.tmobile.pacman.commons.rule.PacmanRule;
@@ -69,6 +72,15 @@ public class AccessLogForCloudFront extends BaseRule {
 		String severity = ruleParam.get(PacmanRuleConstants.SEVERITY);
 		String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
 		String loggingTags = resourceAttributes.get("tags.logging");
+		
+		MDC.put("executionId", ruleParam.get("executionId")); // this is the logback Mapped Diagnostic Contex
+		MDC.put("ruleId", ruleParam.get(PacmanSdkConstants.RULE_ID)); // this is the logback Mapped Diagnostic Contex
+		
+		if (!PacmanUtils.doesAllHaveValue(severity, category,ruleParamBucketKey)) {
+			logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
+			throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
+		}
+		
 		Annotation annotation = null;
 		List<LinkedHashMap<String,Object>>issueList = new ArrayList<>();
 		LinkedHashMap<String,Object>issue = new LinkedHashMap<>();
