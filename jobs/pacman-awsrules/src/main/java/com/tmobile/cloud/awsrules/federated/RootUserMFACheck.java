@@ -28,10 +28,12 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.amazonaws.services.identitymanagement.AmazonIdentityManagementClient;
 import com.amazonaws.services.identitymanagement.model.GetAccountSummaryRequest;
 import com.amazonaws.services.identitymanagement.model.GetAccountSummaryResult;
+import com.tmobile.cloud.awsrules.utils.PacmanUtils;
 import com.tmobile.cloud.constants.PacmanRuleConstants;
 import com.tmobile.pacman.commons.AWSService;
 import com.tmobile.pacman.commons.PacmanSdkConstants;
@@ -75,6 +77,14 @@ public class RootUserMFACheck extends BaseRule {
 		String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
 		String roleIdentifyingString = ruleParam.get(PacmanSdkConstants.Role_IDENTIFYING_STRING);
 		
+		MDC.put("executionId", ruleParam.get("executionId")); // this is the logback Mapped Diagnostic Contex
+		MDC.put("ruleId", ruleParam.get(PacmanSdkConstants.RULE_ID)); // this is the logback Mapped Diagnostic Contex
+		
+		if (!PacmanUtils.doesAllHaveValue(severity, category,roleIdentifyingString)) {
+			logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
+			throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
+		}
+		
 		List<LinkedHashMap<String,Object>>issueList = new ArrayList<>();
 		LinkedHashMap<String,Object>issue = new LinkedHashMap<>();
 
@@ -94,11 +104,11 @@ public class RootUserMFACheck extends BaseRule {
         for(Map.Entry<String, Integer> sumMap : summaryMap.entrySet()){
         	if("AccountMFAEnabled".equalsIgnoreCase(sumMap.getKey()) && sumMap.getValue() == 0){
 				annotation = Annotation.buildAnnotation(ruleParam,Annotation.Type.ISSUE);
-				annotation.put(PacmanSdkConstants.DESCRIPTION,"");
+				annotation.put(PacmanSdkConstants.DESCRIPTION,"MFA for Root User is not Enabled");
 				annotation.put(PacmanRuleConstants.SEVERITY, severity);
 				annotation.put(PacmanRuleConstants.CATEGORY, category);
 				
-				issue.put(PacmanRuleConstants.VIOLATION_REASON, "");
+				issue.put(PacmanRuleConstants.VIOLATION_REASON, "MFA for Root User is not Enabled");
 				issueList.add(issue);
 				annotation.put("issueDetails",issueList.toString());
         		return new RuleResult(PacmanSdkConstants.STATUS_FAILURE, PacmanRuleConstants.FAILURE_MESSAGE,annotation);

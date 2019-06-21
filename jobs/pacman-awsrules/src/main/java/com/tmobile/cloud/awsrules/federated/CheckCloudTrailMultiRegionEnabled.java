@@ -85,7 +85,7 @@ public class CheckCloudTrailMultiRegionEnabled extends BaseRule {
         List<LinkedHashMap<String,Object>>issueList = new ArrayList<>();
 		LinkedHashMap<String,Object>issue = new LinkedHashMap<>();
 		
-        if (!PacmanUtils.doesAllHaveValue(severity, category)) {
+        if (!PacmanUtils.doesAllHaveValue(severity, category,cloudTrailInput)) {
             logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
             throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
         }
