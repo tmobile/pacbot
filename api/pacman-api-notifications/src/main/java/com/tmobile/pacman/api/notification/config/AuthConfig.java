@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.notification.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
@@ -42,6 +44,7 @@ import feign.RequestTemplate;
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true)
 public class AuthConfig extends WebSecurityConfigurerAdapter {
+	private static final Logger LOGGER = LoggerFactory.getLogger(AuthConfig.class);
     
 	@Value("${swagger.auth.whitelist:}")
 	private String[] AUTH_WHITELIST;
@@ -57,6 +60,8 @@ public class AuthConfig extends WebSecurityConfigurerAdapter {
 	    return new RequestInterceptor() {
 	        @Override
 	        public void apply(RequestTemplate requestTemplate) {
+	        	LOGGER.info("SecurityContextHolder.getContext() ============== {}",SecurityContextHolder.getContext());
+	        	LOGGER.info("SecurityContextHolder.getContext() =============="+SecurityContextHolder.getContext());
 	            OAuth2AuthenticationDetails details = (OAuth2AuthenticationDetails) SecurityContextHolder.getContext().getAuthentication().getDetails();
 	            requestTemplate.header("Authorization", "bearer " + details.getTokenValue());
 	        }
