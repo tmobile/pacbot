@@ -304,8 +304,6 @@
         </div>
     </div>
 </div>
-<span>showConfBox.value {{showConfBox.value}}</span>
-<span>confirmationMessage {{confirmationMessage}}</span>
 <div *ngIf='showConfBox.value'>
     <app-confirmation-box [transactionInProgress]="deleteFieldInProgress" [transactionResponse]="deleteTransactionResponse" [text]="confirmationMessage" (emitConfirm)='continueConfirmBox();' (emitClose)='cancelConfirmBox();' (emitTransactionClose)='deleteActionComplete()'
     [errorValue]="showConfBox.showContinueBtn"></app-confirmation-box>
