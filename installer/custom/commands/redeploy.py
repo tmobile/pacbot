@@ -97,7 +97,6 @@ class Redeploy(BaseCommand):
         self.run_pre_deployment_process(resources_to_process)
         self.run_real_deployment(input_instance, resources_to_process, terraform_with_targets)
 
-
     def run_pre_deployment_process(self, resources_to_process):
         """
         Before redeploy get started do predeployment activities
