@@ -26,10 +26,12 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.tmobile.cloud.awsrules.utils.PacmanUtils;
 import com.tmobile.cloud.constants.PacmanRuleConstants;
 import com.tmobile.pacman.commons.PacmanSdkConstants;
+import com.tmobile.pacman.commons.exception.InvalidInputException;
 import com.tmobile.pacman.commons.rule.BaseRule;
 import com.tmobile.pacman.commons.rule.PacmanRule;
 import com.tmobile.pacman.commons.rule.RuleResult;
@@ -67,6 +69,14 @@ public class AccessLogForELB extends BaseRule {
 		String entityType = ruleParam.get(PacmanRuleConstants.ENTITY_TYPE);
 		String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
 		String loggingTags = resourceAttributes.get("tags.logging");
+		
+		MDC.put("executionId", ruleParam.get("executionId")); // this is the logback Mapped Diagnostic Contex
+		MDC.put("ruleId", ruleParam.get(PacmanSdkConstants.RULE_ID)); // this is the logback Mapped Diagnostic Contex
+		
+		if (!PacmanUtils.doesAllHaveValue(severity, category,ruleParamBucketKey)) {
+			logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
+			throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
+		}
 		String description = "Access log for "+entityType;
 			if (loggingTags == null || "true".equalsIgnoreCase(loggingTags)) {
 				if (accessLogBucketName != null && accessLogBucketName.equalsIgnoreCase(ruleParamBucketKey)
