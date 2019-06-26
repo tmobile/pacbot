@@ -1134,9 +1134,9 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
       const emailUrl = environment.email.url;
       const emailMethod = environment.email.method;
       const payload = {
-        attachmentUrl: this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL,
+        attachmentUrl: this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL + '/html.handlebars',
         from: this.fromEmailID,
-        mailTemplateUrl: this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL,
+        mailTemplateUrl: this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL + '/html.handlebars',
         placeholderValues: {
           link: locationValue,
           name: name,
