@@ -111,34 +111,6 @@ PacBot installer automatically launches all of these services and configures the
 Detailed installation instructions are available [here](https://github.com/tmobile/pacbot/wiki/Install)
 
 
-## Configuration Management
-
-PacBot uses JSON data for managing the configuration of various system components, such as batch processing, policies & rules, and the configuration of the various API modules.  This configuration data is maintained in a database - not as one or more JSON files, as is frequently done. 
-
-### Configuration Management UI
-
-* ##### Asset Dashboard
-    <img src=./wiki/images/configmgmt.png>
-
-The Configuration Management UI is visible to PacBot administrators.  Go to Admin → Configuration Management.  The UI provides a simple mechanism for maintaining the configuration parameters, so that administrators don't have to modify JSON data in SQL tables directly.  The UI mirrors the logical separation of the configuration parameters into the following areas:
-
-* Batch (Processing)
-* Batch (Processing) - Data Shipper
-* Batch (Processing) - Inventory
-* Rule
-* Rule - Rule Engine
-* API
-* API - Statistics Service
-* API - Compliance Service
-* API - Notification Service
-* API - Authentication Service
-* API - Magenta Skill
-* API - Asset Service
-* API - Development Standards Service
-* API - Administration Service
-* Each logic group of related parameters can be edited at the same time.  The grey bar in the right-most column shows which logical group is selected, and the 'Edit' button in this grey bar activates the Editor interface.  In the Editor, fields can be changed or removed entirely.  When editing is complete, the administrator can Preview the changes made, if any, and then apply the changes or discard them.
-
-
 ## Usage
 
 The installer will launch required AWS services listed in the [installation instructions](https://github.com/tmobile/pacbot/wiki/Install). After successful installation, open the UI load balancer URL. Log into the application using the credentials supplied during the installation. The results from the policy evaluation will start getting populated within an hour. Trendline widgets will be populated when there are at least two data points.
