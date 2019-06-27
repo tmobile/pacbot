@@ -29,6 +29,11 @@ class Redeploy(BaseCommand):
     def __init__(self, args):
         args.append((K.CATEGORY_FIELD_NAME, "deploy"))
         args.append((K.CATEGORY_FIELD_NAME, "roles"))
+        args.append((K.CATEGORY_FIELD_NAME, "batch-ecr"))
+        args.append((K.CATEGORY_FIELD_NAME, "batch-job"))
+        args.append((K.CATEGORY_FIELD_NAME, "submit-job"))
+        args.append((K.CATEGORY_FIELD_NAME, "rule-engine-job"))
+        args.append((K.CATEGORY_FIELD_NAME, "upload_tf"))
 
         self.need_complete_install = self._need_complete_installation()
         Settings.set('SKIP_RESOURCE_EXISTENCE_CHECK', True)
@@ -91,7 +96,6 @@ class Redeploy(BaseCommand):
 
         self.run_pre_deployment_process(resources_to_process)
         self.run_real_deployment(input_instance, resources_to_process, terraform_with_targets)
-
 
     def run_pre_deployment_process(self, resources_to_process):
         """

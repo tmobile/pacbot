@@ -1,13 +1,20 @@
-<div class='traction-respone-wrapper'>
-  <div [ngClass]="{'success': response.type==='success', 'error': response.type==='error'}" class="generic-msg">
+<div *ngIf='response' class='traction-respone-wrapper'>
+  <div *ngIf='response.type' [ngClass]="{'success': response.type==='success', 'error': response.type==='error'}" class="generic-msg">
     <div class="title">{{response.title}}</div>
     <div class='details'>{{response.message}}</div>
     <div class='description'>{{response.description}}</div>
   </div>
+  <div *ngIf='response.obj1'>
+    <div *ngIf='response.obj1.type' [ngClass]="{'success': response.obj1.type==='success', 'error': response.obj1.type==='error'}" class="generic-msg">
+      <div *ngIf ='response.type !== response.obj1.type' class="title">{{response.obj1.title}}</div>
+      <div *ngIf ='response.obj1.message' class='details'>{{response.obj1.message}}</div>
+      <div *ngIf ='response.obj1.description' class='description'>{{response.obj1.description}}</div>
+    </div>
+  </div>
   <div>
     <app-button (click)="takeAction('continue', $event)">CONTINUE</app-button>
   </div>
-  <div>
-      <app-button (click)="takeAction('back', $event)" *ngIf="response.type==='error'" [type]="'secondary'">CANCEL</app-button>
-    </div>
+  <div *ngIf="ifCancelRequired && ifCancelRequired !== 'false'">
+    <app-button (click)="takeAction('back', $event)" *ngIf="response.type==='error'" [type]="'secondary'">CANCEL</app-button>
+  </div>
 </div>

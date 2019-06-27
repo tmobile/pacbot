@@ -14,11 +14,11 @@
     display: inline-block;
     margin-bottom: 5px;
     color: #333333;
+    word-break: break-word;
 }
 
 .input-box{
     width: 100%;
-    min-width : 20em;
     height: 32px;
     padding-left: 6px;
     border: 1px solid #CCCCCC;
@@ -26,9 +26,12 @@
 }
 .text-area{
     width: 100%;
+    resize: none;
     min-width : 20em;
-    height: 32px;
+    max-height: 60px;
+    min-height: 60px;
     padding-left: 6px;
+    padding-top: 7px;
     border: 1px solid #CCCCCC;
     color: #000;
 }
@@ -45,7 +48,8 @@
 }
 
  .input-box-group {
-     height:74px;
+     /*height:74px;*/
+     /* Commening the height. Give margin in the parent */
  }
  
  .validate {
@@ -62,3 +66,17 @@
  .invalid {
      background: red;
  }
+
+ .metadata {
+    margin-top: 0.1em;
+    padding-left: 0.3em;
+  }
+
+  .metadata img {
+    width: 1em;
+    height: 1em;
+  }
+
+  .display-flex {
+      display: flex;
+  }

@@ -1,11 +1,16 @@
 <div class="form-input">
     <div class="relative input-box-group">
-        <label for="{{id}}" *ngIf="inputLabel" class="input-label">{{inputLabel}}</label>
+        <label for="{{id}}" *ngIf="inputLabel" class="input-label" [class.display-flex]='metadata'>
+            <div>{{inputLabel}}</div>
+            <div class='metadata' *ngIf="metadata">
+                <img src='../../../assets/icons/Info-inactive.svg' title="{{metadata}}"/>
+            </div>
+        </label>
         <div class="relative">
-            <div class="validate" *ngIf="parentForm.get(formControlName).touched && parentForm.get(formControlName).dirty" [ngClass]="{'invalid': formErrors[formControlName], 'valid': !formErrors[formControlName]}"></div>
+            <div class="validate" *ngIf="parentForm.get(formControlName)?.touched && parentForm.get(formControlName)?.dirty" [ngClass]="{'invalid': formErrors.formControlName, 'valid': !formErrors.formControlName}"></div>
             <input *ngIf="inputType === 'input'" class='input-box' type="{{type}}" spellcheck="false" [(ngModel)]="value" placeholder="{{placeHolderValue}}" name="{{formControlName}}" id="{{id}}"/>
             <textarea *ngIf="inputType === 'desc'" class='text-area' spellcheck="false" [(ngModel)]="value" name="{{formControlName}}" id="{{id}}"></textarea>
         </div>
-        <div class = "error" *ngIf="formErrors[formControlName]">{{formErrors[formControlName]}}</div>
+        <div class = "error" *ngIf="formErrors.formControlName">{{formErrors.formControlName}}</div>
     </div>
 </div>

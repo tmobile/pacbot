@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.services.elasticloadbalancingv2.AmazonElasticLoadBalancingClient;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.cloudtrail.model.OperationNotPermittedException;
 import com.amazonaws.services.ec2.AmazonEC2;
@@ -331,6 +332,16 @@ public class ResourceTaggingManager {
         case IAM: {
             return "";
         }
+        case ELB_APP: {
+            return  getAppElbPacManTagValue(resourceId, clientMap);
+        }
+        
+        case ELB_CLASSIC: {
+            return "";
+        }
+        case REDSHIFT: {
+            return "";
+        }
 
         default:
             throw new OperationNotPermittedException("this resource tagging is not imlemented yet");
@@ -387,6 +398,38 @@ public class ResourceTaggingManager {
         } catch (AmazonServiceException ase) {
             logger.error("error tagging redshift - > " + resourceId, ase);
             throw ase;
+        }
+    }
+    
+    /**
+     * get the value of pacman tag from app elb
+     * @param resourceId
+     * @param clientMap
+     * @return
+     */
+    private String getAppElbPacManTagValue(String resourceId, Map<String, Object> clientMap) {
+
+        try{
+            AmazonElasticLoadBalancingClient client = (AmazonElasticLoadBalancingClient) clientMap.get(PacmanSdkConstants.CLIENT);
+            com.amazonaws.services.elasticloadbalancingv2.model.DescribeTagsRequest describeTagsRequest =   new com.amazonaws.services.elasticloadbalancingv2.model.DescribeTagsRequest();
+            describeTagsRequest.withResourceArns(resourceId);
+            com.amazonaws.services.elasticloadbalancingv2.model.DescribeTagsResult describeTagsResult = client.describeTags(describeTagsRequest);
+            List<com.amazonaws.services.elasticloadbalancingv2.model.TagDescription> descriptions = describeTagsResult.getTagDescriptions();
+            com.amazonaws.services.elasticloadbalancingv2.model.Tag tag=null;
+            Optional<com.amazonaws.services.elasticloadbalancingv2.model.Tag> optional=null;;
+            if(descriptions!=null && descriptions.size()>0){
+                 optional = descriptions.get(0).getTags().stream()
+                .filter(obj -> obj.getKey().equals(CommonUtils.getPropValue(PacmanSdkConstants.PACMAN_AUTO_FIX_TAG_NAME))).findAny();
+            }
+            if (optional.isPresent()) {
+                tag = optional.get();
+            } else {
+                return null;
+            }
+            return tag.getValue();
+        }catch (Exception e) {
+            logger.error("error whiel getting pacman tag valye for " + resourceId,e);
+            return null;
         }
     }
 

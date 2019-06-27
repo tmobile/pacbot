@@ -31,22 +31,28 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import com.tmobile.cloud.awsrules.utils.CommonTestUtils;
+import com.tmobile.cloud.awsrules.utils.ConfigUtils;
 import com.tmobile.cloud.awsrules.utils.PacmanUtils;
 import com.tmobile.pacman.commons.exception.InvalidInputException;
 
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({PacmanUtils.class})
+@PrepareForTest({PacmanUtils.class,ConfigUtils.class})
 public class TaggingRuleTest {
 
     @InjectMocks
     TaggingRule taggingRule;
- 
+    
     @Test
     public void executeTest() throws Exception {
-        mockStatic(PacmanUtils.class);
+    	
+    	mockStatic(PacmanUtils.class);
+    	when(PacmanUtils.getEnvironmentVariable(anyString())).thenReturn("env");
+        when(PacmanUtils.getHeader(anyString())).thenReturn(CommonTestUtils.getMapString("id"));
+        when(PacmanUtils.getConfigurationsFromConfigApi(anyString(), anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+    	mockStatic(ConfigUtils.class);
+    	when(ConfigUtils.getPropValue(anyString())).thenReturn("tag");
         when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
                 true);
-        
         when(PacmanUtils.splitStringToAList(anyString(),anyString())).thenReturn(CommonTestUtils.getListString());
         assertThat(taggingRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
         

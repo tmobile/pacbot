@@ -184,14 +184,15 @@ public class ComplianceRepositoryImplTest implements Constants {
         String response = "{\"took\":469,\"timed_out\":false,\"_shards\":{\"total\":176,\"successful\":176,\"failed\":0},\"hits\":{\"total\":115456,\"max_score\":0,\"hits\":[]},\"aggregations\":{\"NAME\":{\"doc_count_error_upper_bound\":691,\"sum_other_doc_count\":34323,\"buckets\":["
         		+ "{\"key\":\"key\",\"doc_count\":6258},{\"key\":\"key\",\"doc_count\":3339}]}}}";
         ReflectionTestUtils.setField(complianceRepositoryImpl, "esUrl", "dummyEsURL");
+        ReflectionTestUtils.setField(complianceRepositoryImpl, "mandatoryTags", "Application,Environment");
         mockStatic(PacHttpUtils.class);
         when(PacHttpUtils.doHttpPost(anyString(), anyString())).thenReturn(response);
-        complianceRepositoryImpl.getRuleDetailsByEnvironmentFromES("aws-all", "tagging-rule", "app1", null);
-        complianceRepositoryImpl.getRuleDetailsByEnvironmentFromES("aws-all", "tagging-rule", "app1", "dev");
+        complianceRepositoryImpl.getRuleDetailsByEnvironmentFromES("aws-all", "tagging-rule", "app1", null,"test");
+        complianceRepositoryImpl.getRuleDetailsByEnvironmentFromES("aws-all", "tagging-rule", "app1", "dev","test");
         when(PacHttpUtils.doHttpPost(anyString(), anyString())).thenThrow(new RuntimeException());
         assertThatThrownBy(
                 () -> complianceRepositoryImpl.getRuleDetailsByEnvironmentFromES("aws-all", "tagging-rule", "app1",
-                        null)).isInstanceOf(DataException.class);
+                        null,"test")).isInstanceOf(DataException.class);
     }
 
     @Test

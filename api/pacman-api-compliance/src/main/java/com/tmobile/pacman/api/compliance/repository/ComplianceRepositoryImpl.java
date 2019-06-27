@@ -1275,13 +1275,43 @@ public class ComplianceRepositoryImpl implements ComplianceRepository, Constants
      * java.lang.String, java.lang.String)
      */
     public JsonArray getRuleDetailsByEnvironmentFromES(String assetGroup, String ruleId, String application,
-            String searchText) throws DataException {
+            String searchText,String targetType) throws DataException {
         String responseJson = null;
         JsonParser jsonParser;
         JsonObject resultJson;
         StringBuilder requestBody = null;
         StringBuilder urlToQueryBuffer = new StringBuilder(esUrl).append("/").append(assetGroup).append("/")
                 .append(SEARCH);
+        
+if (ruleId.contains(TAGGIG_POLICY)) {
+        	
+        	List<String> tagsList = new ArrayList<>(Arrays.asList(mandatoryTags.split(",")));
+
+            String body = "{\"size\":0,\"query\":{\"bool\":{\"must\":[{\"term\":{\"type.keyword\":{\"value\":\"issue\"}}},{\"term\":{\"ruleId.keyword\":{\"value\":\""+ruleId+"\"}}},{\"term\":{\"issueStatus.keyword\":{\"value\":\"open\"}}}";
+
+            //Added resourceType to the Query
+            char ch='"';
+            targetType = ch+targetType+ch;
+            
+            body = body + ",{\"terms\":{\"targetType.keyword\":["+targetType+"]}}";
+            if(application!=null){
+            	  body = body + ",{\"match\":{\"tags.Application.keyword\":\""+application+"\"}}";
+            }
+            body = body + "]";
+            if (!tagsList.isEmpty()) {
+                body = body + ",\"should\":[";
+
+                for (String tag : tagsList) {
+                    body = body + "{\"match_phrase_prefix\":{\"missingTags\":\"" + tag + "\"}},";
+                }
+                body = body.substring(0, body.length() - 1);
+                body = body + "]";
+                body = body + ",\"minimum_should_match\":1";
+            }
+            body = body + "}},\"aggs\":{\"NAME\":{\"terms\":{\"field\":\"tags.Environment.keyword.keyword\",\"size\":1000000}}}}";
+            requestBody = new StringBuilder(body);
+           
+        }else{
 
         if (StringUtils.isEmpty(searchText)) {
             requestBody = new StringBuilder(
@@ -1300,6 +1330,7 @@ public class ComplianceRepositoryImpl implements ComplianceRepository, Constants
                             + searchText
                             + "\"}}],\"should\":[{\"term\":{\"issueStatus.keyword\":{\"value\":\"open\"}}},{\"term\":{\"issueStatus.keyword\":{\"value\":\"exempted\"}}}],\"minimum_should_match\":1}},\"aggs\":{\"NAME\":{\"terms\":{\"field\":\"tags.Environment.keyword\",\"size\":1000}}}}");
         }
+    }
         try {
             responseJson = PacHttpUtils.doHttpPost(urlToQueryBuffer.toString(), requestBody.toString());
         } catch (Exception e) {
@@ -2376,5 +2407,23 @@ public class ComplianceRepositoryImpl implements ComplianceRepository, Constants
         final Calendar cal = Calendar.getInstance();
         cal.add(Calendar.DATE, -1);
         return cal.getTime();
+    }
+    
+    /* (non-Javadoc)
+     * @see com.tmobile.pacman.api.compliance.repository.ComplianceRepository#getTotalAssetCountByEnvironment(java.lang.String, java.lang.String, java.lang.String)
+     */
+    public Map<String,Long> getTotalAssetCountByEnvironment(String assetGroup, String application,String targetType) {
+    	Map<String,Long> assetCountByEnv = new HashMap<>();
+        AssetCount totalAssets = assetServiceClient.getTotalAssetsCountByEnvironment(assetGroup, application,targetType);
+        AssetCountData data = totalAssets.getData();
+        AssetCountByAppEnvDTO[] assetcount = data.getAssetcount();
+        for (AssetCountByAppEnvDTO assetCount_Count : assetcount) {
+            if (assetCount_Count.getApplication().equals(application)) {
+                for (AssetCountEnvCount envCount_Count : assetCount_Count.getEnvironments()) {
+                	assetCountByEnv.put(envCount_Count.getEnvironment(),Long.parseLong(envCount_Count.getCount()));
+                }
+            }
+        }
+        return assetCountByEnv;
     }
 }

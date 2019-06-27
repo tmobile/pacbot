@@ -1,0 +1,311 @@
+<app-toast-notification></app-toast-notification>
+<div class="compliance-dashboard-wrapper flex flex-between">
+  <div class="floating-widgets-section-full flex flex-col">
+      <app-breadcrumb [breadcrumbLinks]="breadcrumbDetails.breadcrumbLinks" [breadcrumbArray]="breadcrumbDetails.breadcrumbArray" [breadcrumbPresent]="breadcrumbDetails.breadcrumbPresent" [parentRouteName]="'admin'" [isCustomParentRoute]="true"></app-breadcrumb>
+      <div class="floating-widgets-header admin-widgets-header flex flex-between">
+        <div>
+            <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+            <h1 class="title-text">{{pageTitle}}</h1>
+        </div>
+          <div class='history-wrapper'>
+            <div class='input-box select-input' [class.disabled]='errorValue != 1 || transactionResponse.responseCount > 0' (click)='resetUserRemarks(); showDropdown = !showDropdown'>
+                <div class='History'>History</div>
+                <div class='filter-arrow absolute' [class.revert-arrow]='showDropdown'></div>
+            </div>
+          </div>
+      </div>
+        <div class="floating-widgets-section-content" [class.relative]='showDropdown'>
+            <div class='page-overlay' *ngIf='showDropdown' (click)='resetUserRemarks(); showDropdown = false'></div>
+            <div class='flex flex-row height-100' *ngIf="errorValue == 1">
+                <!-- *********** Application column wrapper starts here *********** -->
+                <div *ngIf='!showHistoryPreview' class="filter-outer-wrapper pointer">               
+                    <section class="filter-main-content flex flex-start relative" *ngIf="filterData">
+                        <ng-container *ngIf="filterData.length > 0">
+                            <div class="each-filter-column primary-column">
+                                <ul class="each-filter-desc">
+                                    <li class="each-filter-options pointer"  [class.active]="activeColumn === 1"  [class.child-active]='applyActive1 === i && (activeColumn === 2 || activeColumn === 3)' (click)="storeFirstLevel(mainFilterTypes,i,$event)" *ngFor='let mainFilterTypes of filterData; let i = index ' title="{{mainFilterTypes.name}}">
+                                        <p>{{mainFilterTypes.name}}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="(firstLevelData | json) != ({} | json)">
+                            <div class="each-filter-column secondary-column">
+                                <ul class="each-filter-desc">
+                                    <li class="each-filter-options" [class.active]="applyActive2 === j && activeColumn === 2" [class.child-active]='activeColumn === 3 && applyActive2 === j' (click)="storeSecondLevel(seconDaryFilterCategory,j)" *ngFor='let seconDaryFilterCategory of firstLevelData.children; let j = index' title="{{seconDaryFilterCategory.name}}">
+                                        <p>{{seconDaryFilterCategory.name}}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="(secondaryLevelData | json) != ({} | json) && secondaryLevelData.children && secondaryLevelData.children.length > 0">
+                            <div class="each-filter-column tertiary-column">
+                                <ul class="each-filter-desc">
+                                    <li class="each-filter-options" [class.active]="applyActive3 === k && activeColumn === 3" (click)= "storeThirdLevel(tertiaryFilterCategory,k)" *ngFor='let tertiaryFilterCategory of secondaryLevelData.children; let k = index' title="{{tertiaryFilterCategory.name}}">
+                                        <p>{{tertiaryFilterCategory.name}}</p>
+                                    </li>
+                                </ul>
+                            </div>
+                        </ng-container>
+                    </section>
+                </div>
+                    <!-- *********** Application column wrapper ends here *********** -->
+                <!-- *********** Properties wrapper starts here  ****************-->
+                <div class='right-content-wrapper flex flex-col relative'>
+                    <!-- History rollback confirmation starts here *************-->
+                    <div class='history-dropdown' *ngIf= 'showDropdown'>
+                        <app-config-history-dropdown [activeTile]='showHistoryPreview ? activeHistoryTile : -1' [placeholder]="'History'" [errorValue]='configAudit.errorValue' [errorMessage]='configAudit.errorMessage' [items]='configAudit.value' (selection)='getHistoryPreview($event)' (closeDropdown)='historyDropdownCloseEvent($event)'></app-config-history-dropdown>
+                    </div>
+                     <!-- History rollback confirmation ends here *************-->
+                    <div class='property-breadcrumb' *ngIf='!showHistoryPreview'>
+                        <ul class='listing-breadcrumb-wrapper flex'>
+                            <li class="breadcrumb-container flex flex-align-center" [class.breadcrumb-text-active]="activeColumn === i+1" *ngFor="let data of applicationBreadcrumb; let i = index">
+                                <div class="breadcrumb-text">{{data}}</div>
+                                <div *ngIf='activeColumn !== i+1' class="breadcrumb-slash"></div>
+                            </li>
+                        </ul>
+                    </div>
+                    <!-- ************** Edit form wrapper starts here ************  -->
+                  <div class='flex flex-col property-wrapper'>
+                    <div class='each-property-wrapper overflow-auto' [class.height-100]='editData && editData.properties && editData.properties.length === 0'>
+                        <div [class.each-property]='editData.properties.length > 0 ||  overiddenData.length > 0 || formData.length || overrideFormData.length' 
+                                [class.single-property]='editData.properties.length === 0 && showPreview' [class.margin-bottom]='showUserRemarks' *ngIf='editData && editProperty && !showHistoryPreview'>
+                            <div class='flex flex-between property-name'>
+                                <div class='app-name'>{{editData.name}}</div>
+                                <div *ngIf='editProperty && !showPreview' class='edit-property' (click)='createNew = true;'>+ New Field</div>
+                            </div>
+                            <!-- ************** specific to Edited form preview starts here ************  -->
+                            <h5 class='note' *ngIf='showPreview && (editData.properties.length > 0 || overiddenData.length > 0)'>Please verify the updated configurations.</h5>
+                            <div class='property-content overflow-auto' *ngIf='showPreview'>
+                                <div class='table-wrapper flex flex-row flex-center' *ngIf='editData.properties.length > 0 || overiddenData.length > 0'>
+                                    <table>
+                                        <tr>
+                                            <th>Field Name</th>
+                                            <th>New Value</th>
+                                            <th>Old Value</th>
+                                        </tr>
+                                        <tr *ngFor ='let data of editData.properties'>
+                                            <td>{{data.key}}</td>
+                                            <td>{{data.value}}</td>
+                                            <td>{{data.oldValue}}</td>
+                                        </tr>
+                                        <ng-container *ngIf='overiddenData.length > 0'>
+                                            <tr *ngFor ='let data of overiddenData'>
+                                                <td>{{data.key}}</td>
+                                                <td>{{data.value}}</td>
+                                                <td>NA</td>
+                                            </tr>
+                                        </ng-container>                                       
+                                    </table>
+                                </div> 
+                                <div class='err-msg flex flex-center flex-align-center' *ngIf='editData.properties.length === 0 && overiddenData.length === 0'>
+                                    There are no configurations updated.
+                                </div>                            
+                            </div>
+                            <!-- ************** specific to Edited form preview ends here ************  -->
+                            <!-- ************** specific to Edit form starts here ************  -->
+                            <div class='property-content' [class.relative]='formData.length === 0 && overrideFormData.length === 0' *ngIf="editProperty && !showPreview">
+                                <form *ngIf='formData.length || overrideFormData.length' class="form-class" [formGroup]="configManagementForm" novalidate>
+                                    <div class="form-content-wrapper">
+                                        <div *ngIf='formData.length > 0' formGroupName = "edit">
+                                            <div class="form-group">
+                                                <div class="edit-fields-container each-field" *ngFor='let inputs of formData'>
+                                                    <div class="edit-fields-wrapper">
+                                                        <app-forms [metadata]='inputs.metadata' [parentForm]="configManagementForm" formControlName="{{inputs.formControlName}}" [id]="inputs.formControlName" [inputLabel]="inputs.formControlDisplayName" [placeHolderValue]="inputs.formControlDisplayName" [formErrors]="formErrors"></app-forms>
+                                                    </div>
+                                                    <div *ngIf='editProperty && activeColumn > 1' class='override' (click)='onDelete("edit", inputs)'>remove</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div  *ngIf='overrideFormData.length > 0' formGroupName = "overidden">
+                                            <h5 class='overridden-new-fields'>New Config Fields</h5>
+                                            <div class="form-group">
+                                                <div class="edit-fields-container each-field" *ngFor='let inputs of overrideFormData'>
+                                                    <div class="edit-fields-wrapper">
+                                                        <app-forms [metadata]='inputs.metadata' [parentForm]="configManagementForm" formControlName="{{inputs.formControlName}}" [id]="inputs.formControlName" [inputLabel]="inputs.formControlDisplayName" [placeHolderValue]="inputs.formControlDisplayName" [formErrors]="formErrors"></app-forms>
+                                                    </div>                                                
+                                                    <div *ngIf='editProperty && activeColumn > 1' class='override' (click)='onDeleteNotSavedField("overidden", inputs)'>remove</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                                <div class='no-property' *ngIf='formData.length === 0 && overrideFormData.length === 0'>
+                                    There are no fields available.
+                                </div>
+                            </div>
+                            <!-- ************** specific to Edit form ends here ************  -->
+                        </div>
+                        <!-- ************** Edit form wrapper ends here ************  -->
+                        <!-- **************** initial property list view starts here ***************-->
+                        <div [class.each-property]='tertiaryLevelData.properties.length > 0' *ngIf='!showPreview && !showHistoryPreview && tertiaryLevelData && tertiaryLevelData.properties && activeColumn === 3 && editColumnIndex !== 3'>
+                            <div class='flex flex-between property-name'>
+                                <div class='app-name'>{{tertiaryLevelData.name}}</div>
+                                <div *ngIf='editProperty === false && activeColumn === 3' class='edit-property' (click)='editProperty = true; buildForm(tertiaryLevelData, 3)'>Edit</div>
+                            </div>
+                            <div class='property-content' *ngIf='tertiaryLevelData.properties.length > 0'>
+                                <div class='each-field' *ngFor ='let data of tertiaryLevelData.properties'>
+                                    <div class='flex flex-row flex-start property-label'>
+                                        <div class='property-key'>{{data.key}}</div>
+                                        <div class='info-icon' *ngIf='data.description'>
+                                            <img src='../../../../../assets/icons/Info-inactive.svg' title="{{data.description}}"/>
+                                        </div>
+                                    </div>
+                                    <div class='property-value'>{{data.value}}</div>
+                                </div>
+                            </div>
+                            <div class='property-content relative' *ngIf='tertiaryLevelData.properties.length === 0'>
+                                <div class='no-property'>
+                                    There are no fields available.
+                                </div>
+                            </div>
+                        </div>
+                        <div [class.each-property]='secondaryLevelData.properties.length > 0' *ngIf='!showPreview && !showHistoryPreview && secondaryLevelData && secondaryLevelData.properties && (activeColumn === 2 || activeColumn === 3) && editColumnIndex !== 2 '>        
+                            <div class='flex flex-between property-name'>
+                                    <div class='app-name'>{{secondaryLevelData.name}}</div>
+                                <div *ngIf='editProperty === false && activeColumn === 2' class='edit-property' (click)='editProperty = true; buildForm(secondaryLevelData, 2)'>Edit</div>
+                            </div>
+                            <div class='property-content' *ngIf='secondaryLevelData.properties.length > 0'>
+                                <div class='each-field' *ngFor ='let data of secondaryLevelData.properties; let l = index'>              
+                                    <div class='flex flex-row flex-start property-label'>
+                                        <div class='property-key' [class.child-active-key]='editProperty && activeColumn > 2'>{{data.key}}</div>
+                                        <div class='info-icon' [class.child-active-info]='editProperty && activeColumn > 2' *ngIf='data.description'>
+                                            <img src='../../../../../assets/icons/Info-inactive.svg' title="{{data.description}}"/>
+                                        </div>
+                                        <!-- <div *ngIf='editProperty && activeColumn > 2' class='override' (click)='onOverride(data, 2)'>override</div> -->
+                                    </div>
+                                    <div class='flex flex-align-center' *ngIf='editProperty && activeColumn > 2; else showOnlyProperty'>
+                                        <div class='property-value edit-fields-wrapper disable-value'>{{data.value}}</div>
+                                        <div *ngIf='editProperty && activeColumn > 2' class='override' (click)='onOverride(data, 2)'>override</div>
+                                    </div>
+                                    <ng-template #showOnlyProperty>
+                                        <div class='property-value'>{{data.value}}</div>
+                                    </ng-template>
+                                </div>
+                            </div>
+                            <div class='property-content relative' *ngIf='secondaryLevelData.properties.length === 0'>
+                                <div class='no-property'>
+                                    There are no fields available.
+                                </div>
+                            </div>
+                        </div>
+                        <div [class.each-property]='firstLevelData.properties.length > 0' *ngIf='!showPreview && !showHistoryPreview && firstLevelData && activeColumn > 0 && editColumnIndex !== 1'>
+                            <div class='flex flex-between property-name'>
+                                    <div class='app-name'>{{firstLevelData.name}}</div>
+                                <div class='edit-property'  *ngIf='editProperty === false && activeColumn === 1' (click)='editProperty = true; buildForm(firstLevelData, 1)'>Edit</div>
+                            </div>
+                            <div class='property-content' *ngIf='firstLevelData.properties.length > 0'>
+                                <div class='each-field' *ngFor ='let data of firstLevelData.properties'>              
+                                    <div class='flex flex-row flex-start property-label'>
+                                        <div class='property-key' [class.child-active-key]='editProperty && activeColumn > 1'>{{data.key}}</div>
+                                        <div class='info-icon'  [class.child-active-info]='editProperty && activeColumn > 1' *ngIf='data.description'>
+                                            <img src='../../../../../assets/icons/Info-inactive.svg' title="{{data.description}}"/>
+                                        </div>
+                                        <!-- <div *ngIf='editProperty && activeColumn > 1' class='override' (click)='onOverride(data, 1)'>override</div> -->
+                                    </div>
+                                    <div class='flex flex-align-center' *ngIf='editProperty && activeColumn > 1; else showProperty'>
+                                        <div class='property-value edit-fields-wrapper disable-value'>{{data.value}}</div>
+                                        <div *ngIf='editProperty && activeColumn > 1' class='override' (click)='onOverride(data, 1)'>override</div>
+                                    </div>
+                                    <ng-template #showProperty>
+                                        <div class='property-value'>{{data.value}}</div>
+                                    </ng-template>
+                                </div>
+                            </div>
+                            <div class='property-content relative' *ngIf='firstLevelData.properties.length === 0'>
+                                <div class='no-property'>
+                                    There are no fields available.
+                                </div>
+                            </div>
+                        </div>
+                        <div *ngIf='editProperty && !showPreview && !showHistoryPreview' class="widget-form-footer button-list">
+                            <div class="create-cancel">
+                                <div>
+                                    <app-button [type]="'secondary'" (click)="cancelEdit()">CANCEL</app-button>
+                                </div>
+                                <app-button [disabled]="!configManagementForm.valid" [type]='submit' (click)="register(configManagementForm)">
+                                    <span>PREVIEW</span>
+                                </app-button>
+                            </div>
+                        </div>
+                        <div class='user-remarks' [class.visible-remarks]='showUserRemarks'>
+                            <textarea [(ngModel)]="userRemarks" class="textarea-container " placeholder="Enter your remarks"></textarea>
+                        </div>
+                        <div *ngIf='editProperty && showPreview && !showHistoryPreview' class="widget-form-footer button-list">
+                            <div class="create-cancel">
+                                <div>
+                                    <app-button [type]="'secondary'" (click)="showUserRemarks = false; resetUserRemarks(); backToEditedData();">BACK</app-button>
+                                </div>
+                                <div *ngIf='!showUserRemarks'>
+                                    <app-button [disabled]="editData.properties.length === 0 && overiddenData.length === 0" (click)='showUserRemarks = true'>UPDATE</app-button>
+                                </div>
+                                <div *ngIf='showUserRemarks'>
+                                    <app-button [disabled]="userRemarks.length === 0" (click)='UpdateProperty()'>SUBMIT</app-button>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- **************** History preview starts here ************-->
+                        
+                        <div class='each-property' *ngIf='showHistoryPreview'>
+                                <div class='history-preview-wrapper overflow-auto' *ngFor='let property of historyPreview.configPropertyChangeList' >
+                                    <div class='flex flex-between property-name'>
+                                        <div class='app-name'>{{property.application}}</div>
+                                    </div>
+                                    <div class='property-content'>
+                                        <div class='table-wrapper flex flex-row flex-center'>
+                                                <table>
+                                                    <tr>
+                                                        <th>Field Name</th>
+                                                        <th>New Value</th>
+                                                        <th>Old Value</th>
+                                                    </tr>
+                                                    <tr *ngFor ='let data of property.configProperties'>
+                                                        <td>{{data.configKey}}</td>
+                                                        <td>{{data.newConfigValue}}</td>
+                                                        <td>{{data.oldConfigValue}}</td>
+                                                    </tr>                                      
+                                                </table>
+                                            </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div *ngIf='showHistoryPreview' class="widget-form-footer revert-foorter-wrapper">
+                                <div class='rollback-text'>Would you like to revert to this state?</div>
+                                <div class="create-cancel revert-btn-wrapper">
+                                    <div>
+                                        <app-button [type]="'secondary'" (click)="showUserRemarks = false; showHistoryPreview = false; resetUserRemarks();">NEVERMIND</app-button>
+                                    </div>
+                                    <div *ngIf='!showUserRemarks'>
+                                        <app-button (click)='showUserRemarks = true'>YES</app-button>
+                                    </div>
+                                    <div *ngIf='showUserRemarks'>
+                                        <app-button [disabled]="userRemarks.length === 0" (click)='updateRollback()'>SUBMIT</app-button>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- **************** History preview ends here ************-->
+                        </div>
+                    </div>
+                    <!-- **************** initial property list view ends here ***************-->
+                </div>
+                <!-- *********** Properties wrapper ends here *********** -->
+            </div>
+            <div class='loader' *ngIf='errorValue==0'></div>
+            <div class="error-msg-block center" *ngIf="errorValue == -1">
+                <app-error-message [selectedValue]="errorMessage"></app-error-message>
+            </div>
+            <div *ngIf="transactionResponse.responseCount > 0" class="full-page-center">
+                <app-loader-msg [response]="allMessages()" (actionClick)="takeActionPostTransaction($event)"></app-loader-msg>
+            </div>
+            <div *ngIf="errorValue == 10" class="flex flex-col flex-center flex-align-center height-100">
+                <div class="circle-loader"></div>
+            </div>            
+        </div>
+    </div>
+</div>
+<div *ngIf='showConfBox.value'>
+    <app-confirmation-box [transactionInProgress]="deleteFieldInProgress" [transactionResponse]="deleteTransactionResponse" [text]="confirmationMessage" (emitConfirm)='continueConfirmBox();' (emitClose)='cancelConfirmBox();' (emitTransactionClose)='deleteActionComplete()'
+    [errorValue]="showConfBox.showContinueBtn"></app-confirmation-box>
+</div>
+<app-input-modal *ngIf='createNew' [errorValue]='configKeys.errorValue' [errorMessage]='configKeys.errorMessage' [dropdownArray]='configKeys.value' (emitSave)='createNewField($event);' (emitClose)='createNew = false;'></app-input-modal>
