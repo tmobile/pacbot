@@ -9,6 +9,7 @@ import {Router} from '@angular/router';
 export class LoaderMsgComponent implements OnInit {
   @Input() response;
   @Output() actionClick = new EventEmitter();
+  @Input() ifCancelRequired = true;
 
   constructor(private router: Router) { }
 

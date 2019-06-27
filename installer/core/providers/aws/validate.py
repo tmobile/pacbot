@@ -115,7 +115,6 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
         else:
             False
 
-
     def _check_group_policies(self, access_key, secret_key, user_name):
         """
         Check required policies are present in user-group policies or not. Required policies are kept in the settings AWS_POLICIES_REQUIRED

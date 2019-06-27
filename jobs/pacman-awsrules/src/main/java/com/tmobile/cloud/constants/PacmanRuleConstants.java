@@ -336,4 +336,12 @@ public class PacmanRuleConstants {
 	public static final String ES_ELB_WITH_SECURITYGROUP_URL = "esElbWithSGUrl";
 	public static final String SUBNETS_LIST = "subnets";
 	public static final String INTERNET_FACING = "internet-facing";
+	public static final String WEB_SITE_CONFIGURATION = "websiteConfiguration";
+	public static final String ELB_TYPE = "type";
+	public static final String TYPE_OF_ELB = "elbType";
+	public static final String ES_REDSHIFT_SG_URL = "esRedshiftSgURL";
+	public static final String ALLOCATION_ID = "allocationid";
+	public static final String ASSOCIATION_ID = "associationid";
+	public static final String SECURITY_GROUPS = "securitygroups";
+	public static final String ES_RDSDB_SG_URL = "esRdsDbSgUrl";
 }

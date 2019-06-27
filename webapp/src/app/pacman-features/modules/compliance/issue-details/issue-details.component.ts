@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -472,7 +472,7 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
                 this.errorMessage = 'noDataAvailable';
               }
 
-              this.getRecommend();
+              // this.getRecommend();
             },
             error => {
               this.showLoader = false;
@@ -514,50 +514,51 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getRecommend() {
-    try {
-      const Url = environment.recommendDetails.url;
-      const Method = environment.recommendDetails.method;
-      let queryparams;
-      if (this.issueBlocks) {
-        queryparams = {
-          targetType: this.issueBlocks.resourceType,
-          ruleId: this.issueBlocks.policyId
-        };
-      }
+  // TODO: Remove unused variables
+  // getRecommend() {
+  //   try {
+  //     const Url = environment.recommendDetails.url;
+  //     const Method = environment.recommendDetails.method;
+  //     let queryparams;
+  //     if (this.issueBlocks) {
+  //       queryparams = {
+  //         targetType: this.issueBlocks.resourceType,
+  //         ruleId: this.issueBlocks.policyId
+  //       };
+  //     }
 
-      this.getRecommendSubscription = this.commonResponseService
-        .getData(Url, Method, {}, queryparams)
-        .subscribe(
-          response => {
-            const self = this;
-            setTimeout(() => {
-              self.checkRecommend = true;
-              self.showLoadcompleteRecommend = true;
-            }, 4500);
+  //     this.getRecommendSubscription = this.commonResponseService
+  //       .getData(Url, Method, {}, queryparams)
+  //       .subscribe(
+  //         response => {
+  //           const self = this;
+  //           setTimeout(() => {
+  //             self.checkRecommend = true;
+  //             self.showLoadcompleteRecommend = true;
+  //           }, 4500);
 
-            this.numberOfButtons = response;
-            this.recommedData = response[0];
-            for (let i = 0; i < this.numberOfButtons.length; i++) {
-              this.actionData.push(this.numberOfButtons[i].actionApiUrl);
-            }
-            if (this.recommedData !== undefined) {
-              this.showRecommendantions = true;
-            }
-          },
-          error => {
-            const self = this;
-            setTimeout(() => {
-              self.checkRecommend = false;
-              self.showLoadcompleteRecommend = true;
-            }, 4500);
+  //           this.numberOfButtons = response;
+  //           this.recommedData = response[0];
+  //           for (let i = 0; i < this.numberOfButtons.length; i++) {
+  //             this.actionData.push(this.numberOfButtons[i].actionApiUrl);
+  //           }
+  //           if (this.recommedData !== undefined) {
+  //             this.showRecommendantions = true;
+  //           }
+  //         },
+  //         error => {
+  //           const self = this;
+  //           setTimeout(() => {
+  //             self.checkRecommend = false;
+  //             self.showLoadcompleteRecommend = true;
+  //           }, 4500);
 
-          }
-        );
-    } catch (e) {
-      this.logger.log('error', e);
-    }
-  }
+  //         }
+  //       );
+  //   } catch (e) {
+  //     this.logger.log('error', e);
+  //   }
+  // }
 
   showButtons(index) {
     try {
@@ -1133,9 +1134,9 @@ export class IssueDetailsComponent implements OnInit, OnDestroy {
       const emailUrl = environment.email.url;
       const emailMethod = environment.email.method;
       const payload = {
-        attachmentUrl: this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL,
+        attachmentUrl: this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL + '/html.handlebars',
         from: this.fromEmailID,
-        mailTemplateUrl: this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL,
+        mailTemplateUrl: this.GLOBAL_CONFIG.optional.pacmanIssue.emailPacManIssue.ISSUE_MAIL_TEMPLATE_URL + '/html.handlebars',
         placeholderValues: {
           link: locationValue,
           name: name,

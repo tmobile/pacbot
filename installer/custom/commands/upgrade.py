@@ -21,13 +21,6 @@ class Upgrade(BaseCommand):
 
     """
     def __init__(self, args):
-        # args.append((K.CATEGORY_FIELD_NAME, "datastore"))
-        # tf_outputs = PyTerraform.load_terraform_output_from_json_file()
-        # role_file = os.path.join(Settings.TERRAFORM_DIR, "iam_all_read_role_AllReadRole.tf")
-        # if not tf_outputs.get(AllReadRole.get_resource_id(), False):
-        #     args.append((K.CATEGORY_FIELD_NAME, "all_read_role"))
-        #     args.append((K.CATEGORY_FIELD_NAME, "ecs_role"))
-
         Settings.set('SKIP_RESOURCE_EXISTENCE_CHECK', True)
         super().__init__(args)
 

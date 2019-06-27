@@ -71,7 +71,11 @@ class AllReadRoleAutoFixPolicyDocument(iam.IAMPolicyDocumentData):
                 "s3:ListBucketByTags",
                 "s3:PutBucketAcl",
                 "s3:PutBucketPolicy",
-                "s3:PutBucketTagging"
+                "s3:PutBucketTagging",
+                "redshift:AuthorizeClusterSecurityGroupIngress",
+                "redshift:CreateClusterSecurityGroup",
+                "redshift:CreateTags",
+                "redshift:ModifyCluster",
             ],
             'resources': ["*"],
             'effect': "Allow"

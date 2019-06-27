@@ -84,7 +84,7 @@ public class TaggingServiceImpl implements TaggingService, Constants {
         LinkedHashMap<String, Object> app;
         JsonArray buckets;
         try {
-            buckets = repository.getUntaggedIssuesByapplicationFromES(assetGroup, getMandatoryTags(), searchText, from,
+            buckets = repository.getUntaggedIssuesByapplicationFromES(assetGroup, mandatoryTags, searchText, from,
                     size);
         } catch (DataException e) {
             throw new ServiceException(e);
@@ -151,7 +151,7 @@ public class TaggingServiceImpl implements TaggingService, Constants {
      */
     public Map<String, Object> getTaggingSummary(String assetGroup) throws ServiceException {
         List<String> mandatoryTagsList = new ArrayList<>();
-        String ruleMandatoryTags = getMandatoryTags();
+        String ruleMandatoryTags = mandatoryTags;
         if (!StringUtils.isEmpty(ruleMandatoryTags)) {
             mandatoryTagsList = Arrays.asList(ruleMandatoryTags.split(","));
         }
@@ -286,43 +286,6 @@ public class TaggingServiceImpl implements TaggingService, Constants {
     }
 
     /**
-     * Gets the mandatory tags.
-     *
-     * @return the mandatory tags
-     * @throws ServiceException the service exception
-     */
-    private String getMandatoryTags() throws ServiceException {
-        String mand = "mandatoryTags";
-        String mandatoryTags = null;
-        char ch = '"';
-        String mandTags = ch + "" + mand + "" + ch; 
-        JsonObject paramObj = null;
-        JsonObject paramDet = null;
-        JsonArray array = null;
-        JsonParser parser = new JsonParser();
-        List<Map<String, Object>> ruleParams;
-        try {
-            ruleParams = repository.getRuleParamsFromDbByPolicyId(TAGGIG_POLICY);
-        } catch (DataException e) {
-            throw new ServiceException(e);
-        }
-        for (Map<String, Object> params : ruleParams) {
-            String rParams = params.get("ruleParams").toString();
-            paramObj = parser.parse(rParams).getAsJsonObject();
-            array = paramObj.get("params").getAsJsonArray();
-
-            for (JsonElement jsonElement : array) {
-
-                paramDet = jsonElement.getAsJsonObject();
-                if (paramDet.get("key").toString().equals(mandTags)) {
-                    mandatoryTags = paramDet.get("value").getAsString();
-                }
-            }
-        }
-        return mandatoryTags;
-    }
-
-    /**
      * Gets the untagged asset.
      *
      * @param bucketMap the bucket map
@@ -430,31 +393,38 @@ public class TaggingServiceImpl implements TaggingService, Constants {
      * @throws ServiceException the service exception
      */
     private List<Map<String, Object>> getUnTaggedListData(List<Map<String, Object>> unTagsList,String assetGroup,List<String> mandatoryTagsList, Map<String, Long> tagMap) throws ServiceException{
-        Long docCount;
+        Long unTagged;
+        Long tagged= 0l;
         for (String mandatoryTag : mandatoryTagsList) {
             Map<String, Object> data = new HashMap<>();
             Long totalAssets = getTotalAssets(tagMap);
             try {
-                docCount = repository.getUntaggedIssues(assetGroup, mandatoryTag);
+            	unTagged = repository.getUntaggedIssues(assetGroup, mandatoryTag);
             } catch (DataException e) {
                 throw new ServiceException(e);
             }
+            
+            if (unTagged > totalAssets) {
+            	unTagged = totalAssets;
+            }
+            
+            tagged = totalAssets - unTagged;
             data.put("name", mandatoryTag);
-            data.put("untagged", docCount);
-            data.put("tagged", (totalAssets - docCount));
+            data.put("untagged", unTagged);
+            data.put("tagged", tagged);
 
-            if (totalAssets < docCount) {
-                totalAssets = docCount;
+            if (totalAssets < unTagged) {
+                totalAssets = unTagged;
             }
 
-            if (docCount == 0 && totalAssets == 0) {
+            if (unTagged == 0 && totalAssets == 0) {
                 data.put(COMP_PERCENTAGE, INT_HUNDRED);
             }
 
             if (totalAssets > 0) {
                 data.put(
                         COMP_PERCENTAGE,
-                        Math.floor(((totalAssets - Double.parseDouble(String.valueOf(docCount))) / totalAssets)
+                        Math.floor(((totalAssets - Double.parseDouble(String.valueOf(unTagged))) / totalAssets)
                                 * INT_HUNDRED));
             }
             unTagsList.add(data);

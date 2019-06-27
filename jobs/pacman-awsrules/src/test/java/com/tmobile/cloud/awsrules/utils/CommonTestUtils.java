@@ -30,6 +30,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.tmobile.pacman.commons.PacmanSdkConstants;
 import com.tmobile.pacman.commons.rule.Annotation;
 
 public class CommonTestUtils {
@@ -423,6 +424,15 @@ public class CommonTestUtils {
         jsonObject.add("abc",
                 gson.fromJson("r_win_abc__admin", JsonElement.class));
         jsonObject.add("hits", getHitsJson());
+        
+        JsonArray jsonArray = new JsonArray();
+        JsonObject propertySource = new JsonObject();
+        propertySource.add(PacmanSdkConstants.NAME, gson.fromJson("application", JsonElement.class));
+        JsonObject source = new JsonObject();
+        source.add("tag", gson.fromJson("tag", JsonElement.class));
+        propertySource.add(PacmanSdkConstants.SOURCE, source);
+        jsonArray.add(propertySource);
+        jsonObject.add("propertySources", jsonArray);
         return jsonObject;
     }
 
