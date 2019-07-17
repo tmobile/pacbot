@@ -117,8 +117,7 @@ class Install(BaseAction):
         """
         py_terraform = PyTerraform()
 
-        if not dry_run:
-            self.terraform_outputs = py_terraform.save_terraform_output()
+        self.terraform_outputs = py_terraform.save_terraform_output()
 
         self._delete_terraform_provider_file()
         self.current_install_status = self.install_statuses.get('execution_finished')
