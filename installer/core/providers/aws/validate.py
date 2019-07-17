@@ -31,9 +31,7 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
             cidr_blocks = Settings.VPC['CIDR_BLOCKS']
             try:
                 vpcs = vpc.get_vpc_details(
-                    Settings.AWS_ACCESS_KEY,
-                    Settings.AWS_SECRET_KEY,
-                    Settings.AWS_REGION,
+                    Settings.AWS_AUTH_CRED,
                     vpc_ids
                 )
             except Exception as e:
@@ -63,9 +61,7 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
                     subnet_ids = Settings.VPC['SUBNETS']
                     try:
                         valid_subnets = vpc.get_vpc_subnets(
-                            Settings.AWS_ACCESS_KEY,
-                            Settings.AWS_SECRET_KEY,
-                            Settings.AWS_REGION,
+                            Settings.AWS_AUTH_CRED,
                             vpc_ids
                         )
                     except Exception as e:
@@ -83,6 +79,22 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
 
         return K.VALID
 
+    def validate_policies(self):
+        """
+        Check required policies are present in in user or role
+
+        Returns:
+            boolean: True if all policies are present else False
+        """
+        aws_auth_option = Settings.AWS_AUTH_CRED['aws_auth_option']
+        status = self.validate_user_policies() if aws_auth_option == 1 else self.validate_role_policies()
+
+        if not status:
+            yes_or_no = input("\n\t%s: " % self._input_message_in_color(K.POLICY_YES_NO))
+            status = True if yes_or_no.lower() == "yes" else False
+
+        return status
+
     def validate_user_policies(self):
         """
         Check required policies are present in user policies or not. Required policies are kept in the settings AWS_POLICIES_REQUIRED
@@ -90,70 +102,55 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
         Returns:
             boolean: True if all policies are present else False
         """
-        access_key, secret_key = Settings.AWS_ACCESS_KEY, Settings.AWS_SECRET_KEY
-        current_aws_user = iam.get_current_user(access_key, secret_key)
+        current_aws_user = iam.get_current_user(Settings.AWS_AUTH_CRED)
         user_name = current_aws_user.user_name
 
         if user_name:
-            # warning_message = "Policies (" + ", ".join(Settings.AWS_POLICIES_REQUIRED) + ") are required"
-            # self.show_step_inner_warning(warning_message)
-
-            if self._check_user_policies(access_key, secret_key, user_name):
+            if self._check_user_policies(user_name) or self._check_group_policies(user_name):
                 return True
-
-            if self._check_group_policies(access_key, secret_key, user_name):
-                return True
-
-            yes_or_no = input("\n\t%s: " % self._input_message_in_color(K.POLICY_YES_NO))
-
-            if yes_or_no.lower() == "yes":
-                return True
-
-            return False
         elif "root" in current_aws_user.arn:
             return True
-        else:
-            False
 
-    def _check_group_policies(self, access_key, secret_key, user_name):
+        False
+
+    def validate_role_policies(self):
+        role_name = Settings.CALLER_ARN.split('/')[1]
+        role_policy_names = iam.get_role_policy_names(role_name, Settings.AWS_AUTH_CRED)
+
+        return self._check_required_policies_present(role_policy_names, K.CHECKING_ROLE_POLICY)
+
+    def _check_group_policies(self, user_name):
         """
         Check required policies are present in user-group policies or not. Required policies are kept in the settings AWS_POLICIES_REQUIRED
 
         Returns:
             boolean: True if all policies are present else False
         """
-        group_policy_names = iam.get_user_group_policy_names(access_key, secret_key, user_name)
+        group_policy_names = iam.get_user_group_policy_names(Settings.AWS_AUTH_CRED, user_name)
 
-        if self._has_full_access_policies(group_policy_names):
-            self.show_step_inner_messaage(K.FULL_ACCESS_POLICY, K.PRESENT, None)
-            return True
+        return self._check_required_policies_present(group_policy_names, K.CHECKING_GROUP_POLICY)
 
-        if set(Settings.AWS_POLICIES_REQUIRED).difference(set(group_policy_names)):
-            self.show_step_inner_messaage(K.CHECKING_GROUP_POLICY, K.NOT_PRESENT, self.error_message)
-            return False
-
-        self.show_step_inner_messaage(K.CHECKING_GROUP_POLICY, K.PRESENT, self.error_message)
-
-        return True
-
-    def _check_user_policies(self, access_key, secret_key, user_name):
+    def _check_user_policies(self, user_name):
         """
         This method uses the above methods and validate required policies are present in combine User and Group policies
 
         Returns:
             boolean: True if all policies are present else False
         """
-        user_policy_names = iam.get_iam_user_policy_names(access_key, secret_key, user_name)
+        user_policy_names = iam.get_iam_user_policy_names(Settings.AWS_AUTH_CRED, user_name)
 
-        if self._has_full_access_policies(user_policy_names):
+        return self._check_required_policies_present(user_policy_names, K.CHECKING_USER_POLICY)
+
+    def _check_required_policies_present(self, policy_names, policy_type_msg):
+        if self._has_full_access_policies(policy_names):
             self.show_step_inner_messaage(K.FULL_ACCESS_POLICY, K.PRESENT, None)
             return True
 
-        if set(Settings.AWS_POLICIES_REQUIRED).difference(set(user_policy_names)):
-            self.show_step_inner_messaage(K.CHECKING_USER_POLICY, K.NOT_PRESENT, self.error_message)
+        if set(Settings.AWS_POLICIES_REQUIRED).difference(set(policy_names)):
+            self.show_step_inner_messaage(policy_type_msg, K.NOT_PRESENT, self.error_message)
             return False
 
-        self.show_step_inner_messaage(K.CHECKING_USER_POLICY, K.PRESENT, self.error_message)
+        self.show_step_inner_messaage(policy_type_msg, K.PRESENT, self.error_message)
 
         return True
 
@@ -182,7 +179,7 @@ class SystemInstallValidation(SystemValidation):
         if status != K.VALID:
             return False
 
-        status = self.validate_user_policies()
+        status = self.validate_policies()
 
         return status
 
