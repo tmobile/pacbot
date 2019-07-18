@@ -41,9 +41,7 @@ class CloudWatchEventRuleResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = cloudwatch_event.check_rule_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details
 
@@ -93,9 +91,7 @@ class CloudWatchLogGroupResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = cloudwatch_log.check_log_group_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details
 
