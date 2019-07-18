@@ -48,9 +48,7 @@ class RedshiftClusterResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = redshift.check_redshift_cluster_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details
 
@@ -92,9 +90,7 @@ class RedshiftParameterGroupResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = redshift.check_redshift_parameter_group_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details
 
@@ -136,8 +132,6 @@ class RedshiftSubnetGroupResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = redshift.check_redshift_subnet_group_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details

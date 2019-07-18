@@ -42,7 +42,7 @@ class IAMRoleResource(TerraformResource):
         exists = False
 
         if not self.resource_in_tf_output(tf_outputs):
-            exists = iam.check_role_exists(checked_details['value'], input.aws_access_key, input.aws_secret_key)
+            exists = iam.check_role_exists(checked_details['value'], input.AWS_AUTH_CRED)
 
         return exists, checked_details
 
@@ -81,7 +81,7 @@ class IAMRolePolicyResource(TerraformResource):
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
         if not self.resource_in_tf_output(tf_outputs):
-            exists = iam.check_policy_exists(checked_details['value'], input.aws_access_key, input.aws_secret_key, input.aws_account_id)
+            exists = iam.check_policy_exists(checked_details['value'], input.AWS_ACCOUNT_ID, input.AWS_AUTH_CRED)
 
         return exists, checked_details
 
@@ -130,7 +130,7 @@ class IAMInstanceProfileResource(TerraformResource):
         checked_details = {'attr': "name", 'value': self.get_input_attr('name')}
         exists = False
         if not self.resource_in_tf_output(tf_outputs):
-            exists = iam.check_instance_profile_exists(checked_details['value'], input.aws_access_key, input.aws_secret_key)
+            exists = iam.check_instance_profile_exists(checked_details['value'], input.AWS_AUTH_CRED)
 
         return exists, checked_details
 

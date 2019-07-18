@@ -77,9 +77,7 @@ class ElasticsearchDomainResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = es.check_es_domain_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details
 
