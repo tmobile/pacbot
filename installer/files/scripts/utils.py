@@ -3,9 +3,10 @@ from docker import Client
 import json
 import boto3
 import base64
+import uuid
 
 
-def get_provider_credentials(provider, provider_json_file):
+def get_provider_details(provider, provider_json_file):
     """
     From terraform provider file identify the credentials and return it
 
@@ -14,39 +15,73 @@ def get_provider_credentials(provider, provider_json_file):
         provider_json_file (path): Json Provider file abs path
 
     Returns:
-        aws_access_key (str): AWS access key
-        aws_secret_key (str): AWS secret key
-        region_name (str): AWS region name
+        aws_details (dict): Terrafrom AWS provider details
     """
     if provider == "aws":  # TODO- write now we are supporting AWS only
         with open(provider_json_file, 'r') as jsonfile:
-            data = json.load(jsonfile)
+            aws_provider = json.load(jsonfile)
 
-        aws_access_key = data['provider']['aws']['access_key']
-        aws_secret_key = data['provider']['aws']['secret_key']
-        region_name = data['provider']['aws']['region']
-
-        return aws_access_key, aws_secret_key, region_name
+        return aws_provider['provider']['aws']
 
 
-def get_docker_push_aws_auth_config(aws_access_key, aws_secret_key, region_name, log_file):
+def generate_temp_credentials(assume_role_arn):
+    response = boto3.client(
+        'sts'
+    ).assume_role(
+        RoleArn=assume_role_arn,
+        RoleSessionName=str(uuid.uuid4())
+    )
+
+    return response['Credentials']
+
+
+def prepare_aws_client_with_given_aws_details(service_name, aws_details):
+    auth_data = {}
+
+    if 'access_key' in aws_details:
+        auth_data['aws_access_key_id'] = aws_details['access_key']
+        auth_data['aws_secret_access_key'] = aws_details['secret_key']
+    elif 'assume_role' in aws_details:
+        temp_cred = generate_temp_credentials(aws_details['assume_role']['role_arn'])
+        auth_data['aws_access_key_id'] = temp_cred['AccessKeyId']
+        auth_data['aws_secret_access_key'] = temp_cred['SecretAccessKey']
+        auth_data['aws_session_token'] = temp_cred['SessionToken']
+
+    auth_data['region_name'] = aws_details['region']
+
+    return boto3.client(service_name, **auth_data)
+
+
+def prepare_aws_resource_with_given_aws_details(service_name, aws_details):
+    auth_data = {}
+
+    if 'access_key' in aws_details:
+        auth_data['aws_access_key_id'] = aws_details['access_key']
+        auth_data['aws_secret_access_key'] = aws_details['secret_key']
+    elif 'assume_role' in aws_details:
+        temp_cred = generate_temp_credentials(aws_details['assume_role']['role_arn'])
+        auth_data['aws_access_key_id'] = temp_cred['AccessKeyId']
+        auth_data['aws_secret_access_key'] = temp_cred['SecretAccessKey']
+        auth_data['aws_session_token'] = temp_cred['SessionToken']
+
+    auth_data['region_name'] = aws_details['region']
+
+    return boto3.resource(service_name, **auth_data)
+
+
+def get_docker_push_aws_auth_config(aws_details, log_file):
     """
     Return AWS auth config for pushing docker image to ECR
 
     Args:
-        aws_access_key (str): AWS access key
-        aws_secret_key (str): AWS secret key
-        region_name (str): AWS region name
+        aws_details (dict): AWS details
         log_file (path): Log file path
 
     Returns:
         auth_config_payload (dict): AWS auth config
     """
-    ecr = boto3.client(
-        'ecr',
-        region_name=region_name,
-        aws_access_key_id=aws_access_key,
-        aws_secret_access_key=aws_secret_key)
+    ecr = prepare_aws_client_with_given_aws_details('ecr', aws_details)
+
     write_to_log_file(log_file, " " * 10 + "Generating Auth token using boto3...")
 
     auth = ecr.get_authorization_token()
