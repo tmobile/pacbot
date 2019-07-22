@@ -31,8 +31,8 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
             cidr_blocks = Settings.VPC['CIDR_BLOCKS']
             try:
                 vpcs = vpc.get_vpc_details(
-                    Settings.AWS_AUTH_CRED,
-                    vpc_ids
+                    vpc_ids,
+                    Settings.AWS_AUTH_CRED
                 )
             except Exception as e:
                 self.error_message = str(e) + "\n\t" + K.CORRECT_VPC_MSG
@@ -61,8 +61,8 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
                     subnet_ids = Settings.VPC['SUBNETS']
                     try:
                         valid_subnets = vpc.get_vpc_subnets(
-                            Settings.AWS_AUTH_CRED,
-                            vpc_ids
+                            vpc_ids,
+                            Settings.AWS_AUTH_CRED
                         )
                     except Exception as e:
                         self.error_message = str(e) + "\n\t" + K.CORRECT_VPC_MSG
@@ -126,7 +126,7 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
         Returns:
             boolean: True if all policies are present else False
         """
-        group_policy_names = iam.get_user_group_policy_names(Settings.AWS_AUTH_CRED, user_name)
+        group_policy_names = iam.get_user_group_policy_names(user_name, Settings.AWS_AUTH_CRED)
 
         return self._check_required_policies_present(group_policy_names, K.CHECKING_GROUP_POLICY)
 
@@ -137,7 +137,7 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
         Returns:
             boolean: True if all policies are present else False
         """
-        user_policy_names = iam.get_iam_user_policy_names(Settings.AWS_AUTH_CRED, user_name)
+        user_policy_names = iam.get_iam_user_policy_names(user_name, Settings.AWS_AUTH_CRED)
 
         return self._check_required_policies_present(user_policy_names, K.CHECKING_USER_POLICY)
 

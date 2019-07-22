@@ -15,7 +15,7 @@ def get_ec2_client(aws_auth_cred):
     return prepare_aws_client_with_given_cred('ec2', aws_auth_cred)
 
 
-def get_vpc_details(aws_auth_cred, vpc_ids):
+def get_vpc_details(vpc_ids, aws_auth_cred):
     """
     Find VPC details of all the ids passed to this method
 
@@ -31,7 +31,7 @@ def get_vpc_details(aws_auth_cred, vpc_ids):
     return response["Vpcs"]
 
 
-def get_vpc_subnets(aws_auth_cred, vpc_ids):
+def get_vpc_subnets(vpc_ids, aws_auth_cred):
     """
     Find all subnets under a VPC
 
