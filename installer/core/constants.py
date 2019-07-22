@@ -27,9 +27,9 @@ INPUT_READING_STARTED = "Reading required inputs from user"
 INPUT_READING_COMPLETED = "Required inputs are available!!!"
 
 AWS_AUTH_MECHANISM = "Select AWS authentication mechanism: "
-AWS_WITH_KEYS = "1. with Access Key and Secret Key "
-AWS_WITH_ASSUME_ROLE = "2. with an assumed role arn"
-AWS_WITH_EC2_ROLE = "3. with role attached to the EC2 instance"
+AWS_WITH_KEYS = "1. Using access key and secret key "
+AWS_WITH_ASSUME_ROLE = "2. Assuming an IAM role"
+AWS_WITH_EC2_ROLE = "3. Using IAM role attached to the this instance"
 AWS_CHOOSE_AUTH_OPTION = "Type 1 or 2 or 3 to continue to create services in AWS: "
 AWS_INCORRECT_MECHANISM = "Entered an incorrect value!!!"
 
