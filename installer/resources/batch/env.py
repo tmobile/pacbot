@@ -29,7 +29,7 @@ class RuleEngineBatchJobEnv(BatchComputeEnvironmentResource):
     DEPENDS_ON = [BatchIAMRolePolicyAttach]  # This is required otherwise policy would be dettached from Batchrole
 
     def pre_terraform_apply(self):
-        ec2_client = get_ec2_client(self.input.aws_access_key, self.input.aws_secret_key, self.input.aws_region)
+        ec2_client = get_ec2_client(self.input.AWS_AUTH_CRED)
         ec2_key_pair = self.get_input_attr('ec2_key_pair')
         try:
             key_obj = ec2_client.create_key_pair(KeyName=ec2_key_pair)
@@ -41,9 +41,7 @@ class RuleEngineBatchJobEnv(BatchComputeEnvironmentResource):
     def check_batch_jobs_running(self):
         envs = get_compute_environments(
             [self.get_input_attr('compute_environment_name')],
-            self.input.aws_access_key,
-            self.input.aws_secret_key,
-            self.input.aws_region)
+            self.input.AWS_AUTH_CRED)
 
         if not len(envs):
             return
@@ -59,7 +57,7 @@ class RuleEngineBatchJobEnv(BatchComputeEnvironmentResource):
             sys.exit()
 
     def post_terraform_destroy(self):
-        ec2_client = get_ec2_client(self.input.aws_access_key, self.input.aws_secret_key, self.input.aws_region)
+        ec2_client = get_ec2_client(self.input.AWS_AUTH_CRED)
         ec2_key_pair = self.get_input_attr('ec2_key_pair')
         try:
             key_obj = ec2_client.delete_key_pair(KeyName=ec2_key_pair)
