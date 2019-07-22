@@ -2,6 +2,7 @@ from core.terraform.resources.misc import NullResource
 from resources.s3.bucket import BucketStorage
 from core.config import Settings
 from core.log import SysLog
+from core.providers.aws.boto3 import s3
 import shutil
 import boto3
 import os
@@ -12,11 +13,7 @@ class UploadTrraform(NullResource):
 
     def post_terraform_apply(self):
         archive_type = "zip"
-        s3_client = boto3.client(
-            "s3",
-            region_name=Settings.AWS_REGION,
-            aws_access_key_id=Settings.AWS_ACCESS_KEY,
-            aws_secret_access_key=Settings.AWS_SECRET_KEY)
+        s3_client = s3.get_s3_client(Settings.AWS_AUTH_CRED)
 
         zip_file_name = Settings.RESOURCE_NAME_PREFIX + "-terraform-installer-backup"
         zip_file_abs_path = os.path.join(Settings.BASE_APP_DIR, zip_file_name)
