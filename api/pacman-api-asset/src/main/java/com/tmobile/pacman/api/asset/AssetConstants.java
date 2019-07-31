@@ -97,6 +97,9 @@ public final class AssetConstants {
     public static final String ESQUERY_CLOSE = "\"}}]}}}";
     public static final String ESQUERY_BULK = "/_bulk?refresh=true";
     public static final String RESPONSE_ERROR = "\"errors\":true";
+    public static final String FILTER_CATEGORY = "category";
+    public static final String FILTER_GENERAL = "general";
+    public static final String FILTER_RECOMMENDATION_ID = "recommendationId";
     
 }
 
