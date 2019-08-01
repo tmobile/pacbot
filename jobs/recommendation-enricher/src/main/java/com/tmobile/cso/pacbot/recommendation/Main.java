@@ -62,7 +62,10 @@ public class Main implements Constants {
      * @return the map
      */
     public static Map<String, Object> shipData(Map<String, String> params) {
-    	String jobName = System.getProperty("jobName");
+    	String jobName  = params.get("jobName");
+    	if(jobName.isEmpty()){
+    		jobName = "aws-recommendations-collector";
+    	}
         List<Map<String,String>> errorList = new ArrayList<>();
         try {
 			MainUtil.setup(params);
