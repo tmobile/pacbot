@@ -63,17 +63,13 @@ class Upgrade(BaseCommand):
         if not self.dry_run:
             elb.delete_all_listeners_of_alb(
                 ApplicationLoadBalancer.get_input_attr('name'),
-                Settings.AWS_ACCESS_KEY,
-                Settings.AWS_SECRET_KEY,
-                Settings.AWS_REGION)
+                Settings.AWS_AUTH_CRED)
 
             tg_resources = self._get_resources_of_a_given_class_type(resources_to_process, ALBTargetGroupResource)
             tg_names = [resource.get_input_attr('name') for resource in tg_resources]
             elb.delete_alltarget_groups(
                 tg_names,
-                Settings.AWS_ACCESS_KEY,
-                Settings.AWS_SECRET_KEY,
-                Settings.AWS_REGION)
+                Settings.AWS_AUTH_CRED)
 
     def upgrade_pacbot(self, input_instance):
         """

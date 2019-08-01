@@ -52,9 +52,7 @@ class RDSResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = rds.check_rds_instance_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details
 
@@ -97,9 +95,7 @@ class RDSOptionGroupResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = rds.check_rds_option_group_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details
 
@@ -141,9 +137,7 @@ class RDSParameterGroupResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = rds.check_rds_parameter_group_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details
 
@@ -185,8 +179,6 @@ class RDSSubnetGroupResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = rds.check_rds_subnet_group_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details

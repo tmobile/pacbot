@@ -1,39 +1,32 @@
+from core.providers.aws.boto3 import prepare_aws_client_with_given_cred
 import boto3
 
 
-def get_ecr_client(access_key, secret_key, region):
+def get_ecr_client(aws_auth_cred):
     """
     Returns the client object for AWS ECR (Elastic COntainer Repository)
 
     Args:
-        access_key (str): AWS Access Key
-        secret_key (str): AWS Secret Key
-        region (str): AWS Region
+        aws_auth (dict): Dict containing AWS credentials
 
     Returns:
         obj: AWS ECR Object
     """
-    return boto3.client(
-        "ecr",
-        region_name=region,
-        aws_access_key_id=access_key,
-        aws_secret_access_key=secret_key)
+    return prepare_aws_client_with_given_cred("ecr", aws_auth_cred)
 
 
-def check_ecr_exists(repo_name, access_key, secret_key, region):
+def check_ecr_exists(repo_name, aws_auth_cred):
     """
     Check wheter the given ECR already exists in AWS account
 
     Args:
         repo_name (str): Repository name
-        access_key (str): AWS Access Key
-        secret_key (str): AWS Secret Key
-        region (str): AWS Region
+        aws_auth (dict): Dict containing AWS credentials
 
     Returns:
         Boolean: True if env exists else False
     """
-    client = get_ecr_client(access_key, secret_key, region)
+    client = get_ecr_client(aws_auth_cred)
     try:
         response = client.describe_repositories(repositoryNames=[repo_name])
         return True if len(response['repositories']) else False
