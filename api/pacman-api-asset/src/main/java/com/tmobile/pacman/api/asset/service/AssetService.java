@@ -487,21 +487,5 @@ public interface AssetService {
      */
     public List<Map<String, Object>> getDataTypeInfoByTargetType(String resourceId) throws ServiceException;
     
-    /**
-     * Fetches all application details by asset group name
-     *
-     * @param assetGroup - valid assetGroup id
-     * 
-     * @return ApplicationDetailsResponse - valid and invalid application details list
-     * @throws DataException, JsonProcessingException
-     */
-	public ApplicationDetailsResponse getApplicationDetailsByAssetGroup(String assetGroup, String applicationName) throws DataException, JsonProcessingException, Exception;
-	
-	 /**
- 	 * Gets the all cost types.
- 	 *
- 	 * @return the all cost types
- 	 */
- 	List<Map<String, Object>> getAllCostTypes();
 
 }
