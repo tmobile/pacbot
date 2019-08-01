@@ -19,8 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.tmobile.pacman.api.asset.domain.ApplicationDetailsResponse;
 import com.tmobile.pacman.api.asset.domain.ResponseWithFieldsByTargetType;
 import com.tmobile.pacman.api.asset.model.DefaultUserAssetGroup;
 import com.tmobile.pacman.api.commons.exception.DataException;
