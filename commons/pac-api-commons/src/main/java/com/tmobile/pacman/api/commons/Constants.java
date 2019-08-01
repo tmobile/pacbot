@@ -290,5 +290,8 @@ public interface Constants {
     String ERROR_MESSAGE = "errorMessage";
     String ERROR_DETAILS = "errorDetails";
     String PROVIDER = "provider";
+    String EVENTCATEGORY = "eventtypecategory";
+    String EVENTSTATUS = "eventstatus";
+    String FILTER_MANDATORY = "Filter is mandatory, pass the resourceid/docid/issueid/planid";
 }
 
