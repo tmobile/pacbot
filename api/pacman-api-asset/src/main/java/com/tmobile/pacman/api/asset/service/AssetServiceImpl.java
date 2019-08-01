@@ -17,10 +17,6 @@ package com.tmobile.pacman.api.asset.service;
 
 import java.io.IOException;
 import java.time.LocalDate;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.google.common.collect.Lists;
-
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -51,11 +47,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.tmobile.pacman.api.asset.AssetConstants;
-import com.tmobile.pacman.api.asset.domain.ApplicationDetail;
-import com.tmobile.pacman.api.asset.domain.ApplicationDetailsESResponse;
-import com.tmobile.pacman.api.asset.domain.ApplicationDetailsResponse;
-import com.tmobile.pacman.api.asset.domain.ApplicationESDetail;
-import com.tmobile.pacman.api.asset.domain.Organization;
 import com.tmobile.pacman.api.asset.domain.ResponseWithFieldsByTargetType;
 import com.tmobile.pacman.api.asset.model.DefaultUserAssetGroup;
 import com.tmobile.pacman.api.asset.repository.AssetRepository;
