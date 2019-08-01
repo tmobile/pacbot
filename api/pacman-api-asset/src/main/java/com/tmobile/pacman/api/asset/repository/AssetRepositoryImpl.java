@@ -55,6 +55,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Strings;
 import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -63,6 +64,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.tmobile.pacman.api.asset.AssetConstants;
+import com.tmobile.pacman.api.asset.domain.ApplicationDetailsESResponse;
 import com.tmobile.pacman.api.asset.domain.ResourceResponse;
 import com.tmobile.pacman.api.asset.domain.ResourceResponse.Source;
 import com.tmobile.pacman.api.asset.model.DefaultUserAssetGroup;
@@ -2358,4 +2360,70 @@ public class AssetRepositoryImpl implements AssetRepository {
             return assetList;
         }
     }
+    
+    @Override
+	public Map<String, Long> getApplicationAssetCountByAssetGroup(String assetGroupName, String domain)
+			throws DataException {
+
+		List<String> targetTypes = getTargetTypesByAssetGroup(assetGroupName, domain).stream()
+				.map(obj -> obj.get(Constants.TYPE).toString()).collect(Collectors.toList());
+		Map<String, Object> filter = new HashMap<>();
+		filter.put(Constants.LATEST, Constants.TRUE);
+		filter.put(AssetConstants.UNDERSCORE_ENTITY, Constants.TRUE);
+		Map<String, Object> mustTermsFilter = new HashMap<>();
+		mustTermsFilter.put(AssetConstants.UNDERSCORE_TYPE, targetTypes);
+		Map<String, Long> applicationMap = new HashMap<>();
+
+		try {
+			applicationMap = esRepository.getTotalDistributionForIndexAndType(assetGroupName, null, filter, null, null,
+					Constants.TAGS_APPS, Constants.TEN_THOUSAND, mustTermsFilter);
+		} catch (Exception e) {
+			LOGGER.error(AssetConstants.ERROR_GETAPPSBYAG, e);
+			throw new DataException(e);
+		}
+
+		return applicationMap;
+	}
+    
+    @Override
+	public List<ApplicationDetailsESResponse> getApplicationDetails() throws JsonProcessingException, DataException {
+		String esQuery = "{\"size\":10000,\"query\":{\"bool\":{\"must\":[{\"term\":{\"latest\":\"true\"}}]}},\"_source\":[\"appTag\",\"description\",\"director\",\"executiveSponsor\",\"_orgInfo\"]}";
+		String responseJson = StringUtils.EMPTY;
+		String url = esUrl + "/aws_apps" + "/apps/_search";
+		try {
+			responseJson = PacHttpUtils.doHttpPost(url, esQuery);
+		} catch (Exception e) {
+			LOGGER.error("Error in getting application details", e);
+			throw new DataException("Error in getting application details");
+		}
+		if (!StringUtils.isBlank(responseJson)) {
+			JsonParser jsonParser = new JsonParser();
+			JsonObject resultJson = jsonParser.parse(responseJson).getAsJsonObject();
+			JsonObject hitsJson = jsonParser.parse(resultJson.get("hits").toString()).getAsJsonObject();
+			Type type = new TypeToken<List<ApplicationDetailsESResponse>>() {
+			}.getType();
+			return new Gson().fromJson(hitsJson.getAsJsonObject().get("hits").toString(), type);
+		}
+		return Lists.newArrayList();
+	}
+    
+    @Override
+    public List<Map<String, Object>> getDatasourceForCostMapping(List<String> typeList) {
+        String targetTypeQuery = typeList.stream().map(targettype -> "\"" + targettype.trim() + "\"")
+                .collect(Collectors.joining(","));
+        String query = "select distinct type as " + Constants.TYPE + ", datasource as " + Constants.PROVIDER
+                + " from Cost_Mappings";
+        if (!CollectionUtils.isEmpty(typeList)) {
+            query += " WHERE type IN (" + targetTypeQuery + ")";
+        }
+        return rdsRepository.getDataFromPacman(query);
+    }
+    
+    @Override
+	public List<Map<String, Object>> getAllCostTypes() {
+
+		String query = "select distinct type as type from Cost_Mappings";
+		return rdsRepository.getDataFromPacman(query);
+
+	}
 }

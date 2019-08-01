@@ -21,6 +21,8 @@ import java.util.Map;
 
 import org.springframework.stereotype.Repository;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.tmobile.pacman.api.asset.domain.ApplicationDetailsESResponse;
 import com.tmobile.pacman.api.asset.model.DefaultUserAssetGroup;
 import com.tmobile.pacman.api.commons.exception.DataException;
 import com.tmobile.pacman.api.commons.exception.NoDataFoundException;
@@ -505,4 +507,39 @@ public interface AssetRepository {
      * @throws DataException
      */
     public List<Map<String, Object>> getAdGroupDetails() throws DataException;
+    
+    /**
+     * Fetches all the applications and assetcount for each application for the particular asset group.
+     *
+     * @param assetGroupName name of the asset group
+     * @param domain the domain of asset group
+     * 
+     * @return list of applications.
+     * @throws DataException when there is an error while fetching data from ES
+     */
+    public Map<String, Long> getApplicationAssetCountByAssetGroup(String assetGroupName, String domain) throws DataException;
+    
+    /**
+     * Fetches all application details by asset group name
+     *
+     * @param applications - valid list of applications
+     * 
+     * @return List<ApplicationDetailsESResponse> - valid and invalid application details list
+     * @throws DataException, JsonProcessingException
+     */
+	public List<ApplicationDetailsESResponse> getApplicationDetails() throws JsonProcessingException, DataException;
+	
+	/**
+     * Get the datasource for the given type list
+     * @param typeList
+     * @return
+     */
+    public List<Map<String, Object>> getDatasourceForCostMapping(List<String> typeList);
+    
+    /**
+     * Gets the all cost types.
+     *
+     * @return the all cost types
+     */
+    List<Map<String, Object>> getAllCostTypes();
 }
