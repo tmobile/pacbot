@@ -36,9 +36,7 @@ class ECSClusterResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = ecs.check_ecs_cluster_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details
 
@@ -83,9 +81,7 @@ class ECSTaskDefinitionResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = ecs.check_ecs_task_definition_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details
 

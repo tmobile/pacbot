@@ -26,9 +26,17 @@ TOOLS_CHECK_COMPLETED = "Required tools are available!!!"
 INPUT_READING_STARTED = "Reading required inputs from user"
 INPUT_READING_COMPLETED = "Required inputs are available!!!"
 
+AWS_AUTH_MECHANISM = "Select AWS authentication mechanism: "
+AWS_WITH_KEYS = "1. Using access key and secret key "
+AWS_WITH_ASSUME_ROLE = "2. Assuming an IAM role"
+AWS_WITH_EC2_ROLE = "3. Using IAM role attached to the this instance"
+AWS_CHOOSE_AUTH_OPTION = "Type 1 or 2 or 3 to continue to create services in AWS: "
+AWS_INCORRECT_MECHANISM = "Entered an incorrect value!!!"
+
 AWS_ACCESS_KEY_INPUT = "Please enter AWS access key: "
 AWS_SECRET_KEY_INPUT = "Please enter AWS secret key: "
 AWS_REGION_INPUT = "Please enter region: "
+AWS_ASSUME_ROLE_INPUT = "Enter IAM role to be assumed: "
 INVALID_KEY = "Entered invalid Key!!!"
 SETTINGS_CHECK_STARTED = "Checking settings and inputs"
 VPC_CHECK_STARTED = "Checking VPC and CIDR Blocks"
@@ -41,6 +49,7 @@ INVALID_SUBNET_ZONES = "Subnets provided should be on different availability zon
 
 CHECKING_GROUP_POLICY = "Checking group-attached policies"
 CHECKING_USER_POLICY = "Checking user-attached policies"
+CHECKING_ROLE_POLICY = "Checkcing role policies"
 FULL_ACCESS_POLICY = "Administrator access policy"
 POLICY_YES_NO = "If you have added custom policies with all permissions, please type Yes or No"
 

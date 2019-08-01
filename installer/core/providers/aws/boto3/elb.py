@@ -1,39 +1,32 @@
+from core.providers.aws.boto3 import prepare_aws_client_with_given_cred
 import boto3
 
 
-def get_elbv2_client(access_key, secret_key, region):
+def get_elbv2_client(aws_auth_cred):
     """
     Returns the client object for AWS ELB
 
     Args:
-        access_key (str): AWS Access Key
-        secret_key (str): AWS Secret Key
-        region (str): AWS Region
+       aws_auth (dict): Dict containing AWS credentials
 
     Returns:
         obj: AWS ELB Object
     """
-    return boto3.client(
-        "elbv2",
-        region_name=region,
-        aws_access_key_id=access_key,
-        aws_secret_access_key=secret_key)
+    return prepare_aws_client_with_given_cred("elbv2", aws_auth_cred)
 
 
-def get_alb(alb_name, access_key, secret_key, region):
+def get_alb(alb_name, aws_auth_cred):
     """
     Find and return loadbalancers of mentioned name
 
     Args:
         alb_name (str): Load balancer name
-        access_key (str): AWS Access Key
-        secret_key (str): AWS Secret Key
-        region (str): AWS Region
+        aws_auth (dict): Dict containing AWS credentials
 
     Returns:
         alb (dict): Loadbalancer details
     """
-    client = get_elbv2_client(access_key, secret_key, region)
+    client = get_elbv2_client(aws_auth_cred)
     try:
         response = client.describe_load_balancers(Names=[alb_name])
         albs = response['LoadBalancers']
@@ -43,36 +36,32 @@ def get_alb(alb_name, access_key, secret_key, region):
         return None
 
 
-def check_alb_exists(alb_name, access_key, secret_key, region):
+def check_alb_exists(alb_name, aws_auth_cred):
     """
     Check whether the given ALB already exists in the AWS Account
 
     Args:
         alb_name (str): Load balancer name
-        access_key (str): AWS Access Key
-        secret_key (str): AWS Secret Key
-        region (str): AWS Region
+        aws_auth (dict): Dict containing AWS credentials
 
     Returns:
         Boolean: True if env exists else False
     """
-    return True if get_alb(alb_name, access_key, secret_key, region) else False
+    return True if get_alb(alb_name, aws_auth_cred) else False
 
 
-def check_target_group_exists(tg_name, access_key, secret_key, region):
+def check_target_group_exists(tg_name, aws_auth_cred):
     """
     Check whether the given Target group already exists in the AWS Account
 
     Args:
         tg_name (str): Target group name
-        access_key (str): AWS Access Key
-        secret_key (str): AWS Secret Key
-        region (str): AWS Region
+        aws_auth (dict): Dict containing AWS credentials
 
     Returns:
         Boolean: True if env exists else False
     """
-    client = get_elbv2_client(access_key, secret_key, region)
+    client = get_elbv2_client(aws_auth_cred)
     try:
         response = client.describe_target_groups(Names=[tg_name])
         return True if len(response['TargetGroups']) else False
@@ -80,23 +69,21 @@ def check_target_group_exists(tg_name, access_key, secret_key, region):
         return False
 
 
-def delete_all_listeners_of_alb(alb_name, access_key, secret_key, region):
+def delete_all_listeners_of_alb(alb_name, aws_auth_cred):
     """
     Delete all listeners and target roups of a load balancers
 
     Args:
         alb_name (str): Load balancer name
-        access_key (str): AWS Access Key
-        secret_key (str): AWS Secret Key
-        region (str): AWS Region
+        aws_auth (dict): Dict containing AWS credentials
 
     Returns:
         Boolean: True if env exists else False
     """
-    alb = get_alb(alb_name, access_key, secret_key, region)
+    alb = get_alb(alb_name, aws_auth_cred)
 
     if alb:
-        client = get_elbv2_client(access_key, secret_key, region)
+        client = get_elbv2_client(aws_auth_cred)
         listeners = client.describe_listeners(LoadBalancerArn=alb['LoadBalancerArn'])
 
         for listener in listeners['Listeners']:
@@ -106,8 +93,8 @@ def delete_all_listeners_of_alb(alb_name, access_key, secret_key, region):
                 raise Exception("Not able to remove listener: %s" % listener['ListenerArn'])
 
 
-def delete_alltarget_groups(tg_names, access_key, secret_key, region):
-    client = get_elbv2_client(access_key, secret_key, region)
+def delete_alltarget_groups(tg_names, aws_auth_cred):
+    client = get_elbv2_client(aws_auth_cred)
     try:
         target_groups = client.describe_target_groups(Names=tg_names)
         tgs = target_groups['TargetGroups']
