@@ -99,7 +99,18 @@ public class AutoFixTransaction {
    /** inline policy*/
    private String inlinePolicy;
    
-   public String getInlinePolicy() {
+   /** The parent doc id. */
+   private String parentDocId;
+   
+   public String getParentDocId() {
+	return parentDocId;
+}
+
+public void setParentDocId(String parentDocId) {
+	this.parentDocId = parentDocId;
+}
+
+public String getInlinePolicy() {
 		return inlinePolicy;
 	}
 
@@ -228,7 +239,7 @@ public class AutoFixTransaction {
     * @param region
     */
    public AutoFixTransaction(AutoFixAction action, String resourceId, String ruleId, String executionId, String transactionId,
-           String desc,String type,String targetType,String issueId,String accountId,String region) {
+           String desc,String type,String targetType,String issueId,String accountId,String region,String parentDocId) {
        super();
        this.transationTime = CommonUtils.getCurrentDateStringWithFormat(PacmanSdkConstants.PAC_TIME_ZONE,
                PacmanSdkConstants.DATE_FORMAT);
@@ -243,6 +254,7 @@ public class AutoFixTransaction {
        this.issueId=issueId;
        this.accountId=accountId;
        this.region=region;
+       this.parentDocId=parentDocId;
    }
    
    /**

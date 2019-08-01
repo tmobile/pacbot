@@ -36,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.tmobile.pacman.common.AutoFixAction;
 import com.tmobile.pacman.common.PacmanSdkConstants;
+import com.tmobile.pacman.commons.autofix.AutoFixPlan;
 import com.tmobile.pacman.dto.AutoFixTransaction;
 import com.tmobile.pacman.util.CommonUtils;
 import com.tmobile.pacman.util.ESUtils;
@@ -187,7 +188,7 @@ public class ElasticSearchDataPublisher {
      * @param ruleParam
      * @return
      */
-    private String getIndexName(Map<String, String> ruleParam) {
+    public static String getIndexName(Map<String, String> ruleParam) {
         
         return ruleParam.get(PacmanSdkConstants.DATA_SOURCE_KEY).replace("_all", "") + "_"
                 + ruleParam.get(PacmanSdkConstants.TARGET_TYPE);
@@ -217,6 +218,36 @@ public class ElasticSearchDataPublisher {
             }
         
         client = null;
+    }
+    
+    /**
+     * 
+     * @return
+     */
+    public <T> Boolean postDocAsChildOfType(AutoFixPlan plan,String docId,Map<String, String> ruleParam, String planTypeName, String parentType,String parentId ){
+        
+        logger.debug("posting the plan to ES plan id =  {}" , plan.getPlanId());
+        Gson gson = new Gson();
+        if(!ESUtils.isValidType(ESUtils.getEsUrl(),getIndexName(ruleParam),planTypeName)){
+            try {
+                    ESUtils.createMappingWithParent(ESUtils.getEsUrl(),getIndexName(ruleParam),planTypeName, parentType);
+            } catch (Exception e) {
+                logger.error("uanble to create child type");
+            }
+        }
+        
+        IndexRequest indexRequest = new IndexRequest(getIndexName(ruleParam), planTypeName, docId);
+        indexRequest.source(gson.toJson(plan),XContentType.JSON);
+        indexRequest.parent(parentId);
+        try {
+                client.index(indexRequest);
+        } catch (IOException e) {
+           logger.error("error indexing autofix plan",e);
+           return false;
+        }
+        logger.debug("postes the plan to ES plan id =  {}" , plan.getPlanId());
+
+        return true;
     }
     
 }

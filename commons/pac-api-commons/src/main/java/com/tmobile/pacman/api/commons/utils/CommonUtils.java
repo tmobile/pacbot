@@ -348,4 +348,27 @@ public class CommonUtils {
 		}
 		return ssl_ctx;
 	}
+	
+	// If previous character is space and current 
+    // character is not space then it shows that 
+    // current letter is the starting of the word 
+	/**
+	 * @param str input String
+	 * @return string with capital case
+	 */
+public static String capitailizeWord(String mainStr) { 
+		
+		String str = mainStr.replaceAll("_", " ").toLowerCase();
+		StringBuffer s = new StringBuffer(); 
+  
+        char ch = ' '; 
+        for (int i = 0; i < str.length(); i++) { 
+            if (ch == ' ' && str.charAt(i) != ' ') 
+                s.append(Character.toUpperCase(str.charAt(i))); 
+            else
+                s.append(str.charAt(i)); 
+            ch = str.charAt(i); 
+        } 
+        return s.toString().trim(); 
+    } 
 }

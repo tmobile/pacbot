@@ -73,13 +73,18 @@ public class NextStepManager {
      *
      * @param ruleId the rule id
      * @param resourceId the resource id
+     * @param resourceId 
      * @param clientMap the client map
      * @param serviceType the service type
      * @return the next step
      */
     @SuppressWarnings("unchecked")
-    public AutoFixAction getNextStep(String ruleId , String normalizedResourceId,String resourceId,  Map<String, Object> clientMap, AWSService serviceType) {
+    public AutoFixAction getNextStep(Map<String, String> ruleParam , String normalizedResourceId,  String resourceId, Map<String, Object> clientMap, 
+            AWSService serviceType) {
 
+        
+        String ruleId = ruleParam.get(PacmanSdkConstants.RULE_ID);
+        
         try {
             
            //silent fix can only be aplied to tagging rules , where exception does not makes much sense 
@@ -104,13 +109,13 @@ public class NextStepManager {
             }
             Map<String, Object> resourceDetailsMap = (Map<String, Object>) CommonUtils.deSerializeToObject(response);
             Double responseCode = Double.valueOf((resourceDetailsMap.get("responseCode").toString()));
-            long autoFixDelay = getAutoFixDelay(ruleId);
+            int autoFixDelay = getAutoFixDelay(ruleId);
             int maxEmails = getMaxNotifications(ruleId);
            
             List<String> lastActions = (List<String>) resourceDetailsMap.get("lastActions");
             
             if(CollectionUtils.isNullOrEmpty(lastActions)){
-                    //no action taken yet, as silent fix is not enabled , first action should be email
+                    //no action taken yet, and silent fix is not enabled , first action should be email
                     return AutoFixAction.AUTOFIX_ACTION_EMAIL;
             }else{
                     Collections.sort(lastActions);//sort based on date and find the first action time
@@ -146,7 +151,7 @@ public class NextStepManager {
      * @param ruleId
      * @return
      */
-    private int getMaxNotifications(String ruleId) {
+    public static int getMaxNotifications(String ruleId) {
 
         String ruleSpecificValue = CommonUtils.getPropValue(PacmanSdkConstants.AUTOFIX_MAX_EMAILS + "." + ruleId);
         if(Strings.isNullOrEmpty(ruleSpecificValue)){
@@ -182,15 +187,15 @@ public class NextStepManager {
      * @param ruleId 
      * @return
      */
-    public static long getAutoFixDelay(String ruleId) {
-        long delay = 24;// to be safe this is initialized with 24 and not 0 , though this will be overridden by config property
+    public static Integer getAutoFixDelay(String ruleId) {
+    	int delay = 24;// to be safe this is initialized with 24 and not 0 , though this will be overridden by config property
         try{
             String delayForRule = CommonUtils.getPropValue(new StringBuilder(PacmanSdkConstants.PAC_AUTO_FIX_DELAY_KEY).append(".").append(ruleId).toString());
             if(Strings.isNullOrEmpty(delayForRule)){
                 //get default delay
                 delayForRule =  CommonUtils.getPropValue(new StringBuilder(PacmanSdkConstants.PAC_AUTO_FIX_DELAY_KEY).append(".").append(PacmanSdkConstants.PAC_DEFAULT).toString());
             }
-                delay =  Long.parseLong(delayForRule);
+                delay =  Integer.parseInt(delayForRule);
         }catch (NumberFormatException nfe) {
             logger.error("unable to find delay param will not execute fix");
             throw nfe;

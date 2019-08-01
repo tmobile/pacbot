@@ -57,7 +57,7 @@ public class ResourceOwnerService {
     private static final String HEIMDALL_HOST = "heimdall-host";
 
     /** The Constant HEIMDALL_RESOURCE_INDEX. */
-    private static final String HEIMDALL_RESOURCE_INDEX = "pacman-resource-claim";
+    private static final String HEIMDALL_RESOURCE_INDEX = "pacman-resource-claim1";
 
     /**
      * Find resource owner by id and type.
