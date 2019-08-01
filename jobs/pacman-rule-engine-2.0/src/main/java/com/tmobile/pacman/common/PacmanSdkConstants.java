@@ -599,5 +599,11 @@ public interface PacmanSdkConstants extends com.tmobile.pacman.commons.PacmanSdk
     
     /** The app elb arn attribute name. */
     String APP_ELB_ARN_ATTRIBUTE_NAME="resourceDisplayId";
+    
+    /** The autofix blacklist accounts prefix. */
+    String AUTOFIX_BLACKLIST_ACCOUNTS_PREFIX = "autofix.blacklist.accounts.";
+    
+    /** The pac monitor slack user. */
+    String PAC_MONITOR_SLACK_USER = "pacman.monitoring.slack.user";
 
 }
