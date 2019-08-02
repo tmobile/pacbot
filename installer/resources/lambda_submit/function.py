@@ -134,7 +134,7 @@ class RecommendationsCollectorCloudWatchEventTarget(CloudWatchEventTargetResourc
     target_id = 'RecommendationsCollectorTarget'  # Unique identifier
     target_input = json.dumps({
         'jobName': "aws-recommendations-collector",
-        'jobUuid': "aws-recommendations-collector",
+        'jobUuid': "recommendation-enricher-jar-with-dependencies",
         'jobType': "jar",
         'jobDesc': "Index trusted advisor checks as recommendations",
         'environmentVariables': [
@@ -176,7 +176,7 @@ class CloudNotificationCollectorCloudWatchEventTarget(CloudWatchEventTargetResou
     target_id = 'CloudNotificationCollectorTarget'  # Unique identifier
     target_input = json.dumps({
         'jobName': "aws-cloud-notification-collector",
-        'jobUuid': "aws-cloud-notification",
+        'jobUuid': "pacman-cloud-notifications-jar-with-dependencies",
         'jobType': "jar",
         'jobDesc': "Health Notification Collector",
         'environmentVariables': [
