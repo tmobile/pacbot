@@ -47,21 +47,6 @@ class DataCollectorEventRuleLambdaPermission(LambdaPermission):
     source_arn = DataCollectorEventRule.get_output_attr('arn')
 
 
-class DataShipperEventRule(CloudWatchEventRuleResource):
-    name = "aws-redshift-es-data-shipper"
-    schedule_expression = "cron(0 * * * ? *)"
-
-    DEPENDS_ON = [SubmitJobLambdaFunction, ESDomainPolicy]
-
-
-class DataShipperEventRuleLambdaPermission(LambdaPermission):
-    statement_id = "AllowExecutionFromDataShipper"
-    action = "lambda:InvokeFunction"
-    function_name = SubmitJobLambdaFunction.get_output_attr('function_name')
-    principal = "events.amazonaws.com"
-    source_arn = DataShipperEventRule.get_output_attr('arn')
-
-
 class DataCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
     rule = DataCollectorEventRule.get_output_attr('name')
     arn = SubmitJobLambdaFunction.get_output_attr('arn')
@@ -82,6 +67,21 @@ class DataCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
             {'encrypt': False, 'key': "accountinfo", 'value': AwsAccount.get_output_attr('account_id')},
         ]
     })
+
+
+class DataShipperEventRule(CloudWatchEventRuleResource):
+    name = "aws-redshift-es-data-shipper"
+    schedule_expression = "cron(0 * * * ? *)"
+
+    DEPENDS_ON = [SubmitJobLambdaFunction, ESDomainPolicy]
+
+
+class DataShipperEventRuleLambdaPermission(LambdaPermission):
+    statement_id = "AllowExecutionFromDataShipper"
+    action = "lambda:InvokeFunction"
+    function_name = SubmitJobLambdaFunction.get_output_attr('function_name')
+    principal = "events.amazonaws.com"
+    source_arn = DataShipperEventRule.get_output_attr('arn')
 
 
 class DataShipperCloudWatchEventTarget(CloudWatchEventTargetResource):
@@ -108,5 +108,38 @@ class DataShipperCloudWatchEventTarget(CloudWatchEventTargetResource):
             {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
             {'encrypt': False, 'key': "apiauthinfo",
                 'value': "MjJlMTQ5MjItODdkNy00ZWU0LWE0NzAtZGEwYmIxMGQ0NWQzOmNzcldwYzVwN0pGRjR2RVpCa3dHQ0FoNjdrR1FHd1h2NDZxdWc3djVad3RLZw=="}
+        ]
+    })
+
+
+class RecommendationsCollectorEventRule(CloudWatchEventRuleResource):
+    name = "AWS-Recommendations-Collector"
+    schedule_expression = "cron(0 * * * ? *)"
+
+    DEPENDS_ON = [SubmitJobLambdaFunction]
+
+
+class RecommendationsCollectorEventRuleLambdaPermission(LambdaPermission):
+    statement_id = "AllowExecutionFromRecommendationsCollectorEvent"
+    action = "lambda:InvokeFunction"
+    function_name = SubmitJobLambdaFunction.get_output_attr('function_name')
+    principal = "events.amazonaws.com"
+    source_arn = RecommendationsCollectorEventRule.get_output_attr('arn')
+
+
+class RecommendationsCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
+    rule = RecommendationsCollectorEventRule.get_output_attr('name')
+    arn = SubmitJobLambdaFunction.get_output_attr('arn')
+    target_id = 'RecommendationsCollectorTarget'  # Unique identifier
+    target_input = json.dumps({
+        'jobName': "aws-recommendations-collector",
+        'jobUuid': "aws-recommendations-collector",
+        'jobType': "jar",
+        'jobDesc': "Index trusted advisor checks as recommendations",
+        'environmentVariables': [
+        ],
+        'params': [
+            {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile.cso.pacbot"},
+            {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
         ]
     })
