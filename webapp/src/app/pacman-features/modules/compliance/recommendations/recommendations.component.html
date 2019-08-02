@@ -1,0 +1,108 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+<div class="policy-knowledgebase-wrapper flex flex-between flex-col">
+    <div class="flex flex-col">
+        <div class='layer-breadcrumb-wrapper flex flex-between flex-align-center no-shrink' *ngIf='currentPageLevel === 1'>
+            <app-breadcrumb></app-breadcrumb>
+        </div>
+        <div class="floating-widgets-header flex flex-between" [class.pk-header]='currentPageLevel === 0'>
+            <div>
+                <app-back-navigation></app-back-navigation>
+            </div>
+            <div class='flex relative z-index' *ngIf= '!general'>
+                <app-generic-page-filter [filterId]="9" [filterArray]="filterArray" [selectOnSingleValue]='true' (onFilterValueChange)="updateUrlWithNewFilters($event)" [clearSelectedFilterValue]='clearSelectedFilterValue'></app-generic-page-filter>
+            </div>
+        </div>
+        <div class='floating-widgets-filter-wrapper' class='filter-selector' [class.show-filter-selector]='filterArray.length && !general'>
+            <app-filtered-selector (updateFilterArray)='updateUrlWithNewFilters($event)' [(filteredArray)]='filterArray' [(mandatoryFilter)]="mandatoryfilter" [clearSelectedFilterValue]='clearSelectedFilterValue'></app-filtered-selector>
+        </div>
+    </div>
+    <div class='pk-top-content'>
+        <div class="flex flex-align-center toggle-wrap">
+            <div (click)="contextChange('asset');" [class.active]="toggleSelected == 'asset'" class="each-toggle"> Asset-Specific </div>
+            <div class="relative toggle-parent" (click)='contextChange(toggleSlider());'>
+                <div class="absolute toggle-slider" [class.right]="toggleSelected == 'general'"></div>
+            </div>
+            <div (click)="contextChange('general');" [class.active]="toggleSelected == 'general'" class="each-toggle"> General </div>
+            <div><img src="../../../assets/icons/question.svg" class='help-icon' (click)='showHelpContent($event);'></div>
+        </div>
+        <div class='tabs-container flex flex-align-center'>
+            <div class='pk-tabs tab-list capitalize' *ngFor="let tabs of tabName | orderBy : { property: 'order', direction: 1}"
+                [class.loaded]='errorVal.summaryStatus === 1' (click)='selectedTabName = tabs; navigateToTab(selectedTabName.category);' [class.active]='tabs == selectedTabName'>{{tabs.displayName}} 
+                <span *ngIf='tabs.recommendations'>({{tabs.recommendations}})</span>
+            </div>
+        </div>
+    </div>
+    <div class='policy-knowledgebase-content flex flex-col'>
+        <div class='pk-main-content'>
+         <ng-container *ngIf='errorVal.summaryStatus === 1'>
+          <div class='flex flex-col height-100' *ngIf='selectedTabName && selectedTabName.category === "summary"'>
+            <div class='tabs-container tabs-wrapper flex flex-center'>
+                <ng-container *ngFor="let tabs of tabName | orderBy : { property: 'order', direction: 1}">
+                    <div class='pk-tabs each-tab capitalize flex flex-col flex-evenly flex-align-center' (click)= "getApplicationTableData(tabs)" [class.no-event]='general' [class.tab-hover]='!general' [class.active]='tabs.category == summaryActiveTab.category && !general'
+                         *ngIf='tabs.displayName !== "Summary"'>
+                         <div class='tabs-nav each-summary'>{{tabs.displayName}}</div>
+                         <div class='each-summary'>
+                            <img *ngIf='tabs.icon' alt='' src={{tabs.icon}}>
+                         </div>
+                         <div class='each-summary' [ngStyle]="{'color': tabs.color }">
+                            <div class='cost-val'>
+                                <span *ngIf='tabs.category === "cost_optimizing" && tabs.potentialMonthlySavings'>$ {{tabs.potentialMonthlySavings | number : '1.0-2'}}</span>
+                                <span *ngIf='tabs.category !== "cost_optimizing" || (tabs.category === "cost_optimizing" && !tabs.potentialMonthlySavings)'>{{tabs.recommendations | number : '1.0-2'}}</span>
+                            </div>
+                            <div class='summary-text'>
+                                <span *ngIf='tabs.category === "cost_optimizing" && tabs.potentialMonthlySavings'>Potential Monthly Savings</span>
+                                <span *ngIf='tabs.category !== "cost_optimizing" || (tabs.category === "cost_optimizing" && !tabs.potentialMonthlySavings)'>Recommendations</span>
+                            </div>
+                        </div>
+                    </div>
+                </ng-container>
+            </div>
+            <div class='table-wrapper relative' *ngIf='!general'>
+                <app-table-list *ngIf='errorVal.tableStatus === 1 && tableListData && tableListData.header && tableListData.tableData'  
+                    [DataObject]= "tableListData" 
+                    [errorValue]="errorVal.tableStatus" 
+                    (firstRowClick)="navigateTo(summaryActiveTab.category, $event)" 
+                    [errorMessage]="errorMessage" 
+                    [clickableKeys]="['Application']" 
+                    [keysToSkip]="['selectedKey']">
+                </app-table-list>
+                <div *ngIf='errorVal.tableStatus === 0' class='loader'></div>
+                <article class='center error_handling' *ngIf="errorVal.tableStatus === -1">
+                    <div class="error_msg">
+                        <app-error-message [selectedValue]="errorMessage"></app-error-message>
+                    </div>
+                </article>
+            </div>
+          </div>
+          <div class='flex flex-col height-100' *ngIf= 'selectedTabName.category !== "summary"'>
+            <div class='total-cost-wrapper flex flex-center' *ngIf='selectedTabName.category === "cost_optimizing"'>
+                <div class='total-cost flex flex-align-center flex-between' *ngIf='errorVal.costStatus === 1 && errorVal.savingsStatus === 1'><span title="{{selectedApplication}}" class='total-cost-app'>{{selectedApplication}} </span><span> Monthly Cost - $ {{totalCost | number : '1.0-2'}}</span></div>
+                <div class='total-cost savings flex flex-align-center flex-between' *ngIf='errorVal.savingsStatus === 1 && monthlySavingsTotal'><span>Potential Monthly Savings - $ {{monthlySavingsTotal | number : '1.0-2'}}</span></div>
+            </div>
+            <div class='cost-table-wrapper'>
+                <app-recommand-category [selectedTab]='selectedTabName' [general]='general' (monthlySavings)='getmonthlySavings($event)' [filters]='this.appliedFilters.pageLevelAppliedFilters'></app-recommand-category>
+            </div>
+          </div>
+        </ng-container>
+            <div *ngIf='errorVal.summaryStatus === 0' class='loader'></div>
+            <article class='center error_handling' *ngIf="errorVal.summaryStatus === -1">
+                <div class="error_msg">
+                    <app-error-message [selectedValue]="errorMessage"></app-error-message>
+                </div>
+            </article>
+        </div>
+    </div>
+</div>

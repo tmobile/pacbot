@@ -1,4 +1,4 @@
-<!--
+/*
  *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
@@ -10,8 +10,24 @@
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
  * limitations under the License.
- -->
+ */
 
- <div class='relative searchable-dropdown-wrapper flex flex-col flex-center'  [class.hide-selected] = 'secondDDSelected && !firstDD' (click)='updateProperties()' >
-    <ngx-select-dropdown [options]="items" (keydown)="selectFromDropdown($event)" [(ngModel)]="dataModel" [class.placeholder-visible]="placeholderVisible" [config]="config" [disabled]="disable" [class.dropdown-disabled]="disable" (change)="selected($event)" (open)="open($event)" (close)="close($event)"></ngx-select-dropdown>
-</div>
+.tagging-instances-container {
+    min-height: 15em;
+    height: 100%;
+    padding-bottom: 1em;
+}
+
+.tagging-instances-content {
+    font-size: 1em;
+    height: 100%;
+}
+
+.tagging-instances-content /deep/ .data-table-wrap .sub-head {
+    border: solid 0.5px #f0f0f0;
+}
+
+.tagging-instances-content /deep/ .head-cell-wrapper{
+    text-align: left;
+}
+

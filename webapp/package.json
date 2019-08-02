@@ -46,7 +46,10 @@
     "ngx-highlight": "0.0.3",
     "ngx-infinite-scroll": "^0.8.3",
     "rxjs": "^5.4.2",
-    "zone.js": "^0.8.14"
+    "zone.js": "^0.8.14",
+    "@bower_components/offline": "HubSpot/offline",
+    "@bower_components/offlinejs-simulate-ui": "craigshoemaker/offlinejs-simulate-ui",
+    "ngx-select-dropdown": "^1.0.1"
   },
   "devDependencies": {
     "@angular/cli": "1.6.8",

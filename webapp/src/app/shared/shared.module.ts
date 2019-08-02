@@ -86,6 +86,9 @@ import { FormService } from './services/form.service';
 import { LoaderMsgComponent } from './loader-msg/loader-msg.component';
 import { GenericModalComponent } from './generic-modal/generic-modal.component';
 import { ConfigHistoryDropdownComponent } from './config-history-dropdown/config-history-dropdown.component';
+import { BackNavigationComponent } from './back-navigation/back-navigation.component';
+import { SelectDropDownModule } from 'ngx-select-dropdown';
+import { TableListComponent } from './table-list/table-list.component';
 @NgModule({
     imports: [
         CommonModule,
@@ -96,6 +99,7 @@ import { ConfigHistoryDropdownComponent } from './config-history-dropdown/config
         HttpModule,
         MatSelectModule,
         NgDatepickerModule,
+        SelectDropDownModule,
         AgGridModule.withComponents(
             [AgGridTableComponent]
         )
@@ -149,7 +153,9 @@ import { ConfigHistoryDropdownComponent } from './config-history-dropdown/config
         LoaderMsgComponent,
         GenericModalComponent,
         ConfigHistoryDropdownComponent,
-        InputModalComponent
+        InputModalComponent,
+        BackNavigationComponent,
+        TableListComponent
     ],
     exports: [CommonModule,
         FormsModule,
@@ -203,7 +209,10 @@ import { ConfigHistoryDropdownComponent } from './config-history-dropdown/config
         LoaderMsgComponent,
         GenericModalComponent,
         ConfigHistoryDropdownComponent,
-        InputModalComponent
+        InputModalComponent,
+        BackNavigationComponent,
+        SelectDropDownModule,
+        TableListComponent
     ],
     providers: [HttpService, UtilsService, RefactorFieldsService, OrderByPipe, SearchFilterPipe, MainRoutingAnimationEventService, AuthGuardService, RouterUtilityService, LoggerService, ErrorHandlingService, FilterManagementService, CommonResponseService, CopytoClipboardService, FormService]
 })
