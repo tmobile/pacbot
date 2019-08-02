@@ -79,20 +79,6 @@ export class WorkflowService {
         this.router.navigate([destinationUrlAndParams['url']], {queryParams: destinationUrlAndParams['queryParams']});
     }
 
-    checkIfFlowExistsCurrently(currentLevel) {
-        let flowExiststatus = false;
-        // getLevel();
-        this.level = this.getDetailsFromStorage();
-        while ( currentLevel >= 0 ) {
-            if (this.level['level' + currentLevel]) {
-                flowExiststatus = this.level['level' + currentLevel].length > 0;
-            }
-            currentLevel--;
-        }
-
-        return flowExiststatus;
-    }
-
     clearAllLevels() {
         this.level = {};
         this.saveToStorage(this.level);
@@ -152,5 +138,17 @@ export class WorkflowService {
 
     clearDataOfOpenedPageInModule() {
         this.trackOpenedPageInAModule = {};
+    }
+    checkIfFlowExistsCurrently(currentLevel?) {
+
+        const currentPageLevelNumber = this.routerUtilityService.getpageLevel(this.router.routerState.snapshot.root);
+
+        let flowExiststatus = false;
+        this.level = this.getDetailsFromStorage();
+        if (this.level[currentPageLevelNumber]) {
+            flowExiststatus = this.level[currentPageLevelNumber].length > 0;
+        }
+
+        return flowExiststatus;
     }
 }

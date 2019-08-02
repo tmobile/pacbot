@@ -1,0 +1,266 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.policy-knowledgebase-wrapper {
+    height: 100%;
+    justify-content: flex-start;
+    overflow-y: hidden;
+    padding-bottom: 2px;
+}
+
+.policy-knowledgebase-content {
+    margin: 0 1.8em 1.8em;
+    border-radius: 3px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.15);
+    overflow: hidden;
+    height: 100%;
+}
+
+.pk-header {
+    padding-top: 2em;
+    padding-bottom: 2em;
+}
+
+.pk-top-content {
+    padding-bottom: 0.5em;
+    -ms-flex-negative: 0;
+    flex-shrink: 0;
+    margin: 0 1.8em;
+}
+
+.tab-list {
+    margin-right: 1.5em;
+    letter-spacing: 0.2px;
+    color: #9b9b9b;
+    margin-bottom: 0.66em;
+    padding: 3px;
+    cursor: pointer;
+    transition: 0.17s ease;
+    border-bottom: 2px solid #0000;
+    opacity: 1;
+    transform: translate(-3px, -3px);
+    transition-delay: 0.33s;
+}
+
+.tab-list:hover {
+    color: #777;
+}
+
+.pk-tabs.loaded {
+    opacity: 1;
+    white-space: nowrap;
+    transform: translate(0px, 0px);
+}
+
+.tabs-container {
+    min-height: 1em;
+    flex-wrap: wrap;
+    flex-shrink: 0;
+}
+
+.tab-list.active {
+    font-family: ex2-bold;
+    color: #e20074;
+    border-bottom: 2px solid #e20074;
+}
+
+.pk-main-content {
+    padding: 2em 2em;
+    overflow-y: auto; 
+    overflow-y: overlay;
+    align-content: flex-start;
+    position: relative;
+    height: 100%;
+    background: #fff;
+}
+
+
+.total-count-txt {
+    font-size: 0.85em;
+    color: #5a616b;
+}
+
+.summary-heading {
+    font-size: 1.5em;
+    text-shadow: 0 0.1px;
+    position: sticky;
+    top: 0;
+    padding: 1em 0.2em 1em;
+    background-color: #fff;
+    z-index: 12;
+    text-transform: capitalize;
+}
+
+.tabs-nav {
+    color: #000;
+}
+
+.tabs-wrapper {
+    padding: 0.5em;
+}
+
+.each-summary {
+    padding: 0.5em;
+    text-align: center;
+}
+
+.summary-text {
+    padding: 0.3em 0;
+}
+
+.cost-val {
+    font-size: 1.2em;
+    text-shadow: 0 0.1px;
+}
+
+.each-tab {
+    padding: 1em;
+    margin: 1.5em;
+    transition: 0.17s ease;
+    min-width: 13em;
+}
+
+.each-tab.tab-hover:hover {
+    cursor: pointer;
+    border-radius: 3px;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid 0.9px #cccccc;
+    background-color: #fdfdfd;
+}
+
+.each-tab.tab-hover.active {
+    cursor: pointer;
+    border-radius: 3px;
+    box-shadow: 0 2px 3px 0 rgba(0, 0, 0, 0.05);
+    border: 1px solid 0.9px #cccccc;
+    background-color: #f1f1f1;
+}
+
+.table-wrapper {
+    padding: 1em 0;
+    flex-grow: 1
+}
+
+.total-cost {
+    background-color: #3f4a59;
+    border: 1px solid;
+    border-radius: 1.4em;
+    padding: 0.5em 1.5em;
+    letter-spacing: 0.5px;
+    margin: 0 0.3em;
+    color: #fff;
+    line-height: 1.2;
+    font-size: 1.1em;
+    max-width: 25em;
+    text-transform: capitalize;
+    text-overflow: ellipsis;
+    min-width: 10em;
+    white-space: nowrap;
+    /* opacity: 0; */
+    transition: 0.3s ease;
+}
+
+.savings {
+    background-color: #50c17c;
+}
+
+.total-cost-wrapper {
+    padding: 1em 0 1.5em;
+}
+
+.height-100 {
+    height: 100%;
+}
+
+.cost-table-wrapper {
+    flex-grow: 1;
+}
+
+.filter-selector {
+    max-height: 0;
+    overflow: hidden;
+    padding: 0em 1.5em;
+    transition: 0.3s ease;
+}
+
+.show-filter-selector {
+    padding: 0em 1.5em 1.5em;
+    max-height: 5em;
+}
+
+.total-cost-app {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: pre;
+}
+
+.opacity {
+    opacity: 1;
+}
+
+.each-toggle {
+    color: #777;
+    padding: 2px 2px 4px;
+    margin-right: 0.5em;
+    cursor: pointer;
+    transition: 0.4s ease;
+}
+
+.each-toggle.active {
+    color: #ed0274;
+}
+
+.toggle-parent {
+    width: 2.6em;
+    height: 1em;
+    background: #d0d0d0;
+    margin-right: 0.5em;
+    border-radius: 0.5em;
+    border: 1px solid #c1c1c1;
+    cursor: pointer;
+}
+
+.toggle-slider {
+    height: 1.4em;
+    width: 1.4em;
+    background: #ed0274;
+    top: 50%;
+    transition: 0.3s ease;
+    transform: translateY(-50%);
+    border: 5px solid #ed0274;
+    border-radius: 0.8em;
+    box-shadow: 0 0 4px 0px rgba(0,0,0,0.1);
+    left: -3px;
+}
+
+.toggle-slider.right {
+    left: calc(1.1em + 3px);
+}
+
+.toggle-wrap {
+    padding: 0 0 1em;
+    flex-shrink: 0;
+}
+
+.help-icon {
+    vertical-align: text-top;
+    width: 1em;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.help-icon:hover {
+    color: magenta;
+    transform: scale(1.07);
+}

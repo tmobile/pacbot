@@ -12,6 +12,6 @@
  * limitations under the License.
  -->
 
- <div class='relative searchable-dropdown-wrapper flex flex-col flex-center'  [class.hide-selected] = 'secondDDSelected && !firstDD' (click)='updateProperties()' >
-    <ngx-select-dropdown [options]="items" (keydown)="selectFromDropdown($event)" [(ngModel)]="dataModel" [class.placeholder-visible]="placeholderVisible" [config]="config" [disabled]="disable" [class.dropdown-disabled]="disable" (change)="selected($event)" (open)="open($event)" (close)="close($event)"></ngx-select-dropdown>
-</div>
+
+<img class="arrow-img" (click)="navigateBack()" *ngIf="backButtonRequired" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+<h1 class="title-text">{{pageTitle}}</h1>
