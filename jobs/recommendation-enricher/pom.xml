@@ -195,7 +195,7 @@
 						<phase>install</phase>
 						<configuration>
 							<target>
-								<copy file="target/recommendation-enricher-jar-with-dependencies.jar" tofile="../../dist/jobs/recommendation-enricher-jar-with-dependencies.jar"/>
+								<copy file="target/aws-recommendations-collector.jar" tofile="../../dist/jobs/aws-recommendations-collector.jar"/>
 							</target>
 						</configuration>
 						<goals>
