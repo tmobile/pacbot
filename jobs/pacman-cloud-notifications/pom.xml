@@ -248,7 +248,7 @@
 						<phase>install</phase>
 						<configuration>
 							<target>
-								<copy file="target/pacman-cloud-notifications-jar-with-dependencies.jar" tofile="../../dist/jobs/pacman-cloud-notifications-jar-with-dependencies.jar"/>
+								<copy file="target/aws-cloud-notification.jar" tofile="../../dist/jobs/aws-cloud-notification.jar"/>
 							</target>
 						</configuration>
 						<goals>
