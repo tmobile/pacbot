@@ -2653,5 +2653,82 @@ public class PacmanUtils {
 		}
 		return null;
 	}
+	
+	 /**
+     * Gets the value from elastic search as set.
+     *
+     * @param esUrl the es url
+     * @param mustFilterMap the must filter map
+     * @param shouldFilterMap the should filter map
+     * @param mustTermsFilterMap the must terms filter map
+     * @param fieldKey the field key
+     * @param matchPhrase the match phrase
+     * @return the value from elastic search as set
+     * @throws Exception the exception
+     */
+    public static Set<String> getValueFromElasticSearchAsSet(String esUrl, Map<String,Object> mustFilterMap,HashMultimap<String, Object> shouldFilterMap,Map<String, Object> mustTermsFilterMap,String fieldKey,Map<String, List<String>> matchPhrase)
+            throws Exception {
+        JsonParser jsonParser = new JsonParser();
+
+        Map<String, Object> mustFilter = new HashMap<>();
+        HashMultimap<String, Object> shouldFilter = HashMultimap.create();
+        Map<String, Object> mustNotFilter = new HashMap<>();
+        Map<String, Object> mustTermsFilter = new HashMap<>();
+        
+		if (!mustFilterMap.isEmpty()) {
+			for(Map.Entry<String,Object> mustFilMap: mustFilterMap.entrySet()){
+			mustFilter.put(convertAttributetoKeyword(mustFilMap.getKey()), mustFilMap.getValue());
+			}
+		}
+		
+		if (!shouldFilterMap.isEmpty()) {
+			for(Map.Entry<String,Object> shouldFilMap: shouldFilterMap.entries()){
+				shouldFilter.put(convertAttributetoKeyword(shouldFilMap.getKey()), shouldFilMap.getValue());
+			}
+		}
+		
+		if (!mustTermsFilterMap.isEmpty()) {
+			for(Map.Entry<String,Object> mustTermsFilMap: mustTermsFilterMap.entrySet()){
+				mustTermsFilter.put(convertAttributetoKeyword(mustTermsFilMap.getKey()), mustTermsFilMap.getValue());
+			}
+		}
+        
+        JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(esUrl+"?size=10000", mustFilter,
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,matchPhrase);
+        if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
+            String hitsJsonString = resultJson.get(PacmanRuleConstants.HITS).toString();
+            JsonObject hitsJson = (JsonObject) jsonParser.parse(hitsJsonString);
+            JsonArray jsonArray = hitsJson.getAsJsonObject().get(PacmanRuleConstants.HITS).getAsJsonArray();
+            return returnFieldValueAsSet(jsonArray,fieldKey);
+
+        }
+        return null;
+    }
+    
+    /**
+     * Checks if is field exists.
+     *
+     * @param jsonArray the json array
+     * @param fieldKey the field key
+     * @return String, if is instance exists
+     */
+    private static Set<String> returnFieldValueAsSet(JsonArray jsonArray,String fieldKey) {
+    	 Set<String> fieldValueList = new HashSet<>();
+        if (jsonArray.size() > 0) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JsonObject firstObject = (JsonObject) jsonArray.get(i);
+                JsonObject sourceJson = (JsonObject) firstObject.get(PacmanRuleConstants.SOURCE);
+                if (sourceJson != null
+                        && (sourceJson.get(fieldKey) != null && !sourceJson.get(fieldKey).isJsonNull())) {
+                    String fieldValue = sourceJson.get(fieldKey).getAsString();
+                    if (!org.apache.commons.lang.StringUtils.isEmpty(fieldValue)) {
+                    	fieldValueList.add(fieldValue);
+                    	
+                    }
+                }
+            }
+        }
+        return fieldValueList;
+    }
 
 }

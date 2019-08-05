@@ -26,10 +26,12 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
+import io.vavr.collection.HashMultimap;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Map;
 
 import javax.net.ssl.SSLContext;
 
@@ -428,6 +430,17 @@ public class PacmanUtilsTest {
     public void getResponseTest() throws Exception {
         when(closeableHttpClient.execute((HttpGet) any())).thenReturn(httpResponse);
         assertThat(pacmanUtils.getResponse(CommonTestUtils.getMapString("123"),"123"),is(notNullValue()));
+    }
+    
+    @SuppressWarnings("static-access")
+    @Test
+    public void getValueFromElasticSearchSetTest() throws Exception {
+        mockStatic(RulesElasticSearchRepositoryUtil.class);
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getJsonObject());
+        assertThat(pacmanUtils.getValueFromElasticSearchAsSet("test",CommonTestUtils.getMapObject("123"),CommonTestUtils.getMulHashMapObject("123"),CommonTestUtils.getMapObject("123"),"test",CommonTestUtils.getMapStringList("123")),is(notNullValue()));
+        
+        when(RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(anyString(),anyObject(),anyObject(),anyObject(),anyString(),anyInt(),anyObject(),anyObject(),anyObject())).thenReturn(CommonTestUtils.getEmptyJsonObject());
+        assertThat(pacmanUtils.getValueFromElasticSearchAsSet("test",CommonTestUtils.getMapObject("123"),CommonTestUtils.getMulHashMapObject("123"),CommonTestUtils.getMapObject("123"),"test",CommonTestUtils.getMapStringList("123")),is(nullValue()));
     }
 
 }
