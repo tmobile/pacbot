@@ -983,6 +983,7 @@ public class CommonTestUtils {
         commonMap.put("lambda","lambda");
         commonMap.put(",ec2:*,*,s3:*,s3:put*",",ec2:*,*,s3:*,s3:put*");
         commonMap.put("type","network");
+        commonMap.put("destinationBucketForAutofix","destinationBucketForAutofix");
 
         commonMap.put("cidripv6", "cidripv6");
         commonMap.put("username", "svc_123");
