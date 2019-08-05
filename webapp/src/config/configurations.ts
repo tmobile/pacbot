@@ -21,7 +21,7 @@ export const CONFIGURATIONS = {
         APP_NAME: 'PacBot',
         domains: {
             PROD_BASE_URL: '', // Expected values: domain where the API is deployed, ex: http://beta.pacbot.com/api
-            STG_BASE_URL: 'https://internal-pacbot-1923850691.us-east-1.elb.amazonaws.com/api', // Expected values: domain where the API is deployed, ex: http://stgbeta.pacbot.com/api
+            STG_BASE_URL: '', // Expected values: domain where the API is deployed, ex: http://stgbeta.pacbot.com/api
             DEV_BASE_URL: '', // Expected values: domain where the API is deployed, ex: http://devbeta.pacbot.com/api
             CLOUD_BASE_URL: '', // Expected values: domain where the API is deployed
         },
