@@ -516,4 +516,61 @@ public class PublicAccessAutoFix {
          }
          return applysgFlg;
      }
+    
+    /**
+     * Gets the DB instance for rds db resource.
+     *
+     * @param clientMap the client map
+     * @param resourceId the resource id
+     * @return the DB instance for rds db resource
+     * @throws Exception the exception
+     */
+    public static List<DBInstance> getDBInstanceForRdsDbResource(Map<String,Object> clientMap,String resourceId) throws Exception {
+        AmazonRDS amazonRDS = (AmazonRDS) clientMap.get("client");
+        DescribeDBInstancesRequest instancesRequest = new DescribeDBInstancesRequest();
+        instancesRequest.setDBInstanceIdentifier(resourceId);
+        DescribeDBInstancesResult dbInstancesResult = amazonRDS.describeDBInstances(instancesRequest);
+        
+        return dbInstancesResult.getDBInstances();
+    
+    }
+    
+    /**
+     * Apply security groups to rds db.
+     *
+     * @param amazonRDS the amazon RDS
+     * @param sgIdToBeAttached the sg id to be attached
+     * @param resourceId the resource id
+     * @return true, if successful
+     * @throws Exception the exception
+     */
+    public static boolean applySecurityGroupsToRdsDb(AmazonRDS amazonRDS, Set<String> sgIdToBeAttached, String resourceId) throws Exception {
+        boolean applysgFlg = false;
+        try {
+        	ModifyDBInstanceRequest instanceRequest = new ModifyDBInstanceRequest();
+        	instanceRequest.setDBInstanceIdentifier(resourceId);
+        	instanceRequest.setVpcSecurityGroupIds(sgIdToBeAttached);
+        	amazonRDS.modifyDBInstance(instanceRequest);
+            applysgFlg = true;
+        } catch (Exception e) {
+            logger.error("Apply Security Group operation failed for rdsdb {}" , resourceId );
+         throw new Exception(e);
+        }
+        return applysgFlg;
+    }
+    
+    /**
+     * Delete security group.
+     *
+     * @param resourceId the resource id
+     * @param ec2Client the ec 2 client
+     * @return the boolean
+     * @throws Exception the exception
+     */
+    public static Boolean deleteSecurityGroup(String resourceId,AmazonEC2 ec2Client) throws Exception {
+        DeleteSecurityGroupRequest deleteSecurityGroupRequest = new DeleteSecurityGroupRequest();
+        deleteSecurityGroupRequest.setGroupId(resourceId);
+        ec2Client.deleteSecurityGroup(deleteSecurityGroupRequest);
+        return true;
+    }
 }

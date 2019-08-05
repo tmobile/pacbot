@@ -48,134 +48,105 @@ import com.tmobile.pacman.commons.rule.RuleResult;
 @PacmanRule(key = "check-cloudwatch-event-rule", desc = "All Cloud watch events from all accounts should be sent to designated event bus", severity = PacmanSdkConstants.SEV_HIGH, category = PacmanSdkConstants.GOVERNANCE)
 public class CheckCloudWatchEventsForAllAccountsRule extends BaseRule {
 
-    private static final Logger logger = LoggerFactory
-            .getLogger(CheckCloudWatchEventsForAllAccountsRule.class);
+	private static final Logger logger = LoggerFactory.getLogger(CheckCloudWatchEventsForAllAccountsRule.class);
 
-    /**
-     * The method will get triggered from Rule Engine with following parameters
-     * 
-     * @param ruleParam
-     * 
-     *            ************* Following are the Rule Parameters********* <br>
-     * <br>
-     * 
-     *            ruleKey : check-cloudwatch-event-rule <br>
-     * <br>
-     * 
-     *            severity : Enter the value of severity <br>
-     * <br>
-     * 
-     *            ruleCategory : Enter the value of category <br>
-     * <br>
-     * 
-     *            roleIdentifyingString : Configure it as role/pacbot_ro <br>
-     * <br>
-     * 
-     * @param resourceAttributes
-     *            this is a resource in context which needs to be scanned this
-     *            is provided y execution engine
-     *
-     */
-    @Override
-    public RuleResult execute(Map<String, String> ruleParam,
-            Map<String, String> resourceAttributes) {
-        logger.debug("========CheckCloudWatchEventsForAllAccountsRule started=========");
-        Map<String, String> temp = new HashMap<>();
-        temp.putAll(ruleParam);
-        temp.put("region", "us-west-2");
+	/**
+	 * The method will get triggered from Rule Engine with following parameters
+	 * 
+	 * @param ruleParam ************* Following are the Rule Parameters********* <br><br>
+	 * 
+	 * ruleKey : check-cloudwatch-event-rule <br><br>
+	 * 
+	 * severity : Enter the value of severity <br><br>
+	 * 
+	 * ruleCategory : Enter the value of category <br><br>
+	 * 
+	 * roleIdentifyingString : Configure it as role/pacbot_ro <br><br>
+	 * 
+	 * @param resourceAttributes this is a resource in context which needs to be scanned this is provided y execution engine
+	 *
+	 */
+	@Override
+	public RuleResult execute(Map<String, String> ruleParam,Map<String, String> resourceAttributes) {
+		logger.debug("========CheckCloudWatchEventsForAllAccountsRule started=========");
+		Map<String, String> temp = new HashMap<>();
+		temp.putAll(ruleParam);
+		temp.put("region", "us-west-2");
 
-        Map<String, Object> map = null;
-        Annotation annotation = null;
-        AmazonCloudWatchEventsClient cloudWatchEventsClient = null;
-        String roleIdentifyingString = ruleParam
-                .get(PacmanSdkConstants.Role_IDENTIFYING_STRING);
-        String accountName = resourceAttributes.get("accountname");
-        String ruleName = ruleParam.get(PacmanRuleConstants.RULE_NAME);
-        logger.info(resourceAttributes.get("accountid"));
-        logger.info(resourceAttributes.get("accountname"));
+		Map<String, Object> map = null;
+		Annotation annotation = null;
+		AmazonCloudWatchEventsClient cloudWatchEventsClient = null;
+		String roleIdentifyingString = ruleParam.get(PacmanSdkConstants.Role_IDENTIFYING_STRING);
+		String accountName = resourceAttributes.get("accountname");
+		String ruleName = ruleParam.get(PacmanRuleConstants.RULE_NAME);
+		logger.info(resourceAttributes.get("accountid"));
+		logger.info(resourceAttributes.get("accountname"));
 
-        String severity = ruleParam.get(PacmanRuleConstants.SEVERITY);
-        String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
+		String severity = ruleParam.get(PacmanRuleConstants.SEVERITY);
+		String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
 
-        MDC.put("executionId", ruleParam.get("executionId"));
-        MDC.put("ruleId", ruleParam.get(PacmanSdkConstants.RULE_ID));
+		MDC.put("executionId", ruleParam.get("executionId"));
+		MDC.put("ruleId", ruleParam.get(PacmanSdkConstants.RULE_ID));
 
-        Gson gson = new Gson();
-        List<LinkedHashMap<String, Object>> issueList = new ArrayList<>();
-        LinkedHashMap<String, Object> issue = new LinkedHashMap<>();
-        Map<String, Object> failedType = new HashMap<>();
+		Gson gson = new Gson();
+		List<LinkedHashMap<String, Object>> issueList = new ArrayList<>();
+		LinkedHashMap<String, Object> issue = new LinkedHashMap<>();
+		Map<String, Object> failedType = new HashMap<>();
 
-        if (!PacmanUtils.doesAllHaveValue(severity, category,ruleName)) {
-            logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
-            throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
-        }
+		if (!PacmanUtils.doesAllHaveValue(severity, category, ruleName)) {
+			logger.info(PacmanRuleConstants.MISSING_CONFIGURATION);
+			throw new InvalidInputException(PacmanRuleConstants.MISSING_CONFIGURATION);
+		}
 
-        try {
-            map = getClientFor(AWSService.CLOUDWATCH_EVENTS,
-                    roleIdentifyingString, temp);
-            cloudWatchEventsClient = (AmazonCloudWatchEventsClient) map
-                    .get(PacmanSdkConstants.CLIENT);
+		try {
+			map = getClientFor(AWSService.CLOUDWATCH_EVENTS,roleIdentifyingString, temp);
+			cloudWatchEventsClient = (AmazonCloudWatchEventsClient) map.get(PacmanSdkConstants.CLIENT);
 
-            ListRulesRequest listRulesRequest = new ListRulesRequest();
-            listRulesRequest.setNamePrefix(ruleName);
-            ListRulesResult listRulesResult = cloudWatchEventsClient
-                    .listRules(listRulesRequest);
-            String state = null;
-            boolean isRuleEmpty = false;
-            boolean isDisabled = false;
-            if (listRulesResult.getRules().isEmpty()) {
-                isRuleEmpty = true;
-                failedType.put("ruleList", "Empty");
-            }
+			ListRulesRequest listRulesRequest = new ListRulesRequest();
+			listRulesRequest.setNamePrefix(ruleName);
+			ListRulesResult listRulesResult = cloudWatchEventsClient.listRules(listRulesRequest);
+			String state = null;
+			boolean isRuleEmpty = false;
+			boolean isDisabled = false;
+			if (listRulesResult.getRules().isEmpty()) {
+				isRuleEmpty = true;
+				failedType.put("ruleList", "Empty");
+			}
 
-            if (!listRulesResult.getRules().isEmpty()) {
-                for (Rule result : listRulesResult.getRules()) {
-                    state = result.getState();
-                    logger.info(state);
-                    if (!"ENABLED".equals(state)) {
-                        isDisabled = true;
-                        failedType.put("ruleState", "Disabled");
-                    }
-                }
-            }
-            if (isRuleEmpty || isDisabled) {
-                annotation = Annotation.buildAnnotation(ruleParam,
-                        Annotation.Type.ISSUE);
-                annotation
-                        .put(PacmanSdkConstants.DESCRIPTION,
-                                "Cloud watch events from "
-                                        + accountName
-                                        + " is not been sent to designated default event bus");
-                annotation.put(PacmanRuleConstants.SEVERITY, severity);
-                annotation.put(PacmanRuleConstants.CATEGORY, category);
+			if (!listRulesResult.getRules().isEmpty()) {
+				for (Rule result : listRulesResult.getRules()) {
+					state = result.getState();
+					logger.info(state);
+					if (!"ENABLED".equals(state)) {
+						isDisabled = true;
+						failedType.put("ruleState", "Disabled");
+					}
+				}
+			}
+			if (isRuleEmpty || isDisabled) {
+				annotation = Annotation.buildAnnotation(ruleParam,Annotation.Type.ISSUE);
+				annotation.put(PacmanSdkConstants.DESCRIPTION,"Cloud watch events from "+ accountName+ " is not been sent to designated default event bus");
+				annotation.put(PacmanRuleConstants.SEVERITY, severity);
+				annotation.put(PacmanRuleConstants.CATEGORY, category);
 
-                issue.put(
-                        PacmanRuleConstants.VIOLATION_REASON,
-                        "Cloud watch events from "
-                                + accountName
-                                + " is not been sent to designated default event bus!!");
-                issue.put("failed_reason", gson.toJson(failedType));
-                issueList.add(issue);
-                annotation.put("issueDetails", issueList.toString());
-                logger.debug(
-                        "========CheckCloudWatchEventsForAllAccountsRule ended with annotation : {}=========",
-                        annotation);
-                return new RuleResult(PacmanSdkConstants.STATUS_FAILURE,
-                        PacmanRuleConstants.FAILURE_MESSAGE, annotation);
-            }
-        } catch (UnableToCreateClientException e) {
-            logger.error("unable to get client for following input", e);
-            throw new InvalidInputException(e.toString());
-        }
+				issue.put(PacmanRuleConstants.VIOLATION_REASON,"Cloud watch events from "+ accountName+ " is not been sent to designated default event bus!!");
+				issue.put("failed_reason", gson.toJson(failedType));
+				issueList.add(issue);
+				annotation.put("issueDetails", issueList.toString());
+				logger.debug("========CheckCloudWatchEventsForAllAccountsRule ended with annotation : {}=========",annotation);
+				return new RuleResult(PacmanSdkConstants.STATUS_FAILURE,PacmanRuleConstants.FAILURE_MESSAGE, annotation);
+			}
+		} catch (UnableToCreateClientException e) {
+			logger.error("unable to get client for following input", e);
+			throw new InvalidInputException(e.toString());
+		}
 
-  
-        logger.debug("========CheckCloudWatchEventsForAllAccountsRule ended=========");
-        return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS,
-                PacmanRuleConstants.SUCCESS_MESSAGE);
-    }
+		logger.debug("========CheckCloudWatchEventsForAllAccountsRule ended=========");
+		return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS,PacmanRuleConstants.SUCCESS_MESSAGE);
+	}
 
-    @Override
-    public String getHelpText() {
-        return "All Cloud watch events from all accounts should be sent to designated event bus";
-    }
+	@Override
+	public String getHelpText() {
+		return "All Cloud watch events from all accounts should be sent to designated event bus";
+	}
 }

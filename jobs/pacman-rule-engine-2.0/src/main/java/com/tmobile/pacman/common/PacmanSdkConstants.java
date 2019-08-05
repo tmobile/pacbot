@@ -605,5 +605,8 @@ public interface PacmanSdkConstants extends com.tmobile.pacman.commons.PacmanSdk
     
     /** The pac monitor slack user. */
     String PAC_MONITOR_SLACK_USER = "pacman.monitoring.slack.user";
+    
+    /**  *. */
+    String PACBOT_CREATED_SG_DESC = "PacBot created SG During Autofix";
 
 }
