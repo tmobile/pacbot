@@ -26,7 +26,6 @@ import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.mockStatic;
 import static org.powermock.api.mockito.PowerMockito.when;
-import io.vavr.collection.HashMultimap;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
