@@ -55,17 +55,32 @@ export class WorkflowService {
         this.saveToStorage(this.level);
     }
 
-    goBackToLastOpenedPageAndUpdateLevel(currentRouterSnapshot: ActivatedRouteSnapshot, currentLevel: number = 0) {
+    goBackToLastOpenedPageAndUpdateLevel(currentRouterSnapshot: ActivatedRouteSnapshot, targetIndex?: number, currentLevel?: number) {
+        if (currentLevel === undefined) {
+            currentLevel = this.routerUtilityService.getpageLevel(currentRouterSnapshot);
+        }
+        if (!(this.level[currentLevel] && this.level[currentLevel].length > 0)) {
+            return;
+        }
+
         let destinationUrlAndParams;
 
         this.level = this.getDetailsFromStorage();
-        while (!destinationUrlAndParams && currentLevel >= 0) {
-            if ( this.level['level' + currentLevel] && this.level['level' + currentLevel].length > 0 ) {
-                destinationUrlAndParams = this.level['level' + currentLevel].pop();
+
+        if (targetIndex === undefined) {
+            targetIndex = this.level[currentLevel].length - 1;
+        }
+
+        destinationUrlAndParams = this.level[currentLevel].splice(targetIndex)[0];
+
+        /* Not required. As now we need to go back only in the same level. */
+        /* while (!destinationUrlAndParams && currentLevel >= 0) {
+            if ( this.level[currentLevel] && this.level[currentLevel].length > 0 ) {
+                destinationUrlAndParams = this.level[currentLevel].pop();
                 break;
             }
             currentLevel--;
-        }
+        } */
         this.saveToStorage(this.level); // <-- update session storage after poping each obj
 
         const currentPageQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(currentRouterSnapshot);
@@ -76,7 +91,24 @@ export class WorkflowService {
 
         Object.assign(destinationUrlAndParams.queryParams, agAndDomain);
 
-        this.router.navigate([destinationUrlAndParams['url']], {queryParams: destinationUrlAndParams['queryParams']});
+        let urlToBeNavigatedTo = destinationUrlAndParams.url;
+        let newUrlQueryParam = '';
+
+        Object.keys(destinationUrlAndParams.queryParams).forEach((key, keyIndex) => {
+            newUrlQueryParam += key + '=' + encodeURIComponent(destinationUrlAndParams.queryParams[key]) + '&';
+        });
+        newUrlQueryParam = newUrlQueryParam.slice(0, -1);
+
+        if (newUrlQueryParam !== '') {
+            urlToBeNavigatedTo += '?' + newUrlQueryParam;
+        }
+
+        this.router.navigateByUrl(urlToBeNavigatedTo).then(result => {
+            this.logger.log('info', 'successful navigation - ' + result);
+        })
+        .catch(error => {
+            this.logger.log('error', 'navigation error - ' + error);
+        });
     }
 
     clearAllLevels() {

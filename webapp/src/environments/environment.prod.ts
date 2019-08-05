@@ -861,6 +861,14 @@ export const environment = {
     costApplications : {
         url: '{{baseUrl}}/asset/v1/costByApplication',
         method: 'GET'
+    },
+    recommendationsInfo : {
+        url: '{{baseUrl}}/asset/v1/recommendations/info',
+        method: 'GET'
+    },
+    recommendationsDetails: {
+        url: '{{baseUrl}}/asset/v1/recommendations/detail',
+        method: 'POST'
     }
 
 };

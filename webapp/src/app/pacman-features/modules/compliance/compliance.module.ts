@@ -108,6 +108,7 @@ import { PolicyViolationsListComponent } from './policy-violations-list/policy-v
 import { IssueListingService } from '../../services/issue-listing.service';
 import { RecommendationsComponent} from '../../modules/compliance/recommendations/recommendations.component';
 import { RecommandCategoryComponent } from '../../secondary-components/recommand-category/recommand-category.component';
+import { RecommendationsDetailsComponent } from './recommendations-details/recommendations-details.component';
 
 @NgModule({
   imports: [
@@ -211,7 +212,8 @@ import { RecommandCategoryComponent } from '../../secondary-components/recommand
     IssueExceptionComponent,
     PolicyViolationsListComponent,
     RecommendationsComponent,
-    RecommandCategoryComponent
+    RecommandCategoryComponent,
+    RecommendationsDetailsComponent
   ],
   providers: [
     SelectComplianceDropdown,
