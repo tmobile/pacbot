@@ -2730,5 +2730,128 @@ public class PacmanUtils {
         }
         return fieldValueList;
     }
+    
+    /**
+     * Gets the query from elastic search.
+     *
+     * @param securityGroupId the security group id
+     * @param serviceWithSgEsUrl the service with sg es url
+     * @param esUrlParam the es url param
+     * @param ruleParams the rule params
+     * @return the query from elastic search
+     * @throws Exception the exception
+     */
+    public static String getQueryFromElasticSearch(String securityGroupId,
+            List<String> serviceWithSgEsUrl, String esUrlParam,Map<String,String> ruleParams) throws Exception {
+        String securityGroupAttribute = null;
+        String servicesWithSgurl = null;
+        String returnedValue = null;
+        String latest = "";
+        for (String esUrl : serviceWithSgEsUrl) {
+            servicesWithSgurl = esUrlParam + esUrl;
+            if (esUrl.contains("ec2") || esUrl.contains("lambda") || esUrl.contains("appelb")
+                    || esUrl.contains("classicelb") || esUrl.contains("elasticsearch")) {
+                securityGroupAttribute = PacmanRuleConstants.EC2_WITH_SECURITYGROUP_ID;
+                if(esUrl.contains("elasticsearch")){
+                	latest = "true";
+                }
+            } else {
+                securityGroupAttribute = PacmanRuleConstants.SECURITYGROUP_ID_ATTRIBUTE;
+            }
+            Map<String, List<String>> matchPhrase = new HashMap<>();
+            
+            List<String> ids = new ArrayList<>();
+            ids.add(securityGroupId);
+            matchPhrase.put(securityGroupAttribute, ids);
+            	 returnedValue =  getValueFromElasticSearch(ruleParams.get("accountid"),"", servicesWithSgurl, securityGroupAttribute, ruleParams.get("region"), securityGroupAttribute, latest,matchPhrase);
+			if (!StringUtils.isEmpty(returnedValue)) {
+				List<GroupIdentifier> listSecurityGroupID = new ArrayList<>();
+				getSecurityGrouplist(returnedValue, ":;", listSecurityGroupID);
+				for(GroupIdentifier sgId:listSecurityGroupID){
+					if(sgId.getGroupId().equals(securityGroupId)){
+						return securityGroupId;
+					}
+				}
+				
+			}
+           
+        }
+		return returnedValue;
+    }
+    
+    /**
+     * get value from elastic search.
+     *
+     * @param accountId the account id
+     * @param id the id
+     * @param esUrl the es url
+     * @param attributeName the attribute name
+     * @param region the region
+     * @param fieldKey the field key
+     * @param latest the latest
+     * @param matchPhrase the match phrase
+     * @return String, if successful
+     * @throws Exception the exception
+     */
+    public static String getValueFromElasticSearch(String accountId,String id, String esUrl, String attributeName, String region,String fieldKey,String latest,Map<String, List<String>> matchPhrase)
+            throws Exception {
+        JsonParser jsonParser = new JsonParser();
+
+        Map<String, Object> mustFilter = new HashMap<>();
+        Map<String, Object> mustNotFilter = new HashMap<>();
+        HashMultimap<String, Object> shouldFilter = HashMultimap.create();
+        Map<String, Object> mustTermsFilter = new HashMap<>();
+        
+		if (!StringUtils.isEmpty(id)) {
+			mustFilter.put(convertAttributetoKeyword(attributeName), id);
+		}
+        
+        if(!StringUtils.isEmpty(region)){
+        mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.REGION), region);
+        }
+        
+        if(!StringUtils.isEmpty(latest)){
+        	mustFilter.put(PacmanRuleConstants.LATEST, "true");
+        }
+        
+        if(!StringUtils.isEmpty(accountId)){
+        	mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.ACCOUNTID), accountId);
+        }
+
+        JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(esUrl, mustFilter,
+                mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null,matchPhrase);
+        if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
+            String hitsJsonString = resultJson.get(PacmanRuleConstants.HITS).toString();
+            JsonObject hitsJson = (JsonObject) jsonParser.parse(hitsJsonString);
+            JsonArray jsonArray = hitsJson.getAsJsonObject().get(PacmanRuleConstants.HITS).getAsJsonArray();
+            return returnFieldValue(jsonArray,fieldKey);
+
+        }
+        return null;
+    }
+    
+    /**
+     * Checks if is field exists.
+     *
+     * @param jsonArray the json array
+     * @param fieldKey the field key
+     * @return String, if is instance exists
+     */
+    private static String returnFieldValue(JsonArray jsonArray,String fieldKey) {
+        if (jsonArray.size() > 0) {
+            for (int i = 0; i < jsonArray.size(); i++) {
+                JsonObject firstObject = (JsonObject) jsonArray.get(i);
+                JsonObject sourceJson = (JsonObject) firstObject.get(PacmanRuleConstants.SOURCE);
+                if (sourceJson != null
+                        && (sourceJson.get(fieldKey) != null && !sourceJson.get(fieldKey).isJsonNull())) {
+                    String fieldValue = sourceJson.get(fieldKey).getAsString();
+                    if (!org.apache.commons.lang.StringUtils.isEmpty(fieldValue)) {
+                        return fieldValue;
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
 }
