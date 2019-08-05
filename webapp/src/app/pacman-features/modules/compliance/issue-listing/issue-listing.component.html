@@ -16,7 +16,7 @@
     <div class="page-overlay" *ngIf='showExceptionalModal'></div>
     <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
     <div class="floating-widgets-header flex flex-between">
-        <div>
+        <div class="flex flex-col flex-align-center">
             <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
             <h1 class="title-text nowrap-ellipsis">{{pageTitle}}</h1>
         </div>
