@@ -344,4 +344,13 @@ public class PacmanRuleConstants {
 	public static final String ASSOCIATION_ID = "associationid";
 	public static final String SECURITY_GROUPS = "securitygroups";
 	public static final String ES_RDSDB_SG_URL = "esRdsDbSgUrl";
+	public static final String S3_PUBLIC_ACCESS_RULE_ID = "s3PublicAccessRuleId";
+    public static final String ES_S3_PUBLIC_ACCESS_ISSUE_URL = "esS3PubAccessIssueUrl";
+	public static final String IS_S3_ACCESS_LOGS_ENABLED = "isLoggingEnabled";
+	public static final String DESTINATION_BUCKET_NAME = "destinationBucketName";
+	public static final String LOG_FILE_PREFIX = "logFilePrefix";
+	public static final String DESTINATION_BUCKET_AUTOFIX = "destinationBucketForAutofix";
+	public static final String ACCESSLOGS_ENABLED_REGIONS = "accessLogsEnabledRegions";
+	public static final String RULE_ID = "ruleId";
+	public static final String STATUS_EXEMPTED = "exempted";
 }
