@@ -882,7 +882,8 @@ CREATE TABLE IF NOT EXISTS `Recommendation_Mappings` (
   `type` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `resourceInfo` varchar(200) COLLATE utf8_bin DEFAULT NULL,
   `_resourceId` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `monthlySavingsField` varchar(200) COLLATE utf8_bin DEFAULT NULL
+  `monthlySavingsField` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`checkId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
