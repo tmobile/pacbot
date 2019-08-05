@@ -624,8 +624,8 @@ export class AssetListComponent implements OnInit, OnDestroy {
     try {
       this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
       let resourceType;
-      if (row.row['Target Type']) {
-        resourceType = row.row['Target Type'].text;
+      if (row.row['Asset Type']) {
+        resourceType = row.row['Asset Type'].text;
       }
 
       if ( this.urlID && (this.urlID.toLowerCase() === 'pull-request-trend' || this.urlID.toLowerCase() === 'pull-request-age' || this.urlID.toLowerCase() === 'branching-strategy') ) {

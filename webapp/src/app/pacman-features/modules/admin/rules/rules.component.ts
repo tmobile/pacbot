@@ -374,7 +374,7 @@ export class RulesComponent implements OnInit, OnDestroy {
         this.outerArr = this.outerArr.splice(halfLength);
       }
       this.allColumns = Object.keys(totalVariablesObj);
-      this.allColumns = ['Rule Name', 'Target Type', 'Asset Group', 'Rule Frequency', 'Rule Type', 'Status', 'Actions'];
+      this.allColumns = ['Rule Name', 'Asset Type', 'Asset Group', 'Rule Frequency', 'Rule Type', 'Status', 'Actions'];
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
       this.logger.log('error', error);

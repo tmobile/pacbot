@@ -1,0 +1,58 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.toast-body {
+	top: 2px;
+    margin: auto;
+    max-width: 100%;
+    background: #37342b;
+    left: 50%;
+    transform: translate(-50%, -200%);
+    padding: 1.3em 1.2em;
+    z-index: 40;
+    border-radius: 3px;
+    box-shadow: 0 0 6px 3px rgba(0,0,0,0.2);
+    min-height: 3.5em;
+    transition: 0.4s ease;
+    color: white;
+    opacity: 0.93;
+}
+
+.toast-body.active {
+	transform: translate(-50%, 0%);
+}
+
+.toast-exe {
+	padding: 0.6em 0.83em;
+    color: white;
+    background: #ed0295;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    font-family: ex2-medium;
+}
+
+.toast-element {
+	margin: 0 0.66em;
+}
+
+.toast-msg {
+	font-family: ex2-light;
+	font-size: 1.1em;
+    letter-spacing: 0.24px;
+}
+
+.toast-msg:first-letter {
+	text-transform: uppercase;
+}

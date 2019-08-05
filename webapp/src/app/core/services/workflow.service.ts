@@ -79,7 +79,7 @@ export class WorkflowService {
         this.router.navigate([destinationUrlAndParams['url']], {queryParams: destinationUrlAndParams['queryParams']});
     }
 
-    checkIfFlowExistsCurrently(currentLevel) {
+    checkIfFlowExistsCurrently(currentLevel?) {
         let flowExiststatus = false;
         // getLevel();
         this.level = this.getDetailsFromStorage();

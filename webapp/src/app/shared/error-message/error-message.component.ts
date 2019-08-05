@@ -29,7 +29,7 @@ export class ErrorMessageComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.errorMessages = MESSAGES.errorMessages[this.selectedValue];
+    this.errorMessages = MESSAGES.errorMessages[this.selectedValue] || this.selectedValue;
   }
 
 }
