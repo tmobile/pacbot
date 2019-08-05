@@ -26,8 +26,8 @@
   <div class="floating-widgets-container">
       <section>
           <ul>
-              <li class="widget-wrapper relative">
-                  <div>
+              <li class="widget-wrapper relative flex flex-col">
+                  <div class="flex flex-col full-height flex-grow data-table-container">
                       <app-data-table [searchTextValues]=searchTxt [showGenericMessage]='showGenericMessage' [errorValue]='errorValue' 
                       [parentName]="'awsNotificationMessage'" [showingArr]='showingArr' [outerArr]='outerArr' [searchableHeader]='true' [allColumns]='allColumns' [dataHead]="'AWS Notifications'" (selectedRow)='goToDetails($event)' [firstPaginator]='firstPaginator' [lastPaginator]='lastPaginator' [totalRows]='totalRows' [currentPointer]='currentPointer' (searchRowTxt)='searchCalled($event)' (previousPageCalled)='prevPg()' (nextPageCalled)='nextPg()' (searchTriggerred)='callNewSearch()' [popRows]='popRows' (rowClickText)='handlePopClick($event)'>
                       </app-data-table>

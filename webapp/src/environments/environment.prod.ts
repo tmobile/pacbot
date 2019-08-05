@@ -469,6 +469,26 @@ export const environment = {
         url: '{{baseUrl}}/compliance/v1/vulnerabilities/aging/summary',
         method: 'GET'
     },
+    cloudNotifications : {
+        url: '{{baseUrl}}/asset/v1/cloud/notifications',
+        method: 'POST'
+    },
+    getEventDescription : {
+        url: '{{baseUrl}}/asset/v1/cloud/notifications/info',
+        method: 'GET'
+    },
+    getEventDetails : {
+        url: '{{baseUrl}}/asset/v1/cloud/notifications/detail',
+        method: 'GET'
+    },
+    getAutofixDetails : {
+        url: '{{baseUrl}}/asset/v1/autofix/notifications/detail',
+        method: 'POST'
+    },
+    cloudNotifSummary : {
+        url: '{{baseUrl}}/asset/v1/cloud/notifications/summary',
+        method: 'GET'
+    },
     vulnerabilityAgingDistributionSummary: {
         url: '{{baseUrl}}/compliance/v1/vulnerabilities/aging/distributionsummary',
         method: 'GET'

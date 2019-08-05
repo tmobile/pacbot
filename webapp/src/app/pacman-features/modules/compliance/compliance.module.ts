@@ -20,6 +20,7 @@ import { ComplianceRoutingModule } from './compliance-routing.module';
 import { ComplianceComponent } from './compliance.component';
 import { ComplianceIssuesComponent } from './../../secondary-components/compliance-issues/compliance-issues.component';
 import { PacmanIssuesComponent } from './../../secondary-components/pacman-issues/pacman-issues.component';
+import { AutofixScheduleComponent } from './../../secondary-components/autofix-schedule/autofix-schedule.component';
 import { MultilineBrushZoomComponent } from './../../secondary-components/multiline-brush-zoom/multiline-brush-zoom.component';
 import { MultiBandDonutComponent } from './../../secondary-components/multi-band-donut/multi-band-donut.component';
 import { IssuesCategoryComponent } from './../../secondary-components/issues-category/issues-category.component';
@@ -42,6 +43,8 @@ import { AllVulnerabilityTableComponent } from './../../secondary-components/all
 import { VulnerabilityTrendComponent } from './../../secondary-components/vulnerability-trend/vulnerability-trend.component';
 import { PatchingComplianceComponent } from './patching-compliance/patching-compliance.component';
 import { TaggingComplianceComponent } from './tagging-compliance/tagging-compliance.component';
+import { CloudNotificationsComponent } from './cloud-notifications/cloud-notifications.component';
+import { EventDetailsComponent } from './event-details/event-details.component';
 import { CertificateComplianceComponent } from './certificate-compliance/certificate-compliance.component';
 import { WindowRefService } from './../../services/window.service';
 import { AllPatchingTableComponent } from './../../secondary-components/all-patching-table/all-patching-table.component';
@@ -138,6 +141,7 @@ import { IssueListingService } from '../../services/issue-listing.service';
     IssueListingComponent,
     IssueDetailsComponent,
     VulnerabilitiesComplianceComponent,
+    AutofixScheduleComponent,
     IssueBlocksComponent,
     DetailsInfoComponent,
     VulnerabilityIssueComponent,
@@ -149,7 +153,9 @@ import { IssueListingService } from '../../services/issue-listing.service';
     VulnerabilityTrendComponent,
     PatchingComplianceComponent,
     TaggingComplianceComponent,
+    CloudNotificationsComponent,
     CertificateComplianceComponent,
+    EventDetailsComponent,
     AllPatchingTableComponent,
     PatchingIssueComponent,
     PatchingCurrentStateComponent,

@@ -3,14 +3,14 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { moduleTransition } from './common/animations/animations';
@@ -49,6 +49,7 @@ export class PostLoginAppComponent implements OnInit, OnDestroy {
   public theme;
   private pageReloadInterval; // Default time is 30 minutes in miliseconds
   private reloadTimeout;
+  isOffline = false;
 
   constructor(
     private router: Router,
@@ -117,13 +118,19 @@ export class PostLoginAppComponent implements OnInit, OnDestroy {
       };
 
 
+      Offline.on('down',
+        () => {
+          this.logger.log('info', 'Connection lost :-(');
+          this.isOffline = true;
+        },
+        this
+      );
+
       Offline.on('up',
         () => {
           this.logger.log('info', 'Connection was lost, It is back now');
-          const currentSelectedAssetGroup = this.dataStore.getCurrentSelectedAssetGroup();
-          if (currentSelectedAssetGroup) {
-            this.assetGroupObservableService.updateAssetGroup(currentSelectedAssetGroup);
-          }
+          this.isOffline = false;
+          location.reload();
         },
         this
       );
