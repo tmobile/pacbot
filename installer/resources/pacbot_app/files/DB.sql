@@ -882,7 +882,8 @@ CREATE TABLE IF NOT EXISTS `Recommendation_Mappings` (
   `type` varchar(50) COLLATE utf8_bin DEFAULT NULL,
   `resourceInfo` varchar(200) COLLATE utf8_bin DEFAULT NULL,
   `_resourceId` varchar(200) COLLATE utf8_bin DEFAULT NULL,
-  `monthlySavingsField` varchar(200) COLLATE utf8_bin DEFAULT NULL
+  `monthlySavingsField` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+  PRIMARY KEY (`checkId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
 
@@ -1012,6 +1013,7 @@ INSERT IGNORE INTO cf_Target (targetName,targetDesc,category,dataSourceName,targ
 INSERT IGNORE INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('deliverystream','Kinesis Fireshose','Analytics','aws','{"key":"deliverystreamarn","id":"deliverystreamarn"}','enabled','123',concat(@eshost,':',@esport,'/aws_deliverystream/deliverystream'),{d '2018-10-30'},{d '2018-10-30'},'Infra & Platforms');
 INSERT IGNORE INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('videostream','Kinesis Videostream','Analytics','aws','{"key":"streamarn","id":"streamarn"}','enabled','123',concat(@eshost,':',@esport,'/aws_videostream/videostream'),{d '2018-10-30'},{d '2018-10-30'},'Infra & Platforms');
 INSERT IGNORE INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('reservedinstance','Reserved Instances','Compute','aws','{"key":"instanceid","id":"instanceid"}','','123',concat(@eshost,':',@esport,'/aws_reservedinstance/reservedinstance'),{d '2018-11-01'},{d '2018-11-01'},'Infra & Platforms');
+INSERT IGNORE INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('route53','Route 53','Networking & Content Delivery','aws','{"key":"hostedZoneId","id":"hostedZoneId"}','','123',concat(@eshost,':',@esport,'/aws_route53/route53'),{d '2019-08-03'},{d '2019-08-03'},'Infra & Platforms');
 
 INSERT IGNORE INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('acmcertificate','acmcertificate','Identity & Compliance','aws','{\"key\":\"accountid,domainname\",\"id\":\"domainname\"}','enabled','admin@pacbot.org',concat(@eshost,':',@esport,'/aws_acmcertificate/acmcertificate'),'2019-02-15','2019-02-18','Infra & Platforms');
 INSERT IGNORE INTO cf_Target (targetName,targetDesc,category,dataSourceName,targetConfig,status,userId,endpoint,createdDate,modifiedDate,domain) VALUES ('iamcertificate','iamcertificate','Identity & Compliance','aws','{\"key\":\"accountid,servercertificatename\",\"id\":\"servercertificatename\"}','enabled','admin@pacbot.org',concat(@eshost,':',@esport,'/aws_iamcertificate/iamcertificate'),'2019-02-15','2019-02-18','Infra & Platforms');
