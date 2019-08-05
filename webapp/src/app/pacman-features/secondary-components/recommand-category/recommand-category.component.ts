@@ -67,7 +67,7 @@ export class RecommandCategoryComponent implements OnInit, OnChanges, OnDestroy 
   @Output() monthlySavings = new EventEmitter<any>();
   monthlySavingsTotal = 0;
   errorMessage = 'apiResponseError';
-  columnWhiteList = [ 'recommendation', 'Recommendation For', 'Asset Type', 'potential monthly savings'];
+  columnWhiteList = [ 'recommendation', 'Recommendation For', 'Target Type', 'potential monthly savings'];
   storeRecommendations = {
     'category' : {
       'summary': '',
@@ -147,7 +147,7 @@ export class RecommandCategoryComponent implements OnInit, OnChanges, OnDestroy 
   getData() {
     if (this.selectedAssetGroup !== undefined) {
             /* All functions to get data should go here */
-            this.columnWhiteList = [ 'recommendation', 'Recommendation For', 'Asset Type', 'potential monthly savings'];
+            this.columnWhiteList = [ 'recommendation', 'Recommendation ID', 'Recommendation For', 'recommended', 'Target Type', 'total', 'potential monthly savings'];
             this.getTableData();
         }
   }
@@ -161,7 +161,7 @@ export class RecommandCategoryComponent implements OnInit, OnChanges, OnDestroy 
 
             queryParams = {
                 'fileFormat': 'csv',
-                'serviceId': 21,
+                'serviceId': 16,
                 'fileType': fileType
             };
 
@@ -383,7 +383,7 @@ export class RecommandCategoryComponent implements OnInit, OnChanges, OnDestroy 
       this.outerArr = this.outerArr.splice(halfLength);
     }
     this.allColumns = Object.keys(totalVariablesObj);
-    
+
    } catch (error) {
     this.errorMessage = this.errorHandling.handleJavascriptError(error);
     this.logger.log('error', error);

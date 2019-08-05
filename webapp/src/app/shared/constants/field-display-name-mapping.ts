@@ -279,5 +279,8 @@ export const MAPPING = {
     'tags.stack': 'Stack',
     'tags.channel': 'Channel',
     'tags.tier': 'Tier',
-    'tags.workload': 'Workload'
+    'tags.workload': 'Workload',
+    'fault_tolerance': 'Fault Tolerance',
+    'service_limits': 'Service Limits',
+    'recommendationid': 'Recommendation ID'
 };
