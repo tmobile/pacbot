@@ -65,6 +65,15 @@
 						</configuration>
 					</execution>
 					<execution>
+						<id>npm install yarn</id>
+						<goals>
+							<goal>npm</goal>
+						</goals>
+						<configuration>
+							<arguments>install yarn</arguments>
+						</configuration>
+					</execution>
+					<execution>
 						<id>yarn</id>
 						<goals>
 							<goal>yarn</goal>
