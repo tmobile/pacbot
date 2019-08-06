@@ -183,7 +183,7 @@ public class ElasticSearchPublicAccessAutoFix extends BaseFix {
         } 
         
 	    }catch (Exception e) {
-            LOGGER.error("back up failed", e.getMessage());
+            LOGGER.error("back up failed", e);
             throw new AutoFixException("backup failed");
         }
             LOGGER.debug("backup complete for {}" , resourceId);
