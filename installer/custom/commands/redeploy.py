@@ -29,6 +29,7 @@ class Redeploy(BaseCommand):
     def __init__(self, args):
         args.append((K.CATEGORY_FIELD_NAME, "deploy"))
         args.append((K.CATEGORY_FIELD_NAME, "roles"))
+        args.append((K.CATEGORY_FIELD_NAME, "all_read_role"))
         args.append((K.CATEGORY_FIELD_NAME, "batch-ecr"))
         args.append((K.CATEGORY_FIELD_NAME, "batch-job"))
         args.append((K.CATEGORY_FIELD_NAME, "submit-job"))
