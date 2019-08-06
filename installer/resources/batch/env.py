@@ -1,4 +1,5 @@
 from core.terraform.resources.aws.batch import BatchComputeEnvironmentResource
+from core.terraform.utils import get_all_resource_tags
 from core.config import Settings
 from core.providers.aws.boto3.vpc import get_ec2_client
 from core.providers.aws.boto3.batch import get_compute_environments
@@ -24,7 +25,7 @@ class RuleEngineBatchJobEnv(BatchComputeEnvironmentResource):
     subnets = Settings.get('VPC')['SUBNETS']
     env_type = "MANAGED"
     service_role = BatchRole.get_output_attr('arn')
-    compute_resources_tags = [{Settings.RESOURCE_DEFAULT_TAG_NAME: Settings.RESOURCE_DEFAULT_TAG_VALUE}]
+    compute_resources_tags = get_all_resource_tags()
 
     DEPENDS_ON = [BatchIAMRolePolicyAttach]  # This is required otherwise policy would be dettached from Batchrole
 
