@@ -17,6 +17,7 @@
         <app-breadcrumb class="breadcrumb-top" *ngIf='currentPageLevel === 1'></app-breadcrumb>
         <div class="floating-widgets-header dashboards-header flex flex-between flex-align-center">
             <div>
+                <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack();" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
                 <app-back-navigation></app-back-navigation>
             </div>
         </div>

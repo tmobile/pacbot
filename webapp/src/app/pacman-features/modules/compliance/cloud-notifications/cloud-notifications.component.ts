@@ -49,12 +49,17 @@ export class CloudNotificationsComponent implements OnInit, OnDestroy {
     private filterManagementService: FilterManagementService
   ) {
     this.currentPageLevel = this.routerUtilityService.getpageLevel(this.router.routerState.snapshot.root);
+    this.backButtonRequired = this.workflowService.checkIfFlowExistsCurrently(
+      this.pageLevel
+    );
   }
 
   popRows = ['Download Data'];
   tabSelected = 'asset';
+  backButtonRequired;
   assetGroupSubscription: Subscription;
   dataSubscription: Subscription;
+  pageLevel = 0;
   summarySubscription: Subscription;
   selectedAssetGroup;
   currentPageLevel = 0;
@@ -225,6 +230,15 @@ export class CloudNotificationsComponent implements OnInit, OnDestroy {
     this.allColumns = [];
     this.getData();
   }
+
+  navigateBack() {
+    try {
+      this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root);
+    } catch (error) {
+      this.logger.log('error', error);
+    }
+  }
+
 
   getSummary() {
     if (this.summarySubscription) {
