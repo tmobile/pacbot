@@ -191,6 +191,6 @@ def get_all_resource_tags():
         tags (list): List of tags
     """
     default_tags = get_system_default_resource_tags()
-    user_defined_tags = get_user_defined_resource_tags
+    user_defined_tags = get_user_defined_resource_tags()
 
     return default_tags + user_defined_tags
