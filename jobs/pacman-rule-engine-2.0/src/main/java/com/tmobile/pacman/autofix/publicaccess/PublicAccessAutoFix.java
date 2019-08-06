@@ -696,7 +696,7 @@ public class PublicAccessAutoFix {
 						}
 					}
 				} catch (Exception e1) {
-					logger.error("error", e1);
+					logger.error("error in public access autofic ", e1);
 					throw new RuleExecutionFailedExeption(e1.getMessage());
 				}
 			}
