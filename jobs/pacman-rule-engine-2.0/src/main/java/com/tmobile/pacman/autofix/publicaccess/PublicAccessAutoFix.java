@@ -49,6 +49,12 @@ import com.amazonaws.services.elasticloadbalancingv2.model.DescribeLoadBalancers
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeLoadBalancersResult;
 import com.amazonaws.services.elasticloadbalancingv2.model.LoadBalancer;
 import com.amazonaws.services.elasticloadbalancingv2.model.SetSecurityGroupsRequest;
+import com.amazonaws.services.elasticsearch.AWSElasticsearch;
+import com.amazonaws.services.elasticsearch.model.DescribeElasticsearchDomainRequest;
+import com.amazonaws.services.elasticsearch.model.DescribeElasticsearchDomainResult;
+import com.amazonaws.services.elasticsearch.model.ElasticsearchDomainStatus;
+import com.amazonaws.services.elasticsearch.model.UpdateElasticsearchDomainConfigRequest;
+import com.amazonaws.services.elasticsearch.model.VPCOptions;
 import com.amazonaws.services.rds.AmazonRDS;
 import com.amazonaws.services.rds.model.DBInstance;
 import com.amazonaws.services.rds.model.DescribeDBInstancesRequest;
@@ -573,4 +579,154 @@ public class PublicAccessAutoFix {
         ec2Client.deleteSecurityGroup(deleteSecurityGroupRequest);
         return true;
     }
+    
+    /**
+ 	 * Gets the domain status for es resource.
+ 	 *
+ 	 * @param clientMap the client map
+ 	 * @param resourceId the resource id
+ 	 * @return the domain status for es resource
+ 	 * @throws Exception the exception
+ 	 */
+ 	public static ElasticsearchDomainStatus getDomainStatusForEsResource(Map<String,Object> clientMap,String resourceId) throws Exception {
+		 AWSElasticsearch awsElasticsearch =(AWSElasticsearch) clientMap.get("client");
+		 DescribeElasticsearchDomainRequest request = new DescribeElasticsearchDomainRequest();
+		 request.setDomainName(resourceId);
+		 DescribeElasticsearchDomainResult result = awsElasticsearch.describeElasticsearchDomain(request);
+		 return result.getDomainStatus();
+	     
+	    }
+ 	
+	/**
+	 * Checks if is es having public access.
+	 *
+	 * @param jsonArray the json array
+	 * @param cidrIp the cidr ip
+	 * @return true, if is es having public access
+	 */
+	public static boolean isEsHavingPublicAccess(JsonArray jsonArray,String cidrIp) {
+		boolean isPublicAccess = false;
+		JsonObject conditionJsonObject = new JsonObject();
+		JsonArray conditionJsonArray = new JsonArray();
+		String conditionStr = null;
+		JsonObject principal = new JsonObject();
+		String effect = null;
+		String principalStr = null;
+		String aws = null;
+		if (jsonArray.size() > 0) {
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JsonObject firstObject = (JsonObject) jsonArray.get(i);
+
+				if (firstObject.has("Principal") && firstObject.get("Principal").isJsonObject()) {
+					principal = firstObject.get("Principal").getAsJsonObject();
+				} else {
+					principalStr = firstObject.get("Principal").getAsString();
+				}
+				try {
+					if (principal.has("AWS") || "*".equals(principalStr)) {
+						JsonArray awsArray = null;
+						effect = firstObject.get("Effect").getAsString();
+						if (principal.has("AWS") && principal.get("AWS").isJsonArray()) {
+							awsArray = principal.get("AWS").getAsJsonArray();
+							if (awsArray.size() > 0) {
+								logger.debug("Not checking the s3 read/write public access for principal array values : {}",awsArray);
+							}
+						}
+
+						if (principal.has("AWS") && !principal.get("AWS").isJsonArray()) {
+							aws = principal.get("AWS").getAsString();
+						}
+						if ("*".equals(principalStr)) {
+							aws = firstObject.get("Principal").getAsString();
+						}
+
+						if ("*".equals(aws) && !firstObject.has("Condition")) {
+							if (effect.equals("Allow")) {
+								isPublicAccess = true;
+							}
+						} else if ("*".equals(aws) && firstObject.has("Condition") && effect.equals("Allow")) {
+							if (firstObject.has("Condition")
+									&& (firstObject.get("Condition")
+											.getAsJsonObject().has("IpAddress"))
+									&& (firstObject.get("Condition")
+											.getAsJsonObject().get("IpAddress")
+											.getAsJsonObject()
+											.has("aws:SourceIp"))) {
+								if (firstObject.get("Condition")
+										.getAsJsonObject().get("IpAddress")
+										.getAsJsonObject().get("aws:SourceIp")
+										.isJsonObject()) {
+									conditionJsonObject = firstObject
+											.get("Condition").getAsJsonObject()
+											.get("IpAddress").getAsJsonObject()
+											.get("aws:SourceIp")
+											.getAsJsonObject();
+								} else if (firstObject.get("Condition")
+										.getAsJsonObject().get("IpAddress")
+										.getAsJsonObject().get("aws:SourceIp")
+										.isJsonArray()) {
+									conditionJsonArray = firstObject
+											.get("Condition").getAsJsonObject()
+											.get("IpAddress").getAsJsonObject()
+											.get("aws:SourceIp")
+											.getAsJsonArray();
+								} else {
+									conditionStr = firstObject.get("Condition")
+											.getAsJsonObject().get("IpAddress")
+											.getAsJsonObject()
+											.get("aws:SourceIp").getAsString();
+								}
+							}
+
+							JsonElement cJson = conditionJsonArray;
+							Type listType = new TypeToken<List<String>>() {
+							}.getType();
+
+							List<String> conditionList = new Gson().fromJson(cJson, listType);
+							if (!conditionJsonObject.isJsonNull() && conditionJsonObject.toString().equals(cidrIp)) {
+								isPublicAccess = true;
+							}
+
+							if (null != conditionStr && conditionStr.contains(cidrIp)) {
+								isPublicAccess = true;
+							}
+							if (conditionList.contains(cidrIp)) {
+								isPublicAccess = true;
+							}
+						}
+					}
+				} catch (Exception e1) {
+					logger.error("error", e1);
+					throw new RuleExecutionFailedExeption(e1.getMessage());
+				}
+			}
+		}
+		return isPublicAccess;
+	}
+	
+	/**
+	 * Apply security groups to elactic search.
+	 *
+	 * @param awsElasticsearch the aws elasticsearch
+	 * @param sgIdToBeAttached the sg id to be attached
+	 * @param resourceId the resource id
+	 * @param domainConfigRequest the domain config request
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
+	public static boolean applySecurityGroupsToElacticSearch(AWSElasticsearch awsElasticsearch, List<String> sgIdToBeAttached,String resourceId, UpdateElasticsearchDomainConfigRequest domainConfigRequest) throws Exception {
+		boolean applysgFlg = false;
+		try {
+			VPCOptions vPCOptions = new VPCOptions();
+			vPCOptions.setSecurityGroupIds(sgIdToBeAttached);
+			domainConfigRequest.setVPCOptions(vPCOptions);
+			domainConfigRequest.setDomainName(resourceId);
+			awsElasticsearch.updateElasticsearchDomainConfig(domainConfigRequest);
+			applysgFlg = true;
+		} catch (Exception e) {
+			logger.error("Apply Security Group operation failed for elasticache {}",resourceId);
+			throw new Exception(e);
+		}
+		return applysgFlg;
+	}
 }
