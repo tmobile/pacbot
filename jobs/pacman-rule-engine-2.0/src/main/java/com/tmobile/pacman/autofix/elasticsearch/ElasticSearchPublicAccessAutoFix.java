@@ -143,7 +143,7 @@ public class ElasticSearchPublicAccessAutoFix extends BaseFix {
 			}
 
 		} catch (Exception e) {
-			LOGGER.error(e.getMessage());
+			LOGGER.error("Error in elastic public access autofix",e);
 			throw new RuntimeException(e.getMessage());
 		}
 		return new FixResult(PacmanSdkConstants.STATUS_SUCCESS_CODE,"the elasticsearch "+resourceId+" is now fixed");
