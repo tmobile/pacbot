@@ -20,14 +20,14 @@
       "prefix": "app",
       "styles": [
         "styles.css",
-        "../node_modules/@bower_components/offline/themes/offline-theme-chrome.css",
-        "../node_modules/@bower_components/offline/themes/offline-language-english.css",
+        "../bower_components/offline/themes/offline-theme-chrome.css",
+        "../bower_components/offline/themes/offline-language-english.css",
         "../node_modules/ag-grid/dist/styles/ag-grid.css",
         "../node_modules/ag-grid/dist/styles/theme-blue.css",
         "../node_modules/ngx-select-dropdown/dist/assets/style.css"
       ],
       "scripts": [
-        "../node_modules/@bower_components/offline/offline.js",
+        "../bower_components/offline/offline.js",
         "../node_modules/ag-grid/dist/ag-grid.js"
       ],
       "environmentSource": "environments/environment.ts",

@@ -55,7 +55,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                     </execution>
-					<!-- <execution>
+					<execution>
 						<id>npm install</id>
 						<goals>
 							<goal>npm</goal>
@@ -63,23 +63,23 @@
 						<configuration>
 							<arguments>install</arguments>
 						</configuration>
-					</execution> -->
-					<!-- <execution>
-						<id>npm install yarn</id>
+					</execution>
+					<execution>
+						<id>npm install bower</id>
 						<goals>
 							<goal>npm</goal>
 						</goals>
 						<configuration>
-							<arguments>install yarn</arguments>
+							<arguments>install bower</arguments>
 						</configuration>
-					</execution> -->
+					</execution>
 					<execution>
-						<id>yarn</id>
+						<id>bower install --allow-root</id>
 						<goals>
-							<goal>yarn</goal>
+							<goal>bower</goal>
 						</goals>
 						<configuration>
-							<arguments></arguments>
+							<arguments>install --allow-root</arguments>
 						</configuration>
 					</execution>
 					<execution>
