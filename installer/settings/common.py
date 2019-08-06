@@ -27,7 +27,8 @@ TOOLS_REQUIRED = {
     'Nodejs': "node --version",
     'npm': "npm --version",
     'Angular': "ng --version",
-    'Bower': "bower --version",
+    'Yarn': 'yarn --version',
+    # 'Bower': "bower --version",
     'Docker': "docker --version"
 }
 
