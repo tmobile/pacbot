@@ -47,7 +47,7 @@
     "rxjs": "^5.4.2",
     "yarn": "^1.12.3",
     "zone.js": "^0.8.14",
-    "@bower_components/offline": "HubSpot/offline",
+    "@bower_components/offline": "HubSpot/offline#>= 0.7.2",
     "@bower_components/offlinejs-simulate-ui": "craigshoemaker/offlinejs-simulate-ui",
     "ngx-select-dropdown": "^1.0.1"
   },

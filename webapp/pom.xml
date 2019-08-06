@@ -55,7 +55,7 @@
                         </goals>
                         <phase>generate-resources</phase>
                     </execution>
-					<execution>
+					<!-- <execution>
 						<id>npm install</id>
 						<goals>
 							<goal>npm</goal>
@@ -63,8 +63,8 @@
 						<configuration>
 							<arguments>install</arguments>
 						</configuration>
-					</execution>
-					<execution>
+					</execution> -->
+					<!-- <execution>
 						<id>npm install yarn</id>
 						<goals>
 							<goal>npm</goal>
@@ -72,7 +72,7 @@
 						<configuration>
 							<arguments>install yarn</arguments>
 						</configuration>
-					</execution>
+					</execution> -->
 					<execution>
 						<id>yarn</id>
 						<goals>
