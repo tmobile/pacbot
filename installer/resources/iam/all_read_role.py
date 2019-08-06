@@ -57,7 +57,6 @@ class AllReadRoleAutoFixPolicyDocument(iam.IAMPolicyDocumentData):
                 "ec2:AuthorizeSecurityGroupEgress",
                 "ec2:AuthorizeSecurityGroupIngress",
                 "ec2:CreateSecurityGroup",
-                "ec2:DeleteSecurityGroup",
                 "ec2:CreateTags",
                 "ec2:DescribeTags",
                 "ec2:ModifyInstanceAttribute",
@@ -88,6 +87,13 @@ class AllReadRoleAutoFixPolicyDocument(iam.IAMPolicyDocumentData):
                 "logs:PutLogEvents",
                 "logs:DescribeLogGroups",
                 "logs:DescribeLogStreams"
+            ],
+            'resources': ["*"],
+            'effect': "Allow"
+        },
+        {
+            'actions': [
+                "ec2:DeleteSecurityGroup",
             ],
             'resources': ["*"],
             'effect': "Allow"
