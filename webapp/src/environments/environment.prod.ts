@@ -845,6 +845,30 @@ export const environment = {
     rollbackConfigProperties: {
         url: '{{baseUrl}}/admin/config-properties/rollback',
         method: 'PUT'
+    },
+    recommendationSummary : {
+        url: '{{baseUrl}}/asset/v1/recommendations/summary',
+        method: 'GET'
+    },
+    recommendationApplication : {
+        url: '{{baseUrl}}/asset/v1/recommendations/summaryByApplication',
+        method: 'GET'
+    },
+    recommendations : {
+        url: '{{baseUrl}}/asset/v1/recommendations',
+        method: 'POST'
+    },
+    costApplications : {
+        url: '{{baseUrl}}/asset/v1/costByApplication',
+        method: 'GET'
+    },
+    recommendationsInfo : {
+        url: '{{baseUrl}}/asset/v1/recommendations/info',
+        method: 'GET'
+    },
+    recommendationsDetails: {
+        url: '{{baseUrl}}/asset/v1/recommendations/detail',
+        method: 'POST'
     }
 
 };
