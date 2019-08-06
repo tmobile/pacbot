@@ -49,13 +49,13 @@
                 <artifactId>frontend-maven-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>install-node-and-npm</id>
+                        <id>install node and yarn</id>
                         <goals>
-                            <goal>install-node-and-npm</goal>
+                            <goal>install-node-and-yarn</goal>
                         </goals>
                         <phase>generate-resources</phase>
                     </execution>
-					<execution>
+					<!-- <execution>
 						<id>npm install</id>
 						<goals>
 							<goal>npm</goal>
@@ -63,8 +63,8 @@
 						<configuration>
 							<arguments>install</arguments>
 						</configuration>
-					</execution>
-					<execution>
+					</execution> -->
+					<!-- <execution>
 						<id>npm install bower</id>
 						<goals>
 							<goal>npm</goal>
@@ -72,16 +72,17 @@
 						<configuration>
 							<arguments>install bower</arguments>
 						</configuration>
-					</execution>
+					</execution> -->
 					<execution>
-						<id>bower install --allow-root</id>
-						<goals>
-							<goal>bower</goal>
-						</goals>
-						<configuration>
-							<arguments>install --allow-root</arguments>
-						</configuration>
-					</execution>
+                        <id>yarn install</id>
+                        <goals>
+                            <goal>yarn</goal>
+                        </goals>
+                        <configuration>
+                            <arguments>install</arguments>
+                        </configuration>
+                    </execution>
+
 					<execution>
 						<id>npm run ng build -- --env=prod --output-hashing=all</id>
 						<goals>
@@ -95,7 +96,8 @@
                 </executions>
                 <configuration>
                     <nodeVersion>v8.12.0</nodeVersion>
-                    <npmVersion>6.4.1</npmVersion>
+                    <!-- <npmVersion>6.4.1</npmVersion> -->
+					<yarnVersion>v1.12.3</yarnVersion>
      				<workingDirectory>${pom.parent.basedir}</workingDirectory>
                 </configuration>
             </plugin>
