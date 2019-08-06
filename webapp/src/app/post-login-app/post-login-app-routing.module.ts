@@ -28,6 +28,8 @@ import { HelpTextComponent } from '../shared/help-text/help-text.component';
 import { OmnisearchComponent } from '../pacman-features/modules/omnisearch/omnisearch.component';
 import { AdminComponent } from '../pacman-features/modules/admin/admin.component';
 import { VulnerabilityReportComponent } from './vulnerability-report/vulnerability-report.component';
+import { RecommendationsDetailsComponent } from '../pacman-features/modules/compliance/recommendations-details/recommendations-details.component';
+import {AssetDetailsComponent} from '../pacman-features/modules/assets/asset-details/asset-details.component';
 
 const routes: Routes = [
     {
@@ -37,7 +39,7 @@ const routes: Routes = [
             {
                 path: 'first-time-user-journey',
                 component: FirstTimeUserJourneyComponent
-            }
+            },
         ],
         canActivate: [AuthGuardService]
     },
@@ -104,7 +106,27 @@ const routes: Routes = [
                 path: 'help-text',
                 component: HelpTextComponent,
                 outlet: 'helpTextModal'
-            }
+            },
+            {
+                path: 'recommendations-detail',
+                component: RecommendationsDetailsComponent,
+                data: {
+                    title: 'Recommendations Detail',
+                    pageLevel: 1
+                },
+                outlet: 'details',
+                canActivate: [AuthGuardService]
+            },
+            {
+                path: 'assets-details/:resourceType/:resourceId',
+                component: AssetDetailsComponent,
+                data: {
+                    title: 'Asset Details',
+                    pageLevel: 1
+                },
+                outlet: 'details',
+                canActivate: [AuthGuardService]
+            },
         ],
         canActivate: [AuthGuardService]
     },

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Input, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnDestroy, OnChanges, SimpleChanges } from '@angular/core';
 
 import {Subscription} from 'rxjs/Subscription';
 
@@ -29,17 +29,20 @@ import * as _ from 'lodash';
   templateUrl: './generic-page-filter.component.html',
   styleUrls: ['./generic-page-filter.component.css']
 })
-export class GenericPageFilterComponent implements OnInit, OnDestroy {
-
+export class GenericPageFilterComponent implements OnInit, OnDestroy, OnChanges {
   filterSubscription: Subscription;
   assetGroupSubscription: Subscription;
   domainSubscription: Subscription;
 
   @Input() filterId;
   @Input() filterArray;
+  @Input() selectOnSingleValue?; // check to make filter as selected on single value for second dropdown
+  @Input() mandatoryFilter: any; // check for any mandatory filter
   @Output() onFilterValueChange = new EventEmitter();
+  @Input() clearSelectedFilterValue? = false;
   agAndDomain = {};
-
+  disableFilterTags = true;
+  dataAvailable = false;
   filterValues = {
     filterTypeLabels: [], // contains all filter labels available to show user
     filterTypeOptions: [], // contians filter id, url to get values corresponsing to that filter
@@ -65,6 +68,19 @@ export class GenericPageFilterComponent implements OnInit, OnDestroy {
     this.init();
   }
 
+  ngOnChanges(changes: SimpleChanges) {
+    // clear all value by default - currenlty used in recommendations to reset on ag change
+    const toClearValueChange = changes['clearSelectedFilterValue'];
+    if (toClearValueChange && !toClearValueChange.firstChange) {
+      const cur  = JSON.stringify(toClearValueChange.currentValue);
+      const prev = JSON.stringify(toClearValueChange.previousValue);
+        if (cur !== prev) {
+          this.disableFilterTags = false;
+          this.dataAvailable = false;
+        }
+    }
+  }
+
   subscribeToAssetGroup() {
     this.assetGroupSubscription = this.assetGroupObservableService.getAssetGroup().subscribe(assetGroup => {
       if (assetGroup) {
@@ -86,7 +102,6 @@ export class GenericPageFilterComponent implements OnInit, OnDestroy {
 
   reset() {
     /* Reset the values */
-
   }
 
   init() {
@@ -95,11 +110,24 @@ export class GenericPageFilterComponent implements OnInit, OnDestroy {
 
   getFilters() {
     try {
+      if (this.filterSubscription) {
+        this.filterSubscription.unsubscribe();
+      }
       if (this.filterId) {
         this.filterSubscription = this.filterManagementService.getApplicableFilters(this.filterId)
             .subscribe(response => {
-              this.filterValues['filterTypeLabels'] = _.map(response[0].response, 'optionName');
-              this.filterValues['filterTypeOptions'] = response[0].response;
+              this.dataAvailable = true;
+              const responseData = this.removeMandatoryFilter(response[0].response);
+              this.filterValues['filterTypeLabels'] = _.map(responseData, 'optionName');
+              this.filterValues['filterTypeOptions'] = responseData;
+              if (this.filterValues['filterTypeLabels'].length === 1) {
+                this.changeFilterType({
+                  'value': this.filterValues['filterTypeLabels'][0]
+                });
+              }
+            },
+            error => {
+              this.dataAvailable = true;
             });
       }
     } catch (error) {
@@ -109,8 +137,16 @@ export class GenericPageFilterComponent implements OnInit, OnDestroy {
 
   changeFilterType(value) {
     try {
+      if (this.filterSubscription) {
+        this.filterSubscription.unsubscribe();
+      }
+      this.dataAvailable = false;
+      this.filterValues.filterValuesOptions = [];
+      this.filterValues.filterValuesLabels = [];
+      this.filterValues.currentSelectedFilterType = {};
+      this.disableFilterTags = false;
       this.filterValues.currentSelectedFilterType = _.find(this.filterValues.filterTypeOptions, {
-        optionName: value.id
+        optionName: value.value
       });
 
       const queryParams = {
@@ -119,18 +155,24 @@ export class GenericPageFilterComponent implements OnInit, OnDestroy {
       };
 
       this.filterSubscription = this.filterManagementService.getValuesForFilterType(this.filterValues.currentSelectedFilterType, queryParams).subscribe(response => {
+        this.dataAvailable = true;
         this.filterValues.filterValuesLabels = _.map(response[0].response, 'name');
         this.filterValues.filterValuesOptions = response[0].response;
+        if (this.filterValues.filterValuesOptions.length === 1 && this.selectOnSingleValue) {
+          this.changeFilterValue(this.filterValues.filterValuesOptions[0], true);
+        }
+      }, error => {
+        this.dataAvailable = true;
       });
     } catch (error) {
       this.logger.log('error', error);
     }
   }
 
-  changeFilterValue(value) {
+  changeFilterValue(value, mandatory?) {
     try {
       if (this.filterValues.currentSelectedFilterType) {
-        const filterTag = _.find(this.filterValues.filterValuesOptions, { name: value.id });
+        const filterTag = mandatory ? value : _.find(this.filterValues.filterValuesOptions, { name: value.value });
         this.utils.addOrReplaceElement(
             this.filterArray,
             {
@@ -143,16 +185,34 @@ export class GenericPageFilterComponent implements OnInit, OnDestroy {
               return el.compareKey === this.filterValues.currentSelectedFilterType['optionValue'].toLowerCase().trim();
             }
         );
-        this.filterValues.filterValuesOptions = [];
-        this.filterValues.filterValuesLabels = [];
-        this.filterValues.currentSelectedFilterType = {};
       }
       /* Emit value to parent to notify change */
+      if (mandatory) {
+        // provide mandatory key when check is passed to select filter on single value
+        this.filterArray['mandatory'] = this.filterValues['filterTypeOptions'][0].optionValue;
+      }
       this.onFilterValueChange.emit(this.filterArray);
       this.utils.clickClearDropdown();
     } catch (error) {
       this.logger.log('error', error);
     }
+  }
+
+  removeMandatoryFilter(data) {
+    // remove mandatory filter from filter dropdown
+    let mandatory = this.mandatoryFilter;
+    if (mandatory && mandatory.includes('|')) {
+      mandatory = mandatory.split('|');
+    }
+    if (mandatory) {
+      const filteredOptionValue = _.map(data, 'optionValue');
+      filteredOptionValue.forEach(value => {
+        if (mandatory.includes(value.trim())) {
+          data = _.reject(data, {'optionValue': value});
+        }
+      });
+    }
+    return data;
   }
 
   ngOnDestroy() {
@@ -162,6 +222,9 @@ export class GenericPageFilterComponent implements OnInit, OnDestroy {
       }
       if (this.filterSubscription) {
         this.filterSubscription.unsubscribe();
+      }
+      if (this.domainSubscription) {
+        this.domainSubscription.unsubscribe();
       }
     } catch (error) {
       this.logger.log('error', 'js error - ' + error);
