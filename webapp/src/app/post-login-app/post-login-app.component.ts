@@ -58,11 +58,11 @@ export class PostLoginAppComponent implements OnInit, OnDestroy {
     private assetGroupObservableService: AssetGroupObservableService,
     private dataStore: DataCacheService,
     private logger: LoggerService,
+    private workflowService: WorkflowService,
     private mainRoutingAnimationEventService: MainRoutingAnimationEventService,
     private downloadService: DownloadService,
     private domainTypeObservableService: DomainTypeObservableService,
-    private themeObservableService: ThemeObservableService,
-    private workflowService: WorkflowService
+    private themeObservableService: ThemeObservableService
   ) {
 
     if (this.pageReloadInterval) {
@@ -155,6 +155,33 @@ export class PostLoginAppComponent implements OnInit, OnDestroy {
     }
   }
 
+  navigateBackToRootLevel() {
+    this.dataStore.set(
+      'selectedApplicationSummary',
+      JSON.stringify(null)
+    );
+    this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root, 0);
+    const navigationParams = {
+      relativeTo: this.activatedRoute // <-- Parent activated route
+    };
+
+    navigationParams['queryParams'] = { 'ag': this.queryParameters['ag'], 'domain': this.queryParameters['domain'] };
+
+    this.router.navigate(
+      [
+        {
+          outlets: {
+            details: null
+          }
+        }
+      ],
+      navigationParams
+    );
+    this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root, 0);
+    this.workflowService.clearAllLevels();
+  }
+
+
   setReloadTimeOut(timeoutInterval) {
     this.logger.log('info', 'Setting the page reload interval to: ' + timeoutInterval);
     const reloadTimeout = setTimeout(function(){
@@ -231,32 +258,6 @@ export class PostLoginAppComponent implements OnInit, OnDestroy {
     } catch (e) {
 
     }
-  }
-
-  navigateBackToRootLevel() {
-    this.dataStore.set(
-      'selectedApplicationSummary',
-      JSON.stringify(null)
-    );
-    this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root, 0);
-    const navigationParams = {
-      relativeTo: this.activatedRoute // <-- Parent activated route
-    };
-
-    navigationParams['queryParams'] = { 'ag': this.queryParameters['ag'], 'domain': this.queryParameters['domain'] };
-
-    this.router.navigate(
-      [
-        {
-          outlets: {
-            details: null
-          }
-        }
-      ],
-      navigationParams
-    );
-    this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root, undefined, 0);
-    this.workflowService.clearAllLevels();
   }
 
   ngOnDestroy() {
