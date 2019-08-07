@@ -22,10 +22,10 @@ sudo mv terraform /usr/bin
 
 ## INSTALL NODEJS and dependencies
 sudo yum install -y gcc-c++ make
-curl -sL https://rpm.nodesource.com/setup_8.x | sudo bash
+# curl -sL https://rpm.nodesource.com/setup_8.x | sudo bash
+curl --silent --location https://rpm.nodesource.com/setup_10.x | sudo bash -
 sudo yum install -y nodejs
-sudo npm install -g bower
-
+sudo npm install -g yarn
 sudo npm install -g @angular/cli
 # sudo npm audit fix
 # npm install --save-dev @angular/cli@7.0.6
