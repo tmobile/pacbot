@@ -20,6 +20,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -50,6 +52,8 @@ public class FilterRepositoryImpl implements FilterRepository, Constants {
     /** The asset service client. */
     @Autowired
     private AssetServiceClient assetServiceClient;
+    
+    protected final Log logger = LogFactory.getLog(getClass());
 
     /* (non-Javadoc)
      * @see com.tmobile.pacman.api.compliance.repository.FilterRepository#getFiltersFromDb(int)
@@ -85,6 +89,7 @@ public class FilterRepositoryImpl implements FilterRepository, Constants {
                 assetGroup, null, mustFilter, mustNotFilter, null, aggsFilter,
                 1000, null);
         }catch(Exception e){
+        	logger.error("error in getPoliciesFromES",e);
             throw new DataException(e);
         }
     }
