@@ -1619,6 +1619,7 @@ input.common-cb:checked + label {
     display: flex;
     flex-direction: column;
     height: 100%;
+    flex-grow: 1;
 }
 
 @media print {

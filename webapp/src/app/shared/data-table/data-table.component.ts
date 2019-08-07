@@ -99,7 +99,7 @@ export class DataTableComponent implements OnInit, OnChanges {
     @Input() checkBox;
     @Input() columnWhiteList;
     @Input() buttonsArr;
-    @Input() searchTextValues: any;
+    @Input() searchTextValues = '';
     @Input() popRows: any;
     @Input() parentName: any;
     @Input() buttonColumn;
