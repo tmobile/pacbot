@@ -200,8 +200,16 @@ public class PublicAccessAutoFix {
 				
 				if(ipPermission.getIpv4Ranges().isEmpty() && ipPermission.getIpv6Ranges().isEmpty() ){
 					for (UserIdGroupPair usergroupPair : ipPermission.getUserIdGroupPairs()) {
-						ipPermission.setUserIdGroupPairs(Arrays.asList(usergroupPair));
-						ipPermissionstobeAdded.add(ipPermission);
+						IpPermission  requiredIpPermission = new IpPermission();
+						requiredIpPermission.setFromPort(ipPermission.getFromPort());
+						requiredIpPermission.setToPort(ipPermission.getToPort());
+						requiredIpPermission.setIpProtocol(ipPermission.getIpProtocol());
+						requiredIpPermission.setIpRanges(ipPermission.getIpRanges());
+						requiredIpPermission.setIpv4Ranges(ipPermission.getIpv4Ranges());
+						requiredIpPermission.setIpv6Ranges(ipPermission.getIpv6Ranges());
+						requiredIpPermission.setUserIdGroupPairs(Arrays.asList(usergroupPair));
+						requiredIpPermission.setPrefixListIds(ipPermission.getPrefixListIds());
+						ipPermissionstobeAdded.add(requiredIpPermission);
 					}
 				}
 
