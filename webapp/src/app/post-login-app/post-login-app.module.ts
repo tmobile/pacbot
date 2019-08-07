@@ -51,6 +51,7 @@ import { VulnReportTablesComponent } from './common/vuln-report-tables/vuln-repo
 import { VulnReportStatsComponent } from './common/vuln-report-stats/vuln-report-stats.component';
 import { VulnTrendGraphComponent } from './common/vuln-trend-graph/vuln-trend-graph.component';
 import { VulnReportWorkflowComponent} from './common/vuln-report-workflow/vuln-report-workflow.component';
+import { CopyElementService } from '../shared/services/copy-element.service';
 
 
 @NgModule({
@@ -82,7 +83,7 @@ import { VulnReportWorkflowComponent} from './common/vuln-report-workflow/vuln-r
     VulnReportWorkflowComponent
   ],
 
-  providers: [AssetGroupObservableService, AwsResourceTypeSelectionService, StateManagementService, ToastObservableService, HelpObservableService, DownloadService]
+  providers: [AssetGroupObservableService, AwsResourceTypeSelectionService, StateManagementService, ToastObservableService, CopyElementService, HelpObservableService, DownloadService]
 })
 export class PostLoginAppModule {
 

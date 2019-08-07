@@ -18,6 +18,8 @@ import {IssueDetailsComponent} from '../../pacman-features/modules/compliance/is
 import {VulnerabilitiesComplianceComponent} from '../../pacman-features/modules/compliance/vulnerabilities-compliance/vulnerabilities-compliance.component';
 import {PatchingComplianceComponent} from '../../pacman-features/modules/compliance/patching-compliance/patching-compliance.component';
 import {TaggingComplianceComponent} from '../../pacman-features/modules/compliance/tagging-compliance/tagging-compliance.component';
+import {CloudNotificationsComponent} from '../../pacman-features/modules/compliance/cloud-notifications/cloud-notifications.component';
+import {EventDetailsComponent} from '../../pacman-features/modules/compliance/event-details/event-details.component';
 import {CertificateComplianceComponent} from '../../pacman-features/modules/compliance/certificate-compliance/certificate-compliance.component';
 import {PolicyDetailsComponent} from '../../pacman-features/modules/compliance/policy-details/policy-details.component';
 import {PolicyKnowledgebaseComponent} from '../../pacman-features/modules/compliance/policy-knowledgebase/policy-knowledgebase.component';
@@ -152,6 +154,22 @@ export const COMPLIANCE_ROUTES = [
         component: PolicyKnowledgebaseDetailsComponent,
         data: {
             title: 'Policy Details'
+        },
+        canActivate: [AuthGuardService]
+    },
+    {
+        path: 'health-notifications',
+        component: CloudNotificationsComponent,
+        data: {
+            title: 'Health Notifications'
+        },
+        canActivate: [AuthGuardService]
+    },
+    {
+        path: 'event-details/:arn',
+        component: EventDetailsComponent,
+        data: {
+            title: 'Event Details'
         },
         canActivate: [AuthGuardService]
     },

@@ -36,15 +36,10 @@
     box-shadow: 0 1px 7px -1px #0000001e, 0 2px 4px 0 #00000023;
     font-size: 1em;
     overflow: hidden;
+    min-height: 11em;
+    flex-grow: 1;
 }
 
-/* .data-table-wrap.loading {
-    min-height: 34em;
-} */
-
-.data-table-wrap.small-content {
-    min-height: 1em;
-}
 
 .data-table-inner-wrap {
     height: 100%;
