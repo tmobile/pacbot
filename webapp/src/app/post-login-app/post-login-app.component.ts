@@ -26,6 +26,7 @@ import { DataCacheService } from '../core/services/data-cache.service';
 import { DownloadService } from '../shared/services/download.service';
 import { DomainTypeObservableService } from '../core/services/domain-type-observable.service';
 import { ThemeObservableService } from '../core/services/theme-observable.service';
+import { WorkflowService } from '../core/services/workflow.service';
 
 declare var Offline: any;
 
@@ -60,7 +61,8 @@ export class PostLoginAppComponent implements OnInit, OnDestroy {
     private mainRoutingAnimationEventService: MainRoutingAnimationEventService,
     private downloadService: DownloadService,
     private domainTypeObservableService: DomainTypeObservableService,
-    private themeObservableService: ThemeObservableService
+    private themeObservableService: ThemeObservableService,
+    private workflowService: WorkflowService
   ) {
 
     if (this.pageReloadInterval) {
@@ -229,6 +231,32 @@ export class PostLoginAppComponent implements OnInit, OnDestroy {
     } catch (e) {
 
     }
+  }
+
+  navigateBackToRootLevel() {
+    this.dataStore.set(
+      'selectedApplicationSummary',
+      JSON.stringify(null)
+    );
+    this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root, 0);
+    const navigationParams = {
+      relativeTo: this.activatedRoute // <-- Parent activated route
+    };
+
+    navigationParams['queryParams'] = { 'ag': this.queryParameters['ag'], 'domain': this.queryParameters['domain'] };
+
+    this.router.navigate(
+      [
+        {
+          outlets: {
+            details: null
+          }
+        }
+      ],
+      navigationParams
+    );
+    this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root, undefined, 0);
+    this.workflowService.clearAllLevels();
   }
 
   ngOnDestroy() {

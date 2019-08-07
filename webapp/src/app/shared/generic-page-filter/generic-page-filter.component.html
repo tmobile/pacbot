@@ -14,9 +14,9 @@
 
  <div class="filter-wrapper flex">
   <div class='drop-options'>
-    <app-searchable-dropdown [firstDD]='true' (selection)='changeFilterType($event)' [placeholder]="'Select filter type'" [items]='filterValues.filterTypeLabels'></app-searchable-dropdown>
+    <app-searchable-dropdown [firstDD]='true' [dataAvailable]='dataAvailable' (selection)='changeFilterType($event)' [placeholder]="'Select filter type'" [items]='filterValues.filterTypeLabels'></app-searchable-dropdown>
   </div>
   <div id='dropSearchBox' class='drop-search-box'>
-    <app-searchable-dropdown (selection)='changeFilterValue($event)' [placeholder]="'Search filter tags'" [items]='filterValues.filterValuesLabels'></app-searchable-dropdown>
+    <app-searchable-dropdown [disable]='disableFilterTags' [selectOnSingleValue]='selectOnSingleValue' [dataAvailable]='dataAvailable' [clearSelectedFilterValue]='clearSelectedFilterValue' (selection)='changeFilterValue($event)' [placeholder]="'Search filter value'" [items]='filterValues.filterValuesLabels'></app-searchable-dropdown>
   </div>
 </div>

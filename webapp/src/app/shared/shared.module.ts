@@ -90,7 +90,8 @@ import { GenericModalComponent } from './generic-modal/generic-modal.component';
 import { ConfigHistoryDropdownComponent } from './config-history-dropdown/config-history-dropdown.component';
 import { CopyElementComponent } from './copy-element/copy-element.component';
 import { ToastObservableService } from './services/toast-observable.service';
-
+import { SelectDropDownModule } from 'ngx-select-dropdown';
+import { TableListComponent } from './table-list/table-list.component';
 
 @NgModule({
     imports: [
@@ -102,6 +103,7 @@ import { ToastObservableService } from './services/toast-observable.service';
         HttpModule,
         MatSelectModule,
         NgDatepickerModule,
+        SelectDropDownModule,
         AgGridModule.withComponents(
             [AgGridTableComponent]
         )
@@ -156,7 +158,9 @@ import { ToastObservableService } from './services/toast-observable.service';
         LoaderMsgComponent,
         GenericModalComponent,
         ConfigHistoryDropdownComponent,
-        InputModalComponent
+        InputModalComponent,
+        BackNavigationComponent,
+        TableListComponent
     ],
     exports: [CommonModule,
         FormsModule,
@@ -212,7 +216,10 @@ import { ToastObservableService } from './services/toast-observable.service';
         LoaderMsgComponent,
         GenericModalComponent,
         ConfigHistoryDropdownComponent,
-        InputModalComponent
+        InputModalComponent,
+        BackNavigationComponent,
+        SelectDropDownModule,
+        TableListComponent
     ],
     providers: [HttpService, UtilsService, ExceptionManagementService, RefactorFieldsService, OrderByPipe, SearchFilterPipe, MainRoutingAnimationEventService, AuthGuardService, RouterUtilityService, LoggerService, ErrorHandlingService, FilterManagementService, ToastObservableService, CommonResponseService, CopytoClipboardService, FormService]
 })

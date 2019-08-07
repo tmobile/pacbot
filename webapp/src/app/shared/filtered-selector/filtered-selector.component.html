@@ -12,7 +12,7 @@
  * limitations under the License.
  -->
 
- <div class='flex flex-align-center'>
+ <div class='flex flex-align-center flex-wrap'>
     <div class='each-filter capitalize' [class.filter-without-cross]='arr.hasOwnProperty("mandatoryFilter")' title='{{arr.key}}: {{arr.value}}' *ngFor='let arr of filteredArray; let i = index; ' >
         {{arr.key}}: {{arr.value}}
         <div class='absolute right-close-wrap' (click)='removeFilter(arr, i)' *ngIf='!arr.hasOwnProperty("mandatoryFilter")' >

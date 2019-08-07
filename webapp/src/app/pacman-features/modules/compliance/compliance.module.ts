@@ -109,6 +109,9 @@ import { PolicyViolationDescComponent } from './../../secondary-components/polic
 import { IssueExceptionComponent } from './../../secondary-components/issue-exception/issue-exception.component';
 import { PolicyViolationsListComponent } from './policy-violations-list/policy-violations-list.component';
 import { IssueListingService } from '../../services/issue-listing.service';
+import { RecommendationsComponent} from '../../modules/compliance/recommendations/recommendations.component';
+import { RecommandCategoryComponent } from '../../secondary-components/recommand-category/recommand-category.component';
+import { RecommendationsDetailsComponent } from './recommendations-details/recommendations-details.component';
 
 @NgModule({
   imports: [
@@ -213,7 +216,10 @@ import { IssueListingService } from '../../services/issue-listing.service';
     VulnerabilityDetailsComponent,
     PolicyViolationDescComponent,
     IssueExceptionComponent,
-    PolicyViolationsListComponent
+    PolicyViolationsListComponent,
+    RecommendationsComponent,
+    RecommandCategoryComponent,
+    RecommendationsDetailsComponent
   ],
   providers: [
     SelectComplianceDropdown,
