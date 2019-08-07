@@ -28,7 +28,6 @@ TOOLS_REQUIRED = {
     'npm': "npm --version",
     'Angular': "ng --version",
     'Yarn': 'yarn --version',
-    # 'Bower': "bower --version",
     'Docker': "docker --version"
 }
 
