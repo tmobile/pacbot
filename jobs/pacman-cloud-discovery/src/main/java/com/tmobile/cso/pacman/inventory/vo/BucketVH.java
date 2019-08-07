@@ -18,6 +18,7 @@ package com.tmobile.cso.pacman.inventory.vo;
 import java.util.List;
 
 import com.amazonaws.services.s3.model.Bucket;
+import com.amazonaws.services.s3.model.BucketLoggingConfiguration;
 import com.amazonaws.services.s3.model.BucketVersioningConfiguration;
 import com.amazonaws.services.s3.model.Tag;
 
@@ -47,6 +48,14 @@ public class BucketVH {
     
     Boolean websiteConfiguration;
 
+    Boolean isLoggingEnabled;
+    
+    /** The destination bucket name. */
+    String destinationBucketName;
+    
+    /** The log file prefix. */
+    String logFilePrefix;
+
 
 	/**
 	 * Instantiates a new bucket VH.
@@ -56,7 +65,7 @@ public class BucketVH {
 	 * @param versionConfig the version config
 	 * @param tags the tags
 	 */
-	public BucketVH(Bucket bucket,String location,BucketVersioningConfiguration versionConfig, List<Tag> tags, String bucketEncryp, boolean websiteConfiguration){
+	public BucketVH(Bucket bucket,String location,BucketVersioningConfiguration versionConfig, List<Tag> tags, String bucketEncryp, boolean websiteConfiguration,BucketLoggingConfiguration bucketLoggingConfiguration){
 		this.bucket = bucket;
 		this.location = location;
 		this.versionStatus = versionConfig==null?"":versionConfig.getStatus();
@@ -64,5 +73,9 @@ public class BucketVH {
 		this.tags = tags;
 		this.bucketEncryp = bucketEncryp;
 		this.websiteConfiguration = websiteConfiguration;
+        this.isLoggingEnabled = bucketLoggingConfiguration==null?null:bucketLoggingConfiguration.isLoggingEnabled();
+        this.destinationBucketName = bucketLoggingConfiguration==null?"":bucketLoggingConfiguration.getDestinationBucketName();
+        this.logFilePrefix = bucketLoggingConfiguration==null?"":bucketLoggingConfiguration.getLogFilePrefix();
+
 	}
 }

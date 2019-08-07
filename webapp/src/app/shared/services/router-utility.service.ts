@@ -148,4 +148,25 @@ export class RouterUtilityService {
         }
         return false;
     }
+    public getpageLevel(routerSnapshot: ActivatedRouteSnapshot) {
+        const children = routerSnapshot.children;
+        let pageLevel = routerSnapshot.data ? routerSnapshot.data['pageLevel'] : '';
+        if (children.length > 0) {
+            const index = children.length - 1;
+            const child = children[index];
+            pageLevel = this.getpageLevel(child);
+        }
+        return pageLevel;
+}
+
+public getpageTitle(routerSnapshot: ActivatedRouteSnapshot) {
+    const children = routerSnapshot.children;
+    let title = routerSnapshot.data ? routerSnapshot.data['pageTitle'] || routerSnapshot.data['title'] : '';
+    if (children.length > 0) {
+        const index = children.length - 1;
+        const child = children[index];
+        title = this.getpageTitle(child) || title;
+    }
+    return title;
+}
 }

@@ -70,6 +70,7 @@ import { PluginManagementComponent } from '../../pacman-features/modules/admin/p
 import { PluginManagementDetailsComponent } from '../../pacman-features/modules/admin/plugin-management-details/plugin-management-details.component';
 import { SystemManagementComponent } from '../../pacman-features/modules/admin/system-management/system-management.component';
 import { ConfigManagementComponent } from '../../pacman-features/modules/admin/config-management/config-management.component';
+import { RecommendationsComponent} from '../../pacman-features/modules/compliance/recommendations/recommendations.component';
 
 export const COMPLIANCE_ROUTES = [
     {
@@ -212,7 +213,16 @@ export const COMPLIANCE_ROUTES = [
             title: 'Vulnerability Details'
         },
         canActivate: [AuthGuardService]
-    }
+    },
+    {
+        path: 'recommendations',
+        component: RecommendationsComponent,
+        data: {
+            title: 'Recommendations',
+            pageLevel: 0
+        },
+        canActivate: [AuthGuardService]
+    },
 ];
 
 export const ASSETS_ROUTES = [

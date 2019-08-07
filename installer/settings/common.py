@@ -27,7 +27,8 @@ TOOLS_REQUIRED = {
     'Nodejs': "node --version",
     'npm': "npm --version",
     'Angular': "ng --version",
-    'Bower': "bower --version",
+    'Yarn': 'yarn --version',
+    # 'Bower': "bower --version",
     'Docker': "docker --version"
 }
 
@@ -75,8 +76,9 @@ ALB_PROTOCOL = "HTTP"
 DESTROY_NUM_ATTEMPTS = 3
 SKIP_RESOURCE_EXISTENCE_CHECK = False
 RESOURCE_NAME_PREFIX = "pacbot"
-RESOURCE_DEFAULT_TAG_NAME = "Application"
-RESOURCE_DEFAULT_TAG_VALUE = "PacBot"
+DEFAULT_RESOURCE_TAG = {"Application": "PacBot"}
+CUSTOM_RESOURCE_TAGS = []
+
 RESOURCE_DESCRIPTION = "DO-NOT-DELETE-IT - This has been created as part of pacbot installation"
 AWS_POLICIES_REQUIRED = [
     "AmazonS3FullAccess",

@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnChanges, Input, Output, EventEmitter, SimpleChanges } from '@angular/core';
 import { LoggerService } from '../services/logger.service';
 
 @Component({
@@ -20,7 +20,7 @@ import { LoggerService } from '../services/logger.service';
   templateUrl: './filtered-selector.component.html',
   styleUrls: ['./filtered-selector.component.css']
 })
-export class FilteredSelectorComponent implements OnInit {
+export class FilteredSelectorComponent implements OnInit, OnChanges {
   countMandatoryFilter = 0;
   constructor(private logger: LoggerService) {}
 
@@ -30,13 +30,34 @@ export class FilteredSelectorComponent implements OnInit {
   @Output() deleteAllFilters = new EventEmitter();
 
   @Output() updateFilterArray = new EventEmitter();
-
+  @Input() clearSelectedFilterValue;
   ngOnInit() {
+    this.updateComponent();
+  }
+
+  ngOnChanges(changes: SimpleChanges) {
+    // clear all filter by default - currenlty used in recommendations to reset on ag change
+    const toClearValueChange = changes['clearSelectedFilterValue'];
+    if (toClearValueChange && !toClearValueChange.firstChange) {
+      const cur  = JSON.stringify(toClearValueChange.currentValue);
+      const prev = JSON.stringify(toClearValueChange.previousValue);
+        if (cur !== prev) {
+          this.mandatoryFilter = undefined;
+          this.countMandatoryFilter = 0;
+          this.clearAll(this.filteredArray);
+        }
+    } else {
+      this.updateComponent();
+    }
+  }
+
+  updateComponent() {
     // To show clear All text only when optional filters are present.
     if (this.mandatoryFilter && this.mandatoryFilter.includes('|')) {
       this.mandatoryFilter = this.mandatoryFilter.split('|');
     }
     if (this.mandatoryFilter) {
+      this.countMandatoryFilter = 0;
       this.filteredArray.forEach(obj => {
         if (this.mandatoryFilter.includes(obj.filterkey)) {
           obj['mandatoryFilter'] = true;
@@ -77,6 +98,12 @@ export class FilteredSelectorComponent implements OnInit {
       } else {
         if (event.clearAll) {
           this.filteredArray = [];
+          // Adding again Mandatory filters if found any.
+          event.array.forEach(obj => {
+            if (obj.hasOwnProperty('mandatoryFilter')) {
+              this.filteredArray.push(obj);
+            }
+          });
         } else {
           this.filteredArray.splice(event.index, 1);
         }

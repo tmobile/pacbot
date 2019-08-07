@@ -40,12 +40,18 @@ export const  DOMAIN_MAPPING = [
                     },
                     {
                         'route': 'issue-listing',
-                        'sequence': 9
+                        'sequence': 1
                     },
                     {
                         'route': 'policy-knowledgebase',
-                        'sequence': 10
-                    }
+                        'sequence': 2
+                    },
+                    {
+                        'route': 'recommendations',
+                        'sequence': 3,
+                        'groupBy': 'compliance-dashboard',
+                        'cloudSpecific': true
+                    },
                 ]
             },
             {

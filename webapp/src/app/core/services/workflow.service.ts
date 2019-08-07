@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -55,17 +55,32 @@ export class WorkflowService {
         this.saveToStorage(this.level);
     }
 
-    goBackToLastOpenedPageAndUpdateLevel(currentRouterSnapshot: ActivatedRouteSnapshot, currentLevel: number = 0) {
+    goBackToLastOpenedPageAndUpdateLevel(currentRouterSnapshot: ActivatedRouteSnapshot, targetIndex?: number, currentLevel?: number) {
+        if (currentLevel === undefined) {
+            currentLevel = this.routerUtilityService.getpageLevel(currentRouterSnapshot);
+        }
+        if (!(this.level[currentLevel] && this.level[currentLevel].length > 0)) {
+            return;
+        }
+
         let destinationUrlAndParams;
 
         this.level = this.getDetailsFromStorage();
-        while (!destinationUrlAndParams && currentLevel >= 0) {
-            if ( this.level['level' + currentLevel] && this.level['level' + currentLevel].length > 0 ) {
-                destinationUrlAndParams = this.level['level' + currentLevel].pop();
+
+        if (targetIndex === undefined) {
+            targetIndex = this.level[currentLevel].length - 1;
+        }
+
+        destinationUrlAndParams = this.level[currentLevel].splice(targetIndex)[0];
+
+        /* Not required. As now we need to go back only in the same level. */
+        /* while (!destinationUrlAndParams && currentLevel >= 0) {
+            if ( this.level[currentLevel] && this.level[currentLevel].length > 0 ) {
+                destinationUrlAndParams = this.level[currentLevel].pop();
                 break;
             }
             currentLevel--;
-        }
+        } */
         this.saveToStorage(this.level); // <-- update session storage after poping each obj
 
         const currentPageQueryParams = this.routerUtilityService.getQueryParametersFromSnapshot(currentRouterSnapshot);
@@ -76,21 +91,24 @@ export class WorkflowService {
 
         Object.assign(destinationUrlAndParams.queryParams, agAndDomain);
 
-        this.router.navigate([destinationUrlAndParams['url']], {queryParams: destinationUrlAndParams['queryParams']});
-    }
+        let urlToBeNavigatedTo = destinationUrlAndParams.url;
+        let newUrlQueryParam = '';
 
-    checkIfFlowExistsCurrently(currentLevel?) {
-        let flowExiststatus = false;
-        // getLevel();
-        this.level = this.getDetailsFromStorage();
-        while ( currentLevel >= 0 ) {
-            if (this.level['level' + currentLevel]) {
-                flowExiststatus = this.level['level' + currentLevel].length > 0;
-            }
-            currentLevel--;
+        Object.keys(destinationUrlAndParams.queryParams).forEach((key, keyIndex) => {
+            newUrlQueryParam += key + '=' + encodeURIComponent(destinationUrlAndParams.queryParams[key]) + '&';
+        });
+        newUrlQueryParam = newUrlQueryParam.slice(0, -1);
+
+        if (newUrlQueryParam !== '') {
+            urlToBeNavigatedTo += '?' + newUrlQueryParam;
         }
 
-        return flowExiststatus;
+        this.router.navigateByUrl(urlToBeNavigatedTo).then(result => {
+            this.logger.log('info', 'successful navigation - ' + result);
+        })
+        .catch(error => {
+            this.logger.log('error', 'navigation error - ' + error);
+        });
     }
 
     clearAllLevels() {
@@ -152,5 +170,18 @@ export class WorkflowService {
 
     clearDataOfOpenedPageInModule() {
         this.trackOpenedPageInAModule = {};
+    }
+
+    checkIfFlowExistsCurrently(currentLevel?) {
+
+        const currentPageLevelNumber = this.routerUtilityService.getpageLevel(this.router.routerState.snapshot.root);
+
+        let flowExiststatus = false;
+        this.level = this.getDetailsFromStorage();
+        if (this.level[currentPageLevelNumber]) {
+            flowExiststatus = this.level[currentPageLevelNumber].length > 0;
+        }
+
+        return flowExiststatus;
     }
 }
