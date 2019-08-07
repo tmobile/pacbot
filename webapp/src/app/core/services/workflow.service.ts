@@ -181,7 +181,6 @@ export class WorkflowService {
         if (this.level[currentPageLevelNumber]) {
             flowExiststatus = this.level[currentPageLevelNumber].length > 0;
         }
-
         return flowExiststatus;
     }
 }
