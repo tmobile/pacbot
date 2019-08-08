@@ -1,0 +1,79 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<div class="policy-knowledgebase-wrapper flex flex-between flex-col">
+    <div class="flex flex-col full-height">
+        <app-breadcrumb class="breadcrumb-top" *ngIf='currentPageLevel === 1'></app-breadcrumb>
+        <div class="floating-widgets-header dashboards-header flex flex-between flex-align-center">
+            <div>
+                <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack();" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+                <app-back-navigation></app-back-navigation>
+            </div>
+        </div>
+        <div class="flex flex-align-center toggle-wrap">
+            <div (click)="contextChange('asset');" [class.active]="tabSelected == 'asset'" class="each-tab"> Asset-Specific </div>
+            <div class="relative toggle-parent" (click)='contextChange(toggleSlider());'>
+                <div class="absolute toggle-slider" [class.right]="tabSelected == 'general'"></div>
+            </div>
+            <div (click)="contextChange('general');" [class.active]="tabSelected == 'general'" class="each-tab"> General </div>
+            <img class="help-icon pointer" (click)='callHelp();' src="../assets/icons/question.svg">
+        </div>
+        <div class='floating-widgets-filter-wrapper' *ngIf='filterArray && filterArray.length'>
+            <app-filtered-selector (deleteFilter)='deleteFilters($event)' (deleteAllFilters)='deleteFilters($event)' [(filteredArray)]='filterArray'></app-filtered-selector>
+        </div>
+        <div class="flex flex-col full-height cloud-notifications-wrap">
+            <div class="flex flex-center flex-align-center tile-parent no-shrink">
+                <div [class.hide]='summaryValue != 1' class="tile-wrap flex flex-col" *ngFor='let tile of tilesObj; let i = index;'>
+                    <div class="flex flex-between flex-align-center each-tile" (click)='handleTileClick(tile, i);' [class.active]='tile.active'>
+                        <div class="flex flex-col">
+                            <div class="tile-number">{{tile.value}}</div>
+                            <div class="tile-txt">{{tile.title}}</div>
+                        </div>
+                        <div class="flex flex-col">
+                            <img class="tile-img" src='{{tile.icon}}'>
+                        </div>
+                        <div class="absolute tile-hover flex flex-align-center flex-center">
+                            Click to {{tile.active ? 'remove' : 'add'}} filter
+                        </div>
+                    </div>
+                </div>
+                <div *ngIf='summaryValue == 0' class="loader absolute loader-summary"></div>
+                <div *ngIf='summaryValue == -1' class='absolute error-message'>Unable to fetch notifications summary!</div>
+            </div>
+            <div class="flex flex-col full-height data-table-container">
+                <app-data-table
+                    [searchTextValues]='searchTxt'
+                    [errorValue]='errorValue'
+                    [parentName]="errorMsg"
+                    [allColumns]='allColumns'
+                    [outerArr]='outerArr'
+                    [totalRows]='totalRows'
+                    [firstPaginator]='firstPaginator'
+                    [lastPaginator]='lastPaginator'
+                    [columnWhiteList]="['event', 'Status', 'Affected Resources', 'Event Category', 'AWS Region', 'Start Time', 'End Time']"
+                    [currentPointer]='currentPointer'
+                    (previousPageCalled)='prevPg()'
+                    (nextPageCalled)='nextPg()'
+                    [searchableHeader]='true'
+                    [dataHead]="'Event Log'"
+                    (selectedRow)='goToDetails($event)'
+                    (searchRowTxt)='searchCalled($event)'
+                    [popRows]='popRows'
+                    (rowClickText)='handlePopClick($event)'
+                    (searchTriggerred)='callNewSearch()'>
+                </app-data-table>
+            </div>
+        </div>
+    </div>
+</div>

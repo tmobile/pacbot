@@ -505,4 +505,16 @@ public interface AssetRepository {
      * @throws DataException
      */
     public List<Map<String, Object>> getAdGroupDetails() throws DataException;
+    
+    /**
+     * Fetches all the applications and assetcount for each application for the particular asset group.
+     *
+     * @param assetGroupName name of the asset group
+     * @param domain the domain of asset group
+     * 
+     * @return list of applications.
+     * @throws DataException when there is an error while fetching data from ES
+     */
+    public Map<String, Long> getApplicationAssetCountByAssetGroup(String assetGroupName, String domain) throws DataException;
+    
 }

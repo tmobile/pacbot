@@ -12,7 +12,7 @@
  * limitations under the License.
  -->
 
- <div class='data-table-wrap relative' [class.loading]='errorValue < 1' [class.small-content]='outerArr && outerArr.length > 0 && outerArr.length < 10' (click)='rowIndex=-1' [class.no-min-height]='noMinHeight'>
+ <div class='data-table-wrap relative' [class.loading]='errorValue < 1' (click)='rowIndex=-1' [class.no-min-height]='noMinHeight'>
     <!-- Table header -->
     <div class="sub-head">
         <app-title-burger-head [tableIdAppend]='tableIdAppend' (rowText)='emitRowText($event)'

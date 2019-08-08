@@ -8,6 +8,7 @@ from datetime import datetime
 from core.utils import exists_teraform_lock
 import inspect
 import json
+import os
 
 
 class PyTerraform():
@@ -246,6 +247,12 @@ class PyTerraform():
         cls.log_obj.write_debug_log(K.TERRAFORM_OUTPUT_STORED)
 
         return output_dict
+
+    @classmethod
+    def delete_terraform_output_json_file(cls):
+        tf_output_file = get_terraform_latest_output_file()
+        if os.path.isfile(tf_output_file):
+            os.remove(tf_output_file)
 
     @classmethod
     def load_terraform_output(cls):

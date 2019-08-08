@@ -45,6 +45,8 @@
 		<module>pacman-data-shipper</module>
 		<module>pacman-awsrules</module>
 		<module>pacman-rule-engine-2.0</module>
+		<module>pacman-cloud-notifications</module>
+		<module>recommendation-enricher</module>
 	</modules>
 
 </project>

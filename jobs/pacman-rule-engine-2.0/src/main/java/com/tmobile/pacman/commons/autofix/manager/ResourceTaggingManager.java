@@ -342,6 +342,13 @@ public class ResourceTaggingManager {
         case REDSHIFT: {
             return "";
         }
+        
+        case RDS: {
+            return "";
+        }
+        case ELASTICSEARCH: {
+            return "";
+        }
 
         default:
             throw new OperationNotPermittedException("this resource tagging is not imlemented yet");

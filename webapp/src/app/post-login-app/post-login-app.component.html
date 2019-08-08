@@ -12,13 +12,24 @@
  * limitations under the License.
  -->
 
- <div class="pacman-logged-in-section flex flex-col" [ngStyle]="theme !== undefined && {'background-image': 'url(' + theme.bg + ')'}">
+ <div class="pacman-logged-in-section flex flex-col" [class.is-offine]='isOffline' [ngStyle]="theme !== undefined && {'background-image': 'url(' + theme.bg + ')'}">
     <header class="post-login-header flex flex-col">
         <app-post-login-header class="flex flex-col" [navigationDetails]="navigationDetails"></app-post-login-header>
     </header>
     <section class="post-login-body flex flex-col" [@mainRouterTransition]="getState(o)">
         <router-outlet #o="outlet" (deactivate)='onDeactivate($event)'></router-outlet>
     </section>
+    <div class="next-level-routing-container" [ngClass]="{'active': details.isActivated, 'inactive': !details.isActivated}">
+        <a  class='nextLevel-close layer-delete-title show-cross' (click)="navigateBackToRootLevel()">
+            <img class="layer-delete-icon" src="../../assets/png/delete.png">
+        </a>
+        <div class="opaque-layer">
+            <div class='full-page-overlay'></div>
+        </div>
+        <div class="top-layer-page">
+            <router-outlet name='details' #details="outlet"></router-outlet>
+        </div>            
+    </div>
 </div>
 <router-outlet name="modalBGMenu"></router-outlet>
 <router-outlet name="kydModal"></router-outlet>
@@ -30,14 +41,3 @@
 <img src="/assets/images/bg/bg-domain3.png" width="0px" height="0px" class="hide"/>
 <img src="/assets/images/bg/bg-domain2.png" width="0px" height="0px" class="hide"/>
 <img src="/assets/images/bg/bg-domain1.png" width="0px" height="0px" class="hide"/>
-<div class="next-level-routing-container" [ngClass]="{'active': details.isActivated, 'inactive': !details.isActivated}">
-    <a  class='nextLevel-close layer-delete-title show-cross' (click)="navigateBackToRootLevel()">
-        <img class="layer-delete-icon" src="../../assets/png/delete.png">
-    </a>
-    <div class="opaque-layer">
-        <div class='full-page-overlay'></div>
-    </div>
-    <div class="top-layer-page">
-        <router-outlet name='details' #details="outlet"></router-outlet>
-    </div>            
-</div>

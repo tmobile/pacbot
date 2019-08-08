@@ -60,8 +60,6 @@ class SecurityGroupResource(TerraformResource):
             exists = vpc.check_security_group_exists(
                 checked_details['value'],
                 self.get_input_attr('vpc_id'),
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details

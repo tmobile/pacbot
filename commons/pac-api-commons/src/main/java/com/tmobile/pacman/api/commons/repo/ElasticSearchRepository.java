@@ -1615,5 +1615,22 @@ public class ElasticSearchRepository implements Constants {
 			throw e;
 		}
 	}
+	
+	/**
+	 * 
+	 * @param url
+	 * @param index
+	 * @param type
+	 * @return
+	 */
+	public String buildESURL(String url, String index, String type, int size, int from) {
+
+		StringBuilder urlToQuery = new StringBuilder(url).append(FORWARD_SLASH).append(index);
+		if (!Strings.isNullOrEmpty(type)) {
+			urlToQuery.append(FORWARD_SLASH).append(type);
+		}
+		urlToQuery.append(FORWARD_SLASH).append(_SEARCH);
+		return urlToQuery.toString();
+	}
 
 }

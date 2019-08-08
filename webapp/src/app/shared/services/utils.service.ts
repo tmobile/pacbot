@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -17,10 +17,12 @@ import * as _ from 'lodash';
 import * as moment from 'moment';
 import { QUARTER } from './../constants/quarter';
 import { LoggerService } from './logger.service';
+import { RefactorFieldsService } from './refactor-fields.service';
 
 @Injectable()
 export class UtilsService {
-  constructor(private logger: LoggerService) {}
+  constructor(private logger: LoggerService,
+              private refactorFieldsService: RefactorFieldsService) {}
 
   setTimeoutPromise(milliseconds) {
     const promise = new Promise((resolve: any, reject: any) => {
@@ -77,6 +79,36 @@ export class UtilsService {
       arrayElement[valueLabel] = element;
       return arrayElement;
     });
+  }
+
+  arrayToCommaSeparatedString(arr) {
+    let str = '';
+    for (let i = 0; i < arr.length; i++) {
+      i === arr.length - 1 ? str = str + arr[i] : str = str + arr[i] + ',';
+    }
+    return str;
+  }
+
+  massageTableData(data) {
+    /*
+       * added by Trinanjan 14/02/2017
+       * the funciton replaces keys of the table header data to a readable format
+     */
+    const refactoredService = this.refactorFieldsService;
+    const newData = [];
+    data.map(function(responseData) {
+      const KeysTobeChanged = Object.keys(responseData);
+      let newObj = {};
+      KeysTobeChanged.forEach(element => {
+        const elementnew =
+          refactoredService.getDisplayNameForAKey(
+            element.toLocaleLowerCase()
+          ) || element;
+        newObj = Object.assign(newObj, { [elementnew]: responseData[element] });
+      });
+      newData.push(newObj);
+    });
+    return newData;
   }
 
   addOrReplaceElement(array, toAddElement, comparator) {

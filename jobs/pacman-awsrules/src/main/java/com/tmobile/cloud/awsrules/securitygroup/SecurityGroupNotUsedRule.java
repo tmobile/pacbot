@@ -36,6 +36,7 @@ import com.tmobile.cloud.awsrules.utils.PacmanUtils;
 import com.tmobile.cloud.constants.PacmanRuleConstants;
 import com.tmobile.pacman.commons.PacmanSdkConstants;
 import com.tmobile.pacman.commons.exception.InvalidInputException;
+import com.tmobile.pacman.commons.exception.RuleExecutionFailedExeption;
 import com.tmobile.pacman.commons.rule.Annotation;
 import com.tmobile.pacman.commons.rule.BaseRule;
 import com.tmobile.pacman.commons.rule.PacmanRule;
@@ -49,9 +50,7 @@ public class SecurityGroupNotUsedRule extends BaseRule {
 	/**
 	 * The method will get triggered from Rule Engine with following parameters
 	 * 
-	 * @param ruleParam
-	 * 
-	 *            ************* Following are the Rule Parameters********* <br><br>
+	 * @param ruleParam ************* Following are the Rule Parameters********* <br><br>
 	 * 
 	 * severity : Enter the value of severity <br><br>
 	 * 
@@ -67,8 +66,7 @@ public class SecurityGroupNotUsedRule extends BaseRule {
 	 * 
 	 * threadsafe : if true , rule will be executed on multiple threads <br><br>
 	 * 
-	 * @param resourceAttributes this is a resource in context which needs to be scanned this
-	 *            is provided by execution engine
+	 * @param resourceAttributes this is a resource in context which needs to be scanned this is provided by execution engine
 	 *
 	 */
 
@@ -81,6 +79,7 @@ public class SecurityGroupNotUsedRule extends BaseRule {
 		String severity = ruleParam.get(PacmanRuleConstants.SEVERITY);
 		String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
 		String tagsSplitter = ruleParam.get(PacmanSdkConstants.SPLITTER_CHAR);
+		String groupName = resourceAttributes.get(PacmanRuleConstants.GROUP_NAME);
 		String serviceWithSgUrls = null;
 		String esUrl = ruleParam.get(PacmanRuleConstants.ES_URL_PARAM);
 		MDC.put("executionId", ruleParam.get("executionId")); // this is the logback Mapped Diagnostic Contex
@@ -103,23 +102,31 @@ public class SecurityGroupNotUsedRule extends BaseRule {
 		
 		List<String> serviceWithSgUrlsList = PacmanUtils.splitStringToAList(serviceWithSgUrls, tagsSplitter);
 		
-		if (resourceAttributes != null) {
+		if (!resourceAttributes.isEmpty()) {
 			groupId = StringUtils.trim(resourceAttributes.get(PacmanRuleConstants.GROUP_ID));
-			Map<String,Boolean> map = PacmanUtils.getQueryFromElasticSearch(groupId,serviceWithSgUrlsList,esUrl);
+			String resource;
+			try {
+				resource = PacmanUtils.getQueryFromElasticSearch(groupId,serviceWithSgUrlsList,esUrl,ruleParam);
 			
-			if(map.isEmpty()){
+			
+			if(StringUtils.isNullOrEmpty(resource)){
 				annotation = Annotation.buildAnnotation(ruleParam,Annotation.Type.ISSUE);
 				annotation.put(PacmanSdkConstants.DESCRIPTION,"Unused security group found!!");
 				annotation.put(PacmanRuleConstants.SEVERITY, severity);
 				annotation.put(PacmanRuleConstants.SUBTYPE, Annotation.Type.RECOMMENDATION.toString());
 				annotation.put(PacmanRuleConstants.CATEGORY, category);
+				annotation.put(PacmanRuleConstants.GROUP_NAME, groupName);
 				
-				issue.put(PacmanRuleConstants.VIOLATION_REASON, "Security group not associated to any of EC2/ApplicationElb/ClassicElb/RDS ");
+				issue.put(PacmanRuleConstants.VIOLATION_REASON, "Security group not associated to any of EC2/ApplicationElb/ClassicElb/RDSDB/RDSCluster/RedShift/Lambda/Elasticsearch");
 				issueList.add(issue);
 				annotation.put("issueDetails",issueList.toString());
 				
 				logger.debug("========SecurityGroupNotUsedRule ended with an annotation : {}=========",annotation);
 				return new RuleResult(PacmanSdkConstants.STATUS_FAILURE,PacmanRuleConstants.FAILURE_MESSAGE,annotation);
+			}
+			} catch (Exception e) {
+				logger.error("unable to determine",e);
+				throw new RuleExecutionFailedExeption("unable to determine"+e);
 			}
 		}
 		

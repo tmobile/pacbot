@@ -90,6 +90,13 @@ class AllReadRoleAutoFixPolicyDocument(iam.IAMPolicyDocumentData):
             ],
             'resources': ["*"],
             'effect': "Allow"
+        },
+        {
+            'actions': [
+                "ec2:DeleteSecurityGroup",
+            ],
+            'resources': ["*"],
+            'effect': "Allow"
         }
     ]
 
