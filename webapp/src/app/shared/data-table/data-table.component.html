@@ -48,28 +48,42 @@
                         </label>
                     </div>
                     <div *ngFor='let column of filteredColumns ; let j = index ' class="row-cells table-cells flex flex-align-center" [ngStyle]="row[column].properties" [class.hide]="column == 'nonDisplayableAttributes' || column == 'dropDownShown'">
-                        <div class="column-wrapper">
+                        <div class="column-wrapper flex">
                             <!-- Table Image Cell -->
                             <div title="{{row[column].text}}" class='flex flex-align-center' *ngIf='row[column].imgLink && row[column].hasPreImg'><img class='data-table-img' [ngStyle]='row[column].imgProp' src='{{row[column].imgLink}}'></div>
                             <!-- Table PreImage Cell -->
                             <div title="{{row[column].text}}" [ngStyle]="row[column].statusProp" class='status-indicator' *ngIf='row[column].hasPreImg'></div>
                             <!-- Table Normal Data Cell -->
                             <div title="{{row[column].text}}" [ngStyle]='row[column].textProp' class='nowrap-ellipsis' *ngIf='!row[column].link && ( row[column].text || row[column].text == 0) && !row[column].isArray'>
-                                {{row[column].text}}
+                                <div class="flex flex-align-center each-cell-list-row">
+                                    <div> {{row[column].text}}</div>
+                                    <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="row[column].text" [iconSize]="'10px'" ></app-copy-element>
+                                </div>
+                               
                             </div>
                             <!-- Table Array Cell -->
                             <div *ngIf='row[column].isArray'>
                                 <div [ngStyle]="obj.styling" title='{{obj.text}}' class='flex flex-align-center' *ngFor="let obj of row[column].text"></div>
                             </div>
                             <!-- Table Redirectable Link/#Anchor Cell -->
-                            <a title="{{row[column].text}}" (click)='currentRowData = row; goToDetails(currentRowData, column)' *ngIf='row[column].link && row[column].text'>{{row[column].text}}</a>
+                            <a title="{{row[column].text}}" (click)='currentRowData = row; goToDetails(currentRowData, column)' *ngIf='row[column].link && row[column].text'>
+                                <div class="flex flex-align-center each-cell-list-row">
+                                    <div>{{row[column].text}}</div>
+                                    <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="row[column].text" [iconSize]="'10px'" ></app-copy-element>
+                                </div>
+                            </a>
                             <!-- Table PostImage Cell -->
                             <div title="{{row[column].text}}" (click)='currentRowData = row; goToDetails(currentRowData, column)' class='flex flex-align-center' *ngIf='row[column].hasPostImg && row[column].imgLink'><img [ngStyle]='row[column].imgProp' class='data-table-img' src='{{row[column].imgLink}}'></div>
                             <!-- Table Select Dropdown -->
                             <div *ngIf='(row[column].dropDownEnabled)' (click)='$event.stopPropagation();'>
                                 <select name="selectOptionValue" (change)='currentRowData = row; goToDetails(currentRowData, $event.target.value)'>
                                     <option value="-1"></option>
-                                    <option *ngFor="let item of row[column].dropDownItems" [value]="item">{{item}}</option>
+                                    <option *ngFor="let item of row[column].dropDownItems" [value]="item">
+                                        <div class="flex flex-align-center each-cell-list-row">
+                                            <div> {{item}}</div>
+                                            <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="item" [iconSize]="'10px'" ></app-copy-element>
+                                        </div>
+                                    </option>
                                 </select>
                             </div>
                             <!-- Table No Data Cell -->
@@ -121,13 +135,21 @@
                 <div class="details-wrapper flex flex-align-center">
                     <div title="{{rowObj[cells].text}}" class='flex flex-align-center' *ngIf='rowObj[cells].imgLink && rowObj[cells].hasPreImg'><img [ngStyle]='rowObj[cells].imgProp' class='data-table-img' src='{{rowObj[cells].imgLink}}'></div>
                     <div *ngIf='(!rowObj[cells].link || rowObj[cells].link == 0) && !rowObj[cells].isArray' [ngStyle]="rowObj[cells].properties" class='details-cell-value flex flex-align-center'>
-                        <div [ngStyle]="rowObj[cells].statusProp" class='status-indicator' *ngIf='rowObj[cells].hasPreImg'></div>
-                        <span [ngStyle]='rowObj[cells].textProp'>{{rowObj[cells].text}}</span>
+                        <div class="flex flex-align-center each-cell-list-row ">
+                            <div [ngStyle]="rowObj[cells].statusProp" class='status-indicator' *ngIf='rowObj[cells].hasPreImg'></div>
+                            <span [ngStyle]='rowObj[cells].textProp'>{{rowObj[cells].text}}</span>
+                            <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="rowObj[cells].text" [iconSize]="'10px'" ></app-copy-element>
+                        </div>
                     </div>
                     <div class='flex' *ngIf='rowObj[cells].isArray'>
                         <div [ngStyle]="obj.styling" title='{{obj.text}}' class='flex flex-align-center' *ngFor="let obj of rowObj[cells].text"></div>
                     </div>
-                    <a (click)='currentRowData = rowObj; goToDetails(currentRowData, cells)' [ngStyle]="rowObj[cells].properties" *ngIf='rowObj[cells].link'>{{rowObj[cells].text}}</a>
+                    <a (click)='currentRowData = rowObj; goToDetails(currentRowData, cells)' [ngStyle]="rowObj[cells].properties" *ngIf='rowObj[cells].link'>
+                       <div class="flex flex-align-center each-cell-list-row ">
+                         <div>{{rowObj[cells].text}}</div>
+                         <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="rowObj[cells].text" [iconSize]="'10px'" ></app-copy-element>
+                       </div> 
+                    </a>
                     <div title="{{rowObj[cells].text}}" (click)='currentRowData = rowObj; goToDetails(currentRowData, cells)' class='flex flex-align-center' *ngIf='rowObj[cells].hasPostImg && rowObj[cells].imgLink'><img [ngStyle]='rowObj[cells].imgProp' class='data-table-img' src='{{rowObj[cells].imgLink}}'></div>
                     <div *ngIf="(!rowObj[cells].text && rowObj[cells].text!==0 && rowObj[cells].text!== false) || ( rowObj[cells].isArray && !rowObj[cells].text.length)" class='details-cell-value no-data'>no data
                     </div>
