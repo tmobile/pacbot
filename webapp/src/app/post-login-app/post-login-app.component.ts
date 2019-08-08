@@ -3,14 +3,14 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
  * limitations under the License.
- */
+*/
 
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { moduleTransition } from './common/animations/animations';
@@ -50,6 +50,7 @@ export class PostLoginAppComponent implements OnInit, OnDestroy {
   public theme;
   private pageReloadInterval; // Default time is 30 minutes in miliseconds
   private reloadTimeout;
+  isOffline = false;
 
   constructor(
     private router: Router,
@@ -57,11 +58,11 @@ export class PostLoginAppComponent implements OnInit, OnDestroy {
     private assetGroupObservableService: AssetGroupObservableService,
     private dataStore: DataCacheService,
     private logger: LoggerService,
+    private workflowService: WorkflowService,
     private mainRoutingAnimationEventService: MainRoutingAnimationEventService,
     private downloadService: DownloadService,
     private domainTypeObservableService: DomainTypeObservableService,
-    private themeObservableService: ThemeObservableService,
-    private workflowService: WorkflowService
+    private themeObservableService: ThemeObservableService
   ) {
 
     if (this.pageReloadInterval) {
@@ -119,13 +120,19 @@ export class PostLoginAppComponent implements OnInit, OnDestroy {
       };
 
 
+      Offline.on('down',
+        () => {
+          this.logger.log('info', 'Connection lost :-(');
+          this.isOffline = true;
+        },
+        this
+      );
+
       Offline.on('up',
         () => {
           this.logger.log('info', 'Connection was lost, It is back now');
-          const currentSelectedAssetGroup = this.dataStore.getCurrentSelectedAssetGroup();
-          if (currentSelectedAssetGroup) {
-            this.assetGroupObservableService.updateAssetGroup(currentSelectedAssetGroup);
-          }
+          this.isOffline = false;
+          location.reload();
         },
         this
       );
@@ -147,6 +154,33 @@ export class PostLoginAppComponent implements OnInit, OnDestroy {
       this.logger.log('error', error);
     }
   }
+
+  navigateBackToRootLevel() {
+    this.dataStore.set(
+      'selectedApplicationSummary',
+      JSON.stringify(null)
+    );
+    this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root, 0);
+    const navigationParams = {
+      relativeTo: this.activatedRoute // <-- Parent activated route
+    };
+
+    navigationParams['queryParams'] = { 'ag': this.queryParameters['ag'], 'domain': this.queryParameters['domain'] };
+
+    this.router.navigate(
+      [
+        {
+          outlets: {
+            details: null
+          }
+        }
+      ],
+      navigationParams
+    );
+    this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root, 0);
+    this.workflowService.clearAllLevels();
+  }
+
 
   setReloadTimeOut(timeoutInterval) {
     this.logger.log('info', 'Setting the page reload interval to: ' + timeoutInterval);
@@ -224,32 +258,6 @@ export class PostLoginAppComponent implements OnInit, OnDestroy {
     } catch (e) {
 
     }
-  }
-
-  navigateBackToRootLevel() {
-    this.dataStore.set(
-      'selectedApplicationSummary',
-      JSON.stringify(null)
-    );
-    this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root, 0);
-    const navigationParams = {
-      relativeTo: this.activatedRoute // <-- Parent activated route
-    };
-
-    navigationParams['queryParams'] = { 'ag': this.queryParameters['ag'], 'domain': this.queryParameters['domain'] };
-
-    this.router.navigate(
-      [
-        {
-          outlets: {
-            details: null
-          }
-        }
-      ],
-      navigationParams
-    );
-    this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root, undefined, 0);
-    this.workflowService.clearAllLevels();
   }
 
   ngOnDestroy() {

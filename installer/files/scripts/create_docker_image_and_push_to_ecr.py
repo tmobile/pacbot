@@ -1,4 +1,4 @@
-from utils import get_provider_credentials, get_docker_push_aws_auth_config, build_docker_image, write_to_log_file
+from utils import get_provider_details, get_docker_push_aws_auth_config, build_docker_image, write_to_log_file
 from utils import write_to_debug_log
 from docker import Client
 import os
@@ -20,8 +20,8 @@ def build_and_push_docker_image(provider_json_file, ecr_repo, docker_file, docke
     """
     write_to_debug_log(log_file, "Docker image creation and push to ecr repo: %s is started" % str(ecr_repo))
 
-    aws_access_key, aws_secret_key, region_name = get_provider_credentials("aws", provider_json_file)
-    auth_config_payload = get_docker_push_aws_auth_config(aws_access_key, aws_secret_key, region_name, log_file)
+    aws_details = get_provider_details("aws", provider_json_file)
+    auth_config_payload = get_docker_push_aws_auth_config(aws_details, log_file)
     docker_client = build_docker_image(docker_file_dir, docker_file, ecr_repo, log_file)
     latest_tag = "latest"
     pushed = docker_client.push(ecr_repo, tag=latest_tag, auth_config=auth_config_payload)

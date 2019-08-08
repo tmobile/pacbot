@@ -161,3 +161,36 @@ def get_resource_created_status_op_file(resource_id):
         str: Abs path of the status file as string
     """
     return _get_resource_status_file_name(resource_id, '1')
+
+
+def get_system_default_resource_tags():
+    """
+    Get all tags required for resources
+
+    Returns:
+        tags (list): List of tags
+    """
+    return [Settings.DEFAULT_RESOURCE_TAG]
+
+
+def get_user_defined_resource_tags():
+    """
+    Get all user defined custom tags required for resources
+
+    Returns:
+        tags (list): List of tags
+    """
+    return Settings.CUSTOM_RESOURCE_TAGS
+
+
+def get_all_resource_tags():
+    """
+    Get all tags required for resources
+
+    Returns:
+        tags (list): List of tags
+    """
+    default_tags = get_system_default_resource_tags()
+    user_defined_tags = get_user_defined_resource_tags()
+
+    return default_tags + user_defined_tags

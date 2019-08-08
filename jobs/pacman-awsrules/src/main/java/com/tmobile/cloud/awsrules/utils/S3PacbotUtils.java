@@ -123,7 +123,9 @@ public class S3PacbotUtils {
                 if (firstObject.has(PacmanRuleConstants.PRINCIPAL) && firstObject.get(PacmanRuleConstants.PRINCIPAL).isJsonObject()) {
                      principal = firstObject.get(PacmanRuleConstants.PRINCIPAL).getAsJsonObject();
                 }else{
+                	if(firstObject.has(PacmanRuleConstants.PRINCIPAL)){
                 	principalStr = firstObject.get(PacmanRuleConstants.PRINCIPAL).getAsString();
+                	}
                 }
                     try {
                         if (principal.has("AWS") || "*".equals(principalStr)) {

@@ -1,6 +1,7 @@
 from core.terraform.resources.aws.aws_lambda import LambdaFunctionResource, LambdaPermission
 from core.terraform.resources.aws.cloudwatch import CloudWatchEventRuleResource, CloudWatchEventTargetResource
 from resources.datastore.es import ESDomainPolicy
+from resources.datastore.es import ESDomain
 from resources.datastore.db import MySQLDatabase
 from resources.iam.lambda_role import LambdaRole
 from resources.iam.base_role import BaseRole
@@ -47,21 +48,6 @@ class DataCollectorEventRuleLambdaPermission(LambdaPermission):
     source_arn = DataCollectorEventRule.get_output_attr('arn')
 
 
-class DataShipperEventRule(CloudWatchEventRuleResource):
-    name = "aws-redshift-es-data-shipper"
-    schedule_expression = "cron(0 * * * ? *)"
-
-    DEPENDS_ON = [SubmitJobLambdaFunction, ESDomainPolicy]
-
-
-class DataShipperEventRuleLambdaPermission(LambdaPermission):
-    statement_id = "AllowExecutionFromDataShipper"
-    action = "lambda:InvokeFunction"
-    function_name = SubmitJobLambdaFunction.get_output_attr('function_name')
-    principal = "events.amazonaws.com"
-    source_arn = DataShipperEventRule.get_output_attr('arn')
-
-
 class DataCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
     rule = DataCollectorEventRule.get_output_attr('name')
     arn = SubmitJobLambdaFunction.get_output_attr('arn')
@@ -82,6 +68,21 @@ class DataCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
             {'encrypt': False, 'key': "accountinfo", 'value': AwsAccount.get_output_attr('account_id')},
         ]
     })
+
+
+class DataShipperEventRule(CloudWatchEventRuleResource):
+    name = "aws-redshift-es-data-shipper"
+    schedule_expression = "cron(0 * * * ? *)"
+
+    DEPENDS_ON = [SubmitJobLambdaFunction, ESDomainPolicy]
+
+
+class DataShipperEventRuleLambdaPermission(LambdaPermission):
+    statement_id = "AllowExecutionFromDataShipper"
+    action = "lambda:InvokeFunction"
+    function_name = SubmitJobLambdaFunction.get_output_attr('function_name')
+    principal = "events.amazonaws.com"
+    source_arn = DataShipperEventRule.get_output_attr('arn')
 
 
 class DataShipperCloudWatchEventTarget(CloudWatchEventTargetResource):
@@ -108,5 +109,89 @@ class DataShipperCloudWatchEventTarget(CloudWatchEventTargetResource):
             {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
             {'encrypt': False, 'key': "apiauthinfo",
                 'value': "MjJlMTQ5MjItODdkNy00ZWU0LWE0NzAtZGEwYmIxMGQ0NWQzOmNzcldwYzVwN0pGRjR2RVpCa3dHQ0FoNjdrR1FHd1h2NDZxdWc3djVad3RLZw=="}
+        ]
+    })
+
+
+class RecommendationsCollectorEventRule(CloudWatchEventRuleResource):
+    name = "AWS-Recommendations-Collector"
+    schedule_expression = "cron(0 * * * ? *)"
+
+    DEPENDS_ON = [SubmitJobLambdaFunction]
+
+
+class RecommendationsCollectorEventRuleLambdaPermission(LambdaPermission):
+    statement_id = "AllowExecutionFromRecommendationsCollectorEvent"
+    action = "lambda:InvokeFunction"
+    function_name = SubmitJobLambdaFunction.get_output_attr('function_name')
+    principal = "events.amazonaws.com"
+    source_arn = RecommendationsCollectorEventRule.get_output_attr('arn')
+
+
+class RecommendationsCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
+    rule = RecommendationsCollectorEventRule.get_output_attr('name')
+    arn = SubmitJobLambdaFunction.get_output_attr('arn')
+    target_id = 'RecommendationsCollectorTarget'  # Unique identifier
+    target_input = json.dumps({
+        'jobName': "aws-recommendations-collector",
+        'jobUuid': "recommendation-enricher-jar-with-dependencies",
+        'jobType': "jar",
+        'jobDesc': "Index trusted advisor checks as recommendations",
+        'environmentVariables': [
+            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,recommendation-enricher/prd/latest"},
+            {'name': "PACMAN_API_URI", 'value': ApplicationLoadBalancer.get_api_base_url()},
+            {'name': "LOGGING_ES_HOST_NAME", 'value': ESDomain.get_http_url_with_port()},
+            {'name': "ES_URI", 'value': ESDomain.get_http_url_with_port()},
+            {'name': "ENVIRONMENT", 'value': "prd"},
+            {'name': "APP_NAME", 'value': "aws-recommendations-collector"},
+            {'name': "APP_TYPE", 'value': "etl"},
+            {'name': "HEIMDALL_URI", 'value': ESDomain.get_http_url_with_port()},
+            {'name': "BASE_AWS_ACCOUNT", 'value': AwsAccount.get_output_attr('account_id')},
+        ],
+        'params': [
+            {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile.cso.pacbot"},
+            {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
+        ]
+    })
+
+
+class CloudNotificationCollectorEventRule(CloudWatchEventRuleResource):
+    name = "AWS-CloudNotification-Collector"
+    schedule_expression = "cron(0 * * * ? *)"
+
+    DEPENDS_ON = [SubmitJobLambdaFunction]
+
+
+class CloudNotificationCollectorEventRuleLambdaPermission(LambdaPermission):
+    statement_id = "AllowExecutionFromCloudNotificationCollectorEvent"
+    action = "lambda:InvokeFunction"
+    function_name = SubmitJobLambdaFunction.get_output_attr('function_name')
+    principal = "events.amazonaws.com"
+    source_arn = CloudNotificationCollectorEventRule.get_output_attr('arn')
+
+
+class CloudNotificationCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
+    rule = CloudNotificationCollectorEventRule.get_output_attr('name')
+    arn = SubmitJobLambdaFunction.get_output_attr('arn')
+    target_id = 'CloudNotificationCollectorTarget'  # Unique identifier
+    target_input = json.dumps({
+        'jobName': "aws-cloud-notification-collector",
+        'jobUuid': "pacman-cloud-notifications-jar-with-dependencies",
+        'jobType': "jar",
+        'jobDesc': "Health Notification Collector",
+        'environmentVariables': [
+            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/api/prd/latest"},
+            {'name': "PACMAN_API_URI", 'value': ApplicationLoadBalancer.get_api_base_url()},
+            {'name': "LOGGING_ES_HOST_NAME", 'value': ESDomain.get_http_url_with_port()},
+            {'name': "ES_URI", 'value': ESDomain.get_http_url_with_port()},
+            {'name': "ENVIRONMENT", 'value': "prd"},
+            {'name': "APP_NAME", 'value': "aws-cloud-notification-collector"},
+            {'name': "APP_TYPE", 'value': "etl"},
+            {'name': "BASE_AWS_ACCOUNT", 'value': AwsAccount.get_output_attr('account_id')},
+        ],
+        'params': [
+            {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile"},
+            {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
+            {'encrypt': False, 'key': "conf_src", 'value': "api-prd,application-prd"},
         ]
     })

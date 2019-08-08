@@ -2358,4 +2358,29 @@ public class AssetRepositoryImpl implements AssetRepository {
             return assetList;
         }
     }
+    
+    @Override
+	public Map<String, Long> getApplicationAssetCountByAssetGroup(String assetGroupName, String domain)
+			throws DataException {
+
+		List<String> targetTypes = getTargetTypesByAssetGroup(assetGroupName, domain).stream()
+				.map(obj -> obj.get(Constants.TYPE).toString()).collect(Collectors.toList());
+		Map<String, Object> filter = new HashMap<>();
+		filter.put(Constants.LATEST, Constants.TRUE);
+		filter.put(AssetConstants.UNDERSCORE_ENTITY, Constants.TRUE);
+		Map<String, Object> mustTermsFilter = new HashMap<>();
+		mustTermsFilter.put(AssetConstants.UNDERSCORE_TYPE, targetTypes);
+		Map<String, Long> applicationMap = new HashMap<>();
+
+		try {
+			applicationMap = esRepository.getTotalDistributionForIndexAndType(assetGroupName, null, filter, null, null,
+					Constants.TAGS_APPS, Constants.TEN_THOUSAND, mustTermsFilter);
+		} catch (Exception e) {
+			LOGGER.error(AssetConstants.ERROR_GETAPPSBYAG, e);
+			throw new DataException(e);
+		}
+
+		return applicationMap;
+	}
+
 }

@@ -379,7 +379,7 @@ export class DomainsComponent implements OnInit, OnDestroy {
         this.outerArr = this.outerArr.splice(halfLength);
       }
       this.allColumns = Object.keys(totalVariablesObj);
-      this.allColumns = ['Domain Name', 'Domain Desc', 'Target Types Count', 'Config', 'Actions'];
+      this.allColumns = ['Domain Name', 'Domain Desc', 'Asset Types Count', 'Config', 'Actions'];
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
       this.logger.log('error', error);

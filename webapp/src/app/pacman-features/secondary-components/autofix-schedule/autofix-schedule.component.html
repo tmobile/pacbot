@@ -1,0 +1,34 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<div class="status-wrap flex flex-col flex-align-center" *ngIf='autofixData && autofixData.planItems && autofixData.planItems.length'>
+    <div class="text-header"> Autofix Plan </div>
+    <div class="relative flex flex-align-center plan-wrap">
+        <div class="flex flex-col flex-align-start" [class.last-element]='i == autofixData.planItems.length - 1' *ngFor='let plan of autofixData.planItems; let i = index;'>
+            <div class="flex flex-align-center full-width">
+                <div class="plan-circle relative flex flex-center flex-align-center" [class.completed]="plan.status == 'COMPLETED'">
+                    <img class="tick" src='../assets/icons/white-tick.svg'>
+                </div>
+                <div class="plan-separator relative" *ngIf='autofixData.planItems && (i < autofixData.planItems.length - 1)'>
+                    <div class="absolute green-track"></div>
+                </div>
+            </div>
+            <div class="flex flex-col flex-center text-box">
+                <div class="plan-txt">{{plan.action == 'AUTOFIX_ACTION_EMAIL' ? 'Email Notification ' + (i + 1) : 'Fixed'}}</div>
+                <div class="plan-txt">{{plan.plannedActionTime | date: 'd MMM y, h:mm a'}}</div>
+            </div>
+        </div>
+        <img *ngIf='transformVal >= 0' [ngStyle]="{'transform': 'translateX(' + transformVal + 'px' }" class='absolute today-marker' src='../assets/icons/instanceState.gif'>
+    </div>
+</div>

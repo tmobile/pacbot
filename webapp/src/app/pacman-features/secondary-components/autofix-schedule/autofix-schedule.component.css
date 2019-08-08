@@ -1,0 +1,95 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+*/
+
+.status-wrap {
+    padding: 0.5em;
+}
+
+.plan-circle {
+    background: #ccc;
+    height: 14px;
+    width: 14px;
+    border-radius: 7px;
+    flex-shrink: 0;
+    opacity: 0.88;
+    z-index: 2;
+}
+
+.plan-circle.completed {
+    background: #57C17C;
+}
+
+.plan-separator {
+    background: #cecece;
+    height: 2px;
+    width: 130px;
+    margin: 0 3px;
+    flex-grow: 1;
+}
+
+.plan-wrap {
+    padding: 1em 0;
+    max-width: 90%;
+}
+
+.plan-txt {
+    color: #888;
+    padding-top: 0.6em;
+    text-align: center;
+    white-space: nowrap;
+    transform: translateX(calc(-50% + 7px));
+}
+
+.last-element {
+    width: 14px;
+    max-width: 1.2em;
+}
+
+.tick {
+    display: none;
+    width: 0.8em;
+    height: 0.8em;
+    object-fit: contain;
+    object-position: center;
+}
+
+.completed .tick {
+    display: block;
+}
+
+.today-marker {
+    z-index: 1;
+    height: 20px;
+    width: 20px;
+    object-fit: contain;
+    object-position: center;
+    top: 0px;
+    transition: 4s ease;
+    left: -3px;
+}
+
+.text-header {
+    font-size: 1.3em;
+    font-weight: 600;
+    line-height: 1.3;
+    padding: .3em 0;
+}
+
+.green-track {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    background: #57c17c;
+}

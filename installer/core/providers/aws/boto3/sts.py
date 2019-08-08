@@ -1,32 +1,40 @@
+from core.providers.aws.boto3 import prepare_aws_client_with_given_cred
 import boto3
+import uuid
 
 
-def get_sts_client(access_key, secret_key):
+def get_sts_client(aws_auth_cred):
     """
     Returns AWS sts client object
 
     Args:
-        access_key (str): AWS Access Key
-        secret_key (str): AWS Secret Key
+        aws_auth (dict): Dict containing AWS credentials
 
     Returns:
         obj: AWS Sts client Object
     """
-    return boto3.client(
-        "sts",
-        aws_access_key_id=access_key,
-        aws_secret_access_key=secret_key)
+    return prepare_aws_client_with_given_cred('sts', aws_auth_cred)
 
 
-def get_user_account_id(access_key, secret_key):
+def generate_temp_credentials(assume_role_arn):
+    response = boto3.client(
+        'sts'
+    ).assume_role(
+        RoleArn=assume_role_arn,
+        RoleSessionName=str(uuid.uuid4())
+    )
+
+    return response['Credentials']
+
+
+def get_aws_caller_identity(aws_auth_cred):
     """
     Returns AWS user account id from the given credentials
 
     Args:
-        access_key (str): AWS Access Key
-        secret_key (str): AWS Secret Key
+        aws_auth (dict): Dict containing AWS credentials
 
     Returns:
         account_id (str): AWS user account ID
     """
-    return get_sts_client(access_key, secret_key).get_caller_identity().get('Account')
+    return get_sts_client(aws_auth_cred).get_caller_identity()
