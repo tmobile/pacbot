@@ -19,7 +19,7 @@ export const MESSAGES = {
             'description': 'Something went wrong while we were fetching your data.'
         },
         'noDataAvailable': {
-            'title': 'Oops, It\'s deserted here!',
+            'title': '',
             'description': 'Doesn\'t look like any data is available'
         },
         'jsError': {

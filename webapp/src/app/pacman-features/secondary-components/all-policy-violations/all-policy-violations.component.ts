@@ -451,7 +451,7 @@ goToDetails(row) {
         try {
             this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
             if (row.col.toLowerCase() === 'resource id') {
-              this.router.navigate(['../../../', 'assets' , 'assets-details', row.row['Target Type'].text, encodeURIComponent(row.row['Resource ID'].text)], {relativeTo: this.activatedRoute, queryParamsHandling: 'merge'});
+              this.router.navigate(['../../../', 'assets' , 'assets-details', row.row['Asset Type'].text, encodeURIComponent(row.row['Resource ID'].text)], {relativeTo: this.activatedRoute, queryParamsHandling: 'merge'});
             } else if (row.col.toLowerCase() === 'issue id' || row.col.toLowerCase() === 'issueid') {
               this.router.navigate(['../../issue-details', row.row['Issue ID'].text ]  , {relativeTo: this.activatedRoute, queryParamsHandling: 'merge'});
             } else if (row.col.toLowerCase() === 'policy name') {

@@ -391,7 +391,7 @@ export class AllPatchingTableComponent implements OnInit, OnDestroy {
   goToDetails(row) {
       try {
           this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
-          this.router.navigate(['../../', 'assets' , 'assets-details', row.row['Target Type'].text, row.row['Resource ID'].text], {relativeTo: this.activatedRoute, queryParamsHandling: 'merge'});
+          this.router.navigate(['../../', 'assets' , 'assets-details', row.row['Asset Type'].text, row.row['Resource ID'].text], {relativeTo: this.activatedRoute, queryParamsHandling: 'merge'});
       } catch (error) {
           this.errorMessage = this.errorHandling.handleJavascriptError(error);
           this.logger.log('error', error);

@@ -107,26 +107,6 @@ const routes: Routes = [
                 component: HelpTextComponent,
                 outlet: 'helpTextModal'
             },
-            {
-                path: 'recommendations-detail',
-                component: RecommendationsDetailsComponent,
-                data: {
-                    title: 'Recommendations Detail',
-                    pageLevel: 1
-                },
-                outlet: 'details',
-                canActivate: [AuthGuardService]
-            },
-            {
-                path: 'assets-details/:resourceType/:resourceId',
-                component: AssetDetailsComponent,
-                data: {
-                    title: 'Asset Details',
-                    pageLevel: 1
-                },
-                outlet: 'details',
-                canActivate: [AuthGuardService]
-            },
         ],
         canActivate: [AuthGuardService]
     },
