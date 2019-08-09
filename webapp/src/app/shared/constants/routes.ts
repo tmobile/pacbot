@@ -71,6 +71,7 @@ import { PluginManagementDetailsComponent } from '../../pacman-features/modules/
 import { SystemManagementComponent } from '../../pacman-features/modules/admin/system-management/system-management.component';
 import { ConfigManagementComponent } from '../../pacman-features/modules/admin/config-management/config-management.component';
 import { RecommendationsComponent} from '../../pacman-features/modules/compliance/recommendations/recommendations.component';
+import { RecommendationsDetailsComponent } from '../../pacman-features/modules/compliance/recommendations-details/recommendations-details.component';
 
 export const COMPLIANCE_ROUTES = [
     {
@@ -222,6 +223,14 @@ export const COMPLIANCE_ROUTES = [
             pageLevel: 0
         },
         canActivate: [AuthGuardService]
+    },
+    {
+            path: 'recommendations-detail/:recommendationId/:name/:general',
+            component: RecommendationsDetailsComponent,
+            data: {
+                title: 'Recommendations Detail',
+            },
+            canActivate: [AuthGuardService]
     },
 ];
 

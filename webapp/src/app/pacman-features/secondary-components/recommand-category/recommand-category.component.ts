@@ -427,16 +427,14 @@ export class RecommandCategoryComponent implements OnInit, OnChanges, OnDestroy 
   }
 
     goToDetails(row) {
-        try {
-            this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
-            if (row.col.toLowerCase() === 'recommendation' && row.row['Recommendation ID'].text.length > 0) {
-              const eachParams = {'recommendationId': row.row['Recommendation ID'].text, 'name': row.row['recommendation'].text, 'general': this.general};
-              this.router.navigate(['pl', {outlets: {details: ['recommendations-detail']}}], { queryParams: eachParams, queryParamsHandling : 'merge'});
-            }
-        } catch (error) {
-            this.errorMessage = this.errorHandling.handleJavascriptError(error);
-            this.logger.log('error', error);
-        }
+      try {
+        this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
+        this.router.navigate(['../recommendations-detail', row.row['Recommendation ID'].text, row.row['recommendation'].text, this.general],
+        {relativeTo: this.activatedRoute, queryParamsHandling: 'merge'});
+      } catch (error) {
+          this.errorMessage = this.errorHandling.handleJavascriptError(error);
+          this.logger.log('error', error);
+      }
     }
 
   ngOnDestroy() {

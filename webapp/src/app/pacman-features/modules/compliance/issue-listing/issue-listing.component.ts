@@ -644,10 +644,11 @@ export class IssueListingComponent implements OnInit, OnDestroy {
   }
 
   goToDetails(row) {
+
     try {
       this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
       if (row.col.toLowerCase() === 'resource id') {
-        const resourceType = row.row['Target Type'].text;
+        const resourceType = row.row['Asset Type'].text;
         const resourceId = encodeURIComponent(row.row['Resource ID'].text);
         this.router.navigate(
           ['../../', 'assets', 'assets-details', resourceType, resourceId],
