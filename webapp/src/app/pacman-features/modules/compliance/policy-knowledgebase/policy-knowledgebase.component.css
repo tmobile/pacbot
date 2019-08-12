@@ -248,3 +248,16 @@ transition-delay: 0.05s;
     font-size: 0.85em;
     color: #5a616b;
 }
+
+.copy-object {
+    pointer-events: none;
+    transition: 0.2s ease;
+    opacity: 0;
+}
+.each-cell-list-row {
+    align-items: baseline;
+}
+.each-cell-list-row:hover .copy-object {
+    opacity: 1;
+    pointer-events: auto;
+}

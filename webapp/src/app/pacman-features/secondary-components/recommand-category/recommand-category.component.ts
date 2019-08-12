@@ -67,7 +67,7 @@ export class RecommandCategoryComponent implements OnInit, OnChanges, OnDestroy 
   @Output() monthlySavings = new EventEmitter<any>();
   monthlySavingsTotal = 0;
   errorMessage = 'apiResponseError';
-  columnWhiteList = [ 'recommendation', 'Recommendation For', 'Target Type', 'potential monthly savings'];
+  columnWhiteList = [ 'recommendation', 'Recommendation For', 'Asset Type', 'potential monthly savings'];
   storeRecommendations = {
     'category' : {
       'summary': '',
@@ -147,7 +147,6 @@ export class RecommandCategoryComponent implements OnInit, OnChanges, OnDestroy 
   getData() {
     if (this.selectedAssetGroup !== undefined) {
             /* All functions to get data should go here */
-            this.columnWhiteList = [ 'recommendation', 'Recommendation ID', 'Recommendation For', 'recommended', 'Target Type', 'total', 'potential monthly savings'];
             this.getTableData();
         }
   }
@@ -202,7 +201,7 @@ export class RecommandCategoryComponent implements OnInit, OnChanges, OnDestroy 
         this.dataTableData = [];
         this.allColumns = [];
       if (this.general) {
-        this.columnWhiteList.push('recommended');
+        this.columnWhiteList = [ 'recommendation', 'recommended'];
       }
     if (this.general && this.storeRecommendations['category'][this.selectedTab.category]) {
       this.errorValue = 1;
@@ -427,16 +426,14 @@ export class RecommandCategoryComponent implements OnInit, OnChanges, OnDestroy 
   }
 
     goToDetails(row) {
-        try {
-            this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
-            if (row.col.toLowerCase() === 'recommendation' && row.row['Recommendation ID'].text.length > 0) {
-              const eachParams = {'recommendationId': row.row['Recommendation ID'].text, 'name': row.row['recommendation'].text, 'general': this.general};
-              this.router.navigate(['pl', {outlets: {details: ['recommendations-detail']}}], { queryParams: eachParams, queryParamsHandling : 'merge'});
-            }
-        } catch (error) {
-            this.errorMessage = this.errorHandling.handleJavascriptError(error);
-            this.logger.log('error', error);
-        }
+      try {
+        this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
+        this.router.navigate(['../recommendations-detail', row.row['Recommendation ID'].text, row.row['recommendation'].text, this.general],
+        {relativeTo: this.activatedRoute, queryParamsHandling: 'merge'});
+      } catch (error) {
+          this.errorMessage = this.errorHandling.handleJavascriptError(error);
+          this.logger.log('error', error);
+      }
     }
 
   ngOnDestroy() {

@@ -65,7 +65,6 @@
     font-size: 1.2em;
     letter-spacing: 0.5px;
     padding-bottom: 1em;
-    width: 90%;
 }
 
 .search-card-name span:first-child {
@@ -648,4 +647,20 @@
 .disabled {
     pointer-events: none;
     cursor: not-allowed;
+}
+.copy-object {
+    pointer-events: none;
+    transition: 0.2s ease;
+    opacity: 0;
+}
+
+.each-cell-list-row:hover .copy-object {
+    opacity: 1;
+    pointer-events: auto;
+}
+.font-color{
+    font-family: ex2-light;
+}
+.text-element {
+    padding: .2em 0;
 }

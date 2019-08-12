@@ -48,7 +48,10 @@
               [style.color]="(!item[list].text && item[list].text !== 0 && item[list].text !== false) ? '#9b9b9b' : (clickableColumn(list) ? '#ed0074':'black')" >
               <img *ngIf="item[list].display_svg; else showText" [src]="'../../../assets/icons/' + item[list].display_svg"/>
               <ng-template #showText>
-                <span [ngClass]="{'capitalize': list==='entity type'}">{{ (!item[list].text && item[list].text !== 0 && item[list].text !== false) ? 'No Data' : item[list].text }}</span>
+                <div class="flex flex-align-center each-cell-list-row ">
+                    <span [ngClass]="{'capitalize': list==='entity type'}">{{ (!item[list].text && item[list].text !== 0 && item[list].text !== false) ? 'No Data' : item[list].text }}</span>
+                    <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="(!item[list].text && item[list].text !== 0 && item[list].text !== false) ? 'No Data' : item[list].text" [iconSize]="'10px'" ></app-copy-element>
+                </div>
               </ng-template>
             </td>
           </ng-container>

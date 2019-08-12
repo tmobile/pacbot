@@ -49,7 +49,11 @@
         <div class='pk-main-content flex flex-wrap'>
             <ng-container *ngFor="let cards of ( knowledgebaseData | searchFilter: searchTxt ) | orderBy : { property: 'name', direction: 1 }" >
                 <div *ngIf="(selectedTabName == 'All' || selectedTabName == cards.severity || selectedTabName == cards.ruleCategory) && dataLoaded" class='each-card relative mr-pkb-cards pointer' (click) = "gotoNextPage(cards.ruleId)">
-                    <div title="{{cards.name}}" class='pk-link' >{{cards.name}}</div>
+                    <div class="flex each-cell-list-row">
+                        <div title="{{cards.name}}" class='pk-link' >{{cards.name}}</div>
+                        <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="cards.name" [iconSize]="'10px'" ></app-copy-element>
+                    </div>
+                   
                     <div class='pk-desc flex flex-align-center flex-between'>
                         <div title="{{cards.lastScan | date:'mediumDate'}}" class="pk-date">{{cards.lastScan | date:'mediumDate'}}</div>
                         <div [class.critical-bg]="cards.severity == 'critical'" [class.medium-bg]="cards.severity == 'medium'" [class.low-bg]="cards.severity == 'low'" [class.high-bg]="cards.severity == 'high'" title="{{cards.severity | uppercase}}" class='pk-btn'>{{cards.severity}}</div>
