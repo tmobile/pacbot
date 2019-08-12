@@ -12,14 +12,21 @@
  * limitations under the License.
  -->
 
- <div class='fixed flex flex-align-center toast-body' [class.active]='toastState!=0'>
-	<div [class.hide]='true' class='pre-toast-img toast-element'>
-		<img src='../assets/icons/search.svg'>
+ <div class='fixed flex flex-align-center toast-body' [class.info] = "toastHeading ==='Info'" [class.success] = "toastHeading ==='Success'" [class.warning] = "toastHeading ==='Warning'" [class.error] = "toastHeading === 'Error'" [class.active]='toastState!=0'>
+	<div  class='pre-toast-img toast-element'>
+		<img *ngIf='toastImg' src='../assets/icons/{{toastImg}}' class="toast-icon">
 	</div>
+	<div class="flex flex-col toast-wrap">
+		<div *ngIf = "toastHeading" class="msg-heading">{{toastHeading}}</div>
 	<div class='toast-msg toast-element'>{{toastMsg}}</div>
-	<div [class.hide]='true' class='toast-exe toast-element'> Button me! 
+	</div>
+	<div [class.hide]='true' class='toast-exe toast-element'> Click me! 
 	</div>
 	<div [class.hide]='true' class='post-toast-img toast-element'>
-		<img src='..//assets/icons/search.svg'>
+		<img src='../assets/icons/search.svg'>
+		<img [class.hide]='true' src='../assets/icons/Error.svg'>
+		<img [class.hide]='true' src='../assets/icons/Info.svg'>
+		<img [class.hide]='true' src='../assets/icons/Success.svg'>
+		<img [class.hide]='true' src='../assets/icons/Warning.svg'>
 	</div>
 </div>

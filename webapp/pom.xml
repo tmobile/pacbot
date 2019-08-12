@@ -65,24 +65,6 @@
 						</configuration>
 					</execution>
 					<execution>
-						<id>npm install bower</id>
-						<goals>
-							<goal>npm</goal>
-						</goals>
-						<configuration>
-							<arguments>install bower</arguments>
-						</configuration>
-					</execution>
-					<execution>
-						<id>bower install --allow-root</id>
-						<goals>
-							<goal>bower</goal>
-						</goals>
-						<configuration>
-							<arguments>install --allow-root</arguments>
-						</configuration>
-					</execution>
-					<execution>
 						<id>npm run ng build -- --env=prod --output-hashing=all</id>
 						<goals>
 							<goal>npm</goal>

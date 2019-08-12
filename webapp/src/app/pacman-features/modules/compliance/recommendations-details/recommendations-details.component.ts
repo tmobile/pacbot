@@ -52,6 +52,8 @@ export class RecommendationsDetailsComponent implements OnInit, OnDestroy {
   lastPaginator: number;
   paginatorSize = 10;
   bucketNumber = 0;
+  pageLevel = 0;
+  backButtonRequired;
   popRows: any = ['Download Data'];
   tableDataLoaded = false;
   searchTxt = '';
@@ -68,13 +70,16 @@ export class RecommendationsDetailsComponent implements OnInit, OnDestroy {
               private router: Router,
               private workflowService: WorkflowService) {
       this.AssetGroupSubscription = this.assetGroupObservableService.getAssetGroup().subscribe(assetGroupName => {
+        this.backButtonRequired = this.workflowService.checkIfFlowExistsCurrently(
+          this.pageLevel
+        );
         this.selectedAssetGroup = assetGroupName;
         this.agAndDomain['ag'] = this.selectedAssetGroup;
       });
       this.domainSubscription = this.domainObservableService.getDomainType().subscribe(domain => {
         this.selectedDomain = domain;
         this.agAndDomain['domain'] = this.selectedDomain;
-        this.recommendationParams = this.activRoute.snapshot.queryParamMap['params'];
+        this.recommendationParams = this.activRoute.snapshot.params;
         this.getRecommandationsInfoData();
         this.updateComponent();
       });
@@ -446,6 +451,13 @@ export class RecommendationsDetailsComponent implements OnInit, OnDestroy {
     this.getRecommandationsDetailsData();
 
   }
+  navigateBack() {
+    try {
+      this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root);
+    } catch (error) {
+      this.logger.log('error', error);
+    }
+  }
 
   goToDetails(row) {
     try {
@@ -454,19 +466,38 @@ export class RecommendationsDetailsComponent implements OnInit, OnDestroy {
         const resourceType = row.row['type'].text;
         const resourceId = encodeURIComponent(row.row['Resource ID'].text);
         this.router.navigate(
-          ['pl', { outlets: { details: ['assets-details', resourceType, resourceId] } }],
-          { queryParams: this.agAndDomain, queryParamsHandling: 'merge' }
+          ['../../../../../assets/assets-details', resourceType, resourceId],
+          { relativeTo: this.activRoute, queryParams: this.agAndDomain, queryParamsHandling: 'merge' }
         ).then(response => {
           this.logger.log('info', 'Successfully navigated to asset details page: ' + response);
         })
-          .catch(error => {
-            this.logger.log('error', 'Error in navigation - ' + error);
-          });
+        .catch(error => {
+          this.logger.log('error', 'Error in navigation - ' + error);
+        });
       }
     } catch (error) {
-      this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log('error', error);
+        this.errorMessage = this.errorHandling.handleJavascriptError(error);
+        this.logger.log('error', error);
     }
+    // try {
+    //   this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
+    //   if (row.col.toLowerCase() === 'resource id') {
+    //     const resourceType = row.row['type'].text;
+    //     const resourceId = encodeURIComponent(row.row['Resource ID'].text);
+    //     this.router.navigate(
+    //       ['pl', { outlets: { details: ['assets-details', resourceType, resourceId] } }],
+    //       { queryParams: this.agAndDomain, queryParamsHandling: 'merge' }
+    //     ).then(response => {
+    //       this.logger.log('info', 'Successfully navigated to asset details page: ' + response);
+    //     })
+    //       .catch(error => {
+    //         this.logger.log('error', 'Error in navigation - ' + error);
+    //       });
+    //   }
+    // } catch (error) {
+    //   this.errorMessage = this.errorHandling.handleJavascriptError(error);
+    //   this.logger.log('error', error);
+    // }
   }
 
   ngOnDestroy() {

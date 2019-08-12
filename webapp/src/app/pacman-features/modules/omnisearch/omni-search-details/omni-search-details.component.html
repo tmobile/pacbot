@@ -33,51 +33,81 @@
                 </div>
                 <div class="search-card-each pointer flex flex-col relative" *ngFor="let searchCard of searchResultsData ; let i = index " (click)="navigateTo(searchCard)">
                     <div class='upper-section-wrapper'>
-                    <p class="search-card-name nowrap-ellipsis" *ngIf="searchCard._id">
-                        <span *ngIf="(searchCard.searchCategory | lowercase) == 'assets'">Resource Id:</span>
-                        <span *ngIf="(searchCard.searchCategory | lowercase) == 'policy violations'">Issue Id:</span>
-                        <span *ngIf="(searchCard.searchCategory | lowercase) == 'vulnerabilities'">Qid:</span>
-                        <span>{{searchCard._id}}</span>
-                    </p>
+                    <div class="each-cell-list-row flex ">
+                        <p class="search-card-name nowrap-ellipsis " *ngIf="searchCard._id">
+                            <span *ngIf="(searchCard.searchCategory | lowercase) == 'assets'">Resource Id:</span>
+                            <span *ngIf="(searchCard.searchCategory | lowercase) == 'policy violations'">Issue Id:</span>
+                            <span *ngIf="(searchCard.searchCategory | lowercase) == 'vulnerabilities'">Qid:</span>
+                            <span>{{searchCard._id}}</span>
+                        </p>
+                        <span><app-copy-element class="copy-object " [CopyElement]="searchCard._id" [iconSize]="'10px'" ></app-copy-element></span>
+                    </div>
                     <img class="arrow-icon arrow-icon-search-card relative" style="height: 1em;" src="assets/icons/right-arrow.svg">
                     <div class="seach-card-desc-bottom search-card-middle-section flex flex-column">
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard.accountname">
-                            <span>Account Name: </span>
-                            <span title="{{searchCard.accountname}}">{{searchCard.accountname}}</span>
+                        <p class="search-card-type each-cell-list-row flex flex-align-center" *ngIf="searchCard.accountname">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Account Name: </span>
+                                <span class="font-color" title="{{searchCard.accountname}}">{{searchCard.accountname}}</span>
+                            </span>
+                            <span><app-copy-element class="copy-object  " [CopyElement]="searchCard.accountname" [iconSize]="'10px'" ></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard._entitytype">
-                            <span>Entity Type:</span>
-                            <span title="{{searchCard._entitytype}}">{{searchCard._entitytype}}</span>
+                        <p class="search-card-type each-cell-list-row flex flex-align-center" *ngIf="searchCard._entitytype">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Entity Type:</span>
+                                <span class="font-color" title="{{searchCard._entitytype}}">{{searchCard._entitytype}}</span>
+                            </span>
+                            <span><app-copy-element class="copy-object  " [CopyElement]="searchCard._entitytype" [iconSize]="'10px'" ></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard.severity">
-                            <span>Severity:</span>
-                            <span title="{{searchCard.severity}}">{{searchCard.severity}}</span>
+                        <p class="search-card-type flex flex-align-center each-cell-list-row" *ngIf="searchCard.severity">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Severity:</span>
+                                <span class="font-color" title="{{searchCard.severity}}">{{searchCard.severity}}</span>
+                            </span>
+                            <span><app-copy-element class="copy-object  " [CopyElement]="searchCard.severity" [iconSize]="'10px'" ></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard.category">
-                            <span>Category:</span>
-                            <span title="{{searchCard.category}}">{{searchCard.category}}</span>
+                        <p class="search-card-type flex flex-align-center each-cell-list-row" *ngIf="searchCard.category">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Category:</span>
+                                <span class="font-color" title="{{searchCard.category}}">{{searchCard.category}}</span>
+                            </span>
+                            <span><app-copy-element class="copy-object  " [CopyElement]="searchCard.category" [iconSize]="'10px'" ></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard.vulntype">
-                            <span>Type:</span>
-                            <span title="{{searchCard.vulntype}}">{{searchCard.vulntype}}</span>
+                        <p class="search-card-type flex flex-align-center each-cell-list-row" *ngIf="searchCard.vulntype">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Type:</span>
+                                <span class="font-color" title="{{searchCard.vulntype}}">{{searchCard.vulntype}}</span>
+                            </span>
+                            <span><app-copy-element class="copy-object  " [CopyElement]="searchCard.vulntype" [iconSize]="'10px'" ></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard._resourceid">
-                            <span>Resource Id:</span>
-                            <span title="{{searchCard._resourceid}}">{{searchCard._resourceid}}</span>
+                        <p class="search-card-type flex flex-align-center each-cell-list-row" *ngIf="searchCard._resourceid">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Resource Id:</span>
+                                <span class="font-color" title="{{searchCard._resourceid}}">{{searchCard._resourceid}}</span>
+                            </span>
+                            <span><app-copy-element class="copy-object  " [CopyElement]="searchCard._resourceid" [iconSize]="'10px'" ></app-copy-element></span>
                         </p>
                     </div>
                     <div class="seach-card-desc-bottom search-card-bottom-section flex flex-column">
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard['tags.Application']">
-                            <span>Application:</span>
-                            <span>{{searchCard['tags.Application']}}</span>
+                        <p class="search-card-type flex flex-align-center each-cell-list-row" *ngIf="searchCard['tags.Application']">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Application:</span>
+                                <span class="font-color">{{searchCard['tags.Application']}}</span>
+                            </span>
+                            <span><app-copy-element class="copy-object  " [CopyElement]="searchCard['tags.Application']" [iconSize]="'10px'" ></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard['tags.Environment']">
-                            <span>Environment:</span>
-                            <span>{{searchCard['tags.Environment']}}</span>
+                        <p class="search-card-type flex flex-align-center each-cell-list-row" *ngIf="searchCard['tags.Environment']">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Environment:</span>
+                                <span class="font-color">{{searchCard['tags.Environment']}}</span>
+                            </span>
+                            <span><app-copy-element class="copy-object  " [CopyElement]="searchCard['tags.Environment']" [iconSize]="'10px'" ></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard['tags.Name']">
-                            <span>Name:</span>
-                            <span>{{searchCard['tags.Name']}}</span>
+                        <p class="search-card-type flex flex-align-center each-cell-list-row" *ngIf="searchCard['tags.Name']">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Name:</span>
+                                <span class="font-color">{{searchCard['tags.Name']}}</span>
+                            </span>
+                            <span><app-copy-element class="copy-object  " [CopyElement]="searchCard['tags.Name']" [iconSize]="'10px'" ></app-copy-element></span>
                         </p>
                     </div>
                     </div>
@@ -106,17 +136,26 @@
             </header>
             <section class="text-wrapper">
                 <div *ngIf="showExceptionModal && !showTransaction" class='flex flex-col'>
-                    <div class="exception-card-type nowrap-ellipsis" *ngIf="search_card._id">
-                        <span>Issue Id: </span>
-                        <span title="{{search_card._id}}">{{search_card._id}}</span>
+                    <div class="exception-card-type flex flex-align-center each-cell-list-row" *ngIf="search_card._id">
+                        <span class="nowrap-ellipsis text-element">
+                            <span>Issue Id: </span>
+                            <span class="font-color" title="{{search_card._id}}">{{search_card._id}}</span>
+                        </span>
+                        <span><app-copy-element class="copy-object  " [CopyElement]="search_card._id" [iconSize]="'10px'" ></app-copy-element></span>
                     </div>
-                    <div class="exception-card-type nowrap-ellipsis" *ngIf="search_card.severity">
+                    <div class="exception-card-type flex flex-align-center each-cell-list-row" *ngIf="search_card.severity">
+                        <span class="nowrap-ellipsis text-element">    
                             <span>Severity:</span>
-                            <span title="{{search_card.severity}}">{{search_card.severity}}</span>
+                            <span class="font-color" title="{{search_card.severity}}">{{search_card.severity}}</span>
+                        </span>
+                        <span><app-copy-element class="copy-object  " [CopyElement]="search_card.severity" [iconSize]="'10px'" ></app-copy-element></span>
                     </div>
-                    <div class="exception-card-type nowrap-ellipsis" *ngIf="search_card._resourceid">
-                        <span>Resource Id: </span>
-                        <span title="{{search_card._resourceid}}">{{search_card._resourceid}}</span>
+                    <div class="exception-card-type flex flex-align-center each-cell-list-row" *ngIf="search_card._resourceid">
+                        <span class="nowrap-ellipsis text-element">
+                            <span>Resource Id: </span>
+                            <span class="font-color" title="{{search_card._resourceid}}">{{search_card._resourceid}}</span>
+                        </span>
+                        <span><app-copy-element class="copy-object  " [CopyElement]="search_card._resourceid" [iconSize]="'10px'" ></app-copy-element></span>
                     </div>
                 </div>
                 <form novalidate *ngIf="showExceptionModal && !showTransaction" (ngSubmit)="onExceptionSubmit(user)" [formGroup]="user">
