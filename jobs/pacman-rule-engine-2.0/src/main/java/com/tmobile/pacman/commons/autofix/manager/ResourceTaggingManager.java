@@ -232,14 +232,14 @@ public class ResourceTaggingManager {
  * @param pacTag
  * @return
  */
-    private Boolean setEC2VolumeTag(final String resourceId, final Map<String, Object> clientMap,
+    public static Boolean setEC2VolumeTag(final String resourceId, final Map<String, Object> clientMap,
             Map<String, String> pacTag) {
         AmazonEC2 ec2Client = (AmazonEC2) clientMap.get("client");
         CreateTagsRequest createTagsRequest = new CreateTagsRequest(Arrays.asList(resourceId), new ArrayList<>());
         createTagsRequest.setTags(pacTag.entrySet().stream().map(t -> new Tag(t.getKey(), t.getValue()))
                 .collect(Collectors.toList()));
         try {
-            CreateTagsResult createTagsResult = ec2Client.createTags(createTagsRequest);
+            ec2Client.createTags(createTagsRequest);
             return Boolean.TRUE;
         } catch (AmazonServiceException ase) {
             logger.error("error tagging ec2 - > " + resourceId, ase);
