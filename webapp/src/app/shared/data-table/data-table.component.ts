@@ -143,7 +143,6 @@ export class DataTableComponent implements OnInit, OnChanges {
     ngOnInit() {
         this.noMinHeight = false;
         this.seekdata = false;
-
         if ((this.outerArr !== undefined) && (this.outerArr.length !== 0)) {
 
             this.currentTableData = this.outerArr;
@@ -199,6 +198,9 @@ export class DataTableComponent implements OnInit, OnChanges {
         const dataChange = changes['outerArr'];
         const errorChange = changes['showGenericMessage'];
         const errorMsg = changes['parentName'];
+        const errorValueChange = changes['errorValue'];
+        const searchTextChnage = changes['searchTextValues'];
+
         if (dataChange) {
             const cur = JSON.stringify(dataChange.currentValue);
             const prev = JSON.stringify(dataChange.previousValue);
@@ -223,9 +225,23 @@ export class DataTableComponent implements OnInit, OnChanges {
             }
         }
 
+        if (searchTextChnage) {
+            const cur = JSON.stringify(searchTextChnage.currentValue);
+            const prev = JSON.stringify(searchTextChnage.previousValue);
+            if ((cur !== prev)) {
+                this.ngOnInit();
+            }
+        }
+
         if (errorMsg) {
-            const cur = JSON.stringify(errorMsg.currentValue);
+            const cur = errorMsg.currentValue;
             this.errorMessage = cur;
+        }
+
+        if (errorValueChange) {
+            if (errorValueChange && (errorValueChange.currentValue === 0 || this.errorValue.currentValue === -1)) {
+                this.currentTableData = [];
+            }
         }
 
         this.isSeeMore();
