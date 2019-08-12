@@ -1072,6 +1072,25 @@ public class CommonUtils {
         Gson serializer = new GsonBuilder().create();
         return serializer.fromJson(jsonString, Object.class);
     }
+    
+    /**
+     * Does all have value.
+     *
+     * @param strings the strings
+     * @return the boolean
+     */
+    public static Boolean doesAllHaveValue(String...strings ){
+        if(null==strings || strings.length==0){
+            return Boolean.FALSE;
+        }
+        for(String str:strings){
+            if(Strings.isNullOrEmpty(str)){
+                LOGGER.error("Blank value found for param" + str);
+                return Boolean.FALSE; 
+            }
+        }
+        return Boolean.TRUE;
+    }
 
 
 }
