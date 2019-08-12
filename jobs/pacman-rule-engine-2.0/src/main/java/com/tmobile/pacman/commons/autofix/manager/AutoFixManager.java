@@ -699,7 +699,7 @@ private String normalizeResourceId(String resourceId, AWSService serviceType, Ma
                         Object.class);
                 String resourceCreationDateString = resourceDetailsMap.get("data").toString();
                 if ("Resource Not Found".equals(resourceCreationDateString))
-                    throw new Exception("resource not found in heimdal");
+                    return new Date();
                 return CommonUtils.dateFormat(resourceCreationDateString, PacmanSdkConstants.YYYY_MM_DD_T_HH_MM_SS_Z,
                         PacmanSdkConstants.MM_DD_YYYY);
             }
