@@ -67,7 +67,7 @@ export class RecommandCategoryComponent implements OnInit, OnChanges, OnDestroy 
   @Output() monthlySavings = new EventEmitter<any>();
   monthlySavingsTotal = 0;
   errorMessage = 'apiResponseError';
-  columnWhiteList = [ 'recommendation', 'Recommendation For', 'Target Type', 'potential monthly savings'];
+  columnWhiteList = [ 'recommendation', 'Recommendation For', 'Asset Type', 'potential monthly savings'];
   storeRecommendations = {
     'category' : {
       'summary': '',
@@ -147,7 +147,6 @@ export class RecommandCategoryComponent implements OnInit, OnChanges, OnDestroy 
   getData() {
     if (this.selectedAssetGroup !== undefined) {
             /* All functions to get data should go here */
-            this.columnWhiteList = [ 'recommendation', 'Recommendation ID', 'Recommendation For', 'recommended', 'Target Type', 'total', 'potential monthly savings'];
             this.getTableData();
         }
   }
@@ -202,7 +201,7 @@ export class RecommandCategoryComponent implements OnInit, OnChanges, OnDestroy 
         this.dataTableData = [];
         this.allColumns = [];
       if (this.general) {
-        this.columnWhiteList.push('recommended');
+        this.columnWhiteList = [ 'recommendation', 'recommended'];
       }
     if (this.general && this.storeRecommendations['category'][this.selectedTab.category]) {
       this.errorValue = 1;
