@@ -3,16 +3,16 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
-import { Component, OnInit, Input, EventEmitter, Output } from '@angular/core';
+import { Component, AfterViewInit, Input, EventEmitter, Output, ViewChild, ElementRef, Renderer } from '@angular/core';
 import { DataCacheService } from '../../core/services/data-cache.service';
 import { LoggerService } from '../../shared/services/logger.service';
 
@@ -23,13 +23,15 @@ import { LoggerService } from '../../shared/services/logger.service';
   providers: [LoggerService]
 })
 
-export class SearchbarDropdownComponent implements OnInit {
+export class SearchbarDropdownComponent implements AfterViewInit {
   /*
     ***************  Component details  **********************
     *This component is a combination of filter dropdown with a search button
     *Accepts the below parameters(*it accepts fontsize from the calling component to manupulate the entire size)
     ************ Component details ends here  ******************
    */
+
+  @ViewChild('omniInp') omniInp: ElementRef;
 
   @Input() dropdownData: any; // --> stores the dropdown for search category
   @Input() searchboxPlaceHolder: any; // --> search box placeholder
@@ -45,15 +47,20 @@ export class SearchbarDropdownComponent implements OnInit {
   searchBtnActive = false; // -->highlights the searchBtn if new text/category is selected
   constructor(
     private dataStore: DataCacheService,
-    private logger: LoggerService
+    private logger: LoggerService,
+    private renderer: Renderer
   ) {}
 
-  ngOnInit() {
+  ngAfterViewInit() {
     try {
+
+      if (this.omniInp) {
+        this.renderer.invokeElementMethod(this.omniInp.nativeElement, 'focus');
+      }
       // Onload passing same value as the selected value
       this.selectedFilterType = {
         id: this.dropDownSelectedValue,
-        text: this.dropDownSelectedValue
+        value: this.dropDownSelectedValue
       };
       // Checking if the terminated check box is already checked
       if (this.dropDownSelectedValue.toLocaleLowerCase() === 'assets') {
@@ -74,7 +81,7 @@ export class SearchbarDropdownComponent implements OnInit {
       // Calling the function to validate if the user should be able to search
       if (
         !this.dataStore.getSearhCriteria(
-          this.selectedFilterType['id'],
+          this.selectedFilterType['value'],
           this.searchboxValueSelected,
           this.terminatedIsChecked
         )
@@ -82,7 +89,7 @@ export class SearchbarDropdownComponent implements OnInit {
         this.searchBtnActive = true;
       }
       this.dataStore.setSearhCriteria(
-        this.selectedFilterType['id'],
+        this.selectedFilterType['value'],
         this.searchboxValueSelected,
         this.terminatedIsChecked
       );
@@ -101,7 +108,7 @@ export class SearchbarDropdownComponent implements OnInit {
   changeFilterType(value) {
     try {
       this.selectedFilterType = JSON.parse(JSON.stringify(value));
-      if (!(this.selectedFilterType['id'].toLowerCase() === 'assets')) {
+      if (!(this.selectedFilterType['value'].toLowerCase() === 'assets')) {
         this.terminatedIsChecked = false;
         this.assetSelected = false;
       } else {
@@ -109,7 +116,7 @@ export class SearchbarDropdownComponent implements OnInit {
       }
       if (
         !this.dataStore.getSearhCriteria(
-          this.selectedFilterType['id'],
+          this.selectedFilterType['value'],
           this.searchboxValueSelected,
           this.terminatedIsChecked
         )
@@ -118,7 +125,7 @@ export class SearchbarDropdownComponent implements OnInit {
       }
 
       this.dataStore.setSearhCriteria(
-        this.selectedFilterType['id'],
+        this.selectedFilterType['value'],
         this.searchboxValueSelected,
         this.terminatedIsChecked
       );
@@ -144,7 +151,7 @@ export class SearchbarDropdownComponent implements OnInit {
         this.searchBtnActive = false;
       } else if (
         !this.dataStore.getSearhCriteria(
-          this.selectedFilterType['id'],
+          this.selectedFilterType['value'],
           this.searchboxValueSelected,
           this.terminatedIsChecked
         )
@@ -152,7 +159,7 @@ export class SearchbarDropdownComponent implements OnInit {
         this.searchBtnActive = true;
       }
       this.dataStore.setSearhCriteria(
-        this.selectedFilterType['id'],
+        this.selectedFilterType['value'],
         this.searchboxValueSelected,
         this.terminatedIsChecked
       );
@@ -172,7 +179,7 @@ export class SearchbarDropdownComponent implements OnInit {
       this.terminatedIsChecked = Event;
       if (
         !this.dataStore.getSearhCriteria(
-          this.selectedFilterType['id'],
+          this.selectedFilterType['value'],
           this.searchboxValueSelected,
           this.terminatedIsChecked
         )
@@ -180,7 +187,7 @@ export class SearchbarDropdownComponent implements OnInit {
         this.searchBtnActive = true;
       }
       this.dataStore.setSearhCriteria(
-        this.selectedFilterType['id'],
+        this.selectedFilterType['value'],
         this.searchboxValueSelected,
         this.terminatedIsChecked
       );
@@ -200,7 +207,7 @@ export class SearchbarDropdownComponent implements OnInit {
       if (!this.formEmpty) {
         if (
           !this.dataStore.getSearhCriteria(
-            this.selectedFilterType['id'],
+            this.selectedFilterType['value'],
             this.searchboxValueSelected,
             this.terminatedIsChecked
           )
