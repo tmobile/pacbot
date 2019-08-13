@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>Info</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Current" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Toast-Messages" transform="translate(-468.000000, -64.000000)" fill="#289CF7" fill-rule="nonzero">
+            <g id="Group-17-Copy-3" transform="translate(447.000000, 52.000000)">
+                <g id="Group-51" transform="translate(21.000000, 7.000000)">
+                    <path d="M12,5 C5.376,5 0,10.376 0,17 C0,23.624 5.376,29 12,29 C18.624,29 24,23.624 24,17 C24,10.376 18.624,5 12,5 Z M13.2,23 L10.8,23 L10.8,15.8 L13.2,15.8 L13.2,23 Z M13.2,13.4 L10.8,13.4 L10.8,11 L13.2,11 L13.2,13.4 Z" id="Info"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

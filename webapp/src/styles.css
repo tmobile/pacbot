@@ -1619,6 +1619,7 @@ input.common-cb:checked + label {
     display: flex;
     flex-direction: column;
     height: 100%;
+    flex-grow: 1;
 }
 
 @media print {
@@ -1863,3 +1864,11 @@ img.trend-img-holder {
 .tooltip div{
     padding: .4em 0;
 }
+.ngx-dropdown-button {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+}
+.nsdicon-angle-down {
+    padding: 0 .2em;
+} 

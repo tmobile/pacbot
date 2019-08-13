@@ -337,21 +337,21 @@ export class TaggingInstancesTableComponent implements OnInit, OnDestroy {
             this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
             if (row.col.toLowerCase() === 'environment untagged' && row.row['environment Untagged'].text > 0) {
               const eachParams = {'tagName': 'Environment', 'tagged' : false};
-              eachParams['application'] = row.row.application.valText;
+              eachParams['application'] = row.row.Application.valText;
               let newParams = this.utils.makeFilterObj(eachParams);
               newParams = Object.assign(newParams, apiTarget);
               newParams['mandatory'] = 'tagged';
               this.router.navigate(['../../', 'assets' , 'asset-list'], {relativeTo: this.activatedRoute, queryParams: newParams, queryParamsHandling : 'merge'});
             } else if (row.col.toLowerCase() === 'role untagged' && row.row['role Untagged'].text > 0) {
               const eachParams = {'tagName': 'Role', 'tagged' : false};
-              eachParams['application'] = row.row.application.valText;
+              eachParams['application'] = row.row.Application.valText;
               let newParams = this.utils.makeFilterObj(eachParams);
               newParams = Object.assign(newParams, apiTarget);
               newParams['mandatory'] = 'tagged';
               this.router.navigate(['../../', 'assets' , 'asset-list'], {relativeTo: this.activatedRoute, queryParams: newParams, queryParamsHandling : 'merge'});
            } else if (row.col.toLowerCase() === 'stack untagged' && row.row['stack Untagged'].text > 0) {
             const eachParams = {'tagName': 'Stack', 'tagged' : false};
-              eachParams['application'] = row.row.application.valText;
+              eachParams['application'] = row.row.Application.valText;
               let newParams = this.utils.makeFilterObj(eachParams);
               newParams = Object.assign(newParams, apiTarget);
               newParams['mandatory'] = 'tagged';

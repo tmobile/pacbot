@@ -18,6 +18,7 @@
   </div>
   <div class="floating-widgets-header flex flex-between">
       <div>
+          <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack();" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
           <app-back-navigation [pageTitle]="recommendationParams['name']"></app-back-navigation>
       </div>
   </div>

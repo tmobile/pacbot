@@ -364,7 +364,7 @@ export class PoliciesComponent implements OnInit, OnDestroy {
         this.outerArr = this.outerArr.splice(halfLength);
       }
       this.allColumns = Object.keys(totalVariablesObj);
-      this.allColumns = ['Policy Id','Policy Name', 'Policy Description', 'Policy Version','No of Rules', 'Actions'];
+      this.allColumns = ['Policy Id','Policy Name', 'Policy Description', 'Policy Version', 'No of Rules', 'Actions'];
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
       this.logger.log('error', error);
