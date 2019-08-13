@@ -31,3 +31,8 @@
     text-align: left;
 }
 
+.tagging-instances-content /deep/ .table-cells {
+    max-width: 300px;
+    width: 100% !important;
+}
+
