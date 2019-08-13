@@ -212,3 +212,13 @@
 .help-icon:hover {
     color: magenta;
 }
+.copy-object {
+    pointer-events: none;
+    transition: 0.2s ease;
+    opacity: 0;
+}
+
+.each-cell-list-row:hover .copy-object {
+    opacity: 1;
+    pointer-events: auto;
+}

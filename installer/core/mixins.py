@@ -128,11 +128,11 @@ class MsgMixin(metaclass=ABCMeta):
         return self.CYAN_ANSI + "." * dot_len + self.RESET_ANSI
 
     def _get_error_msg_in_color(self, error_msg):
-        return self.ERROR_ANSI + error_msg + self.RESET_ANSI
+        return self.ERROR_ANSI + str(error_msg) + self.RESET_ANSI
 
     def _get_heading_message_in_color(self, message, color=None):
         color = self.CYAN_ANSI if color is None else color
-        return color + message + self.RESET_ANSI
+        return color + str(message) + self.RESET_ANSI
 
     def _input_message_in_color(self, message):
         """

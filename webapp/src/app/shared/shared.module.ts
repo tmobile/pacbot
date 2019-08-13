@@ -42,6 +42,7 @@ import {UtilsService} from './services/utils.service';
 import {SearchableDropdownComponent} from './searchable-dropdown/searchable-dropdown.component';
 import {SelectModule} from 'ng2-select';
 import {NgDatepickerModule} from 'ng2-datepicker';
+import { BackNavigationComponent } from './back-navigation/back-navigation.component';
 import {FilteredSelectorComponent} from './filtered-selector/filtered-selector.component';
 import {BreadcrumbComponent} from './breadcrumb/breadcrumb.component';
 import {SearchInfoComponent} from './search-info/search-info.component';
@@ -65,6 +66,7 @@ import { ToastNotificationComponent } from './toast-notification/toast-notificat
 import { HelpTextComponent } from './help-text/help-text.component';
 import { SearchbarDropdownComponent } from './searchbar-dropdown/searchbar-dropdown.component';
 // import {DownloadService} from './services/download.service';
+import { ExceptionManagementService } from './services/exception-management.service';
 import { MainFilterComponent } from './main-filter/main-filter.component';
 import { RadioButtonComponent } from './radio-button/radio-button.component';
 import { CheckBoxBtnComponent } from './check-box-btn/check-box-btn.component';
@@ -86,9 +88,11 @@ import { FormService } from './services/form.service';
 import { LoaderMsgComponent } from './loader-msg/loader-msg.component';
 import { GenericModalComponent } from './generic-modal/generic-modal.component';
 import { ConfigHistoryDropdownComponent } from './config-history-dropdown/config-history-dropdown.component';
-import { BackNavigationComponent } from './back-navigation/back-navigation.component';
+import { CopyElementComponent } from './copy-element/copy-element.component';
+import { ToastObservableService } from './services/toast-observable.service';
 import { SelectDropDownModule } from 'ngx-select-dropdown';
 import { TableListComponent } from './table-list/table-list.component';
+
 @NgModule({
     imports: [
         CommonModule,
@@ -103,7 +107,6 @@ import { TableListComponent } from './table-list/table-list.component';
         AgGridModule.withComponents(
             [AgGridTableComponent]
         )
-
     ],
     declarations: [
         CanvasSidePanelComponent,
@@ -121,6 +124,7 @@ import { TableListComponent } from './table-list/table-list.component';
         OrderByPipe,
         OrderBySumPipe,
         SearchFilterPipe,
+        BackNavigationComponent,
         BreadcrumbComponent,
         SearchInfoComponent,
         DataTableComponent,
@@ -149,6 +153,7 @@ import { TableListComponent } from './table-list/table-list.component';
         MultilineTrendComponent,
         AgGridTableComponent,
         FormsComponent,
+        CopyElementComponent,
         ConfirmationBoxComponent,
         LoaderMsgComponent,
         GenericModalComponent,
@@ -188,7 +193,9 @@ import { TableListComponent } from './table-list/table-list.component';
         MulitidoughnutbandComponent,
         DoughnutChartComponent,
         GenericSummaryComponent,
+        CopyElementComponent,
         FilterInfoComponent,
+        BackNavigationComponent,
         ToastNotificationComponent,
         HelpTextComponent,
         SearchbarDropdownComponent,
@@ -214,7 +221,7 @@ import { TableListComponent } from './table-list/table-list.component';
         SelectDropDownModule,
         TableListComponent
     ],
-    providers: [HttpService, UtilsService, RefactorFieldsService, OrderByPipe, SearchFilterPipe, MainRoutingAnimationEventService, AuthGuardService, RouterUtilityService, LoggerService, ErrorHandlingService, FilterManagementService, CommonResponseService, CopytoClipboardService, FormService]
+    providers: [HttpService, UtilsService, ExceptionManagementService, RefactorFieldsService, OrderByPipe, SearchFilterPipe, MainRoutingAnimationEventService, AuthGuardService, RouterUtilityService, LoggerService, ErrorHandlingService, FilterManagementService, ToastObservableService, CommonResponseService, CopytoClipboardService, FormService]
 })
 export class SharedModule {
 }

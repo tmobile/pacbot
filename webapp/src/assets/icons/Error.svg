@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="21px" viewBox="0 0 24 21" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 52.6 (67491) - http://www.bohemiancoding.com/sketch -->
+    <title>Error</title>
+    <desc>Created with Sketch.</desc>
+    <g id="Current" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Toast-Messages" transform="translate(-468.000000, -124.000000)" fill="#F2425F" fill-rule="nonzero">
+            <g id="Group-17-Copy-2" transform="translate(447.000000, 110.000000)">
+                <g id="Rectangle">
+                    <g id="Group-43" transform="translate(21.000000, 14.000000)">
+                        <path d="M0,20.7272727 L24,20.7272727 L12,0 L0,20.7272727 Z M13.0909091,17.4545455 L10.9090909,17.4545455 L10.9090909,15.2727273 L13.0909091,15.2727273 L13.0909091,17.4545455 Z M13.0909091,13.0909091 L10.9090909,13.0909091 L10.9090909,8.72727273 L13.0909091,8.72727273 L13.0909091,13.0909091 Z" id="Error"></path>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>
