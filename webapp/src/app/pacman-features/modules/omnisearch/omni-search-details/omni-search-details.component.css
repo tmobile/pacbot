@@ -679,4 +679,6 @@
   .search-details-wrapper /deep/ .ngx-dropdown-button {
     height: 100%;
     border:none !important;
+    border-top-right-radius: 0px !important;
+    border-bottom-right-radius: 0px !important;
   }

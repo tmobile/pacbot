@@ -612,7 +612,6 @@ export class AssetListComponent implements OnInit, OnDestroy {
         this.outerArr = this.outerArr.splice(halfLength);
       }
       this.allColumns = Object.keys(totalVariablesObj);
-      console.log(totalVariablesObj);
 
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
@@ -762,7 +761,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
   changeFilterType(value) {
     try {
       this.currentFilterType = _.find(this.filterTypeOptions, {
-        optionName: value.id
+        optionName: value.value
       });
       this.issueFilterSubscription = this.issueFilterService
         .getFilters(
@@ -788,7 +787,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
   changeFilterTags(value) {
     try {
       if (this.currentFilterType) {
-        const filterTag = _.find(this.filterTagOptions, { name: value.id });
+        const filterTag = _.find(this.filterTagOptions, { name: value.value });
         this.utils.addOrReplaceElement(
           this.filters,
           {
