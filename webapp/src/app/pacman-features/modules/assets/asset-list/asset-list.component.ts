@@ -761,7 +761,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
   changeFilterType(value) {
     try {
       this.currentFilterType = _.find(this.filterTypeOptions, {
-        optionName: value.id
+        optionName: value.value
       });
       this.issueFilterSubscription = this.issueFilterService
         .getFilters(
@@ -787,7 +787,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
   changeFilterTags(value) {
     try {
       if (this.currentFilterType) {
-        const filterTag = _.find(this.filterTagOptions, { name: value.id });
+        const filterTag = _.find(this.filterTagOptions, { name: value.value });
         this.utils.addOrReplaceElement(
           this.filters,
           {

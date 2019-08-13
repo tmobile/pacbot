@@ -983,12 +983,8 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
 .drop-options {
     height: 2em;
     width: 11.25em;
-    border-radius: 3px;
-    background-color: #ffffff;
-    border: solid 1px #c3cbd7;
     position: relative;
     transition: 0.3s ease;
-    /*padding: 0 1em 0 0.6em;*/
     cursor: pointer;
     line-height: 1.8em;
 }
@@ -1009,11 +1005,8 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
     height: 2em;
     transition: 0.3s ease;
     width: 21em;
-    border-radius: 3px;
     background-color: #ffffff;
-    border: solid 1px #c3cbd7;
     position: relative;
-    /*padding: 0 1em 0 2.5em;*/
     cursor: pointer;
     line-height: 1.8em;
 }
@@ -1869,6 +1862,17 @@ img.trend-img-holder {
     align-items: center;
     justify-content: space-between;
 }
+.ngx-dropdown-button span{
+    font-size: 12px;
+    color: #61615c;
+}
 .nsdicon-angle-down {
     padding: 0 .2em;
 } 
+.selected-items {
+    display: none;
+}
+.ngx-dropdown-list-container hr {
+    display: none;
+}
+
