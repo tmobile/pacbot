@@ -324,8 +324,8 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  goToLinkDetails(page, p1?, p2?) {
-    const arr = [page];
+  goToLinkDetails(module, page, p1?, p2?) {
+    const arr = ['../../../', module, page];
     if (p1) {
       arr.push(p1);
     }
@@ -334,9 +334,11 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     }
     this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
     this.router.navigate(
-      ['pl', { outlets: { details: arr } }],
-      { queryParamsHandling: 'merge' }
-    );
+      arr,
+      { queryParamsHandling: 'merge', relativeTo: this.activatedRoute }
+    ).catch(error => {
+      this.logger.log('error', 'Error in navigation - ' + error);
+    });
   }
 
   searchCalled(search) {

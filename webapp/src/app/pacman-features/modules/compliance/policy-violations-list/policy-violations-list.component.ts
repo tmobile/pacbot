@@ -326,7 +326,6 @@ export class PolicyViolationsListComponent implements OnInit, OnDestroy {
   }
 
   updateUrlWithNewFilters(filterArr) {
-    console.log(filterArr);
     this.appliedFilters.pageLevelAppliedFilters = this.utils.arrayToObject(
       this.filterArray,
       'filterkey',

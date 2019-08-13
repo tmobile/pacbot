@@ -95,21 +95,21 @@
                          <div class="desc-wrapper" *ngIf='autofixData && autofixData.ruleId'>
                              <div class="text-header">Policy ID</div>
                              <div class="flex flex-align-center each-cell-list-row">
-                                 <div (click)="goToLinkDetails('policy-details', autofixData.ruleId);" class="text-description highlight-link link">{{autofixData.ruleId}}</div>
+                                 <div (click)="goToLinkDetails('compliance', 'policy-details', autofixData.ruleId);" class="text-description highlight-link link">{{autofixData.ruleId}}</div>
                                  <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="autofixData.ruleId" [iconSize]="'10px'" ></app-copy-element>
                              </div>
                          </div>
                          <div class="desc-wrapper" *ngIf='autofixData && autofixData.issueId'>
                              <div class="text-header">Issue ID</div>
                              <div class="flex flex-align-center each-cell-list-row">
-                                 <div (click)="goToLinkDetails('issue-details', autofixData.issueId);" class="text-description highlight-link link">{{autofixData.issueId}}</div>
+                                 <div (click)="goToLinkDetails('compliance', 'issue-details', autofixData.issueId);" class="text-description highlight-link link">{{autofixData.issueId}}</div>
                                  <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="autofixData.issueId" [iconSize]="'10px'" ></app-copy-element>
                              </div>
                          </div>
                          <div class="desc-wrapper" *ngIf='autofixData && autofixData.resourceId && autofixData.resourceType'>
                              <div class="text-header">Resource ID</div>
                              <div class="flex flex-align-center each-cell-list-row">
-                                 <div (click)="goToLinkDetails('assets-details', autofixData.resourceType, autofixData.resourceId);" class="text-description highlight-link link">{{autofixData.resourceId}}</div>
+                                 <div (click)="goToLinkDetails('assets', 'assets-details', autofixData.resourceType, autofixData.resourceId);" class="text-description highlight-link link">{{autofixData.resourceId}}</div>
                                  <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="autofixData.resourceId" [iconSize]="'10px'" ></app-copy-element>
                              </div>
                          </div>
