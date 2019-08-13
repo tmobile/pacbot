@@ -190,7 +190,6 @@ export class DevStandardStaleBranchAgeComponent implements OnInit, OnDestroy , O
   }
 
   redirectGraph(event) {
-    console.log('event', event);
   }
 
   ngOnDestroy() {

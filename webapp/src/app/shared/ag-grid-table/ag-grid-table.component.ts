@@ -68,7 +68,6 @@ export class AgGridTableComponent implements OnInit, OnChanges {
       const DataChange = changes['data'];
 
       if (DataChange && DataChange.currentValue) {
-        console.log('data', DataChange.currentValue);
         this.rowData = DataChange.currentValue;
         // this.columnDefs = Object.keys(this.rowData[0]);
         this.processData(this.rowData);
@@ -131,7 +130,6 @@ export class AgGridTableComponent implements OnInit, OnChanges {
       }
       // this.selected = this.tabsData[0].name;
       const ObjArr = Object.keys(currentObj);
-      console.log('objarr', ObjArr);
       this.ObjArr = ObjArr;
       const extraFeatures = {
         checkboxSelection: true,
