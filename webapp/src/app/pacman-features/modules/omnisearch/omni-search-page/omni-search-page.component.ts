@@ -46,6 +46,7 @@ export class OmniSearchPageComponent implements OnInit, OnDestroy {
   public errorMessage: any;
   public dataComing = true;
   public showLoader = true;
+  datacoming;
   public seekdata = false;
   private dataSubscription: Subscription;
   private subscriptionDomain: Subscription;
@@ -176,11 +177,11 @@ export class OmniSearchPageComponent implements OnInit, OnDestroy {
       if (this.utils.isObjectEmpty(event.searchValue)) {
         event.searchValue = {
           id: this.dropdownData[0],
-          text: this.dropdownData[0]
+          value: this.dropdownData[0]
         };
       }
       const queryData = {
-        filterValue: event.searchValue.text.toString(),
+        filterValue: event.searchValue.value.toString(),
         searchText: event.filterValue.toString()
       };
       this.router.navigate(

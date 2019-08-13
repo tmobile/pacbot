@@ -19,7 +19,7 @@
       <app-searchable-dropdown *ngIf='dropdownData.length' [initValue] = "dropDownSelectedValue" [firstDD]='true' (selection)='changeFilterType($event)' [placeholder]="'Select Category'"
         [items]='dropdownData'></app-searchable-dropdown>
     </div>
-    <input (keyup.enter)="instructParentToNavigate()" class="search-box" [class.without-dropdown] = "displaySearchDropDown == false" type="search" placeholder = {{searchboxPlaceHolder}} value = {{searchboxValueSelected}} [(ngModel)]="searchboxValueSelected" (ngModelChange)="checkFieldEmpty()"/>
+    <input #omniInp (keyup.enter)="instructParentToNavigate()" class="search-box" [class.without-dropdown] = "displaySearchDropDown == false" type="search" placeholder = {{searchboxPlaceHolder}} value = {{searchboxValueSelected}} [(ngModel)]="searchboxValueSelected" (ngModelChange)="checkFieldEmpty()"/>
   </div>
   <!-- checkbox to show terminated instances-->
   <div class="absolute terminated-checkbox" *ngIf="showTerminatedCheckBox">
