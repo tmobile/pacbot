@@ -232,7 +232,7 @@ public class ResourceTaggingManager {
  * @param pacTag
  * @return
  */
-    public static Boolean setEC2VolumeTag(final String resourceId, final Map<String, Object> clientMap,
+    private Boolean setEC2VolumeTag(final String resourceId, final Map<String, Object> clientMap,
             Map<String, String> pacTag) {
         AmazonEC2 ec2Client = (AmazonEC2) clientMap.get("client");
         CreateTagsRequest createTagsRequest = new CreateTagsRequest(Arrays.asList(resourceId), new ArrayList<>());

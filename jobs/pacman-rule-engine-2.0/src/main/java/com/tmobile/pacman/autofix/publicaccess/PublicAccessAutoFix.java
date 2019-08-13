@@ -10,37 +10,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.model.AuthorizeSecurityGroupIngressRequest;
 import com.amazonaws.services.ec2.model.CreateSecurityGroupRequest;
 import com.amazonaws.services.ec2.model.CreateSecurityGroupResult;
+import com.amazonaws.services.ec2.model.CreateTagsRequest;
 import com.amazonaws.services.ec2.model.DeleteSecurityGroupRequest;
 import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
 import com.amazonaws.services.ec2.model.DescribeInstancesResult;
-import com.amazonaws.services.ec2.model.DescribeRouteTablesRequest;
-import com.amazonaws.services.ec2.model.DescribeRouteTablesResult;
 import com.amazonaws.services.ec2.model.DescribeSecurityGroupsRequest;
 import com.amazonaws.services.ec2.model.DescribeSecurityGroupsResult;
-import com.amazonaws.services.ec2.model.Filter;
 import com.amazonaws.services.ec2.model.Instance;
 import com.amazonaws.services.ec2.model.IpPermission;
 import com.amazonaws.services.ec2.model.IpRange;
 import com.amazonaws.services.ec2.model.Ipv6Range;
 import com.amazonaws.services.ec2.model.ModifyInstanceAttributeRequest;
 import com.amazonaws.services.ec2.model.Reservation;
-import com.amazonaws.services.ec2.model.Route;
-import com.amazonaws.services.ec2.model.RouteTable;
 import com.amazonaws.services.ec2.model.SecurityGroup;
+import com.amazonaws.services.ec2.model.Tag;
 import com.amazonaws.services.ec2.model.UserIdGroupPair;
 import com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancing;
 import com.amazonaws.services.elasticloadbalancing.model.ApplySecurityGroupsToLoadBalancerRequest;
@@ -65,7 +65,6 @@ import com.amazonaws.services.redshift.model.Cluster;
 import com.amazonaws.services.redshift.model.DescribeClustersRequest;
 import com.amazonaws.services.redshift.model.DescribeClustersResult;
 import com.amazonaws.services.redshift.model.ModifyClusterRequest;
-import com.amazonaws.util.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -77,6 +76,7 @@ import com.tmobile.pacman.commons.aws.clients.AWSClientManager;
 import com.tmobile.pacman.commons.aws.clients.impl.AWSClientManagerImpl;
 import com.tmobile.pacman.commons.exception.RuleExecutionFailedExeption;
 import com.tmobile.pacman.commons.exception.UnableToCreateClientException;
+import com.tmobile.pacman.util.CommonUtils;
 
 public class PublicAccessAutoFix {
 
@@ -305,7 +305,18 @@ public class PublicAccessAutoFix {
                 }
 				authRequest.setIpPermissions(ipPermissionsToBeAdded);
 				ec2Client.authorizeSecurityGroupIngress(authRequest);
-
+				//adding tag
+				String deleteSgTag = CommonUtils.getPropValue("deleteSgTag");
+				Map<String, String> tagMap = new HashMap();
+				tagMap.put(deleteSgTag, "true");
+				CreateTagsRequest createTagsRequest = new CreateTagsRequest(Arrays.asList(createdSecurityGroupId), new ArrayList<>());
+				createTagsRequest.setTags(tagMap.entrySet().stream().map(t -> new Tag(t.getKey(), t.getValue())).collect(Collectors.toList()));
+				try {
+					ec2Client.createTags(createTagsRequest);
+				} catch (AmazonServiceException ase) {
+					logger.error("error tagging sg - > " + resourceId, ase);
+					throw ase;
+				}
 			}
 
 		} catch (Exception e) {
