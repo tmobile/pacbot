@@ -612,7 +612,6 @@ export class AssetListComponent implements OnInit, OnDestroy {
         this.outerArr = this.outerArr.splice(halfLength);
       }
       this.allColumns = Object.keys(totalVariablesObj);
-      console.log(totalVariablesObj);
 
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);

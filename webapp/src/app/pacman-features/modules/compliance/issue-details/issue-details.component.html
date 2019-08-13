@@ -30,7 +30,7 @@
                                 <app-issue-blocks *ngFor="let data of issueTopblocks" [header]="data.header" [footer]="data.footer" [img]="data.img"></app-issue-blocks>
                             </div>
                             <div class="blocks-section blocks-section-bottom">
-                                <app-policy-violation-desc [pageLevel]="pageLevel" [violationData]="issueBlocks"></app-policy-violation-desc>
+                                <app-policy-violation-desc [autofixData]='autofixData' [pageLevel]="pageLevel" [violationData]="issueBlocks"></app-policy-violation-desc>
                             </div>
                         </div>
                         <div class="right-details-container flex flex-col" *ngIf="issueBlocks">
@@ -247,7 +247,7 @@
         <div class="article-wrapper">
             <article class="details-container replace-padding" *ngIf="issueAudit && issueBlocks">
                 <div>
-                    <app-data-table [errorValue]='errorValue' [allColumns]='allColumns' [outerArr]='outerArr' [heightValue]="'27.4em'" [totalRows]='totalRows' [firstPaginator]='firstPaginator' [lastPaginator]='lastPaginator' [currentPointer]='currentPointer' (previousPageCalled)='prevPg()' (nextPageCalled)='nextPg()' [searchableHeader]='true' (searchRowTxt)='searchCalled($event)' (searchTriggerred)='callNewSearch()' [dataHead]="'Issue Audit Log'">
+                    <app-data-table [tableIdAppend]="'8'" [errorValue]='errorValue' [allColumns]='allColumns' [outerArr]='outerArr' [heightValue]="'27.4em'" [totalRows]='totalRows' [firstPaginator]='firstPaginator' [lastPaginator]='lastPaginator' [currentPointer]='currentPointer' (previousPageCalled)='prevPg()' (nextPageCalled)='nextPg()' [searchableHeader]='true' (searchRowTxt)='searchCalled($event)' (searchTriggerred)='callNewSearch()' [dataHead]="'Issue Audit Log'">
                     </app-data-table>
                 </div>
             </article>

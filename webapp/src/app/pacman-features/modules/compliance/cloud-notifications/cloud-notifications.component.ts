@@ -65,13 +65,13 @@ export class CloudNotificationsComponent implements OnInit, OnDestroy {
   currentPageLevel = 0;
   filtersObj = {};
   tilesObj = [
-    // {
-    //   title: 'Autofixes',
-    //   icon: '../assets/icons/auto-fix-enabled.svg',
-    //   value: -1,
-    //   active: false,
-    //   key: 'Autofix'
-    // },
+    {
+      title: 'Autofixes',
+      icon: '../assets/icons/auto-fix-enabled.svg',
+      value: -1,
+      active: false,
+      key: 'Autofix'
+    },
     {
       title: 'Scheduled',
       icon: '../assets/icons/scheduled.svg',
@@ -258,10 +258,10 @@ export class CloudNotificationsComponent implements OnInit, OnDestroy {
       response => {
         try {
           this.summaryValue = 1;
-          // this.tilesObj[0].value = response[0].autofixCount;
-          this.tilesObj[0].value = response[0].eventscheduledCount;
-          this.tilesObj[1].value = response[0].eventNotificationCount;
-          this.tilesObj[2].value = response[0].evnetIssuesCount;
+          this.tilesObj[0].value = response[0].autofixCount;
+          this.tilesObj[1].value = response[0].eventscheduledCount;
+          this.tilesObj[2].value = response[0].eventNotificationCount;
+          this.tilesObj[3].value = response[0].evnetIssuesCount;
         } catch (e) {
             this.summaryValue = -1;
             this.logger.log('error', e);
@@ -443,7 +443,7 @@ export class CloudNotificationsComponent implements OnInit, OnDestroy {
         let queryParams;
         queryParams = {
             'fileFormat': 'csv',
-            'serviceId': this.tabSelected === 'general' ? 23 : 22,
+            'serviceId': this.tabSelected === 'general' ? 18 : 17,
             'fileType': fileType
         };
         const downloadRequest =  {

@@ -409,7 +409,6 @@ export class AssetGroupsComponent implements OnInit {
     if (row.col === 'Delete') {
       try {
         this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
-        console.log(row.row);
         this.router.navigate(["../delete-asset-groups"], {
           relativeTo: this.activatedRoute,
           queryParamsHandling: 'merge',
