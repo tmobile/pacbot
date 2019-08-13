@@ -142,16 +142,13 @@ it('Should click on deleted assets and check the functionalities', () => {
 //   let Countoriginal;
 //    OmniSearch_po.CountOriginal().getText().then(function(text){
 //       Countoriginal = parseInt(text, 10);
-//       console.log('count value', Countoriginal);
 //    });
 
 //   eachFilter.then(function(items) {
 //   for (let i = 0 ; i < items.length; i++) {
 //     $('.each-filter-desc .each-filter-options:nth-child(' + (1 + i) + ') .refine-criteria-count').getText().then(function(text){
 //       count = count + parseInt(text, 10);
-//       console.log(count, i, items.length);
 //       if ( i === items.length - 2) {
-//         console.log('if condition', count, Countoriginal);
 //         expect(count.toString()).toEqual(Countoriginal.toString());
 //       }
 //      });
