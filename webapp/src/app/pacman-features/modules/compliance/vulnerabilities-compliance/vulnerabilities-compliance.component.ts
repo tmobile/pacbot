@@ -122,7 +122,7 @@ export class VulnerabilitiesComplianceComponent implements OnInit, OnDestroy {
 
   changeFilterType(value) {
     this.currentFilterType = _.find(this.filterTypeOptions, {
-      optionName: value.id
+      optionName: value.value
     });
     this.filterTypesSubscription = this.issueFilterService
       .getFilters(
@@ -142,7 +142,7 @@ export class VulnerabilitiesComplianceComponent implements OnInit, OnDestroy {
 
   changeFilterTags(value) {
     if (this.currentFilterType) {
-      const filterTag = _.find(this.filterTagOptions, { name: value.id });
+      const filterTag = _.find(this.filterTagOptions, { name: value.value });
       this.utils.addOrReplaceElement(
         this.filters,
         {
