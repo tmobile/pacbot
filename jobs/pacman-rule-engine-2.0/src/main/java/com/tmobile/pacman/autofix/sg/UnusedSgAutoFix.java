@@ -21,7 +21,6 @@
  **/
 package com.tmobile.pacman.autofix.sg;
 
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -36,8 +35,6 @@ import com.tmobile.pacman.common.exception.AutoFixException;
 import com.tmobile.pacman.commons.autofix.BaseFix;
 import com.tmobile.pacman.commons.autofix.FixResult;
 import com.tmobile.pacman.commons.autofix.PacmanFix;
-import com.tmobile.pacman.commons.autofix.manager.ResourceTaggingManager;
-import com.tmobile.pacman.commons.exception.InvalidInputException;
 import com.tmobile.pacman.dto.AutoFixTransaction;
 import com.tmobile.pacman.util.CommonUtils;
 
@@ -95,18 +92,7 @@ public class UnusedSgAutoFix extends BaseFix {
 	@Override
 	public boolean isFixCandidate(String resourceId, String resourceType, Map<String, Object> clientMap, Map<String, String> ruleParams, Map<String, String> issue) throws AutoFixException {
 		String groupName = issue.get("groupname");
-		String deleteSgTag = ruleParams.get("deleteSgTag");
-		Map<String, String> tagMap = new HashMap();
-		if (!CommonUtils.doesAllHaveValue(deleteSgTag)) {
-			LOGGER.info("Missing rule param");
-			throw new InvalidInputException("Missing rule param");
-		}
-		if (!StringUtils.isNullOrEmpty(groupName) && groupName.startsWith(PacmanSdkConstants.PACBOT_CREATED_SG_DESC)) {
-			tagMap.put(deleteSgTag, "true");
-			ResourceTaggingManager.setEC2VolumeTag(resourceId, clientMap, tagMap);
-			return true;
-		}
-		return false;
+		return !StringUtils.isNullOrEmpty(groupName) && groupName.startsWith(PacmanSdkConstants.PACBOT_CREATED_SG_DESC);
 	}
 
 	
