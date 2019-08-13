@@ -98,6 +98,11 @@ public class CloudNotificationsRepositoryImpl implements CloudNotificationsRepos
 		} catch (Exception e) {
 			LOGGER.error("Error in getNotifications", e);
 		}
+		Comparator<Map<String, Object>> comp = (m1, m2) -> LocalDate
+                .parse(m2.get("startTime").toString().substring(0, 10), DateTimeFormatter.ISO_DATE)
+                .compareTo(LocalDate.parse(m1.get("startTime").toString().substring(0, 10), DateTimeFormatter.ISO_DATE));
+        Collections.sort(notifications, comp);
+
 		LOGGER.info("Exiting getNotifications");
 		return notifications.stream().distinct().collect(Collectors.toList());
 	}
