@@ -161,9 +161,6 @@ export class VulnerabilitiesComplianceComponent implements OnInit, OnDestroy {
       this.selectComplianceDropdown.updateCompliance(
         this.utils.arrayToObject(this.filters, 'filterkey', 'value')
       );
-      this.filterTagOptions = [];
-      this.filterTagLabels = [];
-      this.currentFilterType = null;
     }
     this.utils.clickClearDropdown();
   }
