@@ -778,6 +778,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
           this.filterTagOptions = response[0].response;
           this.filterTagLabels = _.map(response[0].response, 'name');
         });
+
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
       this.logger.log('error', error);
@@ -800,9 +801,6 @@ export class AssetListComponent implements OnInit, OnDestroy {
             return el.compareKey === this.currentFilterType.optionValue.toLowerCase().trim();
           }
         );
-        this.filterTagOptions = [];
-        this.filterTagLabels = [];
-        this.currentFilterType = null;
       }
       this.getUpdatedUrl();
       this.utils.clickClearDropdown();

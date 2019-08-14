@@ -775,29 +775,44 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
       }
 
       if (data['searchCategory'].toLowerCase() === 'assets') {
-        this.router.navigate(
-          ['pl', { outlets: { details: ['assets-details', resourceType, resourceID] } }],
-          {
-            queryParamsHandling: 'merge'
-          }
-        );
+
+          this.router.navigate(
+            ['../../../../assets/assets-details', resourceType, resourceID],
+            { relativeTo: this.activatedRoute, queryParamsHandling: 'merge' }
+          ).then(response => {
+            this.logger.log('info', 'Successfully navigated to asset details page: ' + response);
+          })
+          .catch(error => {
+            this.logger.log('error', 'Error in navigation - ' + error);
+          });
+
       } else if (data['searchCategory'].toLowerCase() === 'policy violations') {
-        this.router.navigate(
-          ['pl', { outlets: { details: ['issue-details', resourceID] } }],
-          {
+          this.router.navigate(['../../../../compliance/issue-details', resourceID], {
+            relativeTo: this.activatedRoute,
             queryParamsHandling: 'merge'
-          }
-        );
+          }).then(response => {
+            this.logger.log('info', 'Successfully navigated to issue details page: ' + response);
+          })
+          .catch(error => {
+            this.logger.log('error', 'Error in navigation - ' + error);
+          });
       } else if (data['searchCategory'].toLowerCase() === 'vulnerabilities') {
-        const apiTarget = { TypeAsset: 'vulnerable' };
-        const eachParams = { qid: resourceID }; // resourceID is qid here
-        let newParams = this.utils.makeFilterObj(eachParams);
-        newParams = Object.assign(newParams, apiTarget);
-        newParams['mandatory'] = 'qid';
-        this.router.navigate(['pl', { outlets: { details: ['asset-list'] } }], {
-          queryParams: newParams,
-          queryParamsHandling: 'merge'
-        });
+          const apiTarget = { TypeAsset: 'vulnerable' };
+          const eachParams = { qid: resourceID }; // resourceID is qid here
+          let newParams = this.utils.makeFilterObj(eachParams);
+          newParams = Object.assign(newParams, apiTarget);
+          newParams['mandatory'] = 'qid';
+          this.router.navigate(['../../../../', 'assets', 'asset-list'], {
+            relativeTo: this.activatedRoute,
+            queryParams: newParams,
+            queryParamsHandling: 'merge'
+          })
+          .then(response => {
+            this.logger.log('info', 'Successfully navigated to issue details page: ' + response);
+          })
+          .catch(error => {
+            this.logger.log('error', 'Error in navigation - ' + error);
+          });
       }
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);

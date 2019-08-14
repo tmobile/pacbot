@@ -1875,4 +1875,13 @@ img.trend-img-holder {
 .ngx-dropdown-list-container hr {
     display: none;
 }
+.available-items li:hover {
+    background: #e20074;
+    color: white !important;
+    transition: all 500ms ease;
+}
+.available-items li {
+    padding-top:.3em !important;
+    padding-bottom:.3em !important;
+}
 
