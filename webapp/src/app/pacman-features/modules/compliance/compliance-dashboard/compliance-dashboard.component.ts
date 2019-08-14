@@ -218,9 +218,6 @@ export class ComplianceDashboardComponent implements OnInit, OnDestroy {
                 }, (el) => {
                     return el.key === this.currentFilterType.optionName;
                 });
-                this.currentFilterType = null;
-                this.filterTagOptions = [];
-                this.filterTagLabels = [];
                 this.updateComponent();
             }
             this.utils.clickClearDropdown();
