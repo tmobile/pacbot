@@ -31,8 +31,8 @@
     text-align: left;
 }
 
-.tagging-instances-content /deep/ .table-cells {
-    max-width: 300px;
+.cost-table-wrapper /deep/ .table-cells {
+    max-width: 500px;
     width: 100% !important;
 }
 

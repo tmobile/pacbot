@@ -536,9 +536,6 @@ export class CertificatesComponent implements OnInit, OnDestroy {
                     (el) => {
                       return el.compareKey === this.currentFilterType.optionValue.toLowerCase().trim();
                     });
-                this.filterTagOptions = [];
-                this.filterTagLabels = [];
-                this.currentFilterType = null;
             }
             this.getUpdatedUrl();
             this.utils.clickClearDropdown();

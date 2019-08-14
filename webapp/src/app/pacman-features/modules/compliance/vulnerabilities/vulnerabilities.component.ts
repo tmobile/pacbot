@@ -720,9 +720,6 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
             return el.compareKey === this.currentFilterType.optionValue.toLowerCase().trim();
           }
         );
-        this.filterTagOptions = [];
-        this.filterTagLabels = [];
-        this.currentFilterType = null;
       }
       this.getUpdatedUrl();
       this.utils.clickClearDropdown();
