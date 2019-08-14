@@ -277,9 +277,10 @@ export class IssueListingComponent implements OnInit, OnDestroy {
   }
 
   changeFilterType(value) {
+
     try {
       this.currentFilterType = _.find(this.filterTypeOptions, {
-        optionName: value.id
+        optionName: value.value
       });
       this.issueFilterSubscription = this.issueFilterService
         .getFilters(
@@ -305,7 +306,7 @@ export class IssueListingComponent implements OnInit, OnDestroy {
   changeFilterTags(value) {
     try {
       if (this.currentFilterType) {
-        const filterTag = _.find(this.filterTagOptions, { name: value.id });
+        const filterTag = _.find(this.filterTagOptions, { name: value.value });
         this.utils.addOrReplaceElement(
           this.filters,
           {
@@ -318,9 +319,6 @@ export class IssueListingComponent implements OnInit, OnDestroy {
             return el.compareKey === this.currentFilterType.optionValue.toLowerCase().trim();
           }
         );
-        this.filterTagOptions = [];
-        this.filterTagLabels = [];
-        this.currentFilterType = null;
       }
       this.getUpdatedUrl();
       this.utils.clickClearDropdown();
@@ -644,10 +642,11 @@ export class IssueListingComponent implements OnInit, OnDestroy {
   }
 
   goToDetails(row) {
+
     try {
       this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
       if (row.col.toLowerCase() === 'resource id') {
-        const resourceType = row.row['Target Type'].text;
+        const resourceType = row.row['Asset Type'].text;
         const resourceId = encodeURIComponent(row.row['Resource ID'].text);
         this.router.navigate(
           ['../../', 'assets', 'assets-details', resourceType, resourceId],

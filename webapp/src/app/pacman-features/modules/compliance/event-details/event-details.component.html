@@ -1,0 +1,143 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+ <!-- <app-request-exception-modal *ngIf = "showExceptionalModal === true" [title]="titleVal"
+ [description] = "description" [cbprocessData] = "cbprocessData"
+ (emitClose)='showExceptionalModal = false;'>
+</app-request-exception-modal> -->
+<div class="floating-widgets-section flex flex-col issue-listing-wrapper">
+ <div class='layer-breadcrumb-wrapper flex flex-between flex-align-center no-shrink'>
+        <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
+ </div>
+ <div class="floating-widgets-header flex flex-between">
+     <div>
+        <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack();" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+        <app-back-navigation [pageTitle]="(descData || autofixData) ? (descData ? descData.event : autofixData.event) : ''"></app-back-navigation>
+     </div>
+     <!-- <div *ngIf='autofix && autofixData && autofixData.ruleId' class = "model-title flex flex-align-center" (click) = "requestNewException(); showExceptionalModal = true">
+         <div>Request Exception</div>
+         <div class = " flex flex-align-center">
+             <img class="arrow-modal" src="../assets/icons/left-arrow.svg" style="height: 1em;">
+         </div>
+     </div> -->
+ </div>
+ <div class="floating-widgets-container data-table-container">
+     <section class="main-container">
+         <div class="container">
+             <div class="relative desc-wrap" [class.full-height]="(autofix || global == true || global == 'true') && responseStatusInfo.loadState == 0" *ngIf='responseStatusInfo.loadState > -1'>
+                 <div class='loader' *ngIf='responseStatusInfo.loadState == 0'></div>
+                 <div [class.pad-bot]="autofix || global == true || global == 'true'" *ngIf='responseStatusInfo.loadState == 1 && (descData || autofixData)'>
+                     <div class="description-wrapper" *ngIf='descData ? descData.latestdescription : autofixData.ruleDescription'>
+                         <div class="text-header">Description</div>
+                         <div class="text-description highlight-link" [innerHTML]="descData ? descData.latestdescription : autofixData.ruleDescription"></div>
+                     </div>
+                     <app-autofix-schedule *ngIf='autofix && autofixData && autofixData.planItems && autofixData.planItems.length' [autofixData]='autofixData'></app-autofix-schedule>
+                     <div class="description-wrapper flex">
+                         <div class="desc-wrapper" *ngIf='descData ? descData.eventCategory : autofixData.eventCategory'>
+                             <div class="text-header">Category</div>
+                             <div class="flex flex-align-center each-cell-list-row">
+                                 <div class="text-description caps highlight-link">{{descData ? descData.eventCategory : autofixData.eventCategory}}</div>
+                                 <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="descData ? descData.eventCategory : autofixData.eventCategory" [iconSize]="'10px'" ></app-copy-element>
+                             </div>
+                         </div>
+                         <div class="desc-wrapper" *ngIf='descData ? descData.status : autofixData.status'>
+                             <div class="text-header">Status</div>
+                             <div class="flex flex-align-center each-cell-list-row">
+                                 <div class="text-description caps highlight-link">{{descData ? descData.status : autofixData.status}}</div>
+                                 <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="descData ? descData.status : autofixData.status" [iconSize]="'10px'" ></app-copy-element>
+                             </div>
+                         </div>
+                         <div class="desc-wrapper" *ngIf='descData ? descData.startTime : false'>
+                             <div class="text-header">Start Time</div>
+                             <div class="flex flex-align-center each-cell-list-row">
+                                 <div class="text-description highlight-link">{{descData.startTime | date: 'd MMM y, h:mm a' }}</div>
+                                 <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="descData.startTime | date: 'd MMM y, h:mm a'" [iconSize]="'10px'" ></app-copy-element>
+                             </div>
+                         </div>
+                         <div class="desc-wrapper" *ngIf='descData ? descData.endTime : false'>
+                             <div class="text-header">End Time</div>
+                             <div class="flex flex-align-center each-cell-list-row">
+                                 <div class="text-description highlight-link">{{descData.endTime | date: 'd MMM y, h:mm a'}}</div>
+                                 <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="descData.endTime | date: 'd MMM y, h:mm a'" [iconSize]="'10px'" ></app-copy-element>
+                             </div>
+                         </div>
+                         <div class="desc-wrapper" *ngIf='autofixData ? autofixData.startTime : false'>
+                             <div class="text-header">Start Time</div>
+                             <div class="flex flex-align-center each-cell-list-row">
+                                 <div class="text-description highlight-link">{{autofixData.startTime | date: 'd MMM y, h:mm a' }}</div>
+                                 <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="autofixData.startTime | date: 'd MMM y, h:mm a'" [iconSize]="'10px'" ></app-copy-element>
+                             </div>
+                         </div>
+                         <div class="desc-wrapper" *ngIf='autofixData ? autofixData.endTime : false'>
+                             <div class="text-header">End Time</div>
+                             <div class="flex flex-align-center each-cell-list-row">
+                                 <div class="text-description highlight-link">{{autofixData.endTime | date: 'd MMM y, h:mm a'}}</div>
+                                 <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="autofixData.endTime | date: 'd MMM y, h:mm a'" [iconSize]="'10px'" ></app-copy-element>
+                             </div>
+                         </div>
+                         <div class="desc-wrapper" *ngIf='autofixData && autofixData.ruleName'>
+                             <div class="text-header">Policy Name</div>
+                             <div class="flex flex-align-center each-cell-list-row">
+                                 <div class="text-description highlight-link">{{autofixData.ruleName}}</div>
+                                 <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="autofixData.ruleName" [iconSize]="'10px'" ></app-copy-element>
+                             </div>
+                         </div>
+                         <div class="desc-wrapper" *ngIf='autofixData && autofixData.ruleId'>
+                             <div class="text-header">Policy ID</div>
+                             <div class="flex flex-align-center each-cell-list-row">
+                                 <div (click)="goToLinkDetails('compliance', 'policy-details', autofixData.ruleId);" class="text-description highlight-link link">{{autofixData.ruleId}}</div>
+                                 <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="autofixData.ruleId" [iconSize]="'10px'" ></app-copy-element>
+                             </div>
+                         </div>
+                         <div class="desc-wrapper" *ngIf='autofixData && autofixData.issueId'>
+                             <div class="text-header">Issue ID</div>
+                             <div class="flex flex-align-center each-cell-list-row">
+                                 <div (click)="goToLinkDetails('compliance', 'issue-details', autofixData.issueId);" class="text-description highlight-link link">{{autofixData.issueId}}</div>
+                                 <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="autofixData.issueId" [iconSize]="'10px'" ></app-copy-element>
+                             </div>
+                         </div>
+                         <div class="desc-wrapper" *ngIf='autofixData && autofixData.resourceId && autofixData.resourceType'>
+                             <div class="text-header">Resource ID</div>
+                             <div class="flex flex-align-center each-cell-list-row">
+                                 <div (click)="goToLinkDetails('assets', 'assets-details', autofixData.resourceType, autofixData.resourceId);" class="text-description highlight-link link">{{autofixData.resourceId}}</div>
+                                 <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="autofixData.resourceId" [iconSize]="'10px'" ></app-copy-element>
+                             </div>
+                         </div>
+                     </div>
+                 </div>
+             </div>
+             <div class="widget-wrapper relative" *ngIf='!autofix' [class.hide]="global == true || global == 'true'">
+                 <div class="relative table-head-wrapper">
+                     <app-data-table
+                     [searchTextValues]='searchTxt'
+                     [searchPassed]='searchPassed'
+                     [errorValue]='responseStatusDetails.loadState'
+                     [parentName]='responseStatusDetails.errorMessage'
+                     [allColumns]='allColumns'
+                     [outerArr]='outerArr'
+                     [totalRows]='totalRows'
+                     [firstPaginator]='firstPaginator'
+                     [lastPaginator]='lastPaginator'
+                     [searchableHeader]='true'
+                     (searchRowTxt)='searchCalled($event)'
+                     (searchTriggerred)='callNewSearch()'
+                     [dataHead]="'Affected Resources'"
+                     (selectedRow)='goToDetails($event)'
+                     [tableIdAppend]="'14'">
+                     </app-data-table>
+                 </div>
+             </div>
+         </div>
+     </section>
+ </div>
+</div>

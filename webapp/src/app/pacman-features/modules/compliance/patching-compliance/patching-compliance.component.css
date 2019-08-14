@@ -37,6 +37,7 @@
     height: 4em;
     /*padding: 1.9em 1.8em;*/
     padding: 0em 1.8em;
+    align-items: center;
 }
 
 .floating-widgets-header h1 {

@@ -236,8 +236,6 @@ export class AccountManagementDetailsComponent implements OnInit, OnDestroy {
 
   register(myForm: NgForm) {
     this.errorValue = 0;
-    console.log('Registration successful');
-    console.log(myForm.value);
     // mark all fields as touched
     this.formService.markFormGroupTouched(this.accountManagementForm);
     if (this.accountManagementForm.valid) {

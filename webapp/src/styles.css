@@ -983,12 +983,8 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
 .drop-options {
     height: 2em;
     width: 11.25em;
-    border-radius: 3px;
-    background-color: #ffffff;
-    border: solid 1px #c3cbd7;
     position: relative;
     transition: 0.3s ease;
-    /*padding: 0 1em 0 0.6em;*/
     cursor: pointer;
     line-height: 1.8em;
 }
@@ -1009,11 +1005,8 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
     height: 2em;
     transition: 0.3s ease;
     width: 21em;
-    border-radius: 3px;
     background-color: #ffffff;
-    border: solid 1px #c3cbd7;
     position: relative;
-    /*padding: 0 1em 0 2.5em;*/
     cursor: pointer;
     line-height: 1.8em;
 }
@@ -1619,6 +1612,7 @@ input.common-cb:checked + label {
     display: flex;
     flex-direction: column;
     height: 100%;
+    flex-grow: 1;
 }
 
 @media print {
@@ -1863,3 +1857,31 @@ img.trend-img-holder {
 .tooltip div{
     padding: .4em 0;
 }
+.ngx-dropdown-button {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+}
+.ngx-dropdown-button span{
+    font-size: 12px;
+    color: #61615c;
+}
+.nsdicon-angle-down {
+    padding: 0 .2em;
+} 
+.selected-items {
+    display: none;
+}
+.ngx-dropdown-list-container hr {
+    display: none;
+}
+.available-items li:hover {
+    background: #e20074;
+    color: white !important;
+    transition: all 500ms ease;
+}
+.available-items li {
+    padding-top:.3em !important;
+    padding-bottom:.3em !important;
+}
+

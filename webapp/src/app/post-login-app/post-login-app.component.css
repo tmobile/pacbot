@@ -36,6 +36,11 @@
     /* top: 75px; */
 }
 
+.pacman-logged-in-section.is-offine {
+    filter: blur(1px) grayscale(0.9) sepia(0.2);
+    pointer-events: none;
+}
+
 .opaque-layer{
     position: fixed;
     display: none;
@@ -120,6 +125,10 @@
     display: none;
 }
 
+.pacman-logged-in-section.is-offine .next-level-routing-container.active .nextLevel-close {
+    pointer-events: none;
+}
+
 @media print {
     .post-login-header {
         display: none;
@@ -128,3 +137,4 @@
         padding-bottom: 0%
     }
 }
+

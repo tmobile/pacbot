@@ -88,11 +88,13 @@ nav .nav-icon:last-child {
 
 .user-options {
     position: absolute;
-    right: 100%;
     top: 150%;
-    transform: translateX(29%);
+    transform: translateX(10px);
+    -webkit-transition: all 0.5s;
     transition: all 0.5s;
     opacity: 1;
+    white-space: nowrap;
+    right: 0;
 }
 
 .user-option.visible {

@@ -18,7 +18,7 @@
     display: inline-block;
     border: 1px solid #ffffff;
     border-radius: 5px;
-    margin-left: 1.2em;
+    /* margin-left: 1.2em; */
     padding: .4em 1em;
     font-size: 1em;
     cursor: pointer;

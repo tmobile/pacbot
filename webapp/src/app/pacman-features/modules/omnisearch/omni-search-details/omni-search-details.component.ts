@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -22,8 +22,7 @@ import { Subscription } from 'rxjs/Subscription';
 import { AutorefreshService } from '../../../services/autorefresh.service';
 import { LoggerService } from '../../../../shared/services/logger.service';
 import { ErrorHandlingService } from '../../../../shared/services/error-handling.service';
-import { CommonResponseService } from '../../../../shared/services/common-response.service';
-import { PermissionGuardService } from '../../../../core/services/permission-guard.service';
+import { DatepickerOptions } from 'ng2-datepicker';
 import {
   trigger,
   state,
@@ -50,11 +49,11 @@ import {
     OmniSearchDataService,
     AutorefreshService,
     LoggerService,
-    ErrorHandlingService,
-    CommonResponseService
+    ErrorHandlingService
   ],
   animations: []
 })
+
 export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
   /*
     ***************  Component details  **********************
@@ -85,6 +84,11 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
   // autorefresh variables
   durationParams: any;
   autoRefresh: boolean;
+  datacoming;
+  options: DatepickerOptions = {
+    displayFormat: 'MMM D[,] YYYY',
+    minDate: new Date()
+  };
   autorefreshInterval;
   filterPresent = false; // -> To show and hide filter block
   stopPreviousDataSubscription = false; // -> this flag is used to cancel previous data subscription when multiple filter values are clicked
@@ -102,16 +106,8 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
   pageLoad = false; // -> To know if the page is loaded first time(reqired in cacheinf)
   searchClicked = true; // -> to detect if the search is clicked (based on this resultsDataSubscription is getting called)
   filterDataIsRequested = true; // whenever searchbtn is clicked we pass this variable to main filter to show loader
-  showExceptionModal = false; // Check to show Add Exception modal
-  showTransaction = false; // Remains True till exception/revoke api response received which is used to show loader in exception modal
-  showLoadComplete = false; // Remains true after exception api response received which is used to success/error check mark in exception modal
   user: FormGroup; // Formgroup added for mandatory fields to be verified.
-  endDate: any; // To display end date of exception on modal
-  actionComplete = false; // to check success/error exception api response.
-  search_card: any; // get current search tile object
-  showRevokeExceptionmodal = false; // Check to show Revoke Exception modal
-  adminAccess = false; // check for admin access
-  private exceptionSubscription: Subscription;
+
   constructor(
     private omniSearchDataService: OmniSearchDataService,
     private dataStore: DataCacheService,
@@ -123,10 +119,7 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
     private workflowService: WorkflowService,
     private router: Router,
     private utils: UtilsService,
-    private domainObservableService: DomainTypeObservableService,
-    private formBuilder: FormBuilder,
-    private commonResponseService: CommonResponseService,
-    private permissions: PermissionGuardService
+    private domainObservableService: DomainTypeObservableService
   ) {
     try {
       this.getRuleId();
@@ -173,7 +166,7 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
           this.autoRefresh === true ||
           this.autoRefresh.toString() === 'true'
         ) {
-          this.autorefreshInterval = setInterval(function() {
+          this.autorefreshInterval = setInterval(function () {
             this.fetchOmniSearchData();
           }, this.durationParams);
         }
@@ -184,8 +177,6 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
           Validators.minLength(1)
         ])
       });
-      // check for admin access
-      this.adminAccess = this.permissions.checkAdminPermission();
 
     } catch (error) {
       this.logger.log('error', error);
@@ -293,6 +284,9 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  // updateRequestPayload(rowDetails) {
+  //   this.cbArr = [{'Issue ID': {text: rowDetails._id }, 'Status': {text: rowDetails.issueStatus}}];
+  // }
   fetchOmniSearchData() {
     /**
      * Omnisearch subscription is divided into 2 parts
@@ -622,7 +616,7 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
     try {
       const searchData = data.results;
       const targetTypeImagePath = ICONS.awsResources;
-      searchData.forEach(function(eachObj) {
+      searchData.forEach(function (eachObj) {
         if (eachObj.hasOwnProperty('_entitytype')) {
           const targetType = eachObj['_entitytype'];
           if (targetTypeImagePath.hasOwnProperty(targetType)) {
@@ -686,7 +680,7 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
       }
 
       const queryData = {
-        filterValue: event.searchValue.text.toString(),
+        filterValue: event.searchValue.value.toString(),
         searchText: event.filterValue.toString()
       };
       // update the url with new searchtext and search category
@@ -698,7 +692,6 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
         }
       );
       /**
-       * This is a temporary fix by Trinanjan 08/04/2018
        * SearchText/searchboxValueSelected should get updated by getRuleId func
        * right now getruleid() is getting called after this.updatecomponent
        * so search is happening with updated values
@@ -782,32 +775,44 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
       }
 
       if (data['searchCategory'].toLowerCase() === 'assets') {
-        this.router.navigate(
-          ['../../../../assets/assets-details', resourceType, resourceID],
-          {
-            relativeTo: this.activatedRoute,
-            queryParamsHandling: 'merge'
-          }
-        );
+
+          this.router.navigate(
+            ['../../../../assets/assets-details', resourceType, resourceID],
+            { relativeTo: this.activatedRoute, queryParamsHandling: 'merge' }
+          ).then(response => {
+            this.logger.log('info', 'Successfully navigated to asset details page: ' + response);
+          })
+          .catch(error => {
+            this.logger.log('error', 'Error in navigation - ' + error);
+          });
+
       } else if (data['searchCategory'].toLowerCase() === 'policy violations') {
-        this.router.navigate(
-          ['../../../../compliance/issue-details', resourceID],
-          {
+          this.router.navigate(['../../../../compliance/issue-details', resourceID], {
             relativeTo: this.activatedRoute,
             queryParamsHandling: 'merge'
-          }
-        );
+          }).then(response => {
+            this.logger.log('info', 'Successfully navigated to issue details page: ' + response);
+          })
+          .catch(error => {
+            this.logger.log('error', 'Error in navigation - ' + error);
+          });
       } else if (data['searchCategory'].toLowerCase() === 'vulnerabilities') {
-        const apiTarget = { TypeAsset: 'vulnerable' };
-        const eachParams = { qid: resourceID }; // resourceID is qid here
-        let newParams = this.utils.makeFilterObj(eachParams);
-        newParams = Object.assign(newParams, apiTarget);
-        newParams['mandatory'] = 'qid';
-        this.router.navigate(['../../../../', 'assets', 'asset-list'], {
-          relativeTo: this.activatedRoute,
-          queryParams: newParams,
-          queryParamsHandling: 'merge'
-        });
+          const apiTarget = { TypeAsset: 'vulnerable' };
+          const eachParams = { qid: resourceID }; // resourceID is qid here
+          let newParams = this.utils.makeFilterObj(eachParams);
+          newParams = Object.assign(newParams, apiTarget);
+          newParams['mandatory'] = 'qid';
+          this.router.navigate(['../../../../', 'assets', 'asset-list'], {
+            relativeTo: this.activatedRoute,
+            queryParams: newParams,
+            queryParamsHandling: 'merge'
+          })
+          .then(response => {
+            this.logger.log('info', 'Successfully navigated to issue details page: ' + response);
+          })
+          .catch(error => {
+            this.logger.log('error', 'Error in navigation - ' + error);
+          });
       }
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
@@ -839,169 +844,6 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
   }
 
 
-/******************* Below functionality for adding and revoking issue exceptions ****************/
-/**
-   * @func setExceptionModal
-   * @desc this funtion is called on open and
-   * close of add exception modal to set and reset variables.
-   */
-  setExceptionModal(element): any {
-    try {
-      if (this.exceptionSubscription) {
-        this.exceptionSubscription.unsubscribe();
-      }
-      this.showExceptionModal = !this.showExceptionModal;
-      this.search_card = element;
-      this.showTransaction = false;
-      this.showLoadComplete = false;
-      this.user.reset();
-    } catch (e) {
-      this.logger.log('error', e);
-    }
-  }
-
-  /**
-   * @func setRevokeExceptionModal
-   * @desc this funtion is called on open and
-   * close of revoke exception modal to set and reset variables.
-   */
-  setRevokeExceptionModal(element): any {
-    try {
-      if (this.exceptionSubscription) {
-        this.exceptionSubscription.unsubscribe();
-      }
-      this.showLoadComplete = false;
-      this.search_card = element;
-      this.showRevokeExceptionmodal = !this.showRevokeExceptionmodal;
-      this.showTransaction = false;
-      this.user.reset();
-    } catch (e) {
-      this.logger.log('error', e);
-    }
-  }
-
-/**
-   * @func getDateData
-   * @desc this funtion is called to set end date.
-   */
-  getDateData(date: any): any {
-    try {
-      this.endDate = date;
-    } catch (e) {
-      this.logger.log('error', e);
-    }
-  }
-
-/**
-   * @func onExceptionSubmit
-   * @desc this funtion adds exception by api call with valid reason
-   * and end date selected.
-   */
-  onExceptionSubmit({ value, valid }: { value; valid: boolean }) {
-    try {
-      this.showTransaction = true;
-      const date = new Date();
-      const endDateValue = this.utils.getUTCDate(this.endDate);
-      const grantedDateValue = this.utils.getUTCDate(date);
-      const payload = {
-        createdBy: this.dataStore.getUserDetailsValue().getUserId(),
-        exceptionEndDate: endDateValue,
-        exceptionGrantedDate: grantedDateValue,
-        exceptionReason: value.name,
-        issueIds: [ this.search_card._id ]
-      };
-      const exceptionUrl = environment.addIssueException.url;
-      const exceptionMethod = environment.addIssueException.method;
-      this.exceptionSubscription = this.commonResponseService
-        .getData(exceptionUrl, exceptionMethod, payload, {})
-        .subscribe(
-          response => {
-            this.actionComplete = true;
-            this.updateExceptionPostResponse();
-          },
-          error => {
-            this.actionComplete = false;
-            this.updateExceptionPostResponse();
-          }
-        );
-    } catch (e) {
-      this.logger.log('error', e);
-    }
-  }
-
-/**
-   * @func updateExceptionPostResponse
-   * @desc this funtion is called after api response of add exception.
-   */
-  updateExceptionPostResponse() {
-    try {
-      this.showLoadComplete = true;
-      // show modal for 5s after receiving response
-      setTimeout(() => {
-        this.showExceptionModal = false;
-        this.showTransaction = false;
-        this.showLoadComplete = false;
-        }, 5000);
-      if (this.actionComplete) {
-        this.search_card['issueStatus'] = 'exempted';
-      }
-      this.user.reset();
-    } catch (error) {
-      this.logger.log('error', error);
-    }
-  }
-
-/**
-   * @func revokeException
-   * @desc this funtion revokes added exception by api call.
-   */
-  revokeException(element) {
-    try {
-      this.showTransaction = true;
-      const Url = environment.revokeIssueException.url;
-      const Method = environment.revokeIssueException.method;
-      const payload = {
-        issueIds: [element._id]
-      };
-      this.exceptionSubscription = this.commonResponseService
-        .getData(Url, Method, payload, {})
-        .subscribe(
-          response => {
-              this.actionComplete = false;
-              this.revokePostExceptionResponse();
-          },
-          error => {
-            this.actionComplete = true;
-            this.revokePostExceptionResponse();
-          }
-        );
-    } catch (e) {
-      this.logger.log('error', e);
-    }
-  }
-
-/**
-   * @func revokePostExceptionResponse
-   * @desc this funtion called after revoke api response received.
-   */
-  revokePostExceptionResponse() {
-    try {
-      this.showLoadComplete = true;
-      // show modal for 5s after receiving response
-      setTimeout(() => {
-        this.showRevokeExceptionmodal = false;
-        this.showTransaction = false;
-        this.showLoadComplete = false;
-      }, 5000);
-      if (!this.actionComplete) {
-        this.search_card['issueStatus'] = 'open';
-      }
-    } catch (error) {
-      this.logger.log('error', error);
-    }
-  }
-
-
   ngOnDestroy() {
     // unsubscribing on ngOnDestroy
     try {
@@ -1025,9 +867,6 @@ export class OmniSearchDetailsComponent implements OnInit, OnDestroy {
       }
       if (this.omniSearchCategorySubscription) {
         this.omniSearchCategorySubscription.unsubscribe();
-      }
-      if (this.exceptionSubscription) {
-        this.exceptionSubscription.unsubscribe();
       }
     } catch (error) {
       this.logger.log('error', error);

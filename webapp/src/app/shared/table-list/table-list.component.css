@@ -1,0 +1,224 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+.table-container{
+    width: 100% ;
+    border-collapse: separate;
+    width: 100%;
+    border-left: 2em solid #FBFBFB;
+    border-right: 2em solid #fbfbfb;
+}
+
+.table-heading{
+    border-bottom: 1px solid #d6e2f1;
+    font-size: .84em;
+}
+.table-heading th{
+    border-bottom: 1px solid #d6e2f1;
+    text-align: initial;
+    max-width: 30em;
+    text-overflow: ellipsis;
+    font-family: ex2-bold;
+    letter-spacing: .3px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-transform: capitalize;
+    position: sticky;
+    top:0;
+    padding: 2.5em 1.1em .5em;
+    background: #fbfbfb;
+}
+.table-heading th:first-child{
+    box-shadow: -5px 0 0 0 #fbfbfb;
+}
+.table-heading th:last-child{
+    box-shadow: 5px 0 0 0 #fbfbfb;
+}
+.container{
+    padding-bottom: 1em;
+    height: 100%;
+    overflow: auto;
+}
+
+.table-body{
+    box-shadow: 0 1px 3px 0 rgba(0,0,0,.15);
+    background: #fff;
+}
+.table-body td{
+    padding: 1.1em;
+    text-align: initial;
+    max-width: 30em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+.inner-element{
+    transition: .5s;
+    padding: 2em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.inside-table{
+    width:100%;
+}
+.space-element{
+    padding:.5em;
+}
+.expand-element{
+    box-shadow: 0px 2px 3px 0 rgba(0,0,0,.15);
+    border-top: 1px solid #d6e2f1;
+    background: #fff;
+    transition: .8s;
+}
+
+.list-sortable-arrow:before,
+.list-sortable-arrow:after {
+    content: "";
+    border-width: 0 4px 4px;
+    border-left: 3px solid transparent;
+    border-right: 3px solid transparent;
+    border-style: solid;
+    border-color: #999 transparent;
+    visibility: visible;
+    left: 5px;
+    top: 50%;
+    position: absolute;
+    transition: 0.28s ease;
+}
+
+.list-sortable-arrow:before {
+    border-top: 0;
+    border-bottom: 3px solid #999;
+    margin-top: -4px;
+}
+
+.list-sortable-arrow:after {
+    border-bottom: 0;
+    border-top: 3px solid #999;
+    margin-top: 1px;
+}
+
+.up-arr-shown.list-sortable-arrow:after {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.down-arr-shown.list-sortable-arrow:before {
+    opacity: 0;
+    visibility: hidden;
+}
+
+.head-cells::selection {
+    background-color: transparent;
+}
+.head-cells{
+    cursor: pointer;
+}
+.pk-search-container {
+    background-color: #eff3f6;
+    padding: 0.66em 0em .66em 1.6em;
+    border: 1px solid #eaeaea;
+    flex-shrink: 0;
+}
+.input-bar {
+    padding-right: 1.66em;
+    position: relative;
+}
+
+.input-bar input {
+    width: 21.25em;
+    height: 2.1em;
+    border-radius: 3px;
+    background-color: #ffffff;
+    border: solid 1px #c3cbd7;
+    padding: 0 1em 0em 2.2em;
+    font-size: 0.87em;
+    color: #5a616b;
+    transition: 0.3s ease;
+}
+
+.input-bar input:focus {
+    width: 31.25em;
+}
+
+.input-bar input:focus+.search-icon {
+    transform: rotateZ(360deg);
+}
+.input-bar input:focus+.search-icon {
+    transform: rotateZ(360deg);
+}
+
+.search-icon img {
+    height: 1em;
+    width: 1em;
+}
+
+.search-icon {
+    top: 0;
+    left: 0.5em;
+    bottom: 0;
+    margin: auto 0;
+    pointer-events: none;
+    transition: 0.3s ease;
+}
+.input-bar input:focus+.search-icon {
+    transform: rotateZ(360deg);
+}
+
+.search-icon img {
+    height: 1em;
+    width: 1em;
+}
+
+.select-filter-btn {
+    height: 1em;
+    width: 1em;
+    border: 1px solid #e4e4e4;
+    border-radius: 2px;
+    margin-right: 0.65em;
+    cursor: pointer;
+}
+.right-text{
+    padding: 0 2em;
+    font-size: 1.08em;;
+}
+.right-number{
+ font-family: ex2-bold;
+}
+.cursor-element{
+    cursor: pointer;
+}
+
+.help-icon {
+    margin-left: 3px;
+    vertical-align: text-bottom;
+}
+
+.help-icon:hover {
+    color: magenta;
+}
+.copy-object {
+    pointer-events: none;
+    transition: 0.2s ease;
+    opacity: 0;
+}
+
+.each-cell-list-row:hover .copy-object {
+    opacity: 1;
+    pointer-events: auto;
+}

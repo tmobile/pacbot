@@ -612,7 +612,6 @@ export class AssetListComponent implements OnInit, OnDestroy {
         this.outerArr = this.outerArr.splice(halfLength);
       }
       this.allColumns = Object.keys(totalVariablesObj);
-      console.log(totalVariablesObj);
 
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
@@ -624,8 +623,8 @@ export class AssetListComponent implements OnInit, OnDestroy {
     try {
       this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
       let resourceType;
-      if (row.row['Target Type']) {
-        resourceType = row.row['Target Type'].text;
+      if (row.row['Asset Type']) {
+        resourceType = row.row['Asset Type'].text;
       }
 
       if ( this.urlID && (this.urlID.toLowerCase() === 'pull-request-trend' || this.urlID.toLowerCase() === 'pull-request-age' || this.urlID.toLowerCase() === 'branching-strategy') ) {
@@ -762,7 +761,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
   changeFilterType(value) {
     try {
       this.currentFilterType = _.find(this.filterTypeOptions, {
-        optionName: value.id
+        optionName: value.value
       });
       this.issueFilterSubscription = this.issueFilterService
         .getFilters(
@@ -779,6 +778,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
           this.filterTagOptions = response[0].response;
           this.filterTagLabels = _.map(response[0].response, 'name');
         });
+
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
       this.logger.log('error', error);
@@ -788,7 +788,7 @@ export class AssetListComponent implements OnInit, OnDestroy {
   changeFilterTags(value) {
     try {
       if (this.currentFilterType) {
-        const filterTag = _.find(this.filterTagOptions, { name: value.id });
+        const filterTag = _.find(this.filterTagOptions, { name: value.value });
         this.utils.addOrReplaceElement(
           this.filters,
           {
@@ -801,9 +801,6 @@ export class AssetListComponent implements OnInit, OnDestroy {
             return el.compareKey === this.currentFilterType.optionValue.toLowerCase().trim();
           }
         );
-        this.filterTagOptions = [];
-        this.filterTagLabels = [];
-        this.currentFilterType = null;
       }
       this.getUpdatedUrl();
       this.utils.clickClearDropdown();

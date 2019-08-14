@@ -762,8 +762,8 @@ public class FileManager {
 	public static void generateS3Files(Map<String, List<BucketVH>> bucketMap) throws IOException {
 		String fieldNames;
 		String keys;
-		fieldNames = "bucket.Name`bucket.CreationDate`bucket.owner.displayname`bucket.owner.id`versionStatus`mfaDelete`location`bucketEncryp`websiteConfiguration";
-		keys = "discoverydate`accountid`accountname`name`creationdate`ownerdisplayname`ownerid`versionstatus`mfadelete`region`bucketencryp`websiteConfiguration";
+		fieldNames = "bucket.Name`bucket.CreationDate`bucket.owner.displayname`bucket.owner.id`versionStatus`mfaDelete`location`bucketEncryp`websiteConfiguration`isLoggingEnabled`destinationBucketName`logFilePrefix";
+		keys = "discoverydate`accountid`accountname`name`creationdate`ownerdisplayname`ownerid`versionstatus`mfadelete`region`bucketencryp`websiteConfiguration`isLoggingEnabled`destinationBucketName`logFilePrefix";
 		FileGenerator.generateJson(bucketMap, fieldNames, "aws-s3.data",keys);
 		fieldNames = "location`bucket.Name`tags.key`tags.value";
 		keys = "discoverydate`accountid`accountname`region`name`key`value";

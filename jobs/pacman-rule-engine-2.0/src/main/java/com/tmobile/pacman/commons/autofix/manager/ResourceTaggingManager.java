@@ -239,7 +239,7 @@ public class ResourceTaggingManager {
         createTagsRequest.setTags(pacTag.entrySet().stream().map(t -> new Tag(t.getKey(), t.getValue()))
                 .collect(Collectors.toList()));
         try {
-            CreateTagsResult createTagsResult = ec2Client.createTags(createTagsRequest);
+            ec2Client.createTags(createTagsRequest);
             return Boolean.TRUE;
         } catch (AmazonServiceException ase) {
             logger.error("error tagging ec2 - > " + resourceId, ase);
@@ -340,6 +340,13 @@ public class ResourceTaggingManager {
             return "";
         }
         case REDSHIFT: {
+            return "";
+        }
+        
+        case RDS: {
+            return "";
+        }
+        case ELASTICSEARCH: {
             return "";
         }
 

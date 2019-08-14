@@ -1,0 +1,77 @@
+<!-- *
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ * -->
+<div class="flex flex-col full-height" *ngIf = 'errorValue === 1'>
+  <div *ngIf="DataObject.enableSearchandDownload" class='flex flex-align-center flex-between pk-search-container'>
+      <div *ngIf=" DataObject.enableSearchandDownload && DataObject.searchBar"   class='search-filter-wrap flex flex-align-center'>
+        <div class='input-bar'>
+            <input #tableInp placeholder="Search" type='text' [(ngModel)]='searchTxt' >
+            <div class='absolute search-icon flex flex-align-center'><img src='../assets/png/search.png'></div>
+        </div>
+      </div>
+      <div class="flex flex-align-center">
+        <div *ngIf=" DataObject.enableSearchandDownload && DataObject.lengthOfListText" class="right-text">Total of <span class="right-number">{{(DataObject.tableData | searchFilter:searchTxt)?.length}}  </span>Policies</div>
+        <img *ngIf=" DataObject.enableSearchandDownload && DataObject.downloadCsvIcon"  class="pointer" (click)="downloadCSV()" style="height: 1.4em;" src='../assets/icons/download-magenta.svg'>
+      </div>
+  </div>
+  <div class="container">
+    <table cellspacing="0" cellpadding="0" class="table-container" (click)="$event.stopPropagation()">
+        <tr class="table-heading" *ngIf="sortArr" >
+          <th *ngFor="let list of DataObject.header;let show= index ">
+            <div (click)='sortArr[show].showUp = !sortArr[show].showUp; headerClicked(show, list);'
+            class="head-cells">
+            {{list}}<img *ngIf="headerWithHelp(list)" (click)="helpClicked($event, list)" class="help-icon" src="../../../assets/icons/question.svg" title="What is {{list}}"/>
+            <span [class.up-arr-shown]='sortArr[show].showUp == true' [class.down-arr-shown]='sortArr[show].showUp == false' class="list-sortable-arrow relative"></span>
+            </div>
+          </th>
+        </tr>
+        <tr>
+          <td [attr.colspan]=" DataObject.header? DataObject.header.length : 0" class="space-element"></td>
+        </tr>
+      <ng-container *ngFor="let item of DataObject.tableData | searchFilter:searchTxt | orderBy : { property: headerColName, direction: direction, childProperty: 'valText'}; let eachIndex = index; let l = count">
+        <tr class="table-body">
+          <ng-container *ngFor="let list of objectKeys(item);let x = index;let isLast = last;let i = index;">
+            <td *ngIf="displayListItem(list) && item[list].text != undefined"
+              (click)="DataObject.detailsView && (item[list].text) && isLast ? getToggle(eachIndex) :(DataObject.firstRowClick && (item[list].text) && clickableColumn(list) ? getRuleClick(item, list) : '' ) "
+              [title]="item[list].text"
+              [ngClass]="[DataObject.detailsView &&  (item[list].text !== '') && isLast ? 'cursor-element' : '',  DataObject.firstRowClick && (item[list].text !== '') && clickableColumn(list) ? 'cursor-element' : '']"
+              [style.color]="(!item[list].text && item[list].text !== 0 && item[list].text !== false) ? '#9b9b9b' : (clickableColumn(list) ? '#ed0074':'black')" >
+              <img *ngIf="item[list].display_svg; else showText" [src]="'../../../assets/icons/' + item[list].display_svg"/>
+              <ng-template #showText>
+                <div class="flex flex-align-center each-cell-list-row ">
+                    <span [ngClass]="{'capitalize': list==='entity type'}">{{ (!item[list].text && item[list].text !== 0 && item[list].text !== false) ? 'No Data' : item[list].text }}</span>
+                    <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="(!item[list].text && item[list].text !== 0 && item[list].text !== false) ? 'No Data' : item[list].text" [iconSize]="'10px'" ></app-copy-element>
+                </div>
+              </ng-template>
+            </td>
+          </ng-container>
+        </tr>
+        <tr *ngIf="eachIndex === selectedValue && checkValue "  class="expand-element" >
+            <td [attr.colspan]=" DataObject.header? DataObject.header.length : 0" class="inner-element">
+            <p>Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print, graphic or web designs</p>
+            </td>
+          </tr>
+          <tr>
+            <td [attr.colspan]=" DataObject.header? DataObject.header.length : 0" class="space-element"></td>
+          </tr>
+      </ng-container>
+    </table>
+  </div>
+</div>
+<article class='center error_handling' *ngIf='errorValue == -1 && errorMessage'>
+    <div class="error_msg">
+        <app-error-message [selectedValue]="errorMessage"></app-error-message>
+    </div>
+</article>
+<!-- Table Loader -->
+<div *ngIf='errorValue == 0' class='loader absolute'></div>

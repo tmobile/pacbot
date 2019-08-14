@@ -40,10 +40,8 @@ class SubmitAndRuleEngineJobDefinition(BatchJobDefinitionResource):
 
     def post_terraform_destroy(self):
         deregister_task_definition(
-            Settings.AWS_ACCESS_KEY,
-            Settings.AWS_SECRET_KEY,
-            Settings.AWS_REGION,
-            self.get_input_attr('name')
+            self.get_input_attr('name'),
+            Settings.AWS_AUTH_CRED
         )
 
     def pre_terraform_destroy(self):

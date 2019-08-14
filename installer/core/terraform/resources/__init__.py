@@ -1,5 +1,5 @@
 from core.config import Settings
-from core.terraform.utils import get_terraform_resource_path
+from core.terraform.utils import get_terraform_resource_path, get_all_resource_tags
 from core.terraform.utils import get_formatted_resource_attr_value, get_resource_created_status_op_file
 from core.log import SysLog
 from abc import ABCMeta
@@ -373,9 +373,7 @@ class TerraformResource(BaseTerraformResource, metaclass=ABCMeta):
     terraform_type = 'resource'
     MANDATORY_OUTPUT = 'id'
     tf_file_extension = 'tf'
-    tags = [
-        {Settings.RESOURCE_DEFAULT_TAG_NAME: Settings.RESOURCE_DEFAULT_TAG_VALUE}
-    ]
+    tags = get_all_resource_tags()
 
     def check_exists_before(self, input, outputs):
         """

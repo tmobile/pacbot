@@ -14,7 +14,7 @@
 
 import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs/Subscription';
-import { ToastObservableService } from '../../post-login-app/common/services/toast-observable.service';
+import { ToastObservableService } from '../services/toast-observable.service';
 
 @Component({
   selector: 'app-toast-notification',
@@ -22,11 +22,12 @@ import { ToastObservableService } from '../../post-login-app/common/services/toa
   styleUrls: ['./toast-notification.component.css']
 })
 export class ToastNotificationComponent implements OnInit, OnDestroy {
-  constructor(private toastObservableService: ToastObservableService) {}
+  constructor(private toastObservableService: ToastObservableService) { }
 
   @Input() toastState = 0;
   @Input() toastMsg = '';
-
+  toastHeading;
+  toastImg;
   toastSubscription: Subscription;
   private timeoutCall;
 
@@ -35,18 +36,24 @@ export class ToastNotificationComponent implements OnInit, OnDestroy {
       .getMessage()
       .subscribe(obj => {
         clearTimeout(this.timeoutCall);
-
+        this.toastImg = obj.image;
         this.toastMsg = obj.msg;
+        this.toastHeading = obj.category;
         this.toastState = 1;
         const x = this;
 
         if (!obj.duration || obj.duration < 3 || isNaN(obj.duration)) {
-          this.timeoutCall = setTimeout(function() {
+          this.timeoutCall = setTimeout(function () {
             x.toastState = 0;
+            x.toastHeading = undefined;
+            x.toastMsg = undefined;
+            x.toastImg = undefined;
           }, 3000);
         } else {
-          this.timeoutCall = setTimeout(function() {
+          this.timeoutCall = setTimeout(function () {
             x.toastState = 0;
+            x.toastHeading = undefined;
+            x.toastMsg = undefined;
           }, obj.duration * 1000);
         }
       });
