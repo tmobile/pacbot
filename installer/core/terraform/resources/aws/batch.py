@@ -52,9 +52,7 @@ class BatchComputeEnvironmentResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = batch.check_compute_env_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details
 
@@ -99,9 +97,7 @@ class BatchJobDefinitionResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = batch.check_job_definition_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details
 
@@ -140,8 +136,6 @@ class BatchJobQueueResource(TerraformResource):
         if not self.resource_in_tf_output(tf_outputs):
             exists = batch.check_job_queue_exists(
                 checked_details['value'],
-                input.aws_access_key,
-                input.aws_secret_key,
-                input.aws_region)
+                input.AWS_AUTH_CRED)
 
         return exists, checked_details

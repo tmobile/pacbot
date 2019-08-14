@@ -10,37 +10,37 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.amazonaws.AmazonServiceException;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.ec2.AmazonEC2;
 import com.amazonaws.services.ec2.model.AuthorizeSecurityGroupIngressRequest;
 import com.amazonaws.services.ec2.model.CreateSecurityGroupRequest;
 import com.amazonaws.services.ec2.model.CreateSecurityGroupResult;
+import com.amazonaws.services.ec2.model.CreateTagsRequest;
 import com.amazonaws.services.ec2.model.DeleteSecurityGroupRequest;
 import com.amazonaws.services.ec2.model.DescribeInstancesRequest;
 import com.amazonaws.services.ec2.model.DescribeInstancesResult;
-import com.amazonaws.services.ec2.model.DescribeRouteTablesRequest;
-import com.amazonaws.services.ec2.model.DescribeRouteTablesResult;
 import com.amazonaws.services.ec2.model.DescribeSecurityGroupsRequest;
 import com.amazonaws.services.ec2.model.DescribeSecurityGroupsResult;
-import com.amazonaws.services.ec2.model.Filter;
 import com.amazonaws.services.ec2.model.Instance;
 import com.amazonaws.services.ec2.model.IpPermission;
 import com.amazonaws.services.ec2.model.IpRange;
 import com.amazonaws.services.ec2.model.Ipv6Range;
 import com.amazonaws.services.ec2.model.ModifyInstanceAttributeRequest;
 import com.amazonaws.services.ec2.model.Reservation;
-import com.amazonaws.services.ec2.model.Route;
-import com.amazonaws.services.ec2.model.RouteTable;
 import com.amazonaws.services.ec2.model.SecurityGroup;
+import com.amazonaws.services.ec2.model.Tag;
 import com.amazonaws.services.ec2.model.UserIdGroupPair;
 import com.amazonaws.services.elasticloadbalancing.AmazonElasticLoadBalancing;
 import com.amazonaws.services.elasticloadbalancing.model.ApplySecurityGroupsToLoadBalancerRequest;
@@ -49,6 +49,12 @@ import com.amazonaws.services.elasticloadbalancingv2.model.DescribeLoadBalancers
 import com.amazonaws.services.elasticloadbalancingv2.model.DescribeLoadBalancersResult;
 import com.amazonaws.services.elasticloadbalancingv2.model.LoadBalancer;
 import com.amazonaws.services.elasticloadbalancingv2.model.SetSecurityGroupsRequest;
+import com.amazonaws.services.elasticsearch.AWSElasticsearch;
+import com.amazonaws.services.elasticsearch.model.DescribeElasticsearchDomainRequest;
+import com.amazonaws.services.elasticsearch.model.DescribeElasticsearchDomainResult;
+import com.amazonaws.services.elasticsearch.model.ElasticsearchDomainStatus;
+import com.amazonaws.services.elasticsearch.model.UpdateElasticsearchDomainConfigRequest;
+import com.amazonaws.services.elasticsearch.model.VPCOptions;
 import com.amazonaws.services.rds.AmazonRDS;
 import com.amazonaws.services.rds.model.DBInstance;
 import com.amazonaws.services.rds.model.DescribeDBInstancesRequest;
@@ -59,7 +65,6 @@ import com.amazonaws.services.redshift.model.Cluster;
 import com.amazonaws.services.redshift.model.DescribeClustersRequest;
 import com.amazonaws.services.redshift.model.DescribeClustersResult;
 import com.amazonaws.services.redshift.model.ModifyClusterRequest;
-import com.amazonaws.util.StringUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -71,6 +76,7 @@ import com.tmobile.pacman.commons.aws.clients.AWSClientManager;
 import com.tmobile.pacman.commons.aws.clients.impl.AWSClientManagerImpl;
 import com.tmobile.pacman.commons.exception.RuleExecutionFailedExeption;
 import com.tmobile.pacman.commons.exception.UnableToCreateClientException;
+import com.tmobile.pacman.util.CommonUtils;
 
 public class PublicAccessAutoFix {
 
@@ -194,8 +200,16 @@ public class PublicAccessAutoFix {
 				
 				if(ipPermission.getIpv4Ranges().isEmpty() && ipPermission.getIpv6Ranges().isEmpty() ){
 					for (UserIdGroupPair usergroupPair : ipPermission.getUserIdGroupPairs()) {
-						ipPermission.setUserIdGroupPairs(Arrays.asList(usergroupPair));
-						ipPermissionstobeAdded.add(ipPermission);
+						IpPermission  requiredIpPermission = new IpPermission();
+						requiredIpPermission.setFromPort(ipPermission.getFromPort());
+						requiredIpPermission.setToPort(ipPermission.getToPort());
+						requiredIpPermission.setIpProtocol(ipPermission.getIpProtocol());
+						requiredIpPermission.setIpRanges(ipPermission.getIpRanges());
+						requiredIpPermission.setIpv4Ranges(ipPermission.getIpv4Ranges());
+						requiredIpPermission.setIpv6Ranges(ipPermission.getIpv6Ranges());
+						requiredIpPermission.setUserIdGroupPairs(Arrays.asList(usergroupPair));
+						requiredIpPermission.setPrefixListIds(ipPermission.getPrefixListIds());
+						ipPermissionstobeAdded.add(requiredIpPermission);
 					}
 				}
 
@@ -291,7 +305,18 @@ public class PublicAccessAutoFix {
                 }
 				authRequest.setIpPermissions(ipPermissionsToBeAdded);
 				ec2Client.authorizeSecurityGroupIngress(authRequest);
-
+				//adding tag
+				String deleteSgTag = CommonUtils.getPropValue("deleteSgTag");
+				Map<String, String> tagMap = new HashMap();
+				tagMap.put(deleteSgTag, "true");
+				CreateTagsRequest createTagsRequest = new CreateTagsRequest(Arrays.asList(createdSecurityGroupId), new ArrayList<>());
+				createTagsRequest.setTags(tagMap.entrySet().stream().map(t -> new Tag(t.getKey(), t.getValue())).collect(Collectors.toList()));
+				try {
+					ec2Client.createTags(createTagsRequest);
+				} catch (AmazonServiceException ase) {
+					logger.error("error tagging sg - > " + resourceId, ase);
+					throw ase;
+				}
 			}
 
 		} catch (Exception e) {
@@ -516,4 +541,211 @@ public class PublicAccessAutoFix {
          }
          return applysgFlg;
      }
+    
+    /**
+     * Gets the DB instance for rds db resource.
+     *
+     * @param clientMap the client map
+     * @param resourceId the resource id
+     * @return the DB instance for rds db resource
+     * @throws Exception the exception
+     */
+    public static List<DBInstance> getDBInstanceForRdsDbResource(Map<String,Object> clientMap,String resourceId) throws Exception {
+        AmazonRDS amazonRDS = (AmazonRDS) clientMap.get("client");
+        DescribeDBInstancesRequest instancesRequest = new DescribeDBInstancesRequest();
+        instancesRequest.setDBInstanceIdentifier(resourceId);
+        DescribeDBInstancesResult dbInstancesResult = amazonRDS.describeDBInstances(instancesRequest);
+        
+        return dbInstancesResult.getDBInstances();
+    
+    }
+    
+    /**
+     * Apply security groups to rds db.
+     *
+     * @param amazonRDS the amazon RDS
+     * @param sgIdToBeAttached the sg id to be attached
+     * @param resourceId the resource id
+     * @return true, if successful
+     * @throws Exception the exception
+     */
+    public static boolean applySecurityGroupsToRdsDb(AmazonRDS amazonRDS, Set<String> sgIdToBeAttached, String resourceId) throws Exception {
+        boolean applysgFlg = false;
+        try {
+        	ModifyDBInstanceRequest instanceRequest = new ModifyDBInstanceRequest();
+        	instanceRequest.setDBInstanceIdentifier(resourceId);
+        	instanceRequest.setVpcSecurityGroupIds(sgIdToBeAttached);
+        	amazonRDS.modifyDBInstance(instanceRequest);
+            applysgFlg = true;
+        } catch (Exception e) {
+            logger.error("Apply Security Group operation failed for rdsdb {}" , resourceId );
+         throw new Exception(e);
+        }
+        return applysgFlg;
+    }
+    
+    /**
+     * Delete security group.
+     *
+     * @param resourceId the resource id
+     * @param ec2Client the ec 2 client
+     * @return the boolean
+     * @throws Exception the exception
+     */
+    public static Boolean deleteSecurityGroup(String resourceId,AmazonEC2 ec2Client) throws Exception {
+        DeleteSecurityGroupRequest deleteSecurityGroupRequest = new DeleteSecurityGroupRequest();
+        deleteSecurityGroupRequest.setGroupId(resourceId);
+        ec2Client.deleteSecurityGroup(deleteSecurityGroupRequest);
+        return true;
+    }
+    
+    /**
+ 	 * Gets the domain status for es resource.
+ 	 *
+ 	 * @param clientMap the client map
+ 	 * @param resourceId the resource id
+ 	 * @return the domain status for es resource
+ 	 * @throws Exception the exception
+ 	 */
+ 	public static ElasticsearchDomainStatus getDomainStatusForEsResource(Map<String,Object> clientMap,String resourceId) throws Exception {
+		 AWSElasticsearch awsElasticsearch =(AWSElasticsearch) clientMap.get("client");
+		 DescribeElasticsearchDomainRequest request = new DescribeElasticsearchDomainRequest();
+		 request.setDomainName(resourceId);
+		 DescribeElasticsearchDomainResult result = awsElasticsearch.describeElasticsearchDomain(request);
+		 return result.getDomainStatus();
+	     
+	    }
+ 	
+	/**
+	 * Checks if is es having public access.
+	 *
+	 * @param jsonArray the json array
+	 * @param cidrIp the cidr ip
+	 * @return true, if is es having public access
+	 */
+	public static boolean isEsHavingPublicAccess(JsonArray jsonArray,String cidrIp) {
+		boolean isPublicAccess = false;
+		JsonObject conditionJsonObject = new JsonObject();
+		JsonArray conditionJsonArray = new JsonArray();
+		String conditionStr = null;
+		JsonObject principal = new JsonObject();
+		String effect = null;
+		String principalStr = null;
+		String aws = null;
+		if (jsonArray.size() > 0) {
+			for (int i = 0; i < jsonArray.size(); i++) {
+				JsonObject firstObject = (JsonObject) jsonArray.get(i);
+
+				if (firstObject.has("Principal") && firstObject.get("Principal").isJsonObject()) {
+					principal = firstObject.get("Principal").getAsJsonObject();
+				} else {
+					principalStr = firstObject.get("Principal").getAsString();
+				}
+				try {
+					if (principal.has("AWS") || "*".equals(principalStr)) {
+						JsonArray awsArray = null;
+						effect = firstObject.get("Effect").getAsString();
+						if (principal.has("AWS") && principal.get("AWS").isJsonArray()) {
+							awsArray = principal.get("AWS").getAsJsonArray();
+							if (awsArray.size() > 0) {
+								logger.debug("Not checking the s3 read/write public access for principal array values : {}",awsArray);
+							}
+						}
+
+						if (principal.has("AWS") && !principal.get("AWS").isJsonArray()) {
+							aws = principal.get("AWS").getAsString();
+						}
+						if ("*".equals(principalStr)) {
+							aws = firstObject.get("Principal").getAsString();
+						}
+
+						if ("*".equals(aws) && !firstObject.has("Condition")) {
+							if (effect.equals("Allow")) {
+								isPublicAccess = true;
+							}
+						} else if ("*".equals(aws) && firstObject.has("Condition") && effect.equals("Allow")) {
+							if (firstObject.has("Condition")
+									&& (firstObject.get("Condition")
+											.getAsJsonObject().has("IpAddress"))
+									&& (firstObject.get("Condition")
+											.getAsJsonObject().get("IpAddress")
+											.getAsJsonObject()
+											.has("aws:SourceIp"))) {
+								if (firstObject.get("Condition")
+										.getAsJsonObject().get("IpAddress")
+										.getAsJsonObject().get("aws:SourceIp")
+										.isJsonObject()) {
+									conditionJsonObject = firstObject
+											.get("Condition").getAsJsonObject()
+											.get("IpAddress").getAsJsonObject()
+											.get("aws:SourceIp")
+											.getAsJsonObject();
+								} else if (firstObject.get("Condition")
+										.getAsJsonObject().get("IpAddress")
+										.getAsJsonObject().get("aws:SourceIp")
+										.isJsonArray()) {
+									conditionJsonArray = firstObject
+											.get("Condition").getAsJsonObject()
+											.get("IpAddress").getAsJsonObject()
+											.get("aws:SourceIp")
+											.getAsJsonArray();
+								} else {
+									conditionStr = firstObject.get("Condition")
+											.getAsJsonObject().get("IpAddress")
+											.getAsJsonObject()
+											.get("aws:SourceIp").getAsString();
+								}
+							}
+
+							JsonElement cJson = conditionJsonArray;
+							Type listType = new TypeToken<List<String>>() {
+							}.getType();
+
+							List<String> conditionList = new Gson().fromJson(cJson, listType);
+							if (!conditionJsonObject.isJsonNull() && conditionJsonObject.toString().equals(cidrIp)) {
+								isPublicAccess = true;
+							}
+
+							if (null != conditionStr && conditionStr.contains(cidrIp)) {
+								isPublicAccess = true;
+							}
+							if (conditionList.contains(cidrIp)) {
+								isPublicAccess = true;
+							}
+						}
+					}
+				} catch (Exception e1) {
+					logger.error("error in public access autofic ", e1);
+					throw new RuleExecutionFailedExeption(e1.getMessage());
+				}
+			}
+		}
+		return isPublicAccess;
+	}
+	
+	/**
+	 * Apply security groups to elactic search.
+	 *
+	 * @param awsElasticsearch the aws elasticsearch
+	 * @param sgIdToBeAttached the sg id to be attached
+	 * @param resourceId the resource id
+	 * @param domainConfigRequest the domain config request
+	 * @return true, if successful
+	 * @throws Exception the exception
+	 */
+	public static boolean applySecurityGroupsToElacticSearch(AWSElasticsearch awsElasticsearch, List<String> sgIdToBeAttached,String resourceId, UpdateElasticsearchDomainConfigRequest domainConfigRequest) throws Exception {
+		boolean applysgFlg = false;
+		try {
+			VPCOptions vPCOptions = new VPCOptions();
+			vPCOptions.setSecurityGroupIds(sgIdToBeAttached);
+			domainConfigRequest.setVPCOptions(vPCOptions);
+			domainConfigRequest.setDomainName(resourceId);
+			awsElasticsearch.updateElasticsearchDomainConfig(domainConfigRequest);
+			applysgFlg = true;
+		} catch (Exception e) {
+			logger.error("Apply Security Group operation failed for elasticache {}",resourceId);
+			throw new Exception(e);
+		}
+		return applysgFlg;
+	}
 }

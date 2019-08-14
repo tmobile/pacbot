@@ -7,6 +7,7 @@ from core.config import Settings
 import inspect
 import json
 import os
+import uuid
 
 
 class BaseAction(MsgMixin):
@@ -52,13 +53,20 @@ class BaseAction(MsgMixin):
     def _create_terraform_provider_file(self):
         """Terraform provider file  is created as part of installation/destruction execution"""
         terraform_provider_file = get_terraform_provider_file()
+
+        aws_provider = {'region': self.input.AWS_AUTH_CRED['aws_region']}
+        if self.input.AWS_AUTH_CRED['aws_auth_option'] == 1:
+            aws_provider['access_key'] = self.input.AWS_AUTH_CRED['aws_access_key']
+            aws_provider['secret_key'] = self.input.AWS_AUTH_CRED['aws_secret_key']
+        elif self.input.AWS_AUTH_CRED['aws_auth_option'] == 2:
+            aws_provider['assume_role'] = {
+                'role_arn': self.input.AWS_AUTH_CRED['assume_role_arn'],
+                'session_name': str(uuid.uuid4())
+            }
+
         provider_script = {
             'provider': {
-                'aws': {
-                    'access_key': self.input.aws_access_key,
-                    'secret_key': self.input.aws_secret_key,
-                    'region': self.input.aws_region
-                }
+                'aws': aws_provider
             }
         }
 

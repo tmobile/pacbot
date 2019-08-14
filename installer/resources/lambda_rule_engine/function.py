@@ -69,9 +69,7 @@ class RuleEngineEventRules(CloudWatchEventRuleResource):
                 rule_name = rule['ruleId']
                 exists = cloudwatch_event.check_rule_exists(
                     rule_name,
-                    input.aws_access_key,
-                    input.aws_secret_key,
-                    input.aws_region)
+                    input.AWS_AUTH_CRED)
 
                 if exists:
                     checked_details = {'attr': "name", 'value': rule_name}
@@ -90,9 +88,7 @@ class RuleEngineEventRules(CloudWatchEventRuleResource):
             try:
                 cloudwatch_event.remove_all_targets_of_a_rule(
                     rule_name,
-                    Settings.AWS_ACCESS_KEY,
-                    Settings.AWS_SECRET_KEY,
-                    Settings.AWS_REGION)
+                    Settings.AWS_AUTH_CRED)
             except Exception as e:
                 message = "\n\t ** Not able to remove targets from the rule: %s: Reason: %s **\n" % (rule_name, str(e))
                 print(MsgMixin.BERROR_ANSI + message + MsgMixin.RESET_ANSI)

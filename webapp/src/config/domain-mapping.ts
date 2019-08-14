@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -40,12 +40,18 @@ export const  DOMAIN_MAPPING = [
                     },
                     {
                         'route': 'issue-listing',
-                        'sequence': 9
+                        'sequence': 1
                     },
                     {
                         'route': 'policy-knowledgebase',
-                        'sequence': 10
-                    }
+                        'sequence': 2
+                    },
+                    {
+                        'route': 'recommendations',
+                        'sequence': 3,
+                        'groupBy': 'compliance-dashboard',
+                        'cloudSpecific': true
+                    },
                 ]
             },
             {
@@ -148,6 +154,10 @@ export const  DOMAIN_MAPPING = [
                     {
                         'route': 'tagging-compliance',
                         'sequence': 2
+                    },
+                    {
+                        'route': 'health-notifications',
+                        'sequence': 3
                     }
                 ]
             },

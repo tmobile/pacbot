@@ -18,6 +18,8 @@ import {IssueDetailsComponent} from '../../pacman-features/modules/compliance/is
 import {VulnerabilitiesComplianceComponent} from '../../pacman-features/modules/compliance/vulnerabilities-compliance/vulnerabilities-compliance.component';
 import {PatchingComplianceComponent} from '../../pacman-features/modules/compliance/patching-compliance/patching-compliance.component';
 import {TaggingComplianceComponent} from '../../pacman-features/modules/compliance/tagging-compliance/tagging-compliance.component';
+import {CloudNotificationsComponent} from '../../pacman-features/modules/compliance/cloud-notifications/cloud-notifications.component';
+import {EventDetailsComponent} from '../../pacman-features/modules/compliance/event-details/event-details.component';
 import {CertificateComplianceComponent} from '../../pacman-features/modules/compliance/certificate-compliance/certificate-compliance.component';
 import {PolicyDetailsComponent} from '../../pacman-features/modules/compliance/policy-details/policy-details.component';
 import {PolicyKnowledgebaseComponent} from '../../pacman-features/modules/compliance/policy-knowledgebase/policy-knowledgebase.component';
@@ -68,6 +70,8 @@ import { PluginManagementComponent } from '../../pacman-features/modules/admin/p
 import { PluginManagementDetailsComponent } from '../../pacman-features/modules/admin/plugin-management-details/plugin-management-details.component';
 import { SystemManagementComponent } from '../../pacman-features/modules/admin/system-management/system-management.component';
 import { ConfigManagementComponent } from '../../pacman-features/modules/admin/config-management/config-management.component';
+import { RecommendationsComponent} from '../../pacman-features/modules/compliance/recommendations/recommendations.component';
+import { RecommendationsDetailsComponent } from '../../pacman-features/modules/compliance/recommendations-details/recommendations-details.component';
 
 export const COMPLIANCE_ROUTES = [
     {
@@ -155,6 +159,22 @@ export const COMPLIANCE_ROUTES = [
         canActivate: [AuthGuardService]
     },
     {
+        path: 'health-notifications',
+        component: CloudNotificationsComponent,
+        data: {
+            title: 'Health Notifications'
+        },
+        canActivate: [AuthGuardService]
+    },
+    {
+        path: 'event-details/:arn',
+        component: EventDetailsComponent,
+        data: {
+            title: 'Event Details'
+        },
+        canActivate: [AuthGuardService]
+    },
+    {
         path: 'certificates',
         component: CertificatesComponent,
         data: {
@@ -194,7 +214,24 @@ export const COMPLIANCE_ROUTES = [
             title: 'Vulnerability Details'
         },
         canActivate: [AuthGuardService]
-    }
+    },
+    {
+        path: 'recommendations',
+        component: RecommendationsComponent,
+        data: {
+            title: 'Recommendations',
+            pageLevel: 0
+        },
+        canActivate: [AuthGuardService]
+    },
+    {
+            path: 'recommendations-detail/:recommendationId/:name/:general',
+            component: RecommendationsDetailsComponent,
+            data: {
+                title: 'Recommendations Detail',
+            },
+            canActivate: [AuthGuardService]
+    },
 ];
 
 export const ASSETS_ROUTES = [

@@ -39,7 +39,7 @@ class BaseCommand(metaclass=ABCMeta):
 
         self.dry_run = True if any([x[1] for x in args if x[0] == "dry-run"]) else self.dry_run
 
-    def get_complete_resources(self, input_instance, need_instance=True):
+    def get_complete_resources(self, input_instance):
         """
         This returns all the resources present in the common configurations
 
@@ -47,23 +47,22 @@ class BaseCommand(metaclass=ABCMeta):
             resources_to_process (list): List of all resources
         """
         resource_keys_to_process = self.get_resource_keys_to_process(None, None)
-        resources_to_process = self.get_resources_from_the_keys(resource_keys_to_process, input_instance, need_instance)
+        resources_to_process = self.get_resources_from_the_keys(resource_keys_to_process, input_instance)
 
         return resources_to_process
 
-    def get_resources_to_process(self, input_instance, need_instance=True):
+    def get_resources_to_process(self, input_instance):
         """
         This returns the resources to be processed currently. This can either be full resources or part of resources
 
         Args:
             input_instance (Input Obj): Input object
-            need_instance (boolean): True if object is required and if it is False then class is returned
 
         Returns:
             resources_to_process (list): List of resources
         """
         resource_keys_to_process = self.get_resource_keys_to_process(self.resource_tags_list, self.category_field_name)
-        resources_to_process = self.get_resources_from_the_keys(resource_keys_to_process, input_instance, need_instance)
+        resources_to_process = self.get_resources_from_the_keys(resource_keys_to_process, input_instance)
 
         return resources_to_process
 
@@ -79,11 +78,11 @@ class BaseCommand(metaclass=ABCMeta):
             tagged_resources (list): List of resources
         """
         tagged_resource_keys = self.get_resource_keys_to_process(tags_list, self.category_field_name)
-        tagged_resources = self.get_resources_from_the_keys(tagged_resource_keys, input_instance, True)
+        tagged_resources = self.get_resources_from_the_keys(tagged_resource_keys, input_instance)
 
         return tagged_resources
 
-    def get_resources_from_the_keys(self, resource_keys_to_process, input_instance, need_instance):
+    def get_resources_from_the_keys(self, resource_keys_to_process, input_instance):
         """
         This returns the resources to be processed based on the key which is the filename
 
@@ -105,10 +104,7 @@ class BaseCommand(metaclass=ABCMeta):
             for name, obj_class in inspect.getmembers(resource_module, inspect.isclass):
                 if obj_class.__module__ == resource:  # To collect Resource Classes defined only in the resource file
                     if BaseTerraformResource in inspect.getmro(obj_class):
-                        if need_instance:
-                            resources_to_process.append(obj_class(input_instance))  # Create instance of that class
-                        else:
-                            resources_to_process.append(obj_class)
+                        resources_to_process.append(obj_class(input_instance))  # Create instance of that class
 
         return resources_to_process
 

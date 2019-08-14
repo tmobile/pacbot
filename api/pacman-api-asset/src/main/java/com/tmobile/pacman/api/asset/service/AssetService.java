@@ -484,5 +484,6 @@ public interface AssetService {
      * @throws ServiceException when the datatype is not maintained in RDS
      */
     public List<Map<String, Object>> getDataTypeInfoByTargetType(String resourceId) throws ServiceException;
+    
 
 }

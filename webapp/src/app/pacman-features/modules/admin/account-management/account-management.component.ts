@@ -75,7 +75,6 @@ export class AccountManagementComponent implements OnInit, OnDestroy {
     /* Check route parameter */
     this.routeSubscription = this.activatedRoute.params.subscribe(params => {
       // Fetch the required params from this object.
-      console.log('params:', params);
     });
 
   }
@@ -255,7 +254,6 @@ export class AccountManagementComponent implements OnInit, OnDestroy {
         this.tableSubscription.unsubscribe();
       }
       const payload = {};
-      console.log('current Id', this.currentId);
       const queryParams = {};
       this.errorValue = 0;
       let accountUrl = environment.deleteAccounts.url;
@@ -285,11 +283,8 @@ export class AccountManagementComponent implements OnInit, OnDestroy {
   }
 
   handleDropdown(event) {
-    console.log(event);
     if (event.type === 'Delete') {
       this.showConfBox = true;
-
-      console.log('event value in handledropdown', event);
       this.currentId = event.data['id'].text;
     } else {
       // redirect to details page

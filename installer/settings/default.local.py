@@ -7,6 +7,13 @@ VPC = {
 }
 
 
+# CUstom tags that can be defined by user
+CUSTOM_RESOURCE_TAGS = [
+    {'Application': "PacBot"},
+    {'Environment': "Prod"}
+]
+
+
 # RDS Related Configurations
 RDS_INSTANCE_TYPE = "db.t2.medium"  # Possibble values db.m4.large, db.t2.large etc
 

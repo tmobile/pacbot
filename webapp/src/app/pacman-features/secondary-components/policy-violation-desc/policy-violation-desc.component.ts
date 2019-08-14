@@ -30,6 +30,7 @@ import { LoggerService } from '../../../shared/services/logger.service';
 
 export class PolicyViolationDescComponent implements OnInit {
   @Input() violationData;
+  @Input() autofixData;
   @Input() pageLevel: number;
   urlToRedirect = '';
   private subscriptionToAssetGroup: Subscription;
@@ -40,6 +41,7 @@ export class PolicyViolationDescComponent implements OnInit {
   labelData: any;
   showAccordion = false;
   testData;
+  public agAndDomain = {};
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -52,12 +54,14 @@ export class PolicyViolationDescComponent implements OnInit {
       .getAssetGroup()
       .subscribe(assetGroupName => {
         this.selectedAssetGroup = assetGroupName;
+        this.agAndDomain['ag'] = this.selectedAssetGroup;
       });
     // domain subscription
     this.domainSubscription = this.domainObservableService
       .getDomainType()
       .subscribe(domain => {
         this.selectedDomain = domain;
+        this.agAndDomain['domain'] = this.selectedDomain;
       });
     // processData for accordion
   }

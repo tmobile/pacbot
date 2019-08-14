@@ -14,14 +14,11 @@
 
  <section class="search-details-wrapper flex flex-col">
     <div class="relative">
-        <!-- searchable dropdown is called here-->
         <app-searchbar-dropdown [showTerminatedCheckBox]="true" [dropDownSelectedValue]="searchboxValueSelected" [displaySearchDropDown]="true" [displaySearchDropDown]="false" [dropdownData]="dropdownData" [searchboxPlaceHolder]="'Search By Keyword'" (navigatePage)="searchCalled($event)" [searchboxValueSelected]="searchText"></app-searchbar-dropdown>
-        <!--  searchable dropdown ends here  -->
     </div>
     <div class="search-details-filter-wrapper relative">
-        <!-- filter is called here-->
         <div class="filter-outer-wrapper pointer">
-            <app-main-filter [class.disabled]='showExceptionModal || showRevokeExceptionmodal' [searchClickedToGetFilter]="filterDataIsRequested" (filterOpenEvent)="isfilterOpen($event)" [filterDataChange]="filterData" (filterOptionClicked)="filterOptionClicked($event)"></app-main-filter>
+            <app-main-filter [searchClickedToGetFilter]="filterDataIsRequested" (filterOpenEvent)="isfilterOpen($event)" [filterDataChange]="filterData" (filterOptionClicked)="filterOptionClicked($event)"></app-main-filter>
         </div>
         <!-- search cards are shown here-->
         <div class="search-results-outer-wrapper relative">
@@ -32,61 +29,88 @@
                     <div class="absolute search-result-count" *ngIf='dataComing && !showLoader && !infiniteScrollCalled'>Showing {{numOfCardShown | number}} of {{totalNumOfCards | number}} Results</div>
                 </div>
                 <div class="search-card-each pointer flex flex-col relative" *ngFor="let searchCard of searchResultsData ; let i = index " (click)="navigateTo(searchCard)">
-                    <div class='upper-section-wrapper'>
-                    <p class="search-card-name nowrap-ellipsis" *ngIf="searchCard._id">
-                        <span *ngIf="(searchCard.searchCategory | lowercase) == 'assets'">Resource Id:</span>
-                        <span *ngIf="(searchCard.searchCategory | lowercase) == 'policy violations'">Issue Id:</span>
-                        <span *ngIf="(searchCard.searchCategory | lowercase) == 'vulnerabilities'">Qid:</span>
-                        <span>{{searchCard._id}}</span>
-                    </p>
+                    <div class='upper-section-wrapper flex flex-col flex-grow'>
+                    <div class="hover-element flex">
+                        <p class="search-card-name nowrap-ellipsis" *ngIf="searchCard._id">
+                            <span *ngIf="(searchCard.searchCategory | lowercase) == 'assets'">Resource Id:</span>
+                            <span *ngIf="(searchCard.searchCategory | lowercase) == 'policy violations'">Issue Id:</span>
+                            <span *ngIf="(searchCard.searchCategory | lowercase) == 'vulnerabilities'">Qid:</span>
+                            <span title='{{searchCard._id}}'>{{searchCard._id}}</span>
+                        </p>
+                        <div class="copy-icon"><app-copy-element [CopyElement]="searchCard._id" [iconSize]="'10px'"></app-copy-element></div>
+                    </div>
                     <img class="arrow-icon arrow-icon-search-card relative" style="height: 1em;" src="assets/icons/right-arrow.svg">
                     <div class="seach-card-desc-bottom search-card-middle-section flex flex-column">
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard.accountname">
-                            <span>Account Name: </span>
-                            <span title="{{searchCard.accountname}}">{{searchCard.accountname}}</span>
+                        <p class="search-card-type hover-element flex flex-align-center" *ngIf="searchCard.accountname">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Account Name: </span>
+                                <span class="font-color" title="{{searchCard.accountname}}">{{searchCard.accountname}}</span>
+                            </span>
+                            <span class="copy-icon"><app-copy-element [CopyElement]="searchCard.accountname" [iconSize]="'10px'"></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard._entitytype">
-                            <span>Entity Type:</span>
-                            <span title="{{searchCard._entitytype}}">{{searchCard._entitytype}}</span>
+                        <p class="search-card-type hover-element flex flex-align-center" *ngIf="searchCard._entitytype">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Entity Type:</span>
+                                <span class="font-color" title="{{searchCard._entitytype}}">{{searchCard._entitytype}}</span>
+                            </span>
+                            <span  class="copy-icon"><app-copy-element [CopyElement]="searchCard._entitytype" [iconSize]="'10px'"></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard.severity">
-                            <span>Severity:</span>
-                            <span title="{{searchCard.severity}}">{{searchCard.severity}}</span>
+                        <p class="search-card-type hover-element flex flex-align-center" *ngIf="searchCard.severity">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Severity:</span>
+                                <span class="font-color" title="{{searchCard.severity}}">{{searchCard.severity}}</span>
+                            </span>
+                            <span class="font-color" class="copy-icon"><app-copy-element [CopyElement]="searchCard.severity" [iconSize]="'10px'"></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard.category">
-                            <span>Category:</span>
-                            <span title="{{searchCard.category}}">{{searchCard.category}}</span>
+                        <p class="search-card-type hover-element flex flex-align-center" *ngIf="searchCard.category">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Category:</span>
+                                <span class="font-color" title="{{searchCard.category}}">{{searchCard.category}}</span>
+                            </span>
+                            <span class="copy-icon"><app-copy-element [CopyElement]="searchCard.category" [iconSize]="'10px'"></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard.vulntype">
-                            <span>Type:</span>
-                            <span title="{{searchCard.vulntype}}">{{searchCard.vulntype}}</span>
+                        <p class="search-card-type hover-element flex flex-align-center" *ngIf="searchCard.vulntype">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Type:</span>
+                                <span class="font-color" title="{{searchCard.vulntype}}">{{searchCard.vulntype}}</span>
+                            </span>
+                            <span class="copy-icon"><app-copy-element [CopyElement]="searchCard.vulntype" [iconSize]="'10px'"></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard._resourceid">
-                            <span>Resource Id:</span>
-                            <span title="{{searchCard._resourceid}}">{{searchCard._resourceid}}</span>
+                        <p class="search-card-type hover-element flex flex-align-center" *ngIf="searchCard._resourceid">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Resource Id:</span>
+                                <span class="font-color" title="{{searchCard._resourceid}}">{{searchCard._resourceid}}</span>
+                            </span>
+                            <span class="copy-icon"><app-copy-element [CopyElement]="searchCard._resourceid" [iconSize]="'10px'"></app-copy-element></span>
                         </p>
                     </div>
                     <div class="seach-card-desc-bottom search-card-bottom-section flex flex-column">
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard['tags.Application']">
-                            <span>Application:</span>
-                            <span>{{searchCard['tags.Application']}}</span>
+                        <p class="search-card-type hover-element flex flex-align-center" *ngIf="searchCard['tags.Application']">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Application:</span>
+                                <span  class="font-color">{{searchCard['tags.Application']}}</span>
+                            </span>
+                            <span class="copy-icon"><app-copy-element [CopyElement]="searchCard['tags.Application']" [iconSize]="'10px'"></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard['tags.Environment']">
-                            <span>Environment:</span>
-                            <span>{{searchCard['tags.Environment']}}</span>
+                        <p class="search-card-type hover-element flex flex-align-center" *ngIf="searchCard['tags.Environment']">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Environment:</span>
+                                <span class="font-color">{{searchCard['tags.Environment']}}</span>
+                            </span>
+                            <span class="copy-icon"><app-copy-element [CopyElement]="searchCard['tags.Environment']" [iconSize]="'10px'"></app-copy-element></span>
                         </p>
-                        <p class="search-card-type nowrap-ellipsis" *ngIf="searchCard['tags.Name']">
-                            <span>Name:</span>
-                            <span>{{searchCard['tags.Name']}}</span>
+                        <p class="search-card-type hover-element flex flex-align-center" *ngIf="searchCard['tags.Name']">
+                            <span class="nowrap-ellipsis text-element">
+                                <span>Name:</span>
+                                <span class="font-color">{{searchCard['tags.Name']}}</span>
+                            </span>
+                            <span class="copy-icon"><app-copy-element [CopyElement]="searchCard['tags.Name']" [iconSize]="'10px'"></app-copy-element></span>
                         </p>
                     </div>
                     </div>
                     <div class='flex flex-row flex-between'>        
                         <div class="search-card-category pointer nowrap-ellipsis left-card" *ngIf="searchCard['searchCategory']">{{searchCard.searchCategory}}</div>
-                        <!-- Used 'issueStatus' property of searchCard to track issue exempt -->
-                        <button class="exception-btn pointer nowrap-ellipsis right-card" *ngIf="(adminAccess && searchCard['searchCategory']) && (searchCard['searchCategory'] | lowercase) === 'policy violations' && (searchCard['issueStatus'] === undefined || searchCard['issueStatus'] === 'open')" (click)="$event.stopPropagation(); setExceptionModal(searchCard)" title="Add Exception">Add Exception</button>
-                        <button class="exception-btn pointer nowrap-ellipsis right-card" *ngIf="(adminAccess && searchCard['searchCategory']) && (searchCard['searchCategory'] | lowercase) === 'policy violations' && searchCard['issueStatus'] === 'exempted'" (click)="$event.stopPropagation(); setRevokeExceptionModal(searchCard); revokeException(searchCard)" title="Revoke Exception">Revoke Exception</button>
-                    </div>
+                     </div>
                     <img *ngIf="searchCard['imagePath']" class="search-card-targettype-icon absolute" src="{{searchCard['imagePath']}}">
                 </div>
             </section>
@@ -96,90 +120,6 @@
                 </div>
             </article>
         </div>
-        <div class="search-results-overlay absolute" *ngIf="showExceptionModal || showRevokeExceptionmodal"></div>
         <div *ngIf='showLoader' class="loader"></div>
-        <div *ngIf='showExceptionModal' class="actions-wrapper back" [class.after-click-button-opposite]='showExceptionModal'>
-            <header class="recommend-flip flex-between flex flex-align-center">
-                <div class="header-text">
-                    Add Exception
-                </div>
-            </header>
-            <section class="text-wrapper">
-                <div *ngIf="showExceptionModal && !showTransaction" class='flex flex-col'>
-                    <div class="exception-card-type nowrap-ellipsis" *ngIf="search_card._id">
-                        <span>Issue Id: </span>
-                        <span title="{{search_card._id}}">{{search_card._id}}</span>
-                    </div>
-                    <div class="exception-card-type nowrap-ellipsis" *ngIf="search_card.severity">
-                            <span>Severity:</span>
-                            <span title="{{search_card.severity}}">{{search_card.severity}}</span>
-                    </div>
-                    <div class="exception-card-type nowrap-ellipsis" *ngIf="search_card._resourceid">
-                        <span>Resource Id: </span>
-                        <span title="{{search_card._resourceid}}">{{search_card._resourceid}}</span>
-                    </div>
-                </div>
-                <form novalidate *ngIf="showExceptionModal && !showTransaction" (ngSubmit)="onExceptionSubmit(user)" [formGroup]="user">
-                    <label>
-                        <div class="text-wrapper-header">Reason</div>
-                        <textarea id="textarea-id" class="textarea-container" formControlName="name"></textarea>
-                    </label>
-                    <div class="error-reason" *ngIf="user.get('name').hasError('required') && user.get('name').touched">
-                        Reason is required
-                    </div>
-                    <div class="text-wrapper-header">End Date</div>
-                    <app-date-dropdown [dataForm]="'user'" (dataSent)='getDateData($event)'></app-date-dropdown>
-                    <div class="textarea-button flex flex-row flex-between">
-                        <div class='submit-btn'>
-                            <app-button type="submit" [disabled]="user.invalid">ADD</app-button>
-                        </div>
-                        <div class='cancel-btn' (click)='setExceptionModal()'>
-                            <app-button>CANCEL</app-button>
-                        </div>                       
-                    </div>
-                </form>
-                <div class="circle-container" *ngIf="showExceptionModal && showTransaction">
-                    <div class="circle-loader" [class.load-complete-success]='showLoadComplete && actionComplete' [class.load-complete-failure]='showLoadComplete && !actionComplete'>
-                        <div *ngIf='actionComplete' class="checkmark draw" [class.checkmark-show]='showLoadComplete'></div>
-                        <div *ngIf='!actionComplete' class="crossmark draw" [class.crossmark-show]='showLoadComplete'></div>
-                    </div>
-                    <div class="textarea-button flex flex-row flex-between">
-                        <div class='cancel-btn' (click)='setExceptionModal()'>
-                            <app-button>CANCEL</app-button>
-                        </div>                        
-                    </div>
-                </div>
-                <div class="error_msg_exception" *ngIf='showLoadComplete && !actionComplete'>Exception not added
-                </div>
-                <div class="success_msg_exception" *ngIf='showLoadComplete && actionComplete'>Exception added successfully
-                </div>
-            </section>
-        </div>
-        <div *ngIf='showRevokeExceptionmodal' class="actions-wrapper back" [class.after-click-button-opposite]='showTransaction'>
-            <header class="recommend-flip flex-between flex flex-align-center">
-                <div class="header-text">
-                    Status
-                </div>
-            </header>
-            <section class="text-wrapper">
-                <div class="circle-container" *ngIf="showRevokeExceptionmodal && showTransaction">
-                    <div class="circle-loader" [class.load-complete-success]='showLoadComplete && !actionComplete' [class.load-complete-failure]='showLoadComplete && actionComplete'>
-                        <div *ngIf='!actionComplete' class="checkmark draw" [class.checkmark-show]='showLoadComplete'></div>
-                        <div *ngIf='actionComplete' class="crossmark draw" [class.crossmark-show]='showLoadComplete'></div>
-                    </div>
-                    <div class="textarea-button flex flex-row flex-between">
-                        <div class='cancel-btn' (click)='setRevokeExceptionModal()'>
-                            <app-button>CANCEL</app-button>
-                        </div>                        
-                    </div>
-                </div>
-                <div class="error_msg_exception" *ngIf='showLoadComplete && actionComplete'>Failed in Revoking Issue Exception !
-                </div>
-                <div class="success_msg_exception" *ngIf='showLoadComplete && !actionComplete'>
-                    Successfully Revoked Issue Exception!
-                </div>
-            </section>
-        </div>
-
     </div>
 </section>

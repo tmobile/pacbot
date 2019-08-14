@@ -21,7 +21,7 @@
      <img height="36px" src='{{dynamicIconPath}}'>
      <div class="header-user-image flex flex-row flex-end flex-align-center">
          <div class="username">
-             <span>Hi, {{FirstName}}</span>
+             <span class="capitalize">Hi, {{FirstName}}</span>
          </div>
          <div class="user-profile-wrapper relative" tabindex="1" (blur)="closeUserInfo();">
              <img class="profile pointer" width="36px" src="{{profilePictureSrc}}" (click)='showUserInfo=!showUserInfo; ' />

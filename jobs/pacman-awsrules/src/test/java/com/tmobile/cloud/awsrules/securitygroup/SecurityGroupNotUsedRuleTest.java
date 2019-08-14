@@ -48,9 +48,9 @@ public class SecurityGroupNotUsedRuleTest {
                 true);
         when(PacmanUtils.splitStringToAList(anyString(),anyString())).thenReturn(CommonTestUtils.getListString());
         when(PacmanUtils.getPacmanHost(anyString())).thenReturn("host");
-        when(PacmanUtils.getQueryFromElasticSearch(anyString(),anyObject(),anyString())).thenReturn(CommonTestUtils.getEmptyMapBoolean("r_123 "));
+        when(PacmanUtils.getQueryFromElasticSearch(anyString(),anyObject(),anyString(),anyObject())).thenReturn("");
         assertThat(securityGroupNotUsedRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
-        when(PacmanUtils.getQueryFromElasticSearch(anyString(),anyObject(),anyString())).thenReturn(CommonTestUtils.getMapBoolean("r_123 "));
+        when(PacmanUtils.getQueryFromElasticSearch(anyString(),anyObject(),anyString(),anyObject())).thenReturn("123");
         
         assertThat(securityGroupNotUsedRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
         

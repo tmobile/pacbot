@@ -332,8 +332,8 @@ export class AssetGroupsComponent implements OnInit {
                 "color": "#ed0295"
               }
             };
-          }  else if (getCols[col].toLowerCase() == "no of target types") {
-            let targetTypeName = getData[row]['Target Types'].map(target => target.targetType); 
+          }  else if (getCols[col].toLowerCase() === "no of target types") {
+            let targetTypeName = getData[row]['Asset Types'].map(target => target.targetType);
             targetTypeName = _.uniq(targetTypeName);
             cellObj = {
               link: "",
@@ -346,8 +346,8 @@ export class AssetGroupsComponent implements OnInit {
               text: targetTypeName.length,
               valText: targetTypeName.length,
             };
-          } else if (getCols[col].toLowerCase() == "target types") {
-            let targetTypeName = getData[row][getCols[col]].map(target => target.targetType); 
+          } else if (getCols[col].toLowerCase() == "asset types") {
+            let targetTypeName = getData[row][getCols[col]].map(target => target.targetType);
             targetTypeName = _.uniq(targetTypeName);
             cellObj = {
               link: "",
@@ -383,7 +383,7 @@ export class AssetGroupsComponent implements OnInit {
         this.outerArr = this.outerArr.splice(halfLength);
       }
       this.allColumns = Object.keys(totalVariablesObj);
-      this.allColumns = ["Group Name", "No of Target Types", "Target Types", "Actions"];
+      this.allColumns = ["Group Name", "No of Target Types", "Asset Types", "Actions"];
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
       this.logger.log("error", error);
@@ -409,7 +409,6 @@ export class AssetGroupsComponent implements OnInit {
     if (row.col === 'Delete') {
       try {
         this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
-        console.log(row.row);
         this.router.navigate(["../delete-asset-groups"], {
           relativeTo: this.activatedRoute,
           queryParamsHandling: 'merge',

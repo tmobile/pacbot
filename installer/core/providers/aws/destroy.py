@@ -140,6 +140,8 @@ class Destroy(BaseAction):
                 self.executed_with_error = True
                 self.exception = e
 
+        PyTerraform.save_terraform_output()
+
         self.current_destroy_status = self.destroy_statuses.get('execution_finished')
 
     def show_progress_status(self, resources, terraform_with_targets):

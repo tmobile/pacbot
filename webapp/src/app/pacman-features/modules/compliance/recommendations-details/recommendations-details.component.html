@@ -1,0 +1,77 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="floating-widgets-section flex flex-col issue-listing-wrapper">
+  <div class='layer-breadcrumb-wrapper flex flex-between flex-align-center no-shrink'>
+      <app-breadcrumb></app-breadcrumb>
+  </div>
+  <div class="floating-widgets-header flex flex-between">
+      <div>
+          <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack();" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
+          <app-back-navigation [pageTitle]="recommendationParams['name']"></app-back-navigation>
+      </div>
+  </div>
+  <div *ngIf='responseStatusInfo === 1' class="floating-widgets-container data-table-container">
+      <section class="main-container" >
+          <div class="container">
+            <div *ngIf="recommendationInfoData">
+              <div class="description-wrapper">
+                 <div class="text-header">{{recommendationParams['name']}}</div>
+                 <div class="text-description highlight-link" [innerHTML]="recommendationInfoData.summary"></div>
+              </div>
+              <div class="description-wrapper">
+                  <div class="text-header">Alert Criteria</div>
+                  <div class="text-description highlight-link" [innerHTML]="recommendationInfoData['alert criteria']"></div>
+               </div>
+               <div class="description-wrapper">
+                  <div class="text-header">Recommended Action</div>
+                  <div class="text-description highlight-link" [innerHTML] = "recommendationInfoData['recommended action']"></div>
+               </div>
+              </div>
+              <div class="widget-wrapper relative">
+                  <div class="relative table-head-wrapper">
+                      <app-data-table  *ngIf="recommendationDetailsData"
+                          [searchTextValues]='searchTxt' 
+                          [errorValue]='responseStatus'
+                          [parentName]='errorMessage'
+                          [showGenericMessage]='showGenericMessage'
+                          [allColumns]='allColumns'
+                          [outerArr]='outerArr'
+                          [totalRows]='totalRows'
+                          [firstPaginator]='firstPaginator'
+                          [lastPaginator]='lastPaginator'
+                          [currentPointer]='currentPointer'
+                          (previousPageCalled)='prevPg()'
+                          (nextPageCalled)='nextPg()'
+                          [searchableHeader]='true'
+                          (searchRowTxt)='searchCalled($event)'
+                          (searchTriggerred)='callNewSearch()'
+                          [popRows]='popRows'
+                          (rowClickText)='handlePopClick($event)'
+                          [dataHead]="'Recommendation Details'"
+                          (selectedRow)='goToDetails($event)'
+                          [tableIdAppend]="'10'">
+                      </app-data-table>
+                  </div>
+                </div>
+            </div>
+      </section>
+  </div>
+    <div *ngIf='responseStatusInfo === 0' class='loader'></div>
+    <article class='center error_handling' *ngIf="responseStatusInfo === -1">
+        <div class="error_msg">
+            <app-error-message [selectedValue]="errorMessage"></app-error-message>
+        </div>
+    </article>
+</div>

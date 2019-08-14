@@ -23,4 +23,12 @@
   background-color: #848C94;
 }
 
-
+.search-center-container /deep/ ngx-select-dropdown, .search-center-container /deep/ .ngx-dropdown-container {
+  height: 100%;
+}
+.search-center-container /deep/ .ngx-dropdown-button {
+  height: 100%;
+  border:none !important;
+  border-top-right-radius: 0px !important;
+  border-bottom-right-radius: 0px !important;
+}

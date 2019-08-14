@@ -285,6 +285,26 @@ export const environment = {
         url: '{{baseUrl}}/compliance/v1/noncompliancepolicy',
         method: 'POST'
     },
+    cloudNotifications : {
+        url: '{{baseUrl}}/asset/v1/cloud/notifications',
+        method: 'POST'
+    },
+    getEventDescription : {
+        url: '{{baseUrl}}/asset/v1/cloud/notifications/info',
+        method: 'GET'
+    },
+    getEventDetails : {
+        url: '{{baseUrl}}/asset/v1/cloud/notifications/detail',
+        method: 'GET'
+    },
+    getAutofixDetails : {
+        url: '{{baseUrl}}/asset/v1/autofix/notifications/detail',
+        method: 'POST'
+    },
+    cloudNotifSummary : {
+        url: '{{baseUrl}}/asset/v1/cloud/notifications/summary',
+        method: 'GET'
+    },
     policyContentSlider: {
         url: '{{baseUrl}}/compliance/v1/policydescription',
         method: 'GET'
@@ -845,5 +865,29 @@ export const environment = {
     rollbackConfigProperties: {
         url: '{{baseUrl}}/admin/config-properties/rollback',
         method: 'PUT'
+    },
+    recommendationSummary : {
+        url: '{{baseUrl}}/asset/v1/recommendations/summary',
+        method: 'GET'
+    },
+    recommendationApplication : {
+        url: '{{baseUrl}}/asset/v1/recommendations/summaryByApplication',
+        method: 'GET'
+    },
+    recommendations : {
+        url: '{{baseUrl}}/asset/v1/recommendations',
+        method: 'POST'
+    },
+    costApplications : {
+        url: '{{baseUrl}}/asset/v1/costByApplication',
+        method: 'GET'
+    },
+    recommendationsInfo : {
+        url: '{{baseUrl}}/asset/v1/recommendations/info',
+        method: 'GET'
+    },
+    recommendationsDetails: {
+        url: '{{baseUrl}}/asset/v1/recommendations/detail',
+        method: 'POST'
     }
 };

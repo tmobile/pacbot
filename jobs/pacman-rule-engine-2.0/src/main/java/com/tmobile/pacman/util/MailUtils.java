@@ -133,7 +133,7 @@ public class MailUtils {
             }
             String warning = CommonUtils.getPropValue(PacmanSdkConstants.EMAIL_WARNING_MESSAGE_PREFIX
                     + ruleParam.get(PacmanSdkConstants.RULE_ID));
-            Long autoFixDealy = NextStepManager.getAutoFixDelay(ruleParam.get(PacmanSdkConstants.RULE_ID));
+            Integer autoFixDealy = NextStepManager.getAutoFixDelay(ruleParam.get(PacmanSdkConstants.RULE_ID));
             if(autoFixDealy!=null){
                warning = warning.replace("{days}", "" + Math.toIntExact(autoFixDealy/24));
             }
