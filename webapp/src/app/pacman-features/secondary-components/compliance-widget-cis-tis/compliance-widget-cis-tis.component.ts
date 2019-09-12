@@ -132,5 +132,4 @@ export class ComplianceWidgetCisTisComponent implements OnInit, OnDestroy {
             this.logger.log('info', '--- Error while unsubscribing ---');
         }
     }
-
 }
