@@ -112,6 +112,9 @@ import { IssueListingService } from '../../services/issue-listing.service';
 import { RecommendationsComponent} from '../../modules/compliance/recommendations/recommendations.component';
 import { RecommandCategoryComponent } from '../../secondary-components/recommand-category/recommand-category.component';
 import { RecommendationsDetailsComponent } from './recommendations-details/recommendations-details.component';
+import { CisScoreNewComponent } from './cis-score-new/cis-score-new.component';
+import { CisViolatingAssetsComponent } from './cis-violating-assets/cis-violating-assets.component';
+import { ComplianceWidgetCisTisComponent } from '../../secondary-components/compliance-widget-cis-tis/compliance-widget-cis-tis.component';
 
 @NgModule({
   imports: [
@@ -219,7 +222,10 @@ import { RecommendationsDetailsComponent } from './recommendations-details/recom
     PolicyViolationsListComponent,
     RecommendationsComponent,
     RecommandCategoryComponent,
-    RecommendationsDetailsComponent
+    RecommendationsDetailsComponent,
+    CisScoreNewComponent,
+    CisViolatingAssetsComponent,
+    ComplianceWidgetCisTisComponent
   ],
   providers: [
     SelectComplianceDropdown,

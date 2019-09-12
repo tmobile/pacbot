@@ -889,6 +889,26 @@ export const environment = {
     recommendationsDetails: {
         url: '{{baseUrl}}/asset/v1/recommendations/detail',
         method: 'POST'
+    },
+    cisScores: {
+        url: '{{baseUrl}}/compliance/cis/cis-score',
+        method: 'GET'
+    },
+    cisViolatingAssets: {
+        url: '{{baseUrl}}/asset/v1/list/cis/cisassets',
+        method: 'POST'
+    },
+    cisApplication: {
+        url: '{{baseUrl}}/compliance/v1/cis/application/cis-performers',
+        method: 'GET'
+    },
+    cisAccount: {
+        url: '{{baseUrl}}/compliance/v1/cis/account/cis-performers',
+        method: 'GET'
+    },
+    cisTrend: {
+        url: '{{baseUrl}}/compliance/v1/cis/cis-trend',
+        method: 'POST'
     }
 
 };

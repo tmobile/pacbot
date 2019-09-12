@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -32,7 +32,7 @@ import * as d3TimeFormat from 'd3-time-format';
 export class MultilineChartComponent implements OnInit, OnChanges {
 
   @Input() graphWidth: any;
-  @Input() graphHeight: any;
+  @Input() graphHeight: any = 250;
   @Input() xAxisValues: any;
   @Input() smoothEdge: any;
   @Input() yAxisLabel: any;
@@ -48,7 +48,8 @@ export class MultilineChartComponent implements OnInit, OnChanges {
   @Input() colorSetLegends: any;
   @Input() translateChange: any;
   @Input() fullArea: any;
-
+  @Input() isFullScreen;
+  @Input() onPrint?: any;
   @ViewChild('widgetContainer') widgetContainer: ElementRef;
 
   private margin = {top: 15, right: 20, bottom: 30, left: 60};
@@ -93,26 +94,30 @@ export class MultilineChartComponent implements OnInit, OnChanges {
 
   private graphData: any = [];
   public error = false;
-  private dataLoaded = false;
+  dataLoaded = false;
 
   constructor(private ngZone: NgZone) {
 
   window.onresize = (e) => {
         // ngZone.run will help to run change detection
         this.ngZone.run(() => {
-        this.graphWidth = parseInt(window.getComputedStyle(this.widgetContainer.nativeElement, null).getPropertyValue('width'), 10);
-        });
+          if (!this.onPrint) {
+          this.graphWidth = parseInt(window.getComputedStyle(this.widgetContainer.nativeElement, null).getPropertyValue('width'), 10);
+          }
+      });
     };
    }
 
   ngOnChanges() {
-    this.updateComponent();
+    if (!this.onPrint) {
+      this.graphWidth = parseInt(window.getComputedStyle(this.widgetContainer.nativeElement, null).getPropertyValue('width'), 10);
+      this.updateComponent();
+    }
   }
 
   updateComponent() {
     this.dataLoaded = true;
     if (this.graphWidth) {
-
       // Issue using this.margin.top, this.margin.left, this.margin.bottom and this.margin.right, values getting appended, that's why using the exacr values instead of variables..
       this.width = this.graphWidth - 60 - 40;
       this.timeLineWidth = this.width * 0.75;
@@ -134,11 +139,7 @@ export class MultilineChartComponent implements OnInit, OnChanges {
             const idValue = this.idUnique;
             const uniqueId = document.getElementById(idValue);
 
-            // To remove the graph content if its present before re-plotting
-            if (d3.select(uniqueId).select('g') !== undefined) {
-              d3.select(uniqueId).select('g').remove();
-              d3.select(uniqueId).append('g');
-            }
+            this.removeGraphSvg();
 
             // Plot the graph and do all associated processes
             try {
@@ -156,8 +157,6 @@ export class MultilineChartComponent implements OnInit, OnChanges {
             } catch (e) {
               this.handleError(e);
             }
-
-
         }
   }
 
@@ -168,14 +167,29 @@ export class MultilineChartComponent implements OnInit, OnChanges {
       d3.select('#' + this.idUnique).append('g');
     }
 
-
     this.dataLoaded = false;
     // this.errorMessage = 'apiResponseError';
     this.error = true;
   }
 
-  ngOnInit() {
+  removeGraphSvg() {
+    if (
+      d3
+        .selectAll('#' + this.idUnique)
+        .select('svg')
+        .selectAll('g') !== undefined
+    ) {
+      d3.selectAll('#' + this.idUnique)
+        .select('svg')
+        .selectAll('g')
+        .remove();
+      d3.selectAll('#' + this.idUnique)
+        .select('svg')
+        .append('g');
+    }
+  }
 
+  ngOnInit() {
     this.updateComponent();
   }
 
@@ -183,16 +197,11 @@ export class MultilineChartComponent implements OnInit, OnChanges {
 
     const idValue = this.idUnique;
     const uniqueId = document.getElementById(idValue);
-    let yCoordinate;
 
     if ((this.axisUnit === 'false')) {
-
-      yCoordinate = -(this.graphHeight / 7);
       d3.select(uniqueId).select('svg').attr('width', this.graphWidth);
 
     } else {
-
-      yCoordinate = -(this.graphHeight / this.yCoordinates);
       d3.select(uniqueId).select('svg').attr('width', this.graphWidth - 40);
 
     }
@@ -202,7 +211,7 @@ export class MultilineChartComponent implements OnInit, OnChanges {
     this.svg = d3.select(uniqueId)
                 .select('svg')
                .append('g')
-               .attr('transform', 'translate(' + 60 + ',' + yCoordinate + ')');
+               .attr('transform', 'translate(60, -45)');
 
   }
 
@@ -234,14 +243,14 @@ export class MultilineChartComponent implements OnInit, OnChanges {
     }
 
     this.svg.append('defs').append('clipPath')
-        .attr('id', 'clip')
+        .attr('id', 'clip' + this.idUnique)
         .append('rect')
         .attr('width', 0)
         .attr('height', this.height);
 
       this.focus = this.svg.append('g')
         .attr('class', 'focus')
-        .attr('transform', 'translate(0,' + ( 2 *  this.margin.top + 40) + ')');
+        .attr('transform', 'translate(5,' + ( 2 *  this.margin.top + 40) + ')');
 
   }
 
@@ -297,8 +306,8 @@ export class MultilineChartComponent implements OnInit, OnChanges {
 
             if (longerLineFormattedDate === smallerLineFormattedDate) {
               higherX = this.longerLine[`values`][j].date;
-              this.longerLine[`values`][j].value === 0 ? higherY = 1 : higherY = this.longerLine[`values`][j].value;
-              this.smallerLine[`values`][i].value === 0 ? lowerY = 1 : lowerY = this.smallerLine[`values`][i].value;
+              this.longerLine[`values`][j].value === 0 ? higherY = 0 : higherY = this.longerLine[`values`][j].value;
+              this.smallerLine[`values`][i].value === 0 ? lowerY = 0 : lowerY = this.smallerLine[`values`][i].value;
               const obj = {
                 'x0': higherX,
                 'x1': lowerX,
@@ -413,12 +422,13 @@ export class MultilineChartComponent implements OnInit, OnChanges {
                 .attr('class', 'axis-title')
                 .attr('transform', 'rotate(-90)')
                 .attr('y', -50)
-                .attr('x', -160)
+                .attr('x', 0 - ((this.graphHeight) / 2))
                 .attr('dy', '.71em')
                 .attr('stroke-width', '0')
                 .attr('fill', '#2c2e3d')
                 .attr('stroke', '#2c2e3d')
-                .style('text-anchor', 'end')
+                .style('text-anchor', 'middle')
+                .style('text-transform', 'capitalize')
                 .text(this.yAxisLabel);
           }
 
@@ -492,9 +502,9 @@ export class MultilineChartComponent implements OnInit, OnChanges {
       for ( let i = 0; i < this.graphData.length; i++) {
         this.focus.append('path')
           .datum(this.graphData[i].values)
-          .attr('clip-path', 'url(#clip)')
+          .attr('clip-path', 'url(#clip' + this.idUnique + ')')
           .transition()
-          .duration(2000)
+          .duration(1000)
           .attr('class', 'line line' + `${i + 1}`)
           .attr('fill', 'none')
           .attr('stroke-width', '1.5px')
@@ -524,7 +534,7 @@ export class MultilineChartComponent implements OnInit, OnChanges {
               .attr('class', 'area')
               .attr('fill', '#ccc')
               .attr('stroke-width', '0.5')
-              .attr('stroke', '#2c2e3d')
+              // .attr('stroke', '#2c2e3d')
               .attr('d', this.area);
 
     }
@@ -544,9 +554,9 @@ export class MultilineChartComponent implements OnInit, OnChanges {
 
     d3.selectAll('.ticks');
 
-    this.svg.select('#clip rect')
+    this.svg.select('#clip' + this.idUnique + ' rect')
     .transition()
-    .duration(2000)
+    .duration(1000)
     .attr('width', this.width);
   }
 
@@ -590,6 +600,7 @@ export class MultilineChartComponent implements OnInit, OnChanges {
           .attr('dy', '1.5em');
 
     for ( let i = 0; i < this.dataResponse.length; i++ ) {
+
       if (this.colorSetLegends === 'true') {
 
         this.focus.append('rect')
@@ -598,10 +609,11 @@ export class MultilineChartComponent implements OnInit, OnChanges {
           .attr('height', '1.5rem')
           .attr('width', '3.8rem')
           .style('stroke', '#fff')
+          .style('display', 'block')
           .attr('rx', 4)
           .attr('ry', 4)
           .attr('x', -93)
-          .attr('y', -7);
+          .attr('y', -10);
 
       } else {
 
@@ -609,8 +621,9 @@ export class MultilineChartComponent implements OnInit, OnChanges {
           .attr('class', 'rectData' + i)
           .attr('fill', this.colorSet[this.dataResponse.length - 1 - i])
           .attr('height', '1.5rem')
-          .attr('width', '2.7rem')
+          .attr('width', '3rem')
           .style('stroke', '#fff')
+          .style('display', 'block')
           .attr('rx', 4)
           .attr('ry', 4)
           .attr('x', -93)
@@ -634,9 +647,7 @@ export class MultilineChartComponent implements OnInit, OnChanges {
         .style('stroke', this.colorSet[this.dataResponse.length - 1 - i ])
         .style('stroke-width', '2px')
         .attr('r', 4.5);
-
     }
-
 
       this.svg.append('rect')
         .attr('transform', 'translate(' + 0 + ',' + (60) + ')')
@@ -647,13 +658,13 @@ export class MultilineChartComponent implements OnInit, OnChanges {
         .on('mouseout', () => this.focus.style('display', 'none'))
         .on('mousemove', mousemove);
 
-      const self = this;
+    const self = this;
+
     function mousemove() {
 
       const mousePosition = d3.mouse(this)[0];
       const formatDate = d3TimeFormat.timeFormat('%b %d');
       const formatYear = d3TimeFormat.timeFormat('%Y');
-
       const label = self.x.invert(d3.mouse(this)[0]);
       const dobj = {};
       dobj[`label`] = label;
@@ -661,7 +672,6 @@ export class MultilineChartComponent implements OnInit, OnChanges {
       const getIssuesForHoverDate = self.combinedData.filter(function (issue) {
         const issueDate = issue.x0.getDate() + '-' + issue.x0.getMonth() + '-' + issue.x0.getFullYear();
         const labelDate = dobj[`label`].getDate() + '-' + dobj[`label`].getMonth() + '-' + dobj[`label`].getFullYear();
-
         return (issueDate === labelDate);
       });
 
@@ -678,7 +688,7 @@ export class MultilineChartComponent implements OnInit, OnChanges {
 
       self.focus.select('.x')
         .attr('transform',
-          'translate(' + self.x(dobj[`label`]) + ',' +
+          'translate(' + (self.x(dobj[`label`]) + 5) + ',' +
           0 + ')')
         .attr('y2', self.height);
 
@@ -692,13 +702,12 @@ export class MultilineChartComponent implements OnInit, OnChanges {
 
           self.focus.select('.c' + k)
             .attr('transform',
-              'translate(' + self.x(dobj[`label`]) + ',' +
+              'translate(' + (self.x(dobj[`label`]) + 5) + ',' +
               self.y(dobj[`value` + k]) + ')')
             .attr('r', 4.5)
             .attr('y2', self.height);
 
         }
-
       }
 
       let rightSide;
@@ -755,7 +764,6 @@ export class MultilineChartComponent implements OnInit, OnChanges {
               .attr('dy', .35 + (z * 3) + 'em');
           });
 
-
           if (self.colorSetLegends === 'true') {
 
             self.dataResponse.forEach((eachline) => {
@@ -787,12 +795,11 @@ export class MultilineChartComponent implements OnInit, OnChanges {
               .attr('transform',
                 'translate(' + self.x(dobj[`label`]) + ',' +
                 0 + ')')
-              .attr('x', '70')
-              .attr('y', 10 + (z * 32));
+              .attr('x', '72')
+              .attr('y', 7 + (z * 32));
           });
 
         }
-
 
       } else if (mousePosition > rightSide) {
 
@@ -803,7 +810,7 @@ export class MultilineChartComponent implements OnInit, OnChanges {
               0 + ')')
             .text((formatDate(dobj[`label`])).toUpperCase())
             .attr('dx', '-12em')
-            .attr('dy', '.5em');
+            .attr('dy', '.2em');
         });
 
         self.dataResponse.forEach((eachline) => {
@@ -813,7 +820,7 @@ export class MultilineChartComponent implements OnInit, OnChanges {
               0 + ')')
             .text((formatYear(dobj[`label`])).toUpperCase())
             .attr('dx', '-12em')
-            .attr('dy', '1.8em');
+            .attr('dy', '1.3em');
         });
 
         for (let i = 0; i < self.dataResponse.length; i++) {
@@ -826,7 +833,7 @@ export class MultilineChartComponent implements OnInit, OnChanges {
                   'translate(' + self.x(dobj[`label`]) + ',' +
                   0 + ')')
                 .text(dobj['value' + i])
-                .attr('dx', '-5.5em')
+                .attr('dx', '-5.2em')
                 .attr('dy', .35 + (i * 2.7) + 'em');
             });
 
@@ -907,7 +914,8 @@ export class MultilineChartComponent implements OnInit, OnChanges {
                 .attr('transform',
                   'translate(' + self.x(dobj[`label`]) + ',' +
                   0 + ')')
-                .attr('x', '-73')
+                .attr('x', '-70')
+                .style('display', 'block')
                 .attr('y', -7 + (i * 34));
             });
           }
@@ -923,7 +931,7 @@ export class MultilineChartComponent implements OnInit, OnChanges {
               0 + ')')
             .text((formatDate(dobj[`label`])).toUpperCase())
             .attr('dx', '.35em')
-            .attr('dy', '.35em');
+            .attr('dy', '.15em');
         });
 
         self.dataResponse.forEach((eachline) => {
@@ -933,7 +941,7 @@ export class MultilineChartComponent implements OnInit, OnChanges {
               0 + ')')
             .text((formatYear(dobj[`label`])).toUpperCase())
             .attr('dx', '.35em')
-            .attr('dy', '1.5em');
+            .attr('dy', '1.2em');
         });
 
         for (let i = 0; i < self.dataResponse.length; i++) {
@@ -946,7 +954,7 @@ export class MultilineChartComponent implements OnInit, OnChanges {
                   'translate(' + self.x(dobj[`label`]) + ',' +
                   0 + ')')
                 .text(dobj['value' + i])
-                .attr('dx', '-5.5em')
+                .attr('dx', '-5.2em')
                 .attr('dy', .35 + (i * 2.7) + 'em');
             });
 
@@ -1028,7 +1036,8 @@ export class MultilineChartComponent implements OnInit, OnChanges {
                 .attr('transform',
                   'translate(' + self.x(dobj[`label`]) + ',' +
                   0 + ')')
-                .attr('x', '-73')
+                .attr('x', '-70')
+                .style('display', 'block')
                 .attr('y', -7 + (i * 34));
             });
 

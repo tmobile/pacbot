@@ -72,6 +72,7 @@ import { SystemManagementComponent } from '../../pacman-features/modules/admin/s
 import { ConfigManagementComponent } from '../../pacman-features/modules/admin/config-management/config-management.component';
 import { RecommendationsComponent} from '../../pacman-features/modules/compliance/recommendations/recommendations.component';
 import { RecommendationsDetailsComponent } from '../../pacman-features/modules/compliance/recommendations-details/recommendations-details.component';
+import { CisScoreNewComponent } from '../../pacman-features/modules/compliance/cis-score-new/cis-score-new.component';
 
 export const COMPLIANCE_ROUTES = [
     {
@@ -232,6 +233,16 @@ export const COMPLIANCE_ROUTES = [
             },
             canActivate: [AuthGuardService]
     },
+    {
+        path: 'cis-compliance',
+        component: CisScoreNewComponent,
+        data: {
+            title: 'CIS',
+            tileName: 'app-cis-score',
+            pageLevel: 0
+        },
+        canActivate: [AuthGuardService]
+    }
 ];
 
 export const ASSETS_ROUTES = [

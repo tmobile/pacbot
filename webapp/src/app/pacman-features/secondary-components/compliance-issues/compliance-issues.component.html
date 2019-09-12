@@ -16,6 +16,9 @@
     <div class='sidebar-widget-container'>
         <app-overall-compliance></app-overall-compliance>
     </div>
+    <div class='sidebar-widget-container' *ngIf="tileMapping['app-cis-score']">
+        <app-compliance-widget-cis-tis></app-compliance-widget-cis-tis>
+    </div>
     <div class='sidebar-widget-container'>
         <app-pacman-issues [pageLevel]="pageLevel"></app-pacman-issues>
     </div>

@@ -23,7 +23,6 @@ import { TrackerBarComponent } from './../../secondary-components/tracker-bar/tr
 import { AwsAppTileComponent } from './../../secondary-components/aws-app-tile/aws-app-tile.component';
 import { AwsResourceDetailsComponent } from './../../secondary-components/aws-resource-details/aws-resource-details.component';
 import { ViewAllResourcesComponent } from './../../secondary-components/view-all-resources/view-all-resources.component';
-import { MultilineChartComponent } from './../../secondary-components/multiline-chart/multiline-chart.component';
 import { InventoryContainerComponent } from './../../secondary-components/inventory-container/inventory-container.component';
 import { UtilizationContainerComponent } from './../../secondary-components/utilization-container/utilization-container.component';
 import { AssetInfoComponent } from './../../secondary-components/asset-info/asset-info.component';
@@ -65,7 +64,6 @@ import { AwsNotificationsComponent } from './aws-notifications/aws-notifications
     AwsResourceDetailsComponent,
     InventoryContainerComponent,
     ViewAllResourcesComponent,
-    MultilineChartComponent,
     UtilizationContainerComponent,
     AssetInfoComponent,
     AssetTypeComponent,

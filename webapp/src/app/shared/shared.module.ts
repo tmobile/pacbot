@@ -34,6 +34,7 @@ import {SearchFilterPipe} from './../shared/pipes/search-filter.pipe';
 import {MainRoutingAnimationEventService} from './services/main-routing-animation-event.service';
 import {RefactorFieldsService} from './services/refactor-fields.service';
 import {RouterUtilityService} from './services/router-utility.service';
+import { MultilineChartComponent } from './multiline-chart/multiline-chart.component';
 
 // Imports for local data
 
@@ -160,7 +161,8 @@ import { TableListComponent } from './table-list/table-list.component';
         ConfigHistoryDropdownComponent,
         InputModalComponent,
         BackNavigationComponent,
-        TableListComponent
+        TableListComponent,
+        MultilineChartComponent
     ],
     exports: [CommonModule,
         FormsModule,
@@ -219,7 +221,8 @@ import { TableListComponent } from './table-list/table-list.component';
         InputModalComponent,
         BackNavigationComponent,
         SelectDropDownModule,
-        TableListComponent
+        TableListComponent,
+        MultilineChartComponent
     ],
     providers: [HttpService, UtilsService, ExceptionManagementService, RefactorFieldsService, OrderByPipe, SearchFilterPipe, MainRoutingAnimationEventService, AuthGuardService, RouterUtilityService, LoggerService, ErrorHandlingService, FilterManagementService, ToastObservableService, CommonResponseService, CopytoClipboardService, FormService]
 })

@@ -52,6 +52,12 @@ export const  DOMAIN_MAPPING = [
                         'groupBy': 'compliance-dashboard',
                         'cloudSpecific': true
                     },
+                    {
+                        'route': 'cis-compliance',
+                        'sequence': 4,
+                        'groupBy': 'compliance-dashboard',
+                        'cloudSpecific': true
+                    },
                 ]
             },
             {

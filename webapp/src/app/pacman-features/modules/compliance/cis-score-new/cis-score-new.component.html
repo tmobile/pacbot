@@ -1,0 +1,345 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ -->
+
+ <div class="compliance-dashboard-wrapper flex flex-between">
+    <div class="floating-widgets-section-full flex flex-col">
+        <div class="floating-widgets-header flex flex-col pk-header">
+            <h1 class="title-text">{{pageTitle}}</h1>
+            <div class="paragraph">Center for Internet Security (CIS) harnesses the power of a global IT community to safeguard public and private organizations against cyber threats. PacBot uses CIS benchmarks to measure CIS Compliance. </div>
+        </div>
+        <div class="floating-widgets-section-full container">
+            <section>
+                <ul>
+                    <li class="widget-wrapper padding-0">
+                        <div class="widget flex flex-align-center">
+                          <div class="outer-card flex">
+                            <div class="card-inside flex flex-align-center flex-col relative" >
+                                <div  class="events-text uppercase">CIS Score</div>
+                                <img (click)="showHelpContent(true)" class="cis-score-help-text" src="../../../assets/icons/Help.svg">
+                                <!-- <div class='text-value'>Lorem Ipsum is simply dummy text of the printing and typesetting </div> -->
+                                <ng-container *ngIf="totalServiceData.cisBenchMarks.status === 1">
+                                    <div  class="graph-chart-cont flex flex-align-center w-100 flex-center" id="statsDoughnut1" #statsViolations1>
+                                        <app-doughnut-chart (error)="getErrorFromDoughnut($event)" [chartContId] = "'statsDoughnut1'" [graphData] = "totalServiceData.Doughnut.processData" [graphWidth]="statsViolations1.offsetWidth / 2" [graphHeight]="statsViolations1.offsetHeight / 2" [innerRadious] = 'innerRadious' [outerRadious] ='outerRadious' [strokeColor]= "strokeColor"></app-doughnut-chart>
+                                    </div>
+                                </ng-container>
+                                <article class='center error_handling' *ngIf='totalServiceData.cisBenchMarks.status == -1 && totalServiceData.Doughnut.errorMessage'>
+                                    <div class="error_msg">
+                                        <app-error-message [selectedValue]="totalServiceData.Doughnut.errorMessage"></app-error-message>
+                                    </div>
+                                </article>
+                                <!-- Table Loader -->
+                                <div *ngIf="totalServiceData.cisBenchMarks.status === 0" class='loader absolute'></div>
+                            </div>
+                          </div>
+                          <div class="outer-card flex">
+                            <div class="card-inside flex flex-align-center flex-col relative">
+                                <div  class="events-text uppercase padding-b0">CIS Trend</div>
+                                  <ng-container *ngIf='totalServiceData.barGraph.status === 1'>
+                                    <div class="flex flex-col flex-grow w-100 " #widget id="cisTrend">
+                                        <app-multiline-chart class="flex flex-col flex-grow full-height" *ngIf="totalServiceData.barGraph.processData.length > 0" [colorSetLegends]="'false'" [hover]="true" [colorSet]="totalServiceData.barGraph.colorSet" [graphWidth]="widgetWidth2" [graphHeight]="widgetHeight2" [xAxisValues]="true" [smoothEdge]="true" [yAxisLabel]="yAxisLabel" [axisUnit]="'false'" [dataResponse]="totalServiceData.barGraph.processData" [verticalLines]="true" [multipleData]="true" [idUnique]="'cisTrend'"></app-multiline-chart>
+                                        <ul *ngIf='totalServiceData.barGraph.processData.length > 0' class="flex flex-row flex-center legends-wrapper">
+                                            <li *ngFor="let line of totalServiceData.barGraph.processData; let i = index;" class="flex flex-row flex-align-center">
+                                                <div class="legend-color" [ngStyle]="{'background-color': totalServiceData.barGraph.colorSet[i]}"></div>
+                                                <div class="flex flex-col flex-center legend-text capitalize">Score</div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                  </ng-container>
+                                <article class='center error_handling' *ngIf='totalServiceData.barGraph.status == -1 && totalServiceData.barGraph.errorMessage'>
+                                    <div class="error_msg">
+                                        <app-error-message [selectedValue]="totalServiceData.barGraph.errorMessage"></app-error-message>
+                                    </div>
+                                </article>
+                                <!-- Table Loader -->
+                                <div *ngIf="totalServiceData.barGraph.status === 0" class='loader absolute'></div>
+                            </div>
+                          </div>
+                        </div>
+                    </li>
+                    <li class="widget-wrapper padding-0">
+                        <div class="widget flex">
+                            <div class="outer-card flex">
+                              <div class="card-inside flex flex-align-center flex-col relative" >
+                                <div  class="events-text uppercase">Application Leaders <span class="sans">&amp;</span> Laggards</div>
+
+                                 <ng-container *ngIf='totalServiceData.cisApplication.status === 1'>
+                                    <div class="details-btn flex">
+                                      <div class="view-all" (click)="openDetailsModal('application')">View All</div>
+                                      <div class="right-arrow-small pointer"></div>
+                                    </div>
+                                    <div class='flex flex-grow w-100 inner-table'>
+                                        <div class='sub-table-wrap w-100' *ngIf="totalServiceData.cisApplication.leaders.length>0">
+                                            <div class='sub-table'>
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <th>{{totalServiceData.cisApplication.rawData.category}}</th>
+                                                            <th>CIS Score</th>
+                                                        </tr>
+                                                        <!-- <tr *ngFor="let data of performersTableData.highest"> -->
+                                                          <tr *ngFor="let data of totalServiceData.cisApplication.leaders | slice:0:5">
+                                                            <td class="higher-text">{{objectKeys(data)[0]}}</td>
+                                                            <td class='higher-text font-weight'>{{data[objectKeys(data)[0]]}} %</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class='sub-table-wrap w-100' *ngIf="totalServiceData.cisApplication.laggards.length>0">
+                                            <div class='sub-table'>
+                                                <table>
+                                                    <tbody>
+                                                        <tr>
+                                                            <th>{{totalServiceData.cisApplication.rawData.category}}</th>
+                                                            <th>CIS Score</th>
+                                                        </tr>
+                                                          <tr *ngFor="let data of totalServiceData.cisApplication.laggards |  slice:0:5">
+                                                            <td class="red-text">{{objectKeys(data)[0]}}</td>
+                                                            <td class='red-text font-weight'>{{data[objectKeys(data)[0]]}} %</td>
+                                                        </tr>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </ng-container>
+                                <article class='center error_handling' *ngIf='totalServiceData.cisApplication.status == -1 && totalServiceData.cisApplication.errorMessage'>
+                                    <div class="error_msg">
+                                        <app-error-message [selectedValue]="totalServiceData.cisApplication.errorMessage"></app-error-message>
+                                    </div>
+                                </article>
+                                <!-- Table Loader -->
+                                <div *ngIf="totalServiceData.cisApplication.status === 0" class='loader absolute'></div>
+                              </div>
+                            </div>
+                            <div class="outer-card flex">
+                                    <div class="card-inside flex flex-align-center flex-col relative" >
+                                        <div  class="events-text uppercase">Account Leaders <span class="sans">&amp;</span> Laggards</div>
+                                        <ng-container *ngIf='totalServiceData.cisAccount.status === 1'>
+                                          <div class="details-btn flex">
+                                            <div class="view-all" (click)="openDetailsModal('account')">View All</div>
+                                            <div class="right-arrow-small pointer"></div>
+                                          </div>
+                                          <div class='flex flex-grow w-100 inner-table'>
+                                              <div class='sub-table-wrap w-100' *ngIf="totalServiceData.cisAccount.leaders.length>0">
+                                                  <div class='sub-table'>
+                                                      <table>
+                                                          <tbody>
+                                                              <tr>
+                                                                  <th>{{totalServiceData.cisAccount.rawData.category}}</th>
+                                                                  <th>CIS Score</th>
+                                                              </tr>
+                                                                <tr *ngFor="let data of totalServiceData.cisAccount.leaders | slice:0:5">
+                                                                  <td class="higher-text">{{objectKeys(data)[0]}}</td>
+                                                                  <td class='higher-text font-weight'>{{data[objectKeys(data)[0]]}} %</td>
+                                                              </tr>
+                                                          </tbody>
+                                                      </table>
+                                                  </div>
+                                              </div>
+                                              <div class='sub-table-wrap w-100' *ngIf="totalServiceData.cisAccount.laggards.length>0">
+                                                  <div class='sub-table'>
+                                                      <table>
+                                                          <tbody>
+                                                              <tr>
+                                                                  <th>{{totalServiceData.cisAccount.rawData.category}}</th>
+                                                                  <th>CIS Score</th>
+                                                              </tr>
+                                                                <tr *ngFor="let data of totalServiceData.cisAccount.laggards | slice:0:5">
+                                                                  <td class="red-text">{{objectKeys(data)[0]}}</td>
+                                                                  <td class='red-text font-weight'>{{data[objectKeys(data)[0]]}} %</td>
+                                                              </tr>
+                                                          </tbody>
+                                                      </table>
+                                                  </div>
+                                              </div>
+                                          </div>
+                                      </ng-container>
+                                      <article class='center error_handling' *ngIf='totalServiceData.cisAccount.status === -1 && totalServiceData.cisAccount.errorMessage'>
+                                          <div class="error_msg">
+                                              <app-error-message [selectedValue]="totalServiceData.cisAccount.errorMessage"></app-error-message>
+                                          </div>
+                                      </article>
+                                      <!-- Table Loader -->
+                                      <div *ngIf="totalServiceData.cisAccount.status === 0" class='loader absolute'></div>
+                                    </div>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="widget-wrapper">
+                        <div class="widget flex flex-align-center">
+                            <div class="outer-card flex w-100">
+                                <div class="card-inside flex flex-align-center flex-col full-width relative" >
+                                    <div class=" flex flex-between flex-align-center header">
+                                        <div class="flex header-text">Details</div>
+                                        <div class="flex flex-align-center " *ngIf="this.totalServiceData.Doughnut.status === 1">
+                                            <div>View by:<img (click)="showHelpContent(false)" class="help-icon" src="../../../assets/icons/question.svg" title="What is responsible party"></div>
+                                            <div class="flex flex-align-center padding-lr">
+                                                <app-check-box-btn [isChecked]="cisResponsibiltiyCheckbox.applicationRelated" class="check-btn-refinedBy" (checkBoxClickEvent)="cisResponsibiltiyCheckbox.applicationRelated=!cisResponsibiltiyCheckbox.applicationRelated;selectCategoryType($event);" title="Application Related">Application-Related &#40;{{cisApplicationBenchmarksCount}}&#41;</app-check-box-btn>
+                                            </div>
+                                            <div class ="flex flex-align-center padding-lr">
+                                                <app-check-box-btn [isChecked]="cisResponsibiltiyCheckbox.accountRelated" class="check-btn-refinedBy" (checkBoxClickEvent)="cisResponsibiltiyCheckbox.accountRelated=!cisResponsibiltiyCheckbox.accountRelated;selectCategoryType($event);"  title="Account Related">Account-Related</app-check-box-btn>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <ng-container *ngIf="this.totalServiceData.Doughnut.status === 1">
+                                    <div class="body-element flex flex-align-center w-100 h-100">
+                                        <div class="first-selection w-100 h-100 flex flex-col relative">
+                                            <ng-container>
+                                                <div class="sub-header-text">Entity Type</div>
+                                                <div class="first-list pad-r2 w-100 ">
+                                                    <ul>
+                                                        <li *ngFor="let list of totalServiceData.cisViolation.processData" [ngClass]="violationAccountSelect && violationAccountSelect.entityType === list.entityType ? 'selected-entity': ''" (click)="accountSelection(list.entityType) " class="relative each-element">
+                                                            <div class='absolute rectangular-box' [class.highlight-bg]='violationAccountSelect && violationAccountSelect.entityType === list.entityType'>
+                                                                <div class='each-content'>{{list.updated_entity}} </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                            </ng-container>
+                                        </div>
+                                        <div class="second-selection w-100 h-100 flex flex-col relative">
+                                          <ng-container *ngIf="totalServiceData.Doughnut.status == 1 && benchmarkError === 1">
+                                            <div class="sub-header-text">Benchmarks</div>
+                                            <div *ngIf="violationAccountSelect" class="first-list w-100">
+                                                <ul>
+                                                    <li *ngFor= "let benchmark of violationAccountSelect.innerDetails" [ngClass]="benchmarkSelect && benchmarkSelect.ruleId === benchmark.ruleId ? 'selected-benchmark': '' " (click)=" benchmarkSelection(benchmark.ruleId)" class="relative each-element benchmark">
+                                                        <div class='absolute rectangular-box' [class.highlight-bg]='benchmarkSelect && benchmarkSelect.ruleId === benchmark.ruleId'>
+                                                            <div class='each-content' [ngClass]="benchmark.scorePercentage === 100 ? 'higher-text' : 'red-text'">{{benchmark.ruleId}} {{benchmark.ruleTitle  | titlecase}}</div>
+                                                        </div>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                            </ng-container>
+                                            <article class='center error_handling' *ngIf='totalServiceData.Doughnut.status === -1 || benchmarkError === -1'>
+                                                <div class="error_msg">
+                                                    <app-error-message [selectedValue]="'noDataAvailable'"></app-error-message>
+                                                </div>
+                                            </article>
+                                            <!-- Table Loader -->
+                                            <div *ngIf="benchmarkError === 0 && totalServiceData.Doughnut.status === 0" class='loader absolute'></div>
+                                        </div>
+                                        <div class="right-element h-100 flex flex-col relative">
+                                          <ng-container *ngIf="benchmarkSelect" >
+                                            <div class="right-text">Benchmark Details</div>
+                                            <div class="right-box h-100">
+                                                <div class="flex flex-col">
+                                                    <div class="right-each-container flex flex-col">
+                                                        <div class="right-each-header">Benchmark Violated</div>
+                                                        <div class="flex flex-align-center each-cell-list-row">
+                                                            <div class="right-each-element">{{benchmarkSelect.ruleId}} {{benchmarkSelect.ruleTitle}}</div>
+                                                            <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="benchmarkSelect.ruleId + ' '+ benchmarkSelect.ruleTitle" [iconSize]="'10px'" ></app-copy-element>
+                                                        </div>
+                                                    </div>
+                                                    <div class="right-each-container green-background flex flex-col">
+                                                        <div class="right-each-header">Recommendation</div>
+                                                        <div class="right-each-element" *ngIf="policyDescription" >
+                                                           <ul>
+                                                             <li class="list-style" *ngFor="let val of policyDescription.resolution; let i = index"><span>{{i+1}}. </span> {{val}}</li>
+                                                           </ul>
+                                                        </div>
+                                                    </div>
+                                                    <div class="right-each-container flex flex-col">
+                                                            <div class="right-each-header">Description</div>
+                                                            <div *ngIf="policyDescription" class="right-each-element">{{policyDescription.ruleDescription ? policyDescription.ruleDescription : '-' }}</div>
+                                                        </div>
+                                                        <div class="right-each-container flex">
+                                                            <div class="flex flex-col sub-element">
+                                                                <div class="right-each-header">Entity Type</div>
+                                                                <div class="flex flex-align-center each-cell-list-row ">
+                                                                    <div class="right-each-element">{{benchmarkSelect._entitytype | titlecase}}</div>
+                                                                    <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="benchmarkSelect._entitytype" [iconSize]="'10px'" ></app-copy-element>
+                                                                </div>
+                                                            </div>
+                                                            <div class="flex flex-col sub-element">
+                                                                <div class="right-each-header">Responsible Party</div>
+                                                                <div class="flex flex-align-center each-cell-list-row ">
+                                                                    <div class="right-each-element red-text">{{benchmarkSelect.responsbility}}</div>
+                                                                    <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="benchmarkSelect.responsbility" [iconSize]="'10px'" ></app-copy-element>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="right-each-container flex">
+                                                            <div class="flex flex-col sub-element">
+                                                                <div class="right-each-header">Policy Id</div>
+                                                                <div class="flex flex-align-center each-cell-list-row ">
+                                                                    <div class="right-each-element max-width-text">{{benchmarkSelect.policyId}}</div>
+                                                                    <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="benchmarkSelect.policyId" [iconSize]="'10px'" ></app-copy-element>
+                                                                </div>
+                                                            </div>
+                                                            <div class="flex flex-col sub-element">
+                                                                <div class="right-each-header">Total Assets Affected</div>
+                                                                <div class="flex flex-align-center each-cell-list-row ">
+                                                                    <div class="right-each-element">{{benchmarkSelect.violated_assets}} out of {{benchmarkSelect.total_assets}}</div>
+                                                                    <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="benchmarkSelect.violated_assets + 'out of ' + benchmarkSelect.total_assets" [iconSize]="'10px'" ></app-copy-element>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <app-cis-violating-assets class="violating" *ngIf="benchmarkSelect && benchmarkSelect.scorePercentage !== 100" [RuleId]="violatedRuleId"></app-cis-violating-assets>
+                                                   </div>
+                                                </div>
+                                            </ng-container>
+                                            <article class='center error_handling' *ngIf='!benchmarkSelect'>
+                                                <div class="error_msg">
+                                                    <app-error-message [selectedValue]="'noDataAvailable'"></app-error-message>
+                                                </div>
+                                            </article>
+                                        </div>
+                                    </div>
+                                   </ng-container>
+                                   <article class='center error_handling' *ngIf='totalServiceData.Doughnut.status == -1 && totalServiceData.Doughnut.errorMessage'>
+                                        <div class="error_msg">
+                                            <app-error-message [selectedValue]="totalServiceData.Doughnut.errorMessage"></app-error-message>
+                                        </div>
+                                    </article>
+                                    <!-- Table Loader -->
+                                    <div *ngIf="totalServiceData.Doughnut.status === 0" class='loader absolute'></div>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+        </div>
+    </div>
+</div>
+
+<!-- popup model for appplication and account -->
+<div class='fixed pop-over flex flex-col' *ngIf='detailsPopup'>
+        <div class='popup-header flex flex-align-center flex-between'>
+            <div class='header-title'>{{popupText}} leaders & laggards</div>
+            <div class='cross-img' (click)='detailsPopup = false;'>
+                <img height="27px;" width="27px;" src='../assets/png/delete.png'>
+            </div>
+        </div>
+        <div class="flex flex-col flex-grow scroll popup-content" >
+            <div class='main-table'>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>{{categoryType}}</th>
+                            <th>CIS Score</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let data of detailsValue">
+                            <td>{{objectKeys(data)[0]}}</td>
+                            <td>{{data[objectKeys(data)[0]]}} % </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="fixed fixed-bg-overlay" (click)='detailsPopup = false;' *ngIf='detailsPopup'></div>

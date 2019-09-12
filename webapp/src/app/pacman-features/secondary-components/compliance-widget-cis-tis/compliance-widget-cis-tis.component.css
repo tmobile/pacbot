@@ -1,0 +1,93 @@
+/*
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+ .container-wrapper {
+    width: 100%;
+    font-family: ex2-regular;
+    position: relative;
+    font-size: 1em;
+}
+
+.header {
+    padding: 0.6em 0.5em 0.7em 1em;
+    font-family: ex2-medium;
+    background-color: #dce3e9;
+    color: #3f4a59;
+}
+
+.article-body {
+    min-height: 10vh;
+    padding: 0.6em;
+    transition: 0.8s ease;
+    position: relative;
+}
+.issue_values {
+    width: 100%;
+}
+
+.error_msg {
+    min-height: 10vh;
+    position: relative;
+    /*margin-top: 1em;*/
+}
+
+.error_handling {
+    width: 100%;
+}
+.cis-value{
+    width:100%;
+    padding: .1em 1.3em;
+    text-align: center;
+}
+.tis-value{
+    width:50%;
+    padding: .1em 1.3em;
+}
+.cis-text{
+    color: #E20074;
+    letter-spacing: 0.5px;
+}
+.tis-text{
+    color: #E20074;
+    letter-spacing: 0.5px;
+}
+.cis-text-size{
+    font-size: 24px;
+    font-family: ex2-bold;
+}
+.tis-text-size{
+    font-size: 24px;
+    font-family: ex2-bold;
+}
+.cis-desc{
+    line-height: 1.2em;
+    padding: .3em 0;
+    letter-spacing: 0.1px;
+    color: #3c5079;
+}
+.tis-desc{
+    line-height: 1.2em;
+    padding: .3em 0;
+    letter-spacing: 0.1px;
+    color: #3c5079;
+}
+
+.cis-clickable-text {
+    transition: 0.3s ease;
+    border-bottom: 1px solid #ed0274;
+}
+
+.cis-clickable-text:hover {
+    transform: scaleX(1.15);
+}

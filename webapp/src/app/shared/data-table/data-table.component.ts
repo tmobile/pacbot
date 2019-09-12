@@ -387,5 +387,4 @@ export class DataTableComponent implements OnInit, OnChanges {
         this.menuClick.emit(obj);
         row.dropDownShown = false;
     }
-
 }
