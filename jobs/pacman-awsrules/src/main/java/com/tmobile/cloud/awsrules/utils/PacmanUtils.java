@@ -2853,5 +2853,59 @@ public class PacmanUtils {
         }
         return null;
     }
+    
+	/**
+	 * Check instance id for port rule in ES.
+	 *
+	 * @param instanceId
+	 *            the instance id
+	 * @param ec2PortUrl
+	 *            the ec 2 port url
+	 * @param ruleId
+	 *            the rule id
+	 * @param type
+	 *            the type
+	 * @return true, if successful
+	 * @throws Exception
+	 *             the exception
+	 */
+	public static boolean checkInstanceIdForPortRuleInES(String instanceId, String ec2PortUrl, String ruleId,
+			String type) throws Exception {
+		JsonParser jsonParser = new JsonParser();
+		String resourceid = null;
+		Map<String, Object> mustFilter = new HashMap<>();
+		Map<String, Object> mustNotFilter = new HashMap<>();
+		HashMultimap<String, Object> shouldFilter = HashMultimap.create();
+		Map<String, Object> mustTermsFilter = new HashMap<>();
+		if (StringUtils.isEmpty(type)) {
+			shouldFilter.put(convertAttributetoKeyword(PacmanSdkConstants.ISSUE_STATUS_KEY),
+					PacmanSdkConstants.STATUS_OPEN);
+		} else {
+			shouldFilter.put(convertAttributetoKeyword(PacmanSdkConstants.ISSUE_STATUS_KEY),
+					PacmanSdkConstants.STATUS_OPEN);
+			shouldFilter.put(convertAttributetoKeyword(PacmanSdkConstants.ISSUE_STATUS_KEY),
+					PacmanRuleConstants.STATUS_EXEMPTED);
+		}
+
+		mustFilter.put(convertAttributetoKeyword(PacmanSdkConstants.RULE_ID), ruleId);
+		mustFilter.put(convertAttributetoKeyword(PacmanSdkConstants.RESOURCE_ID), instanceId);
+
+		JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(ec2PortUrl, mustFilter,
+				mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null, null);
+
+		if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
+			JsonObject hitsJson = (JsonObject) jsonParser.parse(resultJson.get(PacmanRuleConstants.HITS).toString());
+			JsonArray hitsArray = hitsJson.getAsJsonArray(PacmanRuleConstants.HITS);
+			for (int i = 0; i < hitsArray.size(); i++) {
+				JsonObject source = hitsArray.get(i).getAsJsonObject().get(PacmanRuleConstants.SOURCE)
+						.getAsJsonObject();
+				resourceid = source.get(PacmanSdkConstants.RESOURCE_ID).getAsString();
+				if (!org.apache.commons.lang.StringUtils.isEmpty(resourceid)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 
 }
