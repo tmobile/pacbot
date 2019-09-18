@@ -37,10 +37,10 @@ import com.tmobile.pacman.commons.exception.RuleExecutionFailedExeption;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ PacmanUtils.class})
-public class Ec2InstanceScannedByQualysRuleTest {
+public class ResourceScannedByQualysRuleTest {
 
     @InjectMocks
-    Ec2InstanceScannedByQualysRule ec2InstanceScannedByQualysRule;
+    ResourceScannedByQualysRule ec2InstanceScannedByQualysRule;
  
     @Test
     public void executeTest() throws Exception {
