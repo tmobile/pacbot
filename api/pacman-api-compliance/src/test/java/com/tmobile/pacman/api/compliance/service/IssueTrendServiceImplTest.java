@@ -56,9 +56,6 @@ public class IssueTrendServiceImplTest {
     @Mock
     private ComplianceService complianceService;
     
-    @Mock
-    private VulnerabilityService vulnService;
-
     Request request = new Request();
     
     UntaggedTargetTypeRequest untaggedTargetTypeRequest = new UntaggedTargetTypeRequest();
@@ -98,11 +95,6 @@ public class IssueTrendServiceImplTest {
         
         when(complianceService.getCertificates(anyString()))
         .thenReturn(taggingInfoMap);
-        
-        when(vulnService.getVulnerabilitySummary(anyString(),anyString()))
-        .thenReturn(vulnInfoMap);
-        complianceService
-        .getRulecompliance(request);
         
         when(complianceService.getRulecompliance(anyObject()))
         .thenReturn(CommonTestUtil.getResponseWithOrder());
