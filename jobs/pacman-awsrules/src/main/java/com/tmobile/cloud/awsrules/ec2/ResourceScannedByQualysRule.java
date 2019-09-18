@@ -45,24 +45,20 @@ import com.tmobile.pacman.commons.rule.PacmanRule;
 import com.tmobile.pacman.commons.rule.RuleResult;
 
 /**
- * The Class Ec2InstanceScannedByQualysRule.
+ * The Class ResourceScannedByQualysRule.
  */
-@PacmanRule(key = "check-for-ec2-scanned-by-qualys", desc = "checks for Ec2 instance scanned by qualys,if not found then its an issue", severity = PacmanSdkConstants.SEV_HIGH, category = PacmanSdkConstants.GOVERNANCE)
-public class Ec2InstanceScannedByQualysRule extends BaseRule {
+@PacmanRule(key = "check-for-resource-scanned-by-qualys", desc = "checks for Ec2 instance or VM scanned by qualys,if not found then its an issue", severity = PacmanSdkConstants.SEV_HIGH, category = PacmanSdkConstants.GOVERNANCE)
+public class ResourceScannedByQualysRule extends BaseRule {
 
 	/** The Constant logger. */
-	private static final Logger logger = LoggerFactory.getLogger(Ec2InstanceScannedByQualysRule.class);
-
+	private static final Logger logger = LoggerFactory.getLogger(ResourceScannedByQualysRule.class);
+	
 	/**
 	 * The method will get triggered from Rule Engine with following parameters.
 	 *
 	 * @param ruleParam ************* Following are the Rule Parameters********* <br><br>
 	 * 
-	 * ruleKey : check-for-ec2-scanned-by-qualys <br><br>
-	 * 
-	 * severity : Enter the value of severity <br><br>
-	 * 
-	 * ruleCategory : Enter the value of category <br><br>
+	 * ruleKey : check-for-resource-scanned-by-qualys <br><br>
 	 * 
 	 * target : Enter the target days <br><br>
 	 * 
@@ -70,13 +66,12 @@ public class Ec2InstanceScannedByQualysRule extends BaseRule {
 	 * 
 	 * esQualysUrl : Enter the qualys URL <br><br>
 	 * 
-	 * threadsafe : if true , rule will be executed on multiple threads <br><br>
 	 * @param resourceAttributes this is a resource in context which needs to be scanned this is provided by execution engine
 	 * @return the rule result
 	 */
 
 	public RuleResult execute(final Map<String, String> ruleParam,Map<String, String> resourceAttributes) {
-		logger.debug("========Ec2InstanceScannedByQualysRule started=========");
+		logger.debug("========ResourceScannedByQualysRule started=========");
 		Annotation annotation = null;
 		String instanceId = null;
 		String severity = ruleParam.get(PacmanRuleConstants.SEVERITY);
@@ -85,7 +80,7 @@ public class Ec2InstanceScannedByQualysRule extends BaseRule {
 		String firstDiscoveredOn = resourceAttributes.get(PacmanRuleConstants.FIRST_DISCOVERED_ON);
 		String discoveredDaysRange = ruleParam.get(PacmanRuleConstants.DISCOVERED_DAYS_RANGE);
 		if(!StringUtils.isNullOrEmpty(firstDiscoveredOn)){
-		firstDiscoveredOn= firstDiscoveredOn.substring(0, firstDiscoveredOn.length()-3);
+		firstDiscoveredOn= firstDiscoveredOn.substring(0,PacmanRuleConstants.FIRST_DISCOVERED_DATE_FORMAT_LENGTH);
 		}
 		String qualysApi =  null;
 		
@@ -107,8 +102,9 @@ public class Ec2InstanceScannedByQualysRule extends BaseRule {
 		LinkedHashMap<String,Object> issue = new LinkedHashMap<>();
 		Gson gson = new Gson();
 		
-		if (resourceAttributes != null && PacmanRuleConstants.RUNNING_STATE.equalsIgnoreCase(resourceAttributes.get(PacmanRuleConstants.STATE_NAME))) {
-			instanceId = StringUtils.trim(resourceAttributes.get(PacmanRuleConstants.INSTANCEID));
+		if (resourceAttributes != null && (PacmanRuleConstants.RUNNING_STATE.equalsIgnoreCase(resourceAttributes.get(PacmanRuleConstants.STATE_NAME)) || PacmanRuleConstants.RUNNING_STATE.equalsIgnoreCase(resourceAttributes.get(PacmanRuleConstants.STATUS)))) {
+			String entityType = resourceAttributes.get(PacmanRuleConstants.ENTITY_TYPE);
+			instanceId = StringUtils.trim(resourceAttributes.get(PacmanRuleConstants.RESOURCE_ID));
 			if(PacmanUtils.calculateLaunchedDuration(firstDiscoveredOn)>Long.parseLong(discoveredDaysRange)){
 			    Map<String,Object> ec2ScannesByQualysMap = new HashMap<>();
 			try{
@@ -119,23 +115,23 @@ public class Ec2InstanceScannedByQualysRule extends BaseRule {
 			}
 			if (!ec2ScannesByQualysMap.isEmpty()) {
 				annotation = Annotation.buildAnnotation(ruleParam,Annotation.Type.ISSUE);
-				annotation.put(PacmanSdkConstants.DESCRIPTION,"Ec2 instance not scanned  by qualys found!!");
+				annotation.put(PacmanSdkConstants.DESCRIPTION,""+entityType+" instance not scanned  by qualys found!!");
 				annotation.put(PacmanRuleConstants.SEVERITY, severity);
 				annotation.put(PacmanRuleConstants.CATEGORY, category);
 				
-				issue.put(PacmanRuleConstants.VIOLATION_REASON, "Ec2 instance not scanned by qualys found");
+				issue.put(PacmanRuleConstants.VIOLATION_REASON, ""+entityType+" instance not scanned by qualys found");
 				issue.put(PacmanRuleConstants.SOURCE_VERIFIED, "_resourceid,"+PacmanRuleConstants.LAST_VULN_SCAN);
 				issue.put(PacmanRuleConstants.FAILED_REASON_QUALYS, gson.toJson(ec2ScannesByQualysMap));
 				issueList.add(issue);
 				annotation.put("issueDetails", issueList.toString());
 				
-				logger.debug("========Ec2InstanceScannedByQualysRule ended with annotation {} : =========" ,annotation);
+				logger.debug("========ResourceScannedByQualysRule ended with annotation {} : =========" ,annotation);
 				return new RuleResult(PacmanSdkConstants.STATUS_FAILURE,PacmanRuleConstants.FAILURE_MESSAGE, annotation);
 			}
 		}
 		}
 		
-		logger.debug("========Ec2InstanceScannedByQualysRule ended=========");
+		logger.debug("========ResourceScannedByQualysRule ended=========");
 		return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS,PacmanRuleConstants.SUCCESS_MESSAGE);
 	}
 
@@ -143,7 +139,7 @@ public class Ec2InstanceScannedByQualysRule extends BaseRule {
 	 * @see com.tmobile.pacman.commons.rule.Rule#getHelpText()
 	 */
 	public String getHelpText() {
-		return "This rule checks for Ec2 instance scanned by qualys,if not found then its an issue";
+		return "This rule checks for Ec2 instance or VM scanned by qualys,if not found then its an issue";
 	}
 
 }
