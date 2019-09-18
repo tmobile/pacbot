@@ -2440,6 +2440,28 @@
     "modifiedDate": "2019-09-13",
     "severity": "low",
     "category": "security"
+  },
+  {
+    "ruleId": "PacMan_Ec2InstanceScannedByQualys_version-1_Ec2-instance-scanned-by-qualys-API_ec2",
+    "ruleUUID": "aws_ec2_qualys_scanned_rule",
+    "policyId": "PacMan_Ec2InstanceScannedByQualys_version-1",
+    "ruleName": "Ec2InstanceScannedByQualysAPI",
+    "targetType": "ec2",
+    "assetGroup": "aws",
+    "alexaKeyword": "Ec2InstanceScannedByQualysAPI",
+    "ruleParams": "{\"params\":[{\"encrypt\":false,\"value\":\"30\",\"key\":\"target\"},{\"key\":\"esQualysUrl\",\"value\":\"\/aws_ec2\/qualysinfo\/_search\",\"isValueNew\":true,\"encrypt\":false},{\"key\":\"discoveredDaysRange\",\"value\":\"7\",\"isValueNew\":true,\"encrypt\":false},{\"key\":\"ruleKey\",\"value\":\"check-for-resource-scanned-by-qualys\",\"isValueNew\":true,\"encrypt\":false},{\"encrypt\":false,\"value\":\"high\",\"key\":\"severity\"},{\"encrypt\":false,\"value\":\"security\",\"key\":\"ruleCategory\"}],\"environmentVariables\":[],\"ruleId\":\"PacMan_Ec2InstanceScannedByQualys_version-1_Ec2-instance-scanned-by-qualys-API_ec2\",\"autofix\":false,\"alexaKeyword\":\"Ec2InstanceScannedByQualysAPI\",\"ruleRestUrl\":\"\",\"targetType\":\"ec2\",\"pac_ds\":\"aws\",\"policyId\":\"PacMan_Ec2InstanceScannedByQualys_version-1\",\"assetGroup\":\"aws\",\"ruleUUID\":\"aws_ec2_qualys_scanned_rule\",\"ruleType\":\"ManageRule\"}",
+    "ruleFrequency": "0 * * * ? *",
+    "ruleExecutable": "",
+    "ruleRestUrl": "",
+    "ruleType": "ManageRule",
+    "ruleArn": "arn:aws:events:us-east-1:***REMOVED***:rule/aws_ec2_qualys_scanned_rule",
+    "status": "ENABLED",
+    "userId": "ASGC",
+    "displayName": "Every EC2 instance should be scanned by Qualys vulnerability assessment tool atleast once a month",
+    "createdDate": "2019-09-18",
+    "modifiedDate": "2019-09-18",
+    "severity": "high",
+    "category": "security"
   }
   
 ]
