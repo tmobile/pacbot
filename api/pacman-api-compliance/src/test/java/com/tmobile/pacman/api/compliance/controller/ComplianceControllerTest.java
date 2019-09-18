@@ -43,7 +43,6 @@ import com.tmobile.pacman.api.compliance.domain.IssuesException;
 import com.tmobile.pacman.api.compliance.domain.PolicyViolationDetails;
 import com.tmobile.pacman.api.compliance.domain.RevokeIssuesException;
 import com.tmobile.pacman.api.compliance.service.ComplianceService;
-import com.tmobile.pacman.api.compliance.service.VulnerabilityService;
 import com.tmobile.pacman.api.compliance.util.CommonTestUtil;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -54,9 +53,6 @@ public class ComplianceControllerTest {
     
     @Mock
     ComplianceService complianceService;
-    
-    @Mock
-    VulnerabilityService vulnerabilityService;
     
     @Test
     public void getIssuesTest() throws Exception {
@@ -108,18 +104,6 @@ public class ComplianceControllerTest {
         when(complianceService.getTagging(anyString(),anyString())).thenThrow(new ServiceException());
         when(complianceService.formatException(anyObject())).thenReturn(ResponseUtils.buildFailureResponse(new ServiceException()));
         ResponseEntity<Object> responseObj = complianceController.getTagging("ag","targettype");
-        assertTrue(responseObj.getStatusCode() == HttpStatus.EXPECTATION_FAILED);
-    }
-    
-    @Test
-    public void getVulnerabilitiesTest() throws Exception {
-        when(vulnerabilityService.getVulnerabilitySummary(anyString(),anyString())).thenReturn(CommonTestUtil.getMapObject());
-        assertThat(complianceController.getVulnerabilities("ag"), is(notNullValue()));
-        assertThat(complianceController.getVulnerabilities(""), is(notNullValue()));
-        
-        when(vulnerabilityService.getVulnerabilitySummary(anyString(),anyString())).thenThrow(new ServiceException());
-        when(complianceService.formatException(anyObject())).thenReturn(ResponseUtils.buildFailureResponse(new ServiceException()));
-        ResponseEntity<Object> responseObj = complianceController.getVulnerabilities("ag");
         assertTrue(responseObj.getStatusCode() == HttpStatus.EXPECTATION_FAILED);
     }
     

@@ -94,10 +94,6 @@ public class IssueTrendServiceImpl implements IssueTrendService, Constants {
     @Autowired
     private ComplianceRepository complianceRepository;
 
-    /** The vuln service. */
-    @Autowired
-    private VulnerabilityService vulnService;
-
     /**
      * {@inheritDoc}
      */
@@ -319,26 +315,6 @@ public class IssueTrendServiceImpl implements IssueTrendService, Constants {
                 total = baseApiReturnMap.get("certificates");
                 noncompliantQuantity = baseApiReturnMap
                         .get("certificates_expiring");
-                compliantQuantity = total - noncompliantQuantity;
-
-                latestDaysTrendData.put(COMPLAINT, compliantQuantity);
-                latestDaysTrendData.put(NON_COMPLIANT, noncompliantQuantity);
-                latestDaysTrendData.put(TOTAL, total);
-                if (total > 0) {
-                    compliance = Math
-                            .floor(compliantQuantity * HUNDRED / total);
-                } else {
-                    compliance = INT_HUNDRED;
-                }
-                latestDaysTrendData.put(COMPLIANCE_PERCENT, compliance);
-                break;
-
-            case "vulncompliance":
-                Map<String, Object> vulnSummary = vulnService
-                        .getVulnerabilitySummary(ag,SEVERITY_LEVELS);
-                total = Long.valueOf(vulnSummary.get("hosts").toString());
-                noncompliantQuantity = Long.valueOf(vulnSummary.get(
-                        "totalVulnerableAssets").toString());
                 compliantQuantity = total - noncompliantQuantity;
 
                 latestDaysTrendData.put(COMPLAINT, compliantQuantity);
