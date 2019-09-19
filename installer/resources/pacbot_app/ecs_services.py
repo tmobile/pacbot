@@ -8,6 +8,7 @@ from resources.vpc.security_group import InfraSecurityGroupResource
 from resources.pacbot_app import alb_listener_rules as alr
 from resources.pacbot_app.build_ui_and_api import BuildUiAndApis
 from resources.pacbot_app.import_db import ImportDbSql
+from resources.pacbot_app.utils import need_to_deploy_vulnerability_service
 import os
 
 
@@ -104,3 +105,12 @@ class AuthEcsService(BaseEcsService, ECSServiceResource):
     load_balancer_target_group_arn = tg.AuthALBTargetGroup.get_output_attr('arn')
     load_balancer_container_name = "auth"
     DEPENDS_ON = [alr.AuthALBListenerRule, WaitConfigServiceToUp]
+
+
+class VulnerabilityEcsService(BaseEcsService, ECSServiceResource):
+    name = "vulnerability"
+    task_definition = td.VulnerabilityEcsTaskDefinition.get_output_attr('arn', 0)
+    load_balancer_target_group_arn = tg.VulnerabilityALBTargetGroup.get_output_attr('arn', 0)
+    load_balancer_container_name = "vulnerability"
+    DEPENDS_ON = [alr.VulnerabilityALBListenerRule, WaitConfigServiceToUp]
+    PROCESS = need_to_deploy_vulnerability_service()

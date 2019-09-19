@@ -104,7 +104,9 @@ class BaseCommand(metaclass=ABCMeta):
             for name, obj_class in inspect.getmembers(resource_module, inspect.isclass):
                 if obj_class.__module__ == resource:  # To collect Resource Classes defined only in the resource file
                     if BaseTerraformResource in inspect.getmro(obj_class):
-                        resources_to_process.append(obj_class(input_instance))  # Create instance of that class
+                        resource_instance = obj_class(input_instance)
+                        if resource_instance.PROCESS:
+                            resources_to_process.append(resource_instance)  # Create instance of that class
 
         return resources_to_process
 
