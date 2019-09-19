@@ -293,5 +293,9 @@ public interface Constants {
     String EVENTCATEGORY = "eventtypecategory";
     String EVENTSTATUS = "eventstatus";
     String FILTER_MANDATORY = "Filter is mandatory, pass the resourceid/docid/issueid/planid";
+    String EC2_QUALYS_RULEID = 	"PacMan_Ec2InstanceScannedByQualys_version-1_Ec2-instance-scanned-by-qualys-API_ec2";
+    String VIRTUALMACHINE = "virtualmachine";
+    String VIRTUALMACHINE_QUALYS_RULEID = "PacMan_Ec2InstanceScannedByQualys_version-1_VmInstanceScannedByQualys_virtualmachine";
+    String ONPREM_QUALYS_RULEID = "PacMan_Onprem-asset-scanned-by-qualys-API_version-1_OnpremassetscannedbyqualysAPI_onpremserver";
 }
 

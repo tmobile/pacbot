@@ -97,10 +97,6 @@ public class DownloadController implements Constants {
     @Autowired(required=false)
     private CertificateController certificateController;
 
-    /** The vulnerability controller. */
-    @Autowired(required=false)
-    private VulnerabilityController vulnerabilityController;
-
     /** The compliance controller. */
     @Autowired
     private ComplianceController complianceController;
