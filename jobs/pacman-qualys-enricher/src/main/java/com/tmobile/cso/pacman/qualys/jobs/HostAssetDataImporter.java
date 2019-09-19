@@ -81,7 +81,7 @@ public class HostAssetDataImporter extends QualysDataImporter implements Constan
     private String CURR_DATE = new SimpleDateFormat(TIME_FORMAT).format(new java.util.Date());
     
     /** The type. */
-    private String type = System.getenv("server_type");
+    private String type = System.getProperty("server_type");
     
     /** The uri post. */
     private String uriPost = BASE_API_URL + apiMap.get("hostAssetSearch");

@@ -1454,6 +1454,7 @@ INSERT IGNORE INTO pac_config_relation (application,parent) VALUES ('inventory',
 INSERT IGNORE INTO pac_config_relation (`application`,`parent`) VALUES ('rule','application');
 INSERT IGNORE INTO pac_config_relation (application,parent) VALUES ('rule-engine','rule');
 INSERT IGNORE INTO pac_config_relation (application,parent) VALUES ('recommendation-enricher','batch');
+INSERT IGNORE INTO pac_config_relation (application,parent) VALUES ('qualys-enricher','batch');
 
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('admin.api-role','Description PlaceHolder');
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('admin.push.notification.pollinterval.milliseconds','description');
@@ -1785,6 +1786,9 @@ INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('serv
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('vulnerability.application.occurance','Description PlaceHolder');
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('vulnerability.application.resourcedetails','Description PlaceHolder');
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('vulnerability.application.resourcedetailsboth','Description PlaceHolder');
+INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('qualys_info','Base64 encoded user:password of qualys');
+INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('server_type','Server type of qualys');
+INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('qualys_api_url','Qualys api url');
 
 
 

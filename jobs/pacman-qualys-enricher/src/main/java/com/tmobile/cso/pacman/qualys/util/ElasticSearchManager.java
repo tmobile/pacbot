@@ -34,10 +34,10 @@ public class ElasticSearchManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ElasticSearchManager.class);
 
     /** The Constant ES_HOST_KEY_NAME. */
-    private static final String ES_HOST_KEY_NAME = System.getenv("ES_HOST");
+    private static final String ES_HOST_KEY_NAME = System.getProperty("elastic-search.host");
     
     /** The Constant ES_HTTP_PORT. */
-    private static final Integer ES_HTTP_PORT = Integer.parseInt(System.getenv("ES_PORT"));
+    private static final Integer ES_HTTP_PORT = Integer.parseInt(System.getProperty("elastic-search.port"));
     
     /** The rest client. */
     private static RestClient restClient;
