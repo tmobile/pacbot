@@ -74,8 +74,6 @@ public class ComplianceRepositoryImplTest implements Constants {
 
     @Mock
     AssetServiceClient assetServiceClient;
-    @Mock
-    VulnerabilityRepository vulnerabilityRepository;
 
     @Mock
     FilterRepository filterRepository;
