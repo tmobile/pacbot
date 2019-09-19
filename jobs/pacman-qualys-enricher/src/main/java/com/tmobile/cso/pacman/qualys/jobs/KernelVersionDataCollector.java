@@ -28,7 +28,7 @@ public class KernelVersionDataCollector extends QualysDataImporter implements Co
     
     /** The log. */
     private static Logger log = LoggerFactory.getLogger(KernelVersionDataCollector.class);
-    private static String kvUri = System.getenv("API_URL") ;
+    private static String kvUri = System.getProperty("qualys_api_url") ;
     String loaddate = new SimpleDateFormat("yyyy-MM-dd H:mm:00Z").format(new java.util.Date());
     
     private static List<Map<String,String>> errorList = new ArrayList<>();

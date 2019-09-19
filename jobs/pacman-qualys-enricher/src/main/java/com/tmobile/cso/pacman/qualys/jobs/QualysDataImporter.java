@@ -41,10 +41,10 @@ public abstract class QualysDataImporter {
     private static final Logger LOGGER = LoggerFactory.getLogger(QualysDataImporter.class);
     
     /** The Constant DEFAULT_USER. */
-    private static final String DEFAULT_USER = Util.base64Decode(System.getenv("QUALYS_INFO")).split(":")[0];
+    private static final String DEFAULT_USER = Util.base64Decode(System.getProperty("qualys_info")).split(":")[0];
     
     /** The Constant DEFAULT_PASS. */
-    private static final String DEFAULT_PASS = Util.base64Decode(System.getenv("QUALYS_INFO")).split(":")[1];
+    private static final String DEFAULT_PASS = Util.base64Decode(System.getProperty("qualys_info")).split(":")[1];
     
     /** The Constant UTF8. */
     private static final String UTF8 = "UTF-8";

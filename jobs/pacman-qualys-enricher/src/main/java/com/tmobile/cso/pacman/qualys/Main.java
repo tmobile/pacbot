@@ -1,7 +1,9 @@
 package com.tmobile.cso.pacman.qualys;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.naming.NamingException;
@@ -9,6 +11,7 @@ import javax.naming.NamingException;
 import com.tmobile.cso.pacman.qualys.jobs.HostAssetDataImporter;
 import com.tmobile.cso.pacman.qualys.jobs.KBDataImporter;
 import com.tmobile.cso.pacman.qualys.jobs.KernelVersionDataCollector;
+import com.tmobile.cso.pacman.qualys.util.ErrorManageUtil;
 import com.tmobile.pacman.commons.jobs.PacmanJob;
 
 
@@ -45,6 +48,17 @@ public class Main {
     public static Map<String, Object> execute(Map<String, String> params) throws NamingException {
 
         Map<String, Object> errorInfo = new HashMap<>() ;
+        List<Map<String,String>> errorList = new ArrayList<>();
+        try {
+			MainUtil.setup(params);
+		} catch (Exception e) {
+			  Map<String,String> errorMap = new HashMap<>();
+              errorMap.put(Constants.ERROR, "Exception in setting up Job ");
+              errorMap.put(Constants.ERROR_TYPE, Constants.WARN);
+              errorMap.put(Constants.EXCEPTION, e.getMessage());
+              errorList.add(errorMap);
+              return ErrorManageUtil.formErrorCode(errorList);
+		}
         String jobHint = params.get("job_hint");
         switch (jobHint) {
         case "qualys":

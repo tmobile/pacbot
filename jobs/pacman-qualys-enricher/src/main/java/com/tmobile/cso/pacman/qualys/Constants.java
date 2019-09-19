@@ -41,4 +41,13 @@ public interface Constants {
     
     /** The fatal. */
     String FATAL = "fatal";
+    
+    /** The source. */
+    String SOURCE = "source";
+    
+    /** The name. */
+    String NAME = "name";
+    
+    /** The config creds. */
+    String CONFIG_CREDS = "config_creds";
 }
