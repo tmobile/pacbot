@@ -2490,3 +2490,7 @@ UPDATE `pacmandata`.`pac_config_key_metadata` SET `description` = 'Vulnerability
 UPDATE `pacmandata`.`pac_config_key_metadata` SET `description` = 'Vulnerability severity summary' WHERE `cfkey` = 'vulnerability.summary.severity';
 UPDATE `pacmandata`.`pac_config_key_metadata` SET `description` = 'Vulnerability types' WHERE `cfkey` = 'vulnerability.types';
 
+DELETE FROM `pac_config_properties` WHERE cfkey='features.vulnerability.enabled';
+INSERT IGNORE INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('features.vulnerability.enabled',concat(@VULNERABILITY_FEATURE_ENABLED,''),'api','prd','latest',NULL,NULL,NULL,NULL);
+
+
