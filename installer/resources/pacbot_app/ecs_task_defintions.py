@@ -2,6 +2,7 @@ from core.terraform.resources.aws.ecs import ECSTaskDefinitionResource
 from resources.iam.ecs_role import ECSRole
 from resources.pacbot_app.task_def_variables import ContainerDefinitions
 from resources.pacbot_app.ecr import APIDockerImageBuild, UIDockerImageBuild
+from resources.pacbot_app.utils import need_to_deploy_vulnerability_service
 
 
 container_def = ContainerDefinitions()
@@ -65,3 +66,10 @@ class AuthEcsTaskDefinition(ECSTaskDefinitionResource, BaseTaskDefinition):
     family = "auth"
     container_definitions = container_def.get_container_definitions('auth')
     DEPENDS_ON = [APIDockerImageBuild]
+
+
+class VulnerabilityEcsTaskDefinition(ECSTaskDefinitionResource, BaseTaskDefinition):
+    family = "vulnerability"
+    container_definitions = container_def.get_container_definitions('vulnerability')
+    DEPENDS_ON = [APIDockerImageBuild]
+    PROCESS = need_to_deploy_vulnerability_service()
