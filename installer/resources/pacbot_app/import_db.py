@@ -73,7 +73,7 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_SVC_CORP_PASSWORD': "password",
                         'ENV_CERTIFICATE_FEATURE_ENABLED': "false",
                         'ENV_PATCHING_FEATURE_ENABLED': "false",
-                        'ENV_VULNERABILITY_FEATURE_ENABLED': "false",
+                        'ENV_VULNERABILITY_FEATURE_ENABLED': str(Settings.get('ENABLE_VULNERABILITY_FEATURE', False)).lower(),
                         'ENV_MAIL_SERVER': Settings.MAIL_SERVER,
                         'ENV_PACMAN_S3': "pacman-email-templates",
                         'ENV_DATA_IN_DIR': "inventory",
