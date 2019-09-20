@@ -2161,7 +2161,6 @@ UPDATE `cf_RuleInstance` SET ruleParams = '{"params":[{"key":"roleIdentifyingStr
 UPDATE `cf_RuleInstance` SET ruleParams = '{"params":[{"encrypt":false,"value":"check-for-unused-elastic-ip","key":"ruleKey"},{"key":"threadsafe","value":"true","isValueNew":true,"encrypt":false},{"key":"fixKey","value":"unused-elastic-ip-fix","isValueNew":true,"encrypt":false},{"encrypt":false,"value":"high","key":"severity"},{"encrypt":false,"value":"governance","key":"ruleCategory"}],"environmentVariables":[],"ruleId":"PacMan_UnusedElasticIpRule_version-1_UnusedElasticIpRule_elasticip","autofix":false,"alexaKeyword":"UnusedElasticIpRule","ruleRestUrl":"","targetType":"elasticip","pac_ds":"aws","policyId":"PacMan_UnusedElasticIpRule_version-1","assetGroup":"aws","ruleUUID":"aws_elasticip_should_not_be_there_in_non_standard_region","ruleType":"ManageRule"}' WHERE ruleId = 'PacMan_UnusedElasticIpRule_version-1_UnusedElasticIpRule_elasticip';
 
 
-
 /* This is to delete row with below entry as we need only entry with application='application' which is added in insert query*/
 DELETE FROM pac_config_properties WHERE cfkey = 'tagging.mandatoryTags' AND application='api' AND profile='prd' AND label='latest';
 
@@ -2490,7 +2489,6 @@ UPDATE `pacmandata`.`pac_config_key_metadata` SET `description` = 'Vulnerability
 UPDATE `pacmandata`.`pac_config_key_metadata` SET `description` = 'Vulnerability severity summary' WHERE `cfkey` = 'vulnerability.summary.severity';
 UPDATE `pacmandata`.`pac_config_key_metadata` SET `description` = 'Vulnerability types' WHERE `cfkey` = 'vulnerability.types';
 
-/* delete and insert query*/
 DELETE FROM `pac_config_properties` WHERE cfkey='features.vulnerability.enabled';
 INSERT IGNORE INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('features.vulnerability.enabled',concat(@VULNERABILITY_FEATURE_ENABLED,''),'api','prd','latest',NULL,NULL,NULL,NULL);
 
