@@ -143,3 +143,12 @@ class ContainerDefinitions:
             {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
             {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('auth')}
         ]
+
+    def get_vulnerability_container_env_vars(self):
+        return [
+            {'name': "JAR_FILE", 'value': "pacman-api-vulnerability.jar"},
+            {'name': "CONFIG_PASSWORD", 'value': self.CONFIG_PASSWORD},
+            {'name': "CONFIG_SERVER_URL", 'value': self.CONFIG_SERVER_URL},
+            {'name': "PACMAN_HOST_NAME", 'value': self.PACMAN_HOST_NAME},
+            {'name': "DOMAIN_URL", 'value': ApplicationLoadBalancer.get_api_server_url('vulnerability')}
+        ]
