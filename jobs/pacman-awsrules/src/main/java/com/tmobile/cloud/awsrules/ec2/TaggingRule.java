@@ -79,8 +79,8 @@ public class TaggingRule extends BaseRule {
 		String category = ruleParam.get(PacmanRuleConstants.CATEGORY);
 		String targetType = ruleParam.get(PacmanRuleConstants.TARGET_TYPE);
 
-		MDC.put("executionId", ruleParam.get("executionId")); 
-		MDC.put("ruleId", ruleParam.get(PacmanSdkConstants.RULE_ID)); 
+		MDC.put("executionId", ruleParam.get("executionId")); // this is the logback Mapped Diagnostic Contex
+		MDC.put("ruleId", ruleParam.get(PacmanSdkConstants.RULE_ID)); // this is the logback Mapped Diagnostic Contex
 
 
 		if (!PacmanUtils.doesAllHaveValue(mandatoryTags,tagsSplitter,severity,category,targetType)) {
