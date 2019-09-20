@@ -28,6 +28,7 @@ ALB_PROTOCOL = "HTTP"
 SSL_CERTIFICATE_ARN = ""  # Required only if ALB_PROTOCOL is defined as HTTPS
 PACBOT_DOMAIN = ""  # Required only if you point a CNAME record to ALB ex: app.pacbot.com
 
+
 # MAIL Server configuration
 MAIL_SERVER = "localhost"
 MAIL_SERVER_PORT = 587
@@ -44,3 +45,9 @@ USER_EMAIL_ID = ""
 AWS_ACCESS_KEY = ""
 AWS_SECRET_KEY = ""
 AWS_REGION = ""
+
+
+# This settings enable Vulnerability feature and servie
+ENABLE_VULNERABILITY_FEATURE = False
+QUALYS_BASE_URL = ""
+QUALYS_CREDNETIALS = ""

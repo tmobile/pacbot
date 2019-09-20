@@ -116,6 +116,8 @@ MAIL_SMTP_AUTH = ""
 MAIL_SMTP_SSL_ENABLE = "true"
 MAIL_SMTP_SSL_TEST_CONNECTION = "false"
 
+ENABLE_VULNERABILITY_FEATURE = False
+
 try:
     from settings.local import *
 except:
