@@ -20,7 +20,7 @@ RDS_INSTANCE_TYPE = "db.t2.medium"  # Possibble values db.m4.large, db.t2.large 
 
 # ElasticSearch Related Configurations
 ES_INSTANCE_TYPE = "m4.large.elasticsearch"  # Possibble values m4.xlarge.elasticsearch, t2.xlarge.elasticsearch etc
-
+ES_VOLUME_SIZE = 20
 
 # ALB related configurations
 MAKE_ALB_INTERNAL = True  # False if ALB need to be public(internet facing) else True
