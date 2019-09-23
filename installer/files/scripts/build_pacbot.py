@@ -155,8 +155,8 @@ class Buildpacbot(object):
             if "AD_AUTHENTICATION: false" in line:
                 lines[idx] = lines[idx].replace("AD_AUTHENTICATION: false", "AD_AUTHENTICATION: true")
 
-            if "QUALYS_INSTALLED: false" in line:
-                lines[idx] = lines[idx].replace("QUALYS_INSTALLED: false", "AD_AUTHENTICATION: %s" % self.enabled_vulnerability_feautre)
+            if "qualysEnabled: false" in line:
+                lines[idx] = lines[idx].replace("qualysEnabled: false", "qualysEnabled: %s" % self.enabled_vulnerability_feautre)
 
             if "ISSUE_MAIL_TEMPLATE_URL: ''" in line:
                 lines[idx] = lines[idx].replace("ISSUE_MAIL_TEMPLATE_URL: ''", "ISSUE_MAIL_TEMPLATE_URL: '" + self.issue_email_template + "'")
