@@ -10,7 +10,6 @@ import javax.naming.NamingException;
 
 import com.tmobile.cso.pacman.qualys.jobs.HostAssetDataImporter;
 import com.tmobile.cso.pacman.qualys.jobs.KBDataImporter;
-import com.tmobile.cso.pacman.qualys.jobs.KernelVersionDataCollector;
 import com.tmobile.cso.pacman.qualys.util.ErrorManageUtil;
 import com.tmobile.pacman.commons.jobs.PacmanJob;
 
@@ -30,10 +29,8 @@ public class Main {
     public static void main(String[] args) throws Exception {
         Map<String, String> params = new HashMap<>();
         Arrays.asList(args).stream().forEach(obj -> {
-            for (String param : obj.split("[*]")) {
-                String[] paramArray = param.split("=");
-                params.put(paramArray[0], paramArray[1]);
-            }
+            String[] paramArray = obj.split("[:]");
+            params.put(paramArray[0], paramArray[1]);
         });
         execute(params);
     }
@@ -59,6 +56,7 @@ public class Main {
               errorList.add(errorMap);
               return ErrorManageUtil.formErrorCode(errorList);
 		}
+        
         String jobHint = params.get("job_hint");
         switch (jobHint) {
         case "qualys":
@@ -67,10 +65,6 @@ public class Main {
         case "qualys-kb":
             errorInfo =  new KBDataImporter().execute();
             break;
-        case "qualys-kernel":
-            errorInfo =  new KernelVersionDataCollector().execute();
-            break;
-        
         }
         return  errorInfo;
     }

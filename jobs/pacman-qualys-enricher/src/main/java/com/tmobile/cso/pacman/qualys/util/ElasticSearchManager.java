@@ -66,7 +66,8 @@ public class ElasticSearchManager {
      *
      * @param indexName the index name
      */
-    public static void createIndex(String indexName) {
+    public static void createIndex(String index) {
+    	String indexName = "/"+index;
         if (!indexExists(indexName)) {
             String payLoad = "{\"settings\": { \"index.mapping.ignore_malformed\": true }}";
             try {
@@ -78,37 +79,13 @@ public class ElasticSearchManager {
     }
 
     /**
-     * Creates the index with type.
-     *
-     * @param ds the ds
-     * @param type the type
-     */
-    public static void createIndexWithType(String ds, String type) {
-        String indexName = ds + "_" + type;
-        if (!indexExists(indexName)) {
-            StringBuilder payLoad = new StringBuilder(
-                    "{\"settings\": { \"index.mapping.ignore_malformed\": true},\"mappings\": {");
-            payLoad.append("\"" + type + "\":{},\"issue_" + type + "\": { \"_parent\": {\"type\": \"" + type
-                    + "\"}},\"issue_" + type + "_audit\": { \"_parent\": {\"type\": \"issue_" + type + "\"}},\"issue_"
-                    + type + "_comment\": { \"_parent\": {\"type\": \"issue_" + type + "\"}},\"issue_" + type
-                    + "_exception\": { \"_parent\": {\"type\": \"issue_" + type + "\"}}");
-            payLoad.append("}}");
-            try {
-                invokeAPI("PUT", indexName, payLoad.toString());
-                invokeAPI("PUT", "/" + indexName + "/_alias/" + ds, null);
-            } catch (IOException e) {
-                LOGGER.error("Error in method createIndexWithType", e);
-            }
-        }
-    }
-
-    /**
      * Creates the type.
      *
      * @param indexName the index name
      * @param typename the typename
      */
-    public static void createType(String indexName, String typename) {
+    public static void createType(String index, String typename) {
+    	String indexName = "/"+index;
         if (!typeExists(indexName, typename)) {
             String endPoint = indexName + "/_mapping/" + typename;
             try {
@@ -253,9 +230,9 @@ public class ElasticSearchManager {
      * @param index the index
      */
     public static void refresh(String index) {
-
+    	String indexName = "/"+index;
         try {
-            Response refrehsResponse = invokeAPI("POST", index + "/" + "_refresh", null);
+            Response refrehsResponse = invokeAPI("POST", indexName + "/" + "_refresh", null);
             if (refrehsResponse != null && HttpStatus.SC_OK != refrehsResponse.getStatusLine().getStatusCode()) {
                 LOGGER.error("Refreshing index {} failed", index, refrehsResponse);
             }
@@ -359,8 +336,9 @@ public class ElasticSearchManager {
      * @param parent the parent
      */
     public static void createType(String index, String type, String parent) {
-        if (!typeExists(index, type)) {
-            String endPoint = index + "/_mapping/" + type;
+    	String indexName = "/"+index;
+        if (!typeExists(indexName, type)) {
+            String endPoint = indexName + "/_mapping/" + type;
             String payLoad = "{\"_parent\": { \"type\": \"" + parent + "\" } }";
             try {
                 invokeAPI("PUT", endPoint, payLoad);
@@ -379,8 +357,9 @@ public class ElasticSearchManager {
      * @param latest the latest
      * @return the existing info
      */
-    public static Map<String, Map<String, String>> getExistingInfo(String indexName, String type, List<String> filters,
+    public static Map<String, Map<String, String>> getExistingInfo(String index, String type, List<String> filters,
             boolean latest) {
+    	String indexName = "/"+index;
         int count = getTypeCount(indexName, type);
         int _count = count;
         boolean scroll = false;
@@ -464,10 +443,11 @@ public class ElasticSearchManager {
      * @param discoveryDate the discovery date
      */
     public static void updateLatestStatus(String index, String type, String discoveryDate) {
+    	String indexName = "/"+index;
         String updateJson = "{\"script\":{\"inline\": \"ctx._source.latest=false\"},\"query\": {\"bool\": {\"must\": [{ \"match\": {\"latest\":true}}], \"must_not\": [{\"match\": {\"discoverydate.keyword\":\""
                 + discoveryDate + "\"}}]}}}";
         try {
-            invokeAPI("POST", index + "/" + type + "/" + "_update_by_query", updateJson);
+            invokeAPI("POST", indexName + "/" + type + "/" + "_update_by_query", updateJson);
         } catch (IOException e) {
             LOGGER.error("Error updateLatestStatus ", e);
         }
@@ -482,10 +462,11 @@ public class ElasticSearchManager {
      * @param value the value
      */
     public static void deleteOldDocuments(String index, String type, String field, String value) {
+    	String indexName = "/"+index;
         String deleteJson = "{\"query\": {\"bool\": {\"must_not\": [{ \"match\": {\"" + field + "\":\"" + value
                 + "\"}}]}}}";
         try {
-            invokeAPI("POST", index + "/" + type + "/" + "_delete_by_query", deleteJson);
+            invokeAPI("POST", indexName + "/" + type + "/" + "_delete_by_query", deleteJson);
         } catch (IOException e) {
             LOGGER.error("Error deleteOldDocuments ", e);
         }
