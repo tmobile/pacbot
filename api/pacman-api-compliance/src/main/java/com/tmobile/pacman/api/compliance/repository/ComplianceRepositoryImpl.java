@@ -132,10 +132,6 @@ public class ComplianceRepositoryImpl implements ComplianceRepository, Constants
     @Autowired
     private AssetServiceClient assetServiceClient;
 
-    /** The vulnerability repository. */
-    @Autowired
-    private VulnerabilityRepository vulnerabilityRepository;
-
     /** The filter repository. */
     @Autowired
     private FilterRepository filterRepository;

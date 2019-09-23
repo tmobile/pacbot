@@ -97,6 +97,13 @@ class AllReadRoleAutoFixPolicyDocument(iam.IAMPolicyDocumentData):
             ],
             'resources': ["*"],
             'effect': "Allow"
+        },
+        {
+            'actions': [
+                "ec2:ReleaseAddress",
+            ],
+            'resources': ["*"],
+            'effect': "Allow"
         }
     ]
 
