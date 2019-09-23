@@ -112,6 +112,7 @@ import { IssueListingService } from '../../services/issue-listing.service';
 import { RecommendationsComponent} from '../../modules/compliance/recommendations/recommendations.component';
 import { RecommandCategoryComponent } from '../../secondary-components/recommand-category/recommand-category.component';
 import { RecommendationsDetailsComponent } from './recommendations-details/recommendations-details.component';
+import { OverallVulnerabilitiesComponent } from './../../secondary-components/overall-vulnerabilities/overall-vulnerabilities.component';
 
 @NgModule({
   imports: [
@@ -219,7 +220,8 @@ import { RecommendationsDetailsComponent } from './recommendations-details/recom
     PolicyViolationsListComponent,
     RecommendationsComponent,
     RecommandCategoryComponent,
-    RecommendationsDetailsComponent
+    RecommendationsDetailsComponent,
+    OverallVulnerabilitiesComponent
   ],
   providers: [
     SelectComplianceDropdown,

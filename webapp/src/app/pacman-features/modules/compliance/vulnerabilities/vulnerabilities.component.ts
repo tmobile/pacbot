@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -26,7 +26,6 @@ import { LoggerService } from '../../../../shared/services/logger.service';
 import { ErrorHandlingService } from '../../../../shared/services/error-handling.service';
 import 'rxjs/add/operator/filter';
 import 'rxjs/add/operator/pairwise';
-import { ToastObservableService } from '../../../../post-login-app/common/services/toast-observable.service';
 import { DownloadService } from '../../../../shared/services/download.service';
 import { RefactorFieldsService } from './../../../../shared/services/refactor-fields.service';
 import { WorkflowService } from '../../../../core/services/workflow.service';
@@ -44,7 +43,7 @@ import { RouterUtilityService } from '../../../../shared/services/router-utility
   ]
 })
 export class VulnerabilitiesComponent implements OnInit, OnDestroy {
-  pageTitle = 'All Vulnerabilities';
+  pageTitle = 'Vulnerabilities';
   issueListingdata: any;
   selectedAssetGroup: string;
   breadcrumbArray: any = ['Compliance'];
@@ -65,12 +64,7 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
   showLoader = true;
   paginatorSize = 25;
   searchTxt = '';
-  popRows: any = ['Download Data'];
-  filterTypeOptions: any = [];
-  filterTagOptions: any = [];
-  currentFilterType;
-  filterTypeLabels = [];
-  filterTagLabels = [];
+  popRows: any = ['Vulnerability list', 'Vulnerability list with asset details'];
   dataTableData: any = [];
   tableDataLoaded = false;
   filters: any = [];
@@ -82,8 +76,9 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
   public labels: any;
   FullQueryParams: any;
   queryParamsWithoutFilter: any;
-  private previousUrl: any = '';
   urlToRedirect: any = '';
+  backButtonRequired;
+  pageLevel = 0;
 
   private assetGroupSubscription: Subscription;
   private routeSubscription: Subscription;
@@ -91,8 +86,6 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
   private issueListingSubscription: Subscription;
   private issueFilterSubscription: Subscription;
   private downloadSubscription: Subscription;
-  public pageLevel = 0;
-  public backButtonRequired;
 
   constructor(
     private assetGroupObservableService: AssetGroupObservableService,
@@ -106,24 +99,23 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
     private logger: LoggerService,
     private errorHandling: ErrorHandlingService,
     private downloadService: DownloadService,
-    private toastObservableService: ToastObservableService,
     private refactorFieldsService: RefactorFieldsService,
     private routerUtilityService: RouterUtilityService
   ) {
     this.assetGroupSubscription = this.assetGroupObservableService
       .getAssetGroup()
       .subscribe(assetGroupName => {
+        this.selectedAssetGroup = assetGroupName;
         this.backButtonRequired = this.workflowService.checkIfFlowExistsCurrently(
           this.pageLevel
         );
-        this.selectedAssetGroup = assetGroupName;
-        this.getFilters();
         this.routerParam();
         this.deleteFilters();
         this.getFilterArray();
         this.updateComponent();
       });
   }
+
 
   ngOnInit() {
     this.breadcrumbPresent = 'All Vulnerabilities';
@@ -157,6 +149,13 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
       this.logger.log('error', error);
+    }
+  }
+
+  updatePaginator(event) {
+    if (event !== this.paginatorSize) {
+      this.paginatorSize = event;
+      this.updateComponent();
     }
   }
 
@@ -198,7 +197,6 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
     } catch (error) {
       this.logger.log('error', error);
     }
-    /* TODO: Aditya: Why are we not calling any updateCompliance function in observable to update the filters */
   }
 
   /*
@@ -222,7 +220,7 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
       // add By trinanjan
       const formattedFilters = dataArray.map(function(data) {
         data.name =
-          refactoredService.getDisplayNameForAKey(data.name) || data.name;
+          refactoredService.getDisplayNameForAKey(data.name.toLowerCase()) || data.name;
         return data;
       });
 
@@ -262,14 +260,6 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
     this.errorValue = 0;
     this.showGenericMessage = false;
     this.getData();
-  }
-
-  navigateBack() {
-    try {
-      this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root);
-    } catch (error) {
-      this.logger.log('error', error);
-    }
   }
 
   getData() {
@@ -319,7 +309,7 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
                 if (this.lastPaginator > this.totalRows) {
                   this.lastPaginator = this.totalRows;
                 }
-                const updatedResponse = this.massageData(this.issueListingdata);
+                const updatedResponse = this.utils.massageTableData(this.issueListingdata);
                 this.currentBucket[this.bucketNumber] = updatedResponse;
                 this.processData(updatedResponse);
               }
@@ -347,27 +337,7 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
       this.logger.log('error', error);
     }
   }
-  massageData(data) {
-    /*
-       * added by Trinanjan 14/02/2017
-       * the funciton replaces keys of the table header data to a readable format
-     */
-    const refactoredService = this.refactorFieldsService;
-    const newData = [];
-    data.map(function(responseData) {
-      const KeysTobeChanged = Object.keys(responseData);
-      let newObj = {};
-      KeysTobeChanged.forEach(element => {
-        const elementnew =
-          refactoredService.getDisplayNameForAKey(
-            element.toLocaleLowerCase()
-          ) || element;
-        newObj = Object.assign(newObj, { [elementnew]: responseData[element] });
-      });
-      newData.push(newObj);
-    });
-    return newData;
-  }
+
   processData(data) {
     try {
       let innerArr = {};
@@ -388,7 +358,7 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
           if (getCols[col].toLowerCase() === 'title' ||
               getCols[col].toLowerCase() === 'qid') {
             cellObj = {
-              link: 'true',
+              link: 'View Vulnerability Details',
               properties: {
                 color: '',
                 'text-shadow': '0.1px 0'
@@ -468,7 +438,7 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
           } else if (
             getCols[col].toLowerCase() === 'assets affected' || getCols[col].toLowerCase() === 'assetsaffected') {
             cellObj = {
-              link: 'true',
+              link: 'View Asset List',
               properties: {
                 color: '',
                 'text-decoration': 'underline #383C4D'
@@ -493,7 +463,7 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
               colName: getCols[col],
               hasPreImg: false,
               imgLink: '',
-              text: this.calculateDate(getData[row][getCols[col]]),
+              text: this.utils.calculateDate(getData[row][getCols[col]]),
               valText: new Date(getData[row][getCols[col]]).getTime()
             };
           } else {
@@ -526,6 +496,7 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
   }
 
   goToDetails(row) {
+    console.log(row);
     try {
       const apiTarget = { TypeAsset: 'vulnerable' };
       this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
@@ -536,44 +507,23 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
         let newParams = this.utils.makeFilterObj(eachParams);
         newParams = Object.assign(newParams, apiTarget);
         newParams['mandatory'] = 'qid';
-        this.router.navigate(['../../', 'assets', 'asset-list'], {
+        this.router.navigate(['../../../assets', 'asset-list'],
+        {
           relativeTo: this.activatedRoute,
           queryParams: newParams,
           queryParamsHandling: 'merge'
         });
       } else if (row.col.toLowerCase() === 'qid' || row.col.toLowerCase() === 'title') {
-        this.router.navigate(['./vulnerability-details', row.row.qid.valText ], {
+        this.router.navigate(['../../vulnerabilities/vulnerability-details', row.row.qid.valText ], {
           relativeTo: this.activatedRoute,
-          queryParams: this.queryParamsWithoutFilter
+          queryParams: this.queryParamsWithoutFilter,
+          queryParamsHandling: 'merge'
         });
       }
     } catch (error) {
       this.errorMessage = this.errorHandling.handleJavascriptError(error);
       this.logger.log('error', error);
     }
-  }
-
-  calculateDate(_JSDate) {
-    if (!_JSDate) {
-      return 'No Data';
-    }
-    const date = new Date(_JSDate);
-    const year = date.getFullYear().toString();
-    const month = date.getMonth() + 1;
-    let monthString;
-    if (month < 10) {
-      monthString = '0' + month.toString();
-    } else {
-      monthString = month.toString();
-    }
-    const day = date.getDate();
-    let dayString;
-    if (day < 10) {
-      dayString = '0' + day.toString();
-    } else {
-      dayString = day.toString();
-    }
-    return monthString + '-' + dayString + '-' + year;
   }
 
   searchCalled(search) {
@@ -620,24 +570,33 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
     this.getData();
   }
 
-  handlePopClick(rowText) {
+  vulnerabilitiesCSV(serviceName) {
     const fileType = 'csv';
+    let downloadCsvName;
+    let downloadSize = 0;
 
     try {
         let queryParams;
 
         queryParams = {
           fileFormat: 'csv',
-          serviceId: 6,
           fileType: fileType
         };
+        if (serviceName === 'Vulnerability list') {
+          queryParams.serviceId = 6;
+          downloadCsvName = 'All Vulnerabilities';
+          downloadSize = this.totalRows;
+        } else if (serviceName === 'Vulnerability list with asset details') {
+          queryParams.serviceId = 19;
+          downloadCsvName = 'All Vulnerabilities with Details';
+        }
 
         const downloadRequest = {
           ag: this.selectedAssetGroup,
           filter: this.filterText,
           from: 0,
           searchtext: this.searchTxt,
-          size: this.totalRows
+          size: downloadSize
         };
 
         const downloadUrl = environment.download.url;
@@ -648,7 +607,7 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
             downloadUrl,
             downloadMethod,
             downloadRequest,
-            'All Vulnerabilities',
+            downloadCsvName,
             this.totalRows
           );
     } catch (error) {
@@ -656,78 +615,10 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
     }
   }
 
-  /**
-   * This function get calls the keyword service before initializing
-   * the filter array ,so that filter keynames are changed
-   */
-
-  getFilters() {
-    try {
-      this.issueFilterSubscription = this.issueFilterService
-        .getFilters(
-          { filterId: 2 },
-          environment.issueFilter.url,
-          environment.issueFilter.method
-        )
-        .subscribe(response => {
-          this.filterTypeLabels = _.map(response[0].response, 'optionName');
-          this.filterTypeOptions = response[0].response;
-        });
-    } catch (error) {
-      this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log('error', error);
-    }
-  }
-
-  changeFilterType(value) {
-    try {
-      this.currentFilterType = _.find(this.filterTypeOptions, {
-        optionName: value.value
-      });
-      this.issueFilterSubscription = this.issueFilterService
-        .getFilters(
-          {
-            ag: this.selectedAssetGroup
-          },
-          environment.base +
-            this.utils.getParamsFromUrlSnippet(this.currentFilterType.optionURL)
-              .url,
-          'GET'
-        )
-        .subscribe(response => {
-          this.filterTagOptions = response[0].response;
-          this.filterTagLabels = _.map(response[0].response, 'name');
-        });
-    } catch (error) {
-      this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log('error', error);
-    }
-  }
-
-  changeFilterTags(value) {
-    try {
-      if (this.currentFilterType) {
-        const filterTag = _.find(this.filterTagOptions, { name: value.value });
-        this.utils.addOrReplaceElement(
-          this.filters,
-          {
-            key: this.currentFilterType.optionName,
-            value: filterTag['id'],
-            filterkey: this.currentFilterType.optionValue.trim(),
-            compareKey : this.currentFilterType.optionValue.toLowerCase().trim()
-          },
-          el => {
-            return el.compareKey === this.currentFilterType.optionValue.toLowerCase().trim();
-          }
-        );
-      }
-      this.getUpdatedUrl();
-      this.utils.clickClearDropdown();
-      this.updateComponent();
-    } catch (error) {
-      this.errorMessage = this.errorHandling.handleJavascriptError(error);
-      this.logger.log('error', error);
-    }
+  updateUrlWithNewFilters(filterArr) {
+    this.filters = filterArr;
+    this.getUpdatedUrl();
+    this.updateComponent();
   }
 
   getUpdatedUrl() {
@@ -758,6 +649,15 @@ export class VulnerabilitiesComponent implements OnInit, OnDestroy {
      */
     this.filterText = this.utils.processFilterObj(this.filterText);
   }
+
+  navigateBack() {
+    try {
+      this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root);
+    } catch (error) {
+      this.logger.log('error', error);
+    }
+  }
+
 
   ngOnDestroy() {
     try {

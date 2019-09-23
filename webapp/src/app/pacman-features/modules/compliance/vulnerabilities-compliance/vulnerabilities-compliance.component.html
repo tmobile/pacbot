@@ -14,16 +14,15 @@
 
  <div class="compliance-dashboard-wrapper flex flex-between vulnerabilities-wrapper">
     <div class="floating-widgets-section flex flex-col">
-        <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
-        <div class="floating-widgets-header flex flex-between">
+        <!-- <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb> -->
+        <div class="floating-widgets-header dashboards-header flex flex-between">
             <div>
-                <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
-                <h1 class="title-text">{{pageTitle}}</h1>
+                <app-back-navigation [pageTitle]='pageTitle'></app-back-navigation>
             </div>
         </div>
-        <!-- <div class='floating-widgets-filter-wrapper ' *ngIf='filters.length'>
+        <div class='floating-widgets-filter-wrapper ' *ngIf='filters.length'>
             <app-filtered-selector (deleteFilter)='deleteFilters($event)' (deleteAllFilters)='deleteFilters($event)' [(filteredArray)]='filters'></app-filtered-selector>
-        </div> -->
+        </div>
         <div class="floating-widgets-container">
             <section>
                 <ul>
