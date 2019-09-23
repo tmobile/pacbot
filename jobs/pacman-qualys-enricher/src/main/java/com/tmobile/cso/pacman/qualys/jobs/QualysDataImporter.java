@@ -71,7 +71,7 @@ public abstract class QualysDataImporter {
     }
 
     /** The Constant BASE_API_URL. */
-    protected static final String BASE_API_URL = "https://qualysapi.qg2.apps.qualys.com";
+    protected static final String BASE_API_URL = System.getProperty("qualys_api_url");
 
     /**
      * Instantiates a new qualys data importer.

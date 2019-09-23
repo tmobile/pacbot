@@ -154,7 +154,7 @@ public class Util {
      */
     public static Map<String, List<String>> fetchCurrentQidInfo(String type) {
 
-        String endPoint = "aws_" + type + "/vulninfo/_search?scroll=2m&size=10000";
+        String endPoint = "/aws_" + type + "/vulninfo/_search?scroll=2m&size=10000";
         String payLoad = "{\"_source\":[\"_resourceid\",\"qid\"],\"query\":{\"bool\":{\"must\":[{\"terms\":{\"severitylevel\":[3,4,5]}}]}}}";
 
         List<Map<String, String>> data = new ArrayList<>();
@@ -181,7 +181,7 @@ public class Util {
      * @return the map
      */
     public static Map<String, List<String>> fetchVPCtoNatIPInfo() {
-        String endPoint = "aws_nat/nat/_search?filter_path=hits.hits._source.vpcid,hits.hits.inner_hits.nat_addresses.hits.hits._source.publicip";
+        String endPoint = "/aws_nat/nat/_search?filter_path=hits.hits._source.vpcid,hits.hits.inner_hits.nat_addresses.hits.hits._source.publicip";
         String payLoad = "{\"size\":10000,\"_source\":\"vpcid\",\"query\":{\"bool\":{\"must\":[{\"match\":{\"latest\":\"true\"}},{\"has_child\":{\"type\":\"nat_addresses\",\"query\":{\"match_all\":{}},\"inner_hits\":{\"size\":100,\"_source\":\"publicip\"}}}]}}}{\"size\":10000,\"_source\":\"vpcid\",\"query\":{\"bool\":{\"must\":[{\"match\":{\"latest\":\"true\"}},{\"has_child\":{\"type\":\"nat_addresses\",\"query\":{\"match_all\":{}},\"inner_hits\":{\"size\":100,\"_source\":\"publicip\"}}}]}}}";
         Map<String, List<String>> VpcPublicIpInfo = new HashMap<>();
         try {
@@ -228,7 +228,6 @@ public class Util {
             String responseJson;
 
             responseJson = EntityUtils.toString(response.getEntity());
-
             JsonParser jsonParser = new JsonParser();
             JsonObject resultJson = (JsonObject) jsonParser.parse(responseJson);
             String scrollId = resultJson.get("_scroll_id").getAsString();
@@ -305,7 +304,7 @@ public class Util {
      * @return the map
      */
     public static Map<String, List<String>> fetchEc2EniInfo() {
-        String endPoint = "aws_ec2/ec2_nwinterfaces/_search?scroll=2m&size=10000";
+        String endPoint = "/aws_ec2/ec2_nwinterfaces/_search?scroll=2m&size=10000";
         String payLoad = "{\"_source\":[\"instanceid\",\"networkinterfaceid\"],\"query\":{\"has_parent\":{\"parent_type\":\"ec2\",\"query\":{\"match\":{\"latest\":\"true\"}}}}}";
         List<Map<String, String>> data = new ArrayList<>();
         String scrollId = fetchDataAndScrollId(endPoint, data, payLoad);
@@ -331,7 +330,7 @@ public class Util {
      * @return the map
      */
     public static Map<String, String> fetchEniMacInfo() {
-        String endPoint = "aws_eni/eni/_search?scroll=2m&size=10000";
+        String endPoint = "/aws_eni/eni/_search?scroll=2m&size=10000";
         String payLoad = "{\"_source\":[\"_resourceid\",\"macaddress\"],\"query\":{\"match\":{\"latest\":\"true\"}}}";
         List<Map<String, String>> data = new ArrayList<>();
         String scrollId = fetchDataAndScrollId(endPoint, data, payLoad);

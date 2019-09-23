@@ -81,6 +81,8 @@ SET @PACMAN_LOGIN_PASSWORD='$PACMAN_LOGIN_PASSWORD';
 SET @CONFIG_CREDENTIALS='$CONFIG_CREDENTIALS';
 SET @CONFIG_SERVICE_URL='$CONFIG_SERVICE_URL';
 SET @PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID='$PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID';
+SET @QUALYS_INFO='$QUALYS_INFO';
+SET @QUALYS_API_URL='$QUALYS_API_URL';
 
 
 
@@ -1787,7 +1789,6 @@ INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('vuln
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('vulnerability.application.resourcedetails','Description PlaceHolder');
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('vulnerability.application.resourcedetailsboth','Description PlaceHolder');
 INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('qualys_info','Base64 encoded user:password of qualys');
-INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('server_type','Server type of qualys');
 INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('qualys_api_url','Qualys api url');
 
 
@@ -2080,6 +2081,8 @@ INSERT IGNORE INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`
 INSERT IGNORE INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[6].url','${PACMAN_HOST_NAME:http://localhost:8080}/api/vulnerability/v2/api-docs','api','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('api.services[6].version','2','api','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('server.servlet.context-path','/api/vulnerability','vulnerability-service','prd','latest',NULL,NULL,NULL,NULL);
+INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('qualys_info',concat(@QUALYS_INFO,''),'qualys-enricher','prd','latest',NULL,NULL,NULL,NULL);
+INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('qualys_api_url',concat(@QUALYS_API_URL,''),'qualys-enricher','prd','latest',NULL,NULL,NULL,NULL);
 
 
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('vulnerability.application.occurance','severity,_resourceid,pciflag,_vulnage,vulntype,title,classification,_firstFound,_lastFound,qid,patchable,category','vulnerability-service','prd','latest',NULL,NULL,NULL,NULL);

@@ -55,7 +55,6 @@ public class KBDataImporter extends QualysDataImporter implements Constants{
         String kbGetUri = BASE_API_URL + apiMap.get("listKnowledgebase") + "&last_modified_after="
                 + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
                         .format(new java.util.Date(System.currentTimeMillis() - (10 * DAY_IN_MS)));
-        // String kbGetUri = BASE_API_URL + apiMap.get("listKnowledgebase");
         log.info("Calling API %s", kbGetUri);
 
         List<Map<String, Object>> vulnDetails = new ArrayList<>();
@@ -115,6 +114,8 @@ public class KBDataImporter extends QualysDataImporter implements Constants{
             errorMap.put(EXCEPTION, e.getMessage());
             errorList.add(errorMap);
         }
+        ElasticSearchManager.createIndex(index);
+        ElasticSearchManager.createType(index, type);
         ElasticSearchManager.uploadData(index, type, vulnDetails, docid);
         
         return ErrorManageUtil.formErrorCode(errorList);
