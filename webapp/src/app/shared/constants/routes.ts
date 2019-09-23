@@ -217,6 +217,14 @@ export const COMPLIANCE_ROUTES = [
         canActivate: [AuthGuardService]
     },
     {
+        path: 'vulnerabilities-compliance/:details',
+        component: VulnerabilitiesComponent,
+        data: {
+            title: 'Vulnerabilities'
+        },
+        canActivate: [AuthGuardService]
+    },
+    {
         path: 'recommendations',
         component: RecommendationsComponent,
         data: {

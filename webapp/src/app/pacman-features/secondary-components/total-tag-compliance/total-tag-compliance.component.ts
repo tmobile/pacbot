@@ -126,13 +126,6 @@ export class TotalTagComplianceComponent implements OnInit, OnDestroy {
 
           try {
             this.complianceData = response[0].data;
-            console.log(this.complianceData);
-            this.complianceData.push([{title: "topBlank", val: 59},
-            {title: "Owner", val: 41},
-            {title: "leftBlank", val: 100}]);
-            this.complianceData.push([{title: "topBlank", val: 49},
-            {title: "Owner", val: 51},
-            {title: "leftBlank", val: 100}]);
             this.complianceTableData = response[0].taggingStatus.data;
             this.complianceTableHeaderData = response[0].taggingStatus.header;
             this.contValue = true;

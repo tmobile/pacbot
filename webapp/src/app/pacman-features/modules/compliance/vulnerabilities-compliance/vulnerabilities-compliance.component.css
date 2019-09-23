@@ -28,11 +28,7 @@
 .arrow-img:hover{
     transform: rotate(180deg) translateX(20%);
 }
-
-.vulnerabilities-wrapper /deep/ .data-table-wrap .table-cells:nth-child(1) {
-    width: 330px;
-}
-
-.vulnerabilities-wrapper /deep/ .data-table-wrap .table-cells {
-    width: 120px;
+.dashboards-header {
+    padding: 1em 1.8em 2em;
+    flex-shrink: 0;
 }

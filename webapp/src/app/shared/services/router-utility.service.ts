@@ -149,4 +149,25 @@ export class RouterUtilityService {
         return false;
     }
 
+    public getFullPageUrlSegmentFromSnapshot(routerSnapshot: ActivatedRouteSnapshot) {
+        let urlSegmentDetails = [];
+
+        const urlSegment = routerSnapshot.url;
+        const outlet = routerSnapshot.outlet;
+
+        urlSegmentDetails.push({
+            'urlSegment': urlSegment,
+            'outlet': outlet
+        });
+
+        const children = routerSnapshot.children;
+        if (children) {
+            for (let i = 0; i < children.length; i++ ) {
+                const child = children[i];
+                urlSegmentDetails = urlSegmentDetails.concat(this.getFullPageUrlSegmentFromSnapshot(child));
+            }
+        }
+
+        return urlSegmentDetails;
+    }
 }
