@@ -42,7 +42,7 @@ class ESDomain(ElasticsearchDomainResource):
     zone_awareness_enabled = False
     ebs_enabled = True
     volume_type = "gp2"
-    volume_size = 20
+    volume_size = Settings.get('ES_VOLUME_SIZE', 20)
     automated_snapshot_start_hour = 23
     security_group_ids = [InfraSecurityGroupResource.get_output_attr('id')]
     subnet_ids = [Settings.get('VPC')['SUBNETS'][0]]
