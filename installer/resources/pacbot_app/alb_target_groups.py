@@ -1,6 +1,7 @@
 from core.terraform.resources.aws.load_balancer import ALBTargetGroupResource
 from resources.vpc.security_group import InfraSecurityGroupResource
 from core.config import Settings
+from resources.pacbot_app.utils import need_to_deploy_vulnerability_service
 
 
 PATH_PREFIX = '/api/'
@@ -56,6 +57,12 @@ class AssetALBTargetGroup(ALBTargetGroupResource, BaseTG):
 class AuthALBTargetGroup(ALBTargetGroupResource, BaseTG):
     name = "auth"
     path = PATH_PREFIX + "auth/api.html"
+
+
+class VulnerabilityALBTargetGroup(ALBTargetGroupResource, BaseTG):
+    name = "vulnerability"
+    path = PATH_PREFIX + "vulnerability/api.html"
+    PROCESS = need_to_deploy_vulnerability_service()
 
 
 class NginxALBTargetGroup(ALBTargetGroupResource, BaseTG):
