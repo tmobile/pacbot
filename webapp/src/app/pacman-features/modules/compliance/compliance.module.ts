@@ -91,13 +91,11 @@ import { PatchingSnapshotComponent } from './../../secondary-components/patching
 import { PatchingProjectionsComponent } from './patching-projections/patching-projections.component';
 import { VulnerabilitySummaryTableComponent } from './../../secondary-components/vulnerability-summary-table/vulnerability-summary-table.component';
 import { AgGridModule } from 'ag-grid-angular/main';
-import { VulnerabilitySummaryDistributionComponent } from './../../secondary-components/vulnerability-summary-distribution/vulnerability-summary-distribution.component';
 import { DigitalDevDashboardComponent } from './digital-dev-dashboard/digital-dev-dashboard.component';
 import { PullRequestLineMetricsComponent } from './../../secondary-components/pull-request-line-metrics/pull-request-line-metrics.component';
 import { DigitalApplicationDistributionComponent } from './../../secondary-components/digital-application-distribution/digital-application-distribution.component';
 import { DigitalDevStrategyDistributionComponent } from './../../secondary-components/digital-dev-strategy-distribution/digital-dev-strategy-distribution.component';
 import { VulnerabilityAgingGraphComponent } from './../../secondary-components/vulnerability-aging-graph/vulnerability-aging-graph.component';
-import { VulnerabilityAgingDistributionSummaryComponent } from './../../secondary-components/vulnerability-aging-distribution-summary/vulnerability-aging-distribution-summary.component';
 import { DevStandardPullRequestAgeComponent } from './../../secondary-components/dev-standard-pull-request-age/dev-standard-pull-request-age.component';
 import { DevStandardStaleBranchAgeComponent } from './../../secondary-components/dev-standard-stale-branch-age/dev-standard-stale-branch-age.component';
 import { DevStandardTotalStaleBranchesComponent } from './../../secondary-components/dev-standard-total-stale-branches/dev-standard-total-stale-branches.component';
@@ -124,8 +122,6 @@ import { OverallVulnerabilitiesComponent } from './../../secondary-components/ov
       PatchingSnapshotComponent,
       PatchingSponsorComponent,
       VulnerabilitySummaryTableComponent,
-      VulnerabilitySummaryDistributionComponent,
-      VulnerabilityAgingDistributionSummaryComponent,
       DevPullRequestApplicationsComponent,
       DevStaleBranchApplicationsComponent
     ])
@@ -203,12 +199,10 @@ import { OverallVulnerabilitiesComponent } from './../../secondary-components/ov
     PatchingProjectionsComponent,
     PatchingSponsorComponent,
     VulnerabilitySummaryTableComponent,
-    VulnerabilitySummaryDistributionComponent,
     DigitalDevDashboardComponent,
     DigitalApplicationDistributionComponent,
     DigitalDevStrategyDistributionComponent,
     VulnerabilityAgingGraphComponent,
-    VulnerabilityAgingDistributionSummaryComponent,
     DevStandardPullRequestAgeComponent,
     DevStandardStaleBranchAgeComponent,
     DevStandardTotalStaleBranchesComponent,
