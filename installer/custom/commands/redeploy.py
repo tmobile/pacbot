@@ -88,6 +88,7 @@ class Redeploy(BaseCommand):
         resources_to_process = self.get_resources_to_process(input_instance)
         try:
             resources_to_taint = self.get_resources_with_given_tags(input_instance, ["deploy"])
+            resources_to_taint = [resource for resource in resources_to_taint if resource.PROCESS is True]
             response = PyTerraform().terraform_taint(resources_to_taint)  # If tainted or destroyed already then skip it
         except Exception as e:
             pass

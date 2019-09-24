@@ -29,7 +29,7 @@ class BuildUiAndApis(NullResource):
                     'LOG_DIR': Settings.LOG_DIR,
                     'S3_BUCKET': BucketStorage.get_output_attr('bucket'),
                     'S3_KEY_PREFIX': Settings.RESOURCE_NAME_PREFIX,
-                    'ENABLED_VULNERABILITY_FEATURE': str(Settings.ENABLE_VULNERABILITY_FEATURE).lower()
+                    'ENABLE_VULNERABILITY_FEATURE': str(Settings.ENABLE_VULNERABILITY_FEATURE).lower()
                 },
                 'interpreter': [Settings.PYTHON_INTERPRETER]
             }
