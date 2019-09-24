@@ -7,7 +7,7 @@ import sys
 import os
 
 
-class Redeploy(BaseCommand):
+class Reinstall(BaseCommand):
     """
     This calss is defined to reinstall PacBot which is already installed by Installer command
 
