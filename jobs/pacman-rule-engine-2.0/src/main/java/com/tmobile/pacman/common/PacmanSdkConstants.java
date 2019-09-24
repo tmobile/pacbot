@@ -608,5 +608,8 @@ public interface PacmanSdkConstants extends com.tmobile.pacman.commons.PacmanSdk
     
     /**  ALLOCATIONID KEY. */
     String ALLOCATION_ID = "allocationid";
+    
+    /** The boolean true. */
+    String BOOLEAN_TRUE = "true";
 
 }

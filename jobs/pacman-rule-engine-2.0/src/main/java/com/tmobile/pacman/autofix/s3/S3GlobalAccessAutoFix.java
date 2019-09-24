@@ -28,6 +28,8 @@ import com.amazonaws.services.s3.model.AccessControlList;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.BucketPolicy;
 import com.amazonaws.services.s3.model.Grant;
+import com.amazonaws.services.s3.model.PublicAccessBlockConfiguration;
+import com.amazonaws.services.s3.model.SetPublicAccessBlockRequest;
 import com.amazonaws.util.CollectionUtils;
 import com.google.common.base.Strings;
 import com.google.gson.Gson;
@@ -63,10 +65,16 @@ public class S3GlobalAccessAutoFix extends BaseFix {
         AmazonS3Client awsS3Client = null;
         awsS3Client = (AmazonS3Client) clientMap.get(PacmanSdkConstants.CLIENT);
         String s3BucketName = issue.get(PacmanSdkConstants.RESOURCE_ID);
-        LOGGER.info("revoking all ACL permissions");
-        revokeACLPublicPermission(awsS3Client, s3BucketName);
-        LOGGER.info("revking all Bucket Policy");
-        revokePublicBucketPolicy(awsS3Client, s3BucketName);
+        try{
+        	LOGGER.info("block all public permissions");
+        	blockAllPublicAcces(awsS3Client, s3BucketName);
+        }catch(Exception e){
+        	LOGGER.debug("Error while blocking all public permissions {} ",e);
+        	LOGGER.info("revoking all ACL permissions");
+            revokeACLPublicPermission(awsS3Client, s3BucketName);
+            LOGGER.info("revking all Bucket Policy");
+            revokePublicBucketPolicy(awsS3Client, s3BucketName);
+        }
         return new FixResult(PacmanSdkConstants.STATUS_SUCCESS_CODE, "the s3 bucket is now fixed");
     }
 
@@ -141,5 +149,20 @@ public class S3GlobalAccessAutoFix extends BaseFix {
         if (bucketPolicy.getPolicyText() != null && !bucketPolicy.getPolicyText().equals(PacmanSdkConstants.EMPTY)) {
             awsS3Client.deleteBucketPolicy(s3BucketName);
         }
+    }
+    
+    private void blockAllPublicAcces(AmazonS3Client awsS3Client, String s3BucketName) {
+    	Boolean globalFlag = Boolean.parseBoolean(PacmanSdkConstants.BOOLEAN_TRUE);
+         
+ 		PublicAccessBlockConfiguration accessBlockConfiguration = new PublicAccessBlockConfiguration();
+ 		accessBlockConfiguration.setBlockPublicAcls(globalFlag);
+ 		accessBlockConfiguration.setBlockPublicPolicy(globalFlag);
+ 		accessBlockConfiguration.setIgnorePublicAcls(globalFlag);
+ 		accessBlockConfiguration.setRestrictPublicBuckets(globalFlag);
+ 		SetPublicAccessBlockRequest setPublicAccessBlockRequest = new SetPublicAccessBlockRequest();
+ 		setPublicAccessBlockRequest.setBucketName(s3BucketName);
+ 		setPublicAccessBlockRequest.setPublicAccessBlockConfiguration(accessBlockConfiguration);
+ 		
+ 		awsS3Client.setPublicAccessBlock(setPublicAccessBlockRequest);
     }
 }
