@@ -1144,6 +1144,7 @@ public class PacmanUtils {
         Map<String, Object> mustNotFilter = new HashMap<>();
         HashMultimap<String, Object> shouldFilter = HashMultimap.create();
         Map<String, Object> mustTermsFilter = new HashMap<>();
+        mustFilter.put(PacmanRuleConstants.LATEST, PacmanRuleConstants.TRUE_VAL);
         mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.SEVERITY), severityVulnValue);
         mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.RESOURCE_ID), instanceId);
         JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(ec2WithVulnUrl, mustFilter,
