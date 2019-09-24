@@ -1,0 +1,53 @@
+<!--
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License.
+-->
+
+<div class="vulnerability-overall-wrapper flex flex-col">
+    <div class="sub-head">
+      <app-title-burger-head [helpId]="'w4'" [subHeadTitle]="'Overall Vulnerabilities Compliance'"></app-title-burger-head>
+    </div>
+    <div class="flex flex-col overall-vuln-wrap relative flex-align-center">
+        <app-error-message *ngIf='errorVal == -1 && errorSumVal == -1' [selectedValue]="errorMessage"></app-error-message>
+        <div *ngIf='errorVal == 0 || errorSumVal == 0' class="loader"></div>
+        <div class="flex flex-col" *ngIf='errorSumVal == 1 && errorVal != 0'>
+            <div class="vuln-top-section flex flex-align-center" *ngIf='vulnData'>
+                <div class="flex flex-align-center each-wrap">
+                    <div class="flex flex-align-end num-wrap">
+                        <div class="compliant-percent green-txt">{{vulnData.compliantpercent}}</div>
+                        <div class="percent-sym green-txt">%</div>
+                    </div>
+                    <div class="compliant-txt">Compliant</div>
+                </div>
+                <div class="flex flex-align-center each-wrap">
+                    <div class="flex flex-align-end num-wrap">
+                        <div class="compliant-percent red-txt" [class.vuln-link]='vulnData.vulnerabilities' (click) = "vulnData.vulnerabilities > 0 && navigatePage()">{{vulnData.vulnerabilities | number}}</div>
+                    </div>
+                    <div class="compliant-txt flex flex-col">
+                        <div class="compliant-txt">Vulnerabilities</div>
+                        <div class="compliant-txt italics">(Across {{vulnData.hosts | number}} Hosts)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="flex flex-col full-width center" id='vulnSummaryPie' *ngIf='errorVal == 1 && errorSumVal != 0'>
+            <app-doughnut-chart (emitClick)='pieClicked($event)' [selectedLevel]='selectedLevel' [ringData]='linksData' [isPieChart]='true' [chartContId]="'vulnSummaryPie'" [graphData]="modifiedResponse[selectedGraph]" [graphWidth]="widgetWidth" [flexTrue]="false" [graphHeight]="widgetHeight" [MainTextcolor]="'#000'" [innerRadious]="innerRadius" [outerRadious]='outerRadius' [strokeColor]="'#fff'"></app-doughnut-chart>
+        </div>
+        <div class="flex flex-align-center links-wrapper" *ngIf='errorVal == 1 && errorSumVal != 0'>
+            <div class="flex flex-align-center" *ngFor='let links of linksData; let i = index;'>
+                <div (click)='selectedLink = i; clearLinkInterval();' [class.active-link]='selectedLink === i' class="pointer">{{links.name}}</div>
+                <div class="link-separators" *ngIf='i < linksData.length - 2 '>></div>
+                <div class="link-separators" *ngIf='i === linksData.length - 2 '>|</div>
+            </div> 
+        </div>
+    </div>
+</div>

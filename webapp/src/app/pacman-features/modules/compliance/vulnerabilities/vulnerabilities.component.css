@@ -32,14 +32,13 @@
 .widget-wrapper {
     min-height: 17em;
     position: relative;
-} 
-
-.issue-listing-wrapper /deep/ .data-table-wrap .table-cells:nth-child(1) {
-    width: 320px;
 }
 
-.issue-listing-wrapper /deep/ .data-table-wrap .table-cells {
-    width: 130px;
+.h-100 {
+    height:100%;
+}
+.w-100 {
+    width:100%;
 }
 
 /* css for edge browser */
@@ -47,4 +46,4 @@
     .floating-widgets-container {
         overflow: auto;
     }
-} 
+}
