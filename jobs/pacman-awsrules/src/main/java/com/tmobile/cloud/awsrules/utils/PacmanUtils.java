@@ -2123,8 +2123,8 @@ public class PacmanUtils {
      */
     public static Long calculateLaunchedDuration(String formattedDateString) {
         if(formattedDateString!=null){
-        LocalDate expiryDate = LocalDateTime.parse(formattedDateString,  DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toLocalDate();
-        LocalDate today = LocalDateTime.now().toLocalDate();
+        LocalDate expiryDate = LocalDate.parse(formattedDateString);
+        LocalDate today = LocalDate.now();
         return java.time.temporal.ChronoUnit.DAYS.between(expiryDate, today);
         }else{
             return 0l;
