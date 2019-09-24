@@ -22,7 +22,7 @@ class Buildpacbot(object):
     archive_type = "zip"  # What type of archive is required
     issue_email_template = ''
 
-    def __init__(self, aws_details, api_domain_url, upload_dir, log_dir, pacbot_code_dir, enabled_vulnerability_feautre):
+    def __init__(self, aws_details, api_domain_url, upload_dir, log_dir, pacbot_code_dir, enable_vulnerability_feautre):
         self.api_domain_url = api_domain_url
         self.cwd = pacbot_code_dir
         self.codebase_root_dir = pacbot_code_dir
@@ -30,7 +30,7 @@ class Buildpacbot(object):
         self.maven_build_log = os.path.join(log_dir, "maven_build.log")
         self.upload_dir = upload_dir
         self.s3_client = prepare_aws_client_with_given_aws_details('s3', aws_details)
-        self.enabled_vulnerability_feautre = enabled_vulnerability_feautre
+        self.enable_vulnerability_feautre = enable_vulnerability_feautre
 
     def _clean_up_all(self):
         os.chdir(self.cwd)
@@ -156,7 +156,7 @@ class Buildpacbot(object):
                 lines[idx] = lines[idx].replace("AD_AUTHENTICATION: false", "AD_AUTHENTICATION: true")
 
             if "qualysEnabled: false" in line:
-                lines[idx] = lines[idx].replace("qualysEnabled: false", "qualysEnabled: %s" % self.enabled_vulnerability_feautre)
+                lines[idx] = lines[idx].replace("qualysEnabled: false", "qualysEnabled: %s" % self.enable_vulnerability_feautre)
 
             if "ISSUE_MAIL_TEMPLATE_URL: ''" in line:
                 lines[idx] = lines[idx].replace("ISSUE_MAIL_TEMPLATE_URL: ''", "ISSUE_MAIL_TEMPLATE_URL: '" + self.issue_email_template + "'")
@@ -206,7 +206,7 @@ if __name__ == "__main__":
     provider_json_file = os.getenv('PROVIDER_FILE')
     s3_bucket = os.getenv('S3_BUCKET')
     s3_key_prefix = os.getenv('S3_KEY_PREFIX')
-    enabled_vulnerability_feautre = os.getenv('ENABLED_VULNERABILITY_FEATURE')
+    enable_vulnerability_feautre = os.getenv('ENABLE_VULNERABILITY_FEATURE')
     aws_details = get_provider_details("aws", provider_json_file)
 
     Buildpacbot(
@@ -215,7 +215,7 @@ if __name__ == "__main__":
         dist_files_upload_dir,
         log_dir,
         pacbot_code_dir,
-        enabled_vulnerability_feautre).build_api_and_ui_apps(
+        enable_vulnerability_feautre).build_api_and_ui_apps(
             s3_bucket,
             s3_key_prefix
     )
