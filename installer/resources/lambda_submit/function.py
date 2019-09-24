@@ -226,7 +226,7 @@ class QualysKBCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
         'jobType': "jar",
         'jobDesc': "Qualys KB Collector",
         'environmentVariables': [
-            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/api/prd/latest"},
+            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,qualys-enricher/prd/latest"},
         ],
         'params': [
             {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile"},
@@ -266,7 +266,7 @@ class QualysAssetDataImporterCloudWatchEventTarget(CloudWatchEventTargetResource
         'jobType': "jar",
         'jobDesc': "Qualys Asset Data Importer",
         'environmentVariables': [
-            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/api/prd/latest"},
+            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,qualys-enricher/prd/latest"},
         ],
         'params': [
             {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile"},
