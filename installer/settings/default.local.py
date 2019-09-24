@@ -49,5 +49,5 @@ AWS_REGION = ""
 
 # This settings enable Vulnerability feature and servie
 ENABLE_VULNERABILITY_FEATURE = False
-QUALYS_BASE_URL = ""
-QUALYS_CREDNETIALS = ""
+QUALYS_API_URL = ""
+QUALYS_INFO = ""

@@ -94,7 +94,9 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_PACMAN_LOGIN_PASSWORD': "pacman",
                         'ENV_CONFIG_CREDENTIALS': "dXNlcjpwYWNtYW4=",
                         'ENV_CONFIG_SERVICE_URL': ApplicationLoadBalancer.get_http_url() + "/api/config/rule/prd/latest",
-                        'ENV_PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID': Settings.get('USER_EMAIL_ID', "")
+                        'ENV_PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID': Settings.get('USER_EMAIL_ID', ""),
+                        'ENV_QUALYS_INFO': Settings.get('QUALYS_INFO', ""),
+                        'ENV_QUALYS_API_URL': Settings.get('QUALYS_API_URL', "")
                     },
                     'interpreter': [Settings.PYTHON_INTERPRETER]
                 }
