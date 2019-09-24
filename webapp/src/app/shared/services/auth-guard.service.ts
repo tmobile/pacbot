@@ -15,17 +15,20 @@
 /* Created by Puneet Baser 20/11/2017 */
 
 import { Injectable } from '@angular/core';
-import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot} from '@angular/router';
+import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, ActivatedRoute, Router} from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { LoggerService } from './logger.service';
 import { DataCacheService } from '../../core/services/data-cache.service';
+import { CONFIGURATIONS } from '../../../config/configurations';
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
     constructor(
                 private authService: AuthService,
                 private loggerService: LoggerService,
-                private dataStore: DataCacheService) {}
+                private dataStore: DataCacheService,
+                private router: Router,
+                private activatedRoute: ActivatedRoute) {}
 
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
 
@@ -49,6 +52,15 @@ export class AuthGuardService implements CanActivate {
             error => {
                 this.loggerService.log('info', '**Error in setting user Fetched information**');
             });
+        }
+
+        if (state.url.includes('vulnerabilities-compliance') && !CONFIGURATIONS.optional.general.qualysEnabled) {
+            this.loggerService.log('info', 'Qualys required to access this page');
+            this.router.navigate(
+                ['../../../../compliance/compliance-dashboard'],
+                { relativeTo: this.activatedRoute, queryParamsHandling: 'merge' }
+              );
+            return false;
         }
         return true;
     }

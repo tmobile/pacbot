@@ -104,6 +104,7 @@ export class MultiBandDonutComponent implements OnInit, OnChanges {
 
       this.width = +this.svg.attr('width');
       this.height = +this.svg.attr('height');
+
       this.radius = ( Math.min(this.height, this.width) / 2.1 ) + 14 * indx ;
 
       this.color = d3Scale.scaleOrdinal()
