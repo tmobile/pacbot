@@ -175,7 +175,8 @@
 						<phase>install</phase>
 						<configuration>
 							<target>
-								<copy file="target/qualys-enricher-jar-with-dependencies.jar" tofile="../../dist/jobs/qualys-enricher.jar"/>
+								<copy file="target/qualys-enricher-jar-with-dependencies.jar" tofile="../../dist/jobs/qualys-kb-collector.jar"/>
+								<copy file="target/qualys-enricher-jar-with-dependencies.jar" tofile="../../dist/jobs/qualys-asset-data-importer.jar"/>
 							</target>
 						</configuration>
 						<goals>
