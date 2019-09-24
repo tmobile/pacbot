@@ -120,7 +120,7 @@ class ImportDbSql(NullResource):
         local_execs = [
             {
                 'local-exec': {
-                    'command': "mysql -u %s -p %s -h %s < %s" % (db_user_name, db_password, db_host, ReplaceSQLPlaceHolder.dest_file)
+                    'command': "mysql -u %s --password=%s -h %s < %s" % (db_user_name, db_password, db_host, ReplaceSQLPlaceHolder.dest_file)
                 }
             }
 
