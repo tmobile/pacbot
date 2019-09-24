@@ -1,5 +1,5 @@
 from core.config import Settings
-from core.providers.aws import Install
+from core.providers.aws.install import Install
 from core import constants as K
 from core.terraform import PyTerraform
 from threading import Thread
@@ -52,7 +52,7 @@ class ReInstall(Install):
         """
         try:
             if not dry_run:
-                PyTerraform().terraform_destroy(destroy_resources)
+                PyTerraform().terraform_destroy(resources)
                 self.run_post_destoy(resources)
 
             self.terraform_apply(resources, terraform_with_targets, dry_run)
