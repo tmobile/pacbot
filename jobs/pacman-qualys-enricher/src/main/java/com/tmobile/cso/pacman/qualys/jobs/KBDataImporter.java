@@ -19,8 +19,8 @@ import org.slf4j.LoggerFactory;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tmobile.cso.pacman.qualys.Constants;
 import com.tmobile.cso.pacman.qualys.dto.KNOWLEDGEBASEVULNLISTOUTPUT;
-import com.tmobile.cso.pacman.qualys.dto.Vuln;
 import com.tmobile.cso.pacman.qualys.dto.KNOWLEDGEBASEVULNLISTOUTPUT.RESPONSE.VULNLIST;
+import com.tmobile.cso.pacman.qualys.dto.Vuln;
 import com.tmobile.cso.pacman.qualys.util.ElasticSearchManager;
 import com.tmobile.cso.pacman.qualys.util.ErrorManageUtil;
 
@@ -51,11 +51,12 @@ public class KBDataImporter extends QualysDataImporter implements Constants{
     @SuppressWarnings("unchecked")
     public Map<String, Object> execute() {
 
-        long DAY_IN_MS = 1000 * 60 * 60 * 24l;
-        String kbGetUri = BASE_API_URL + apiMap.get("listKnowledgebase") + "&last_modified_after="
+       // long DAY_IN_MS = 1000 * 60 * 60 * 24l;
+        String kbGetUri = BASE_API_URL + apiMap.get("listKnowledgebase") ;
+        /*"&last_modified_after="
                 + new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-                        .format(new java.util.Date(System.currentTimeMillis() - (10 * DAY_IN_MS)));
-        log.info("Calling API %s", kbGetUri);
+                        .format(new java.util.Date(System.currentTimeMillis() - (10 * DAY_IN_MS)));*/
+        log.info("Calling API {}", kbGetUri);
 
         List<Map<String, Object>> vulnDetails = new ArrayList<>();
         try {

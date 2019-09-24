@@ -50,8 +50,6 @@ public class HttpUtil {
     /** The log. */
     static final Logger LOGGER = LoggerFactory.getLogger(HttpUtil.class);
     
-    private static final String CONTENT_TYPE = "Content-Type";
-
     /**
      * Instantiates a new http util.
      */
