@@ -203,10 +203,6 @@ class PyTerraform():
         if resources:
             targets = []
             for resource in resources:
-                # DO NOT process this resource as its definiiton asked to skip
-                if resource.PROCESS is False:
-                    continue
-
                 if BaseTerraformVariable not in inspect.getmro(resource.__class__) and TerraformData not in inspect.getmro(resource.__class__):
                     targets.append(get_terraform_resource_path(resource))
 
