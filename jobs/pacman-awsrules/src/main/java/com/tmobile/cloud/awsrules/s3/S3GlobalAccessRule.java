@@ -62,7 +62,7 @@ public class S3GlobalAccessRule extends BaseRule {
      * ruleCategory : Enter the value of category <br>
      * <br>
      * 
-     * roleIdentifyingString : Configure it as role/pac_ro <br>
+     * roleIdentifyingString : Configure it as role/pacbot_ro <br>
      * <br>
      * 
      * esServiceURL : Enter the Elastic search URL <br>
@@ -128,7 +128,7 @@ public class S3GlobalAccessRule extends BaseRule {
 					PublicAccessBlockConfiguration accessBlockConfiguration = accessBlockResult.getPublicAccessBlockConfiguration();
 					
 					if (accessBlockConfiguration.getBlockPublicAcls() && accessBlockConfiguration.getIgnorePublicAcls() && accessBlockConfiguration.getBlockPublicPolicy() && accessBlockConfiguration.getRestrictPublicBuckets()) {
-						logger.debug(s3BucketName,"This Bucket is not publicly accessable");
+						logger.debug(s3BucketName,"This Bucket is not publicly accessible");
 						return new RuleResult(PacmanSdkConstants.STATUS_SUCCESS,PacmanRuleConstants.SUCCESS_MESSAGE);
 					}
 					if(accessBlockConfiguration.getBlockPublicAcls() || accessBlockConfiguration.getIgnorePublicAcls()){
@@ -137,7 +137,7 @@ public class S3GlobalAccessRule extends BaseRule {
 					if(accessBlockConfiguration.getBlockPublicPolicy() || accessBlockConfiguration.getRestrictPublicBuckets()){
 						isRequiredPublicPolicyCheck = false;
 					}
-					
+				
 				} catch (Exception e) {
 					if(e.getMessage().contains("Access Denied")){
 						logger.debug(s3BucketName,"This Bucket is not publicly accessable");
