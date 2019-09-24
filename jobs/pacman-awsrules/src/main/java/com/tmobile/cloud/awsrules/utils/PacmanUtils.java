@@ -1144,6 +1144,7 @@ public class PacmanUtils {
         Map<String, Object> mustNotFilter = new HashMap<>();
         HashMultimap<String, Object> shouldFilter = HashMultimap.create();
         Map<String, Object> mustTermsFilter = new HashMap<>();
+        mustFilter.put(PacmanRuleConstants.LATEST, PacmanRuleConstants.TRUE_VAL);
         mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.SEVERITY), severityVulnValue);
         mustFilter.put(convertAttributetoKeyword(PacmanRuleConstants.RESOURCE_ID), instanceId);
         JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(ec2WithVulnUrl, mustFilter,
@@ -2122,8 +2123,8 @@ public class PacmanUtils {
      */
     public static Long calculateLaunchedDuration(String formattedDateString) {
         if(formattedDateString!=null){
-        LocalDate expiryDate = LocalDateTime.parse(formattedDateString,  DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toLocalDate();
-        LocalDate today = LocalDateTime.now().toLocalDate();
+        LocalDate expiryDate = LocalDate.parse(formattedDateString);
+        LocalDate today = LocalDate.now();
         return java.time.temporal.ChronoUnit.DAYS.between(expiryDate, today);
         }else{
             return 0l;
