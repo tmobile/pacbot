@@ -31,7 +31,7 @@ export const CONFIGURATIONS = {
             OMNI_SEARCH_MODULE: true, // Expected values: true || false
             TOOLS_MODULE: false, // Expected values: true || false
             ADMIN_MODULE: true, // Expected values: true || false
-        }
+        },
     },
     optional: {
         auth: {
@@ -60,6 +60,7 @@ export const CONFIGURATIONS = {
                 NT_ID: '', // Add NT ID for e2e login
                 NT_PASSWORD: '' // Add respective password for e2e login
             },
+            qualysEnabled: false,
             OSS: true
         }
     }

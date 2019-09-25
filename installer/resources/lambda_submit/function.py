@@ -10,6 +10,7 @@ from resources.batch.job import SubmitAndRuleEngineJobDefinition, BatchJobsQueue
 from resources.data.aws_info import AwsAccount, AwsRegion
 from resources.lambda_submit.s3_upload import UploadLambdaSubmitJobZipFile, BATCH_JOB_FILE_NAME
 from resources.pacbot_app.alb import ApplicationLoadBalancer
+from resources.pacbot_app.utils import need_to_deploy_vulnerability_service
 import json
 
 
@@ -195,3 +196,85 @@ class CloudNotificationCollectorCloudWatchEventTarget(CloudWatchEventTargetResou
             {'encrypt': False, 'key': "conf_src", 'value': "api-prd,application-prd"},
         ]
     })
+
+
+class QualysKBCollectorEventRule(CloudWatchEventRuleResource):
+    name = "qualys-kb-collector"
+    schedule_expression = "cron(0 * * * ? *)"
+
+    DEPENDS_ON = [SubmitJobLambdaFunction]
+    PROCESS = need_to_deploy_vulnerability_service()
+
+
+class QualysKBCollectorEventRuleLambdaPermission(LambdaPermission):
+    statement_id = "AllowExecutionFromQualysKBCollectorEvent"
+    action = "lambda:InvokeFunction"
+    function_name = SubmitJobLambdaFunction.get_output_attr('function_name')
+    principal = "events.amazonaws.com"
+    source_arn = QualysKBCollectorEventRule.get_output_attr('arn')
+
+    PROCESS = need_to_deploy_vulnerability_service()
+
+
+class QualysKBCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
+    rule = QualysKBCollectorEventRule.get_output_attr('name')
+    arn = SubmitJobLambdaFunction.get_output_attr('arn')
+    target_id = 'QualysKBCollectorTarget'  # Unique identifier
+    target_input = json.dumps({
+        'jobName': "qualys-kb-collector",
+        'jobUuid': "qualys-kb-collector",
+        'jobType': "jar",
+        'jobDesc': "Qualys KB Collector",
+        'environmentVariables': [
+            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,qualys-enricher/prd/latest"},
+        ],
+        'params': [
+            {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile"},
+            {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
+            {'encrypt': False, 'key': "job_hint", 'value': "qualys-kb"},
+        ]
+    })
+
+    PROCESS = need_to_deploy_vulnerability_service()
+
+
+class QualysAssetDataImporterEventRule(CloudWatchEventRuleResource):
+    name = "qualys-asset-data-importer"
+    schedule_expression = "cron(10 * * * ? *)"
+
+    DEPENDS_ON = [SubmitJobLambdaFunction]
+    PROCESS = need_to_deploy_vulnerability_service()
+
+
+class QualysAssetDataImporterEventRuleLambdaPermission(LambdaPermission):
+    statement_id = "AllowExecutionFromQualysAssetDataImporterEvent"
+    action = "lambda:InvokeFunction"
+    function_name = SubmitJobLambdaFunction.get_output_attr('function_name')
+    principal = "events.amazonaws.com"
+    source_arn = QualysAssetDataImporterEventRule.get_output_attr('arn')
+
+    PROCESS = need_to_deploy_vulnerability_service()
+
+
+class QualysAssetDataImporterCloudWatchEventTarget(CloudWatchEventTargetResource):
+    rule = QualysAssetDataImporterEventRule.get_output_attr('name')
+    arn = SubmitJobLambdaFunction.get_output_attr('arn')
+    target_id = 'QualysAssetDataImporterTarget'  # Unique identifier
+    target_input = json.dumps({
+        'jobName': "qualys-asset-data-importer",
+        'jobUuid': "qualys-asset-data-importer",
+        'jobType': "jar",
+        'jobDesc': "Qualys Asset Data Importer",
+        'environmentVariables': [
+            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,qualys-enricher/prd/latest"},
+        ],
+        'params': [
+            {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile"},
+            {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
+            {'encrypt': False, 'key': "job_hint", 'value': "qualys"},
+            {'encrypt': False, 'key': "server_type", 'value': "ec2"},
+            {'encrypt': False, 'key': "datasource", 'value': "aws"}
+        ]
+    })
+
+    PROCESS = need_to_deploy_vulnerability_service()

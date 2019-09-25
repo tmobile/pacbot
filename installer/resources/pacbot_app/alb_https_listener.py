@@ -56,3 +56,8 @@ class AssetALBHttpsListenerRule(ALBListenerRuleResource, BaseLR):
 class AuthALBHttpsListenerRule(ALBListenerRuleResource, BaseLR):
     action_target_group_arn = tg.AuthALBTargetGroup.get_output_attr('arn')
     condition_values = [PATH_PREFIX + "auth*"]
+
+
+class VulnerabilityALBHttpsListenerRule(ALBListenerRuleResource, BaseLR):
+    action_target_group_arn = tg.VulnerabilityALBTargetGroup.get_output_attr('arn')
+    condition_values = [PATH_PREFIX + "vulnerability*"]

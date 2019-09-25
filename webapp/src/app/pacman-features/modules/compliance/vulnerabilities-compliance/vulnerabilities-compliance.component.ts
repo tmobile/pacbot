@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -21,7 +21,7 @@ import {
 } from '@angular/core';
 import { AssetGroupObservableService } from '../../../../core/services/asset-group-observable.service';
 import { SelectComplianceDropdown } from './../../../services/select-compliance-dropdown.service';
-import { Subscription } from 'rxjs/Subscription';
+import { Subscription } from 'rxjs';
 import { environment } from './../../../../../environments/environment';
 import { Router } from '@angular/router';
 import { IssueFilterService } from './../../../services/issue-filter.service';
@@ -56,7 +56,6 @@ export class VulnerabilitiesComplianceComponent implements OnInit, OnDestroy {
   searchDropdownData: any = {};
   selectedDD = '';
   currentObj: any = {};
-  filterArr: any = [];
   subscriptionToAssetGroup: Subscription;
   selectedAssetGroup: string;
   selectedComplianceDropdown: any;
@@ -66,8 +65,6 @@ export class VulnerabilitiesComplianceComponent implements OnInit, OnDestroy {
   filterTagOptions = [];
   filterTagLabels = [];
   filters = [];
-  public pageLevel = 0;
-  public backButtonRequired;
   private filterTypesSubscription: Subscription;
 
   constructor(
@@ -82,9 +79,6 @@ export class VulnerabilitiesComplianceComponent implements OnInit, OnDestroy {
     this.subscriptionToAssetGroup = this.assetGroupObservableService
       .getAssetGroup()
       .subscribe(assetGroupName => {
-        this.backButtonRequired = this.workflowService.checkIfFlowExistsCurrently(
-          this.pageLevel
-        );
         this.selectedAssetGroup = assetGroupName;
         this.deleteFilters();
         this.getFilters();
@@ -122,7 +116,7 @@ export class VulnerabilitiesComplianceComponent implements OnInit, OnDestroy {
 
   changeFilterType(value) {
     this.currentFilterType = _.find(this.filterTypeOptions, {
-      optionName: value.value
+      optionName: value.id
     });
     this.filterTypesSubscription = this.issueFilterService
       .getFilters(
@@ -142,7 +136,7 @@ export class VulnerabilitiesComplianceComponent implements OnInit, OnDestroy {
 
   changeFilterTags(value) {
     if (this.currentFilterType) {
-      const filterTag = _.find(this.filterTagOptions, { name: value.value });
+      const filterTag = _.find(this.filterTagOptions, { name: value.id });
       this.utils.addOrReplaceElement(
         this.filters,
         {
@@ -161,12 +155,11 @@ export class VulnerabilitiesComplianceComponent implements OnInit, OnDestroy {
       this.selectComplianceDropdown.updateCompliance(
         this.utils.arrayToObject(this.filters, 'filterkey', 'value')
       );
+      this.filterTagOptions = [];
+      this.filterTagLabels = [];
+      this.currentFilterType = null;
     }
     this.utils.clickClearDropdown();
-  }
-
-  navigateBack() {
-    this.workflowService.goBackToLastOpenedPageAndUpdateLevel(this.router.routerState.snapshot.root);
   }
 
   deleteFilters(event?) {

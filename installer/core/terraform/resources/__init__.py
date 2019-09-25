@@ -196,6 +196,8 @@ class BaseTerraformResource(metaclass=ABCMeta):
                 print(msg)
                 SysLog().write_error_log(str(e) + '\n' + msg)
                 sys.exit()
+        else:
+            self.remove_terraform()
 
     def remove_terraform(self):
         """Delete the terraform file of the current resource from terraform directory"""
