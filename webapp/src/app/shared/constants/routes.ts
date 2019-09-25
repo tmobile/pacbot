@@ -73,6 +73,7 @@ import { ConfigManagementComponent } from '../../pacman-features/modules/admin/c
 import { RecommendationsComponent} from '../../pacman-features/modules/compliance/recommendations/recommendations.component';
 import { RecommendationsDetailsComponent } from '../../pacman-features/modules/compliance/recommendations-details/recommendations-details.component';
 
+
 export const COMPLIANCE_ROUTES = [
     {
         path: 'compliance-dashboard',
@@ -102,7 +103,7 @@ export const COMPLIANCE_ROUTES = [
         path: 'vulnerabilities-compliance',
         component: VulnerabilitiesComplianceComponent,
         data: {
-            title: 'Vulnerability Compliance',
+            title: 'Vulnerabilities',
             tileName: 'app-overview-vulnerabilities'
         },
         canActivate: [AuthGuardService]
@@ -212,6 +213,14 @@ export const COMPLIANCE_ROUTES = [
         component: VulnerabilityDetailsComponent,
         data: {
             title: 'Vulnerability Details'
+        },
+        canActivate: [AuthGuardService]
+    },
+    {
+        path: 'vulnerabilities-compliance/:details',
+        component: VulnerabilitiesComponent,
+        data: {
+            title: 'Vulnerabilities'
         },
         canActivate: [AuthGuardService]
     },

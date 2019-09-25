@@ -125,6 +125,13 @@ class AllReadRoleAutoFixPolicyDocument(iam.IAMPolicyDocumentData):
             'resources': ["*"],
             'effect': "Allow"
         },
+        {
+            'actions': [
+                "s3:setPublicAccessBlock",
+            ],
+            'resources': ["*"],
+            'effect': "Allow"
+        },
     ]
 
 

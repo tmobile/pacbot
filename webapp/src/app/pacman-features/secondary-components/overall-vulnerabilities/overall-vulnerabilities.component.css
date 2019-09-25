@@ -1,0 +1,107 @@
+ /* 
+ *Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
+ * this file except in compliance with the License. A copy of the License is located at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * or in the "license" file accompanying this file. This file is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
+ * implied. See the License for the specific language governing permissions and
+ * limitations under the License. 
+ */
+ 
+.overall-vuln-wrap {
+    min-height: 21em;
+    padding: 1em;
+}
+
+.sub-head {
+    padding: 0.6em 0.5em 0.7em 1em;
+    background-color: #dce3e9;
+    font-size: 1em;
+    color: #3f4a59;
+}
+
+.vuln-top-section {
+    background: #fff;
+    border-radius: 3em;
+    border: 1px solid #e2e2e2;
+    padding: 1em 0.5em;
+    flex-flow: wrap;
+}
+
+.each-wrap {
+    padding: 0 1em;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+.num-wrap {
+    padding-right: 0.5em;
+}
+
+.compliant-percent {
+    font-size: 2em;
+    font-family: ex2-light;
+}
+
+.percent-sym {
+    font-size: 1.2em;
+    padding-bottom: 1px;
+    font-family: ex2-light;
+}
+
+.compliant-txt {
+    font-size: 0.92em;
+    color: #6b6b6b;
+    line-height: 1.2;
+    padding: 0.1em 0;
+    text-align: right;
+}
+
+.green-txt {
+    color: #00B946;
+}
+
+.red-txt {
+    color: #D40325;
+}
+
+.italics {
+    font-style: italic;
+}
+
+.vuln-link {
+    border-bottom: 1px solid #d40325;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+
+.vuln-link:hover {
+    color: #ed0274;
+    border-bottom: 1px solid #ed0274;
+    letter-spacing: 0.4px;
+    text-shadow: 0.1px 0;
+}
+
+.links-wrapper {
+    flex-flow: wrap;
+    justify-content: center;
+    line-height: 1.4;
+    font-size: 0.92em;
+}
+
+.link-separators {
+    padding: 0 4px;
+}
+
+.active-link {
+    color: #ed0274;
+    text-shadow: 0.2px 0;
+}
+
+#vulnSummaryPie /deep/ .graph-outer-container {
+    display: inline-block;
+}

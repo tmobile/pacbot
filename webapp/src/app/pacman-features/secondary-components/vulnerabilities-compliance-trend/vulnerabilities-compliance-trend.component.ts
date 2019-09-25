@@ -47,8 +47,8 @@ export class VulnerabilitiesComplianceTrendComponent implements OnInit, OnDestro
 
   private graphWidth: any;
   private graphData: any;
-  private dataLoaded: any = false;
-  private error: any = false;
+  dataLoaded: any = false;
+  error: any = false;
   private loading: any = false;
   private errorMessage: any = 'apiResponseError';
   private distributedFiltersObject: any = {};
@@ -102,6 +102,7 @@ export class VulnerabilitiesComplianceTrendComponent implements OnInit, OnDestro
           prevDate.setMonth(prevDate.getMonth() - 1);
           let fromDay;
           fromDay = prevDate.toISOString().split('T')[0];
+
           const queryParameters = {
               'ag': this.selectedAssetGroup,
               'from': fromDay,
@@ -128,7 +129,7 @@ export class VulnerabilitiesComplianceTrendComponent implements OnInit, OnDestro
                   }
               },
               error => {
-                  this.setError('apiResponseError');
+                this.setError(error.message || 'apiResponseError');
               }
           );
       } catch (error) {

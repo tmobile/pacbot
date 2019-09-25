@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -24,9 +24,13 @@ import {
 
 // d3 imports
 
-import * as d3 from 'd3-selection';
+import * as d3 from 'd3';
 import * as d3Shape from 'd3-shape';
 import * as d3Interpolate from 'd3-interpolate';
+
+// import { select , selectAll } from 'd3-selection';
+// import { transition } from 'd3-transition';
+
 
 @Component({
   selector: 'app-doughnut-chart',
@@ -39,21 +43,25 @@ export class DoughnutChartComponent implements OnInit, OnChanges {
   @Input() graphData: any;
   @Input() graphWidth: any;
   @Input() graphHeight: any;
-  @Input() MainTextcolor: '#fff';
+  @Input() isPieChart = false;
+  @Input() ringData;
+  @Input() selectedLevel;
+  @Input() MainTextcolor;
   @Input() innerRadious: 0;
   @Input() outerRadious: 0;
   @Input() strokeColor: 'transparent';
   @Input() flexTrue: any;
+  @Input() isFullScreen;
   @Output() error: EventEmitter<any> = new EventEmitter();
   @Output() navigatePage: EventEmitter<any> = new EventEmitter();
   @Output() linkData: EventEmitter<any> = new EventEmitter();
+  @Output() emitClick: EventEmitter<any> = new EventEmitter();
 
   public dataset: any;
   public labels: any;
   public arc: any;
   public path: any;
   public pie: any;
-
   public radius: any;
   public svg: any;
   public duration = 600;
@@ -62,7 +70,10 @@ export class DoughnutChartComponent implements OnInit, OnChanges {
   public outerRadius = 0;
   public fontSize = 0;
 
-  constructor() {}
+  constructor() {
+    // select.prototype.transition = transition;
+    // selectAll.prototype.transition = transition;
+  }
 
   ngOnInit() {
     setTimeout(() => {
@@ -109,6 +120,11 @@ export class DoughnutChartComponent implements OnInit, OnChanges {
     }
   }
   processGraphdata() {
+    if (this.isFullScreen) {
+      this.MainTextcolor = '#fff';
+    } else {
+      this.MainTextcolor = '#000';
+    }
     let total;
     let centerText;
     if (this.graphData.centerText) {
@@ -126,6 +142,7 @@ export class DoughnutChartComponent implements OnInit, OnChanges {
     if (this.graphData.data) {
       try {
         this.zeroData = false;
+        const self = this;
         setTimeout(() => {
 
           if (Math.min(this.graphWidth, this.graphHeight) < 140) {
@@ -134,19 +151,27 @@ export class DoughnutChartComponent implements OnInit, OnChanges {
           }
           this.radius = Math.min(this.graphWidth, this.graphHeight) / 1.5;
           this.outerRadius = (Math.min(this.graphWidth, this.graphHeight) / 2) - 10;
-          this.innerRadius = this.outerRadius - 20;
-
+          if (!this.isPieChart) {
+            // If donut
+            // this.innerRadius = this.outerRadius - 20;
+            this.innerRadius = this.outerRadius - 10;
+          } else {
+            // If Pie chart
+            this.innerRadius = 0;
+          }
           // --------- remove old svg before plotting -------------//
 
-          if (
-            d3.selectAll('#' + this.chartContId)
+          if (d3.
+            selectAll('#' + this.chartContId)
               .select('svg')
               .selectAll('g') !== undefined) {
-            d3.selectAll('#' + this.chartContId)
+                d3.
+            selectAll('#' + this.chartContId)
               .select('svg')
               .selectAll('g')
               .remove();
-            d3.selectAll('#' + this.chartContId)
+            d3.
+            selectAll('#' + this.chartContId)
               .select('svg')
               .append('g');
           }
@@ -163,8 +188,7 @@ export class DoughnutChartComponent implements OnInit, OnChanges {
             .outerRadius(this.outerRadius);
 
           // --------this appends a svg to the selected container and positions the svg------//
-          this.svg = d3
-            .select('#' + this.chartContId)
+          this.svg = d3.select('#' + this.chartContId)
             .select('svg')
             .attr('width', this.graphWidth)
             .attr('height', this.graphHeight)
@@ -202,10 +226,20 @@ export class DoughnutChartComponent implements OnInit, OnChanges {
             // --------fill color with animation to donut chart--------//
             g.append('path')
             .attr('fill', (d, i) => {
+              if (this.graphData.legendWithText && this.graphData.legendWithText[i]) {
+                d['legend'] = this.graphData.legendWithText[i];
+              }
               return this.graphData.color[i];
             })
-            .transition().delay(function(d, i) {
-              return i * 500; }).duration(500)
+            .style('cursor', (d, i) => {
+              if (this.graphData.cursor && this.graphData.cursor[i]) {
+                return this.graphData.cursor[i] === 'pointer' ? 'pointer' : 'default';
+              } else {
+                return 'default';
+              }
+            })
+            .transition('rotate').delay(function(d, i) {
+              return i * 250; }).duration(250)
               .attrTween('d', function(d) {
                 const i = d3Interpolate.interpolate(d.startAngle + 0.1, d.endAngle);
                 return function(t) {
@@ -214,20 +248,32 @@ export class DoughnutChartComponent implements OnInit, OnChanges {
                   };
                 });
 
-            d3.selectAll('path').on('mouseover', function(d, i) {
-              d3.select(this)
-                .transition()
-                .duration(250)
-                .attr('d', arcHoverIn)
-                .attr('stroke-width', 4);
-            })
-            .on('mouseout', function(d, i) {
-              d3.select(this)
-                .transition()
-                .duration(250)
-                .attr('d', arcHoverOut)
-                .attr('stroke-width', 1);
-            });
+          if (this.isPieChart) {
+
+            setTimeout(() => {
+              d3.
+              selectAll('path')
+                .on('mouseover', function(d, i) {
+                  d3.
+                  select(this)
+                    .transition('hoverIn')
+                    .duration(250)
+                    .attr('d', arcHoverIn)
+                    .attr('stroke-width', 4);
+                })
+                .on('mouseout', function(d, i) {
+                  d3.
+                  select(this)
+                    .transition('hoverOut')
+                    .duration(250)
+                    .attr('d', arcHoverOut)
+                    .attr('stroke-width', 1);
+                })
+                .on('click', function(d) {
+                  self.emitClick.emit(d);
+                });
+            }, 350 );
+          }
 
             // --------plots total count------------//
           if (centerText === undefined) {
@@ -242,7 +288,7 @@ export class DoughnutChartComponent implements OnInit, OnChanges {
                 .attr('y', this.radius / 15);
             }
           } else {
-            if ((this.graphData.totalCount && total !== -1) && centerText !== undefined ) {
+            if ((this.graphData.totalCount && total !== -1) && centerText !== undefined && !this.isPieChart ) {
               this.svg
                 .append('text')
                 .text(total)
@@ -295,7 +341,8 @@ export class DoughnutChartComponent implements OnInit, OnChanges {
   }
 
   removeExistingGraph() {
-    d3.selectAll('svg#' + this.chartContId + ' > *').remove();
+    d3.
+    selectAll('svg#' + this.chartContId + ' > *').remove();
   }
 
   onResize() {

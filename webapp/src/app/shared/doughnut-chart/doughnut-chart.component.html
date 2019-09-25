@@ -17,13 +17,14 @@
         <!-- absolute center text to donut is given only for vulnerability report -->
         <div class='center-text' *ngIf="graphData.legendText">{{this.graphData.centerText}}</div>
         <svg id="donut-chart"></svg>
+        <div class="absolute concentric-ring" [class.hide]='selectedLevel <= rings.level' [ngStyle]="{'width': 190 - (rings.level * 10) + 'px', 'height': 190 - (rings.level * 10) + 'px'}" *ngFor='let rings of ringData'></div>
     </div>
-
     <!--Legend text for default donut charts-->
-    <div class="graph-legend-cont flex" *ngIf="graphData.legend" [ngStyle]="{'color': graphData.legendTextcolor}">
+    <div class="graph-legend-cont flex"  *ngIf="graphData.legend" [ngStyle]="{'color': graphData.legendTextcolor}">
         <div class="legend-each" *ngFor="let eachGraphPath of graphData.legend;let i = index" [ngStyle]="{'color': graphData.legendTextcolor}" >
             <div class="legend-color" [ngStyle]="{'background-color': graphData.color[i]}"></div>
-            <span class="legend-text">{{eachGraphPath}} - </span><span class="legend-text" [ngStyle]="{'cursor': graphData.data[i] > 0 && graphData.styling.cursor }" [ngClass]="{'link-text underline-link-num': graphData.data[i] > 0 && graphData.link}" (click)="graphData.data[i] > 0 && instructParentToNavigate(eachGraphPath)" [class.click-link]='graphData.data[i]'>{{graphData.data[i]}}</span>
+            <span class="legend-text" [ngStyle] = "{'color':isFullScreen === true ? '#fff' : '#000' }">{{eachGraphPath}}: </span>
+            <span class="legend-text" [ngStyle] = "{'color':isFullScreen === true ? '#fff' : '#000' }" [ngStyle]="{'cursor': graphData.data[i] > 0 && graphData.styling.cursor }" [ngClass]="{'link-text underline-link-num': graphData.data[i] > 0 && graphData.link}" (click)="graphData.data[i] > 0 && instructParentToNavigate(eachGraphPath)" [class.click-link]='graphData.data[i]'>&nbsp;{{graphData.data[i]}}</span>
         </div>
     </div>
     <!--Legend text for the donut charts where percentage is shown next to count-->
@@ -37,14 +38,13 @@
             </span>
         </div>
     </div>
-    <!--Legend text for donut charts where only percentage shown and not the count which is used for vul report-->
+    <!--Legend text for donut charts where only percentage shown(in vul report) or only count (in malicious report) -->
     <div class="graph-legend-cont flex flex-col" *ngIf="graphData.legendText" [ngStyle]="{'color': graphData.legendTextcolor}">
         <div class="legend-each" [ngClass]="{'link-text': graphData.data[i] > 0 && graphData.link}" [ngStyle]="{'cursor': graphData.data[i] > 0 && graphData.styling.cursor }"
             *ngFor="let eachGraphPath of graphData.legendText;let i = index" [ngStyle]="{'color': graphData.legendTextcolor}" (click)="graphData.data[i] > 0 && instructParentToNavigate(eachGraphPath)">
-
             <div class="legend-color" [ngStyle]="{'background-color': graphData.color[i]}"></div>
             <span title="{{eachGraphPath}} - {{graphData.data[i]}}" class="legend-text capitalize">{{eachGraphPath}} - 
-                <span class="legend-text-right" (click)='linkClicked(eachGraphPath)' [class.click-link]='graphData.data[i]'>{{graphData.data[i]}}%</span>
+                <span class="legend-text-right" (click)='linkClicked(eachGraphPath)' [class.click-link]='graphData.data[i]'>{{graphData.data[i]}} <span *ngIf='!graphData.displayCount'>%</span></span>
             </span>
         </div>
     </div>
