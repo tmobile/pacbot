@@ -83,8 +83,8 @@ public class AssetGroupStatsCollector implements Constants{
         ESManager.createType(AG_STATS, "compliance", errorList);
         ESManager.createType(AG_STATS, "tagcompliance", errorList);
         ESManager.createType(AG_STATS, "issues", errorList);
-        ESManager.createType(AG_STATS, "count_vuln", errorList);
-        ESManager.createType(AG_STATS, "vulncompliance", errorList);
+        if(VULN_API_URL!=null)
+        	ESManager.createType(AG_STATS, "vulncompliance", errorList);
 
 
         List<String> assetGroups = new ArrayList<>(assetGroupMap.keySet());
@@ -171,21 +171,22 @@ public class AssetGroupStatsCollector implements Constants{
             }
         });
         
-        
-        executor.execute(() -> {
-            try {
-                uploadAssetGroupVulnCompliance(assetGroups);
-            } catch (Exception e) {
-                log.error("Exception in uploadAssetGroupVulnCompliance " , e);
-                Map<String,String> errorMap = new HashMap<>();
-                errorMap.put(ERROR, "Exception in uploadAssetGroupVulnCompliance");
-                errorMap.put(ERROR_TYPE, WARN);
-                errorMap.put(EXCEPTION, e.getMessage());
-                synchronized(errorList){
-                    errorList.add(errorMap);
-                }
-            }
-        });
+        if(VULN_API_URL!=null) {
+	        executor.execute(() -> {
+	            try {
+	                uploadAssetGroupVulnCompliance(assetGroups);
+	            } catch (Exception e) {
+	                log.error("Exception in uploadAssetGroupVulnCompliance " , e);
+	                Map<String,String> errorMap = new HashMap<>();
+	                errorMap.put(ERROR, "Exception in uploadAssetGroupVulnCompliance");
+	                errorMap.put(ERROR_TYPE, WARN);
+	                errorMap.put(EXCEPTION, e.getMessage());
+	                synchronized(errorList){
+	                    errorList.add(errorMap);
+	                }
+	            }
+	        });
+        }
         
 
 
