@@ -752,6 +752,8 @@ CREATE TABLE IF NOT EXISTS `oauth_user_role_mapping` (
   `modifiedDate` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+ALTER TABLE oauth_user_role_mapping ADD PRIMARY KEY (userRoleId);
+
 
 CREATE TABLE IF NOT EXISTS `oauth_user_credentials` (
     `id` bigint (75),
@@ -770,6 +772,8 @@ CREATE TABLE IF NOT EXISTS `oauth_user_roles` (
   `createdDate` datetime DEFAULT NULL,
   `modifiedDate` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+ALTER TABLE oauth_user_roles ADD PRIMARY KEY (roleId);
 
 
 CREATE TABLE IF NOT EXISTS `task` (
