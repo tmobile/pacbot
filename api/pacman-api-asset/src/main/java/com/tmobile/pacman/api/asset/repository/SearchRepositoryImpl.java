@@ -174,7 +174,7 @@ public class SearchRepositoryImpl implements SearchRepository {
 
         if (AssetConstants.VULNERABILITIES.equals(searchCategory)) {
             mustFilter.put(Constants.LATEST, Constants.TRUE);
-            mustTermsFilter.put(Constants.SEVEITY_LEVEL,
+            mustTermsFilter.put(Constants.SEVEITY_LEVEL+".keyword",
                     Arrays.asList(Constants.THREE, Constants.FOUR, Constants.FIVE));
 
             if (null != targetType) {
@@ -523,7 +523,7 @@ public class SearchRepositoryImpl implements SearchRepository {
             matchString = "{\"match\":{\"type.keyword\":\"issue\"}},{\"terms\":{\"issueStatus.keyword\":[ \"open\",\"exempted\"]}}";
         }
         if (AssetConstants.VULNERABILITIES.equals(searchCategory)) {
-            matchString = "{\"terms\":{\"severitylevel\":[3,4,5]}}";
+            matchString = "{\"terms\":{\"severitylevel.keyword\":[3,4,5]}}";
             if (resourceType != null) {
                 matchString = matchString + ",{\"match\":{\"_index\":\"aws_" + resourceType + "\"}}";
             }
