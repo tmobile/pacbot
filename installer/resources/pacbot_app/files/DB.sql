@@ -785,7 +785,7 @@ CREATE TABLE IF NOT EXISTS `oauth_user_roles` (
   `modifiedDate` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-DELETE FROM oauth_user_roles where where roleId in ("1", "703");
+DELETE FROM oauth_user_roles WHERE roleId in ("1", "703");
 DELIMITER $$
 DROP PROCEDURE IF EXISTS create_primary_key_if_not_exists_for_user_roles $$
 CREATE PROCEDURE create_primary_key_if_not_exists_for_user_roles()
