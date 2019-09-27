@@ -752,6 +752,20 @@ CREATE TABLE IF NOT EXISTS `oauth_user_role_mapping` (
   `modifiedDate` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+DELETE FROM oauth_user_role_mapping where userRoleId in ("4747c0cf-63cc-4829-a1e8-f1e957ec5dd6","4747c0cf-63cc-4829-a1e8-f1e957ec5dd7","f5b2a689-c185-11e8-9c73-12d01119b604");
+DELIMITER $$
+DROP PROCEDURE IF EXISTS create_primary_key_if_not_exists_for_user_role_mapping $$
+CREATE PROCEDURE create_primary_key_if_not_exists_for_user_role_mapping()
+BEGIN
+ IF((SELECT COUNT(1) AS index_exists FROM information_schema.statistics WHERE TABLE_SCHEMA = DATABASE() and table_name='oauth_user_role_mapping' AND index_name='PRIMARY') < 1) THEN
+   SET @query = 'ALTER TABLE oauth_user_role_mapping ADD PRIMARY KEY (userRoleId);';
+   PREPARE stmt FROM @query;
+   EXECUTE stmt;
+ END IF;
+END $$
+DELIMITER ;
+CALL create_primary_key_if_not_exists_for_user_role_mapping();
+
 
 CREATE TABLE IF NOT EXISTS `oauth_user_credentials` (
     `id` bigint (75),
@@ -770,6 +784,20 @@ CREATE TABLE IF NOT EXISTS `oauth_user_roles` (
   `createdDate` datetime DEFAULT NULL,
   `modifiedDate` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DELETE FROM oauth_user_roles where where roleId in ("1", "703");
+DELIMITER $$
+DROP PROCEDURE IF EXISTS create_primary_key_if_not_exists_for_user_roles $$
+CREATE PROCEDURE create_primary_key_if_not_exists_for_user_roles()
+BEGIN
+ IF((SELECT COUNT(1) AS index_exists FROM information_schema.statistics WHERE TABLE_SCHEMA = DATABASE() and table_name='oauth_user_roles' AND index_name='PRIMARY') < 1) THEN
+   SET @query = 'ALTER TABLE oauth_user_roles ADD PRIMARY KEY (roleId)';
+   PREPARE stmt FROM @query;
+   EXECUTE stmt;
+ END IF;
+END $$
+DELIMITER ;
+CALL create_primary_key_if_not_exists_for_user_roles();
 
 
 CREATE TABLE IF NOT EXISTS `task` (
