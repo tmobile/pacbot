@@ -18,6 +18,7 @@ import { COMPLIANCE_ROUTES, TOOLS_ROUTES, ADMIN_ROUTES, OMNISEARCH_ROUTES } from
 import { ASSETS_ROUTES } from '../../shared/constants/routes';
 import { DataCacheService } from './data-cache.service';
 import * as _ from 'lodash';
+import { CONFIGURATIONS } from '../../../config/configurations';
 
 @Injectable()
 export class DomainMappingService {
@@ -50,9 +51,13 @@ export class DomainMappingService {
             domains.forEach((domain) => {
                 const domainObj = this.getDomainInfoForSelectedDomain(domain);
                 const dashboardsObj = this.getDashboardsPathForADomain(domainObj.dashboards, moduleName);
-
                 ListOfDashboards = ListOfDashboards.concat(dashboardsObj.dashboards);
             });
+
+             // check qualys enabled or not
+            if (!CONFIGURATIONS.optional.general.qualysEnabled) {
+                ListOfDashboards = ListOfDashboards.filter(item => !(item.name === 'Vulnerabilities' && item.route === 'vulnerabilities-compliance'));
+            }
 
             let updatedListOfLinks = ListOfDashboards.map(dashboard => {
                 // Get title from routes data

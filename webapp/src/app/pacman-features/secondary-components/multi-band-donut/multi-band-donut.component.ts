@@ -42,12 +42,16 @@ export class MultiBandDonutComponent implements OnInit, OnChanges {
   private width: number;
   private height: number;
   private radius: number;
-
+  
   private arc: any;
   private pie: any;
   private color: any;
-
   private g: any;
+  
+  private outerRadiusLimit = 54;
+  private innerRadiusLimit = 66;
+  textTransformVal = 0;
+  radiusDelta = 14;
 
   constructor() {}
 
@@ -92,9 +96,18 @@ export class MultiBandDonutComponent implements OnInit, OnChanges {
   }
 
   private initSvg(indx: any) {
-
+      const dataDelta = this.donutData.length>5 ? this.donutData.length - 5 : 0;
+      this.radiusDelta = 14; // Reset to 14 everytime calling this function.
+      if(dataDelta) {
+        this.radiusDelta =  dataDelta<4 ? this.radiusDelta-dataDelta-1 : this.radiusDelta-dataDelta-2;
+        if(dataDelta === 4) {
+          this.textTransformVal = -3;
+        }
+      } else {
+        this.textTransformVal = (( this.donutData.length - 5 ) * 14 - 3 )
+      }
       this.svg = d3.select('#overallComplianceSvg');
-
+	
       const svgContainer = document.getElementsByClassName('complaince-graph-container');
 
       if (document.getElementById('overallComplianceSvg') != null ) {
@@ -104,15 +117,22 @@ export class MultiBandDonutComponent implements OnInit, OnChanges {
 
       this.width = +this.svg.attr('width');
       this.height = +this.svg.attr('height');
-      this.radius = ( Math.min(this.height, this.width) / 2.1 ) + 14 * indx ;
+
+      this.radius = ( Math.min(this.height, this.width) / 2.1 ) + this.radiusDelta * indx ;
 
       this.color = d3Scale.scaleOrdinal()
           .range([ this.colorTransData[indx % 5], this.colorData[indx % 5], 'transparent']);
 
       if (this.donutData.length > 1) {
+          if(dataDelta) {
+            const arcRadiusDelta = 12 - (2*dataDelta)
+            const innerStart = 48 + arcRadiusDelta;
+            this.outerRadiusLimit = 48 + (arcRadiusDelta*dataDelta);
+            this.innerRadiusLimit = innerStart + (arcRadiusDelta*dataDelta);
+          }
           this.arc = d3Shape.arc()
-            .outerRadius(this.radius - 54)
-            .innerRadius(this.radius - 66);
+            .outerRadius(this.radius - this.outerRadiusLimit)
+            .innerRadius(this.radius - this.innerRadiusLimit);
       } else {
           this.arc = d3Shape.arc()
             .outerRadius(this.radius - 34)

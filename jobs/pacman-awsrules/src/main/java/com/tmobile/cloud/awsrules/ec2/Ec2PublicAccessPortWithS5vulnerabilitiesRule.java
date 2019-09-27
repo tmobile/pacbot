@@ -109,7 +109,7 @@ public class Ec2PublicAccessPortWithS5vulnerabilitiesRule extends BaseRule {
 			publicIp   = StringUtils.trim(resourceAttributes.get(PacmanRuleConstants.PUBLIC_IP_ADDR));
 			boolean isInstanceExists = false;
 			try {
-				isInstanceExists = PacmanUtils.checkInstanceIdForPortRuleInES(instanceId,ec2PubAccessPortUrl,ec2PortRuleId);
+				isInstanceExists = PacmanUtils.checkInstanceIdForPortRuleInES(instanceId,ec2PubAccessPortUrl,ec2PortRuleId,"");
 				if (isInstanceExists) {
 					List<String> severityList = PacmanUtils.getSeverityVulnerabilitiesByInstanceId(instanceId,ec2WithVulnInfoForS5Url,severityVulnValue);
 					if(!severityList.isEmpty()){

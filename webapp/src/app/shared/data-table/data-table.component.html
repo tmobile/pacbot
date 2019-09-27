@@ -57,7 +57,7 @@
                             <div title="{{row[column].text}}" [ngStyle]='row[column].textProp' class='nowrap-ellipsis' *ngIf='!row[column].link && ( row[column].text || row[column].text == 0) && !row[column].isArray'>
                                 <div class="flex flex-align-center each-cell-list-row">
                                     <div> {{row[column].text}}</div>
-                                    <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="row[column].text" [iconSize]="'10px'" ></app-copy-element>
+                                    <app-copy-element [class.hide]="((!row[column].text && row[column].text !== 0 && row[column].text !== false) || ( row[column].isArray && !row[column].text.length)) && !(row[column].dropDownEnabled)" class="copy-object flex flex-align-center" [CopyElement]="row[column].text" [iconSize]="'10px'" ></app-copy-element>
                                 </div>
                                
                             </div>
@@ -69,7 +69,7 @@
                             <a title="{{row[column].text}}" (click)='currentRowData = row; goToDetails(currentRowData, column)' *ngIf='row[column].link && row[column].text'>
                                 <div class="flex flex-align-center each-cell-list-row">
                                     <div>{{row[column].text}}</div>
-                                    <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="row[column].text" [iconSize]="'10px'" ></app-copy-element>
+                                    <app-copy-element [class.hide]="((!row[column].text && row[column].text !== 0 && row[column].text !== false) || ( row[column].isArray && !row[column].text.length)) && !(row[column].dropDownEnabled)" class="copy-object flex flex-align-center" [CopyElement]="row[column].text" [iconSize]="'10px'" ></app-copy-element>
                                 </div>
                             </a>
                             <!-- Table PostImage Cell -->
@@ -81,7 +81,7 @@
                                     <option *ngFor="let item of row[column].dropDownItems" [value]="item">
                                         <div class="flex flex-align-center each-cell-list-row">
                                             <div> {{item}}</div>
-                                            <app-copy-element class="copy-object flex flex-align-center" [CopyElement]="item" [iconSize]="'10px'" ></app-copy-element>
+                                            <app-copy-element [class.hide]="((!row[column].text && row[column].text !== 0 && row[column].text !== false) || ( row[column].isArray && !row[column].text.length)) && !(row[column].dropDownEnabled)" class="copy-object flex flex-align-center" [CopyElement]="item" [iconSize]="'10px'" ></app-copy-element>
                                         </div>
                                     </option>
                                 </select>

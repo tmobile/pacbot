@@ -49,12 +49,8 @@ app-multi-band-donut {
 
 .tag-compliance-details {
     width: 100%;
-    height: 18em;
+    min-height: 18em;
     overflow-y: hidden;
-}
-
-.tag-compliance-details:hover {
-    overflow-y: auto; overflow-y: overlay;
 }
 
 .tag-compliance-details app-list-table {

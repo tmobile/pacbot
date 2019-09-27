@@ -41,9 +41,9 @@
                         </div>
                     </div>
                 </div>
-                <div class="loading_bar flex" (click)="navigateTo()" [class.no-event]='!pacmanIssues.totalIssues'>
-                    <div class="total_issues_bar" [ngStyle]="{'width': 'calc(100% - ' + widthValue +  '%)'}" [class.rightBorder]="borderSet" [class.transition_block]="transit"></div>
-                    <div class="margin_bar" *ngIf='notloadedfull'></div>
+                <div class="loading_bar flex" (click)="navigateToCritical()"  [class.no-event]='!pacmanIssues.totalIssues'>
+                    <div class="total_issues_bar" (click)=" $event.stopPropagation();navigateTo()"  [ngStyle]="{'width': 'calc(100% - ' + widthValue +  '%)'}" [class.rightBorder]="borderSet" [class.transition_block]="transit"></div>
+                    <div class="margin_bar"  *ngIf='notloadedfull'></div>
                 </div>
                 <div class="enclosure-issue flex flex-align-center flex-wrap">
                     <div [class.no-event]='!cat.value' class='flex flex-align-center' *ngFor='let cat of pacmanCategories; let i = index; '>

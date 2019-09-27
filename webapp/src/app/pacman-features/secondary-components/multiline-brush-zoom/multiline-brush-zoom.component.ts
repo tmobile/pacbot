@@ -3,9 +3,9 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
@@ -21,9 +21,10 @@ import {
   ViewChild,
   ElementRef,
   OnChanges,
-  SimpleChanges
+  SimpleChanges,
+  HostListener
 } from '@angular/core';
-import { AutorefreshService } from '../../services/autorefresh.service';
+// import { AutorefreshService } from './pacman-features/services/autorefresh.service';
 import * as d3 from 'd3-selection';
 import * as d3Shape from 'd3-shape';
 import * as d3Scale from 'd3-scale';
@@ -38,7 +39,6 @@ import { LoggerService } from '../../../shared/services/logger.service';
   selector: 'app-multiline-brush-zoom',
   templateUrl: './multiline-brush-zoom.component.html',
   styleUrls: ['./multiline-brush-zoom.component.css'],
-  providers: [AutorefreshService]
 })
 
 export class MultilineBrushZoomComponent implements OnInit, OnChanges {
@@ -68,23 +68,27 @@ export class MultilineBrushZoomComponent implements OnInit, OnChanges {
 
   private lineColorsObject = {
     // Colors for different type lines
-    total: '#3F4A59', // Dark blue(shade)
-    overall: '#3F4A59', // Dark blue(shade)
-    tagging: '#00B946', // Green
-    security: '#00B946', // Green
-    Compliance: '#00B946', // Green
-    patching: '#00569D', // Dark blue(shade)
-    'other policies': '#F2425F', // Rose Red
-    certificate: '#289CF7', // Sky Blue
-    governance: '#289CF7', // Sky Blue
-    vulnerability: '#645EC5', // Purple
-    high: '#F75C03', // Orange
-    low: '#FFE00D', // Green
-    medium: '#FFB00D', // Sky blue
-    critical: '#D40325', // Red
-    extra1: '#00b946', // Green
-    noncompliant: '#D40325', // Red
-    compliant: '#00B946' // Green
+    'total': '#3F4A59', // Dark blue(shade)
+    'overall': '#3F4A59', // Dark blue(shade)
+    'tagging': '#f2425f', // Red
+    'security': '#00569d', // Blue
+    'Compliance': '#00B946', // Green
+    'patching': '#00569D', // Dark blue(shade)
+    'other policies': '#F2425F', // Red
+    'costOptimization': '#289cf7', // Light Blue
+    'certificate': '#289CF7', // Sky Blue
+    'governance': '#26ba9d', // Green
+    'vulnerability': '#645EC5', // Purple
+    'high': '#F75C03', // Orange
+    'low': '#FFE00D', // Green
+    'medium': '#FFB00D', // Sky blue
+    'critical': '#D40325', // Red
+    'extra1': '#00b946', // Green
+    'noncompliant': '#D40325', // Red
+    'compliant': '#00B946', // Green
+    'pullrequest': '#f2425f', // Red
+    'repository': '#3f4a59', // Dark Blue,
+    'noOfAlerts': '#3F4A59' // Dark Blue
   };
   private lineColorsArray = Object.keys(this.lineColorsObject);
   private countInRange: any;
@@ -119,9 +123,7 @@ export class MultilineBrushZoomComponent implements OnInit, OnChanges {
   private brush: any;
   private brush2: any;
   private zoom: any;
-  private area2: any;
   private focus: any;
-  private areaAxis: any;
 
   // Main graph highlighted area start and end points
   private highlightAreaStart: any;
@@ -138,15 +140,16 @@ export class MultilineBrushZoomComponent implements OnInit, OnChanges {
 
   private yLogAxis = false;
 
-  private rendered = false;
   private legendHover: any = [];
   private searchAnObjectFromArray: any;
-  private legendsvalue: any = [];
-  private lineColorsObjectLegends: any = [];
   private bisectDate: any;
   private firstMouseMove = 0;
 
   constructor(private loggerService: LoggerService) {}
+
+  @HostListener('window:resize', ['$event']) onSizeChanges() {
+    this.init();
+  }
 
   plotGraph() {
     try {
@@ -157,8 +160,8 @@ export class MultilineBrushZoomComponent implements OnInit, OnChanges {
         this.computeLowerAndHigherLines();
         this.formatDataForArea();
       }
-      this.drawAxisAndGrid();
-      this.drawLine();
+       this.drawAxisAndGrid();
+       this.drawLine();
       if (this.hoverActive && this.data.length > 1) {
         this.drawHover();
       }
@@ -179,6 +182,7 @@ export class MultilineBrushZoomComponent implements OnInit, OnChanges {
   }
 
   private removeInvalidValues() {
+
     this.graphLinesData.forEach(line => {
       if (line.key === 'compliance_percent') {
         line.key = 'Compliance';
@@ -503,7 +507,6 @@ export class MultilineBrushZoomComponent implements OnInit, OnChanges {
         'transform',
         'translate(0,' + (2 * this.margin.top + this.height2 + 40) + ')'
       );
-
     this.context = this.svg
       .append('g')
       .attr('class', 'context')
@@ -1331,7 +1334,7 @@ export class MultilineBrushZoomComponent implements OnInit, OnChanges {
 
   private drawHover() {
     const self = this;
-    let numOfLines;
+    const numOfLines = this.graphLinesData.length - 1;
 
     this.legendHover = this.graphLinesData.map((eachLine) => {
       return eachLine.values;
@@ -1345,7 +1348,6 @@ export class MultilineBrushZoomComponent implements OnInit, OnChanges {
       return obj;
     };
 
-    this.margin.left = this.margin.left + 20;
     this.bisectDate = d3Array.bisector(d => d[`date`]).left;
 
     if (this.firstMouseMove > 0) {
@@ -1375,7 +1377,6 @@ export class MultilineBrushZoomComponent implements OnInit, OnChanges {
         .attr('x', -5)
         .attr('dy', '1.5em');
 
-      numOfLines = this.graphLinesData.length - 1;
       for (let i = 0; i < self.graphLinesData.length; i++) {
         self.focus
           .append('rect')
@@ -1436,7 +1437,6 @@ export class MultilineBrushZoomComponent implements OnInit, OnChanges {
         .attr('y1', 0)
         .attr('y2', this.height);
     }
-
     this.svg
       .append('rect')
       .attr('transform', 'translate(' + 0 + ',' + (this.margin.left - 10) + ')')
@@ -1455,7 +1455,6 @@ export class MultilineBrushZoomComponent implements OnInit, OnChanges {
         self.focus.selectAll('.hover').style('display', 'none');
       })
       .on('mousemove', mousemove);
-
     function mousemove() {
       try {
         self.firstMouseMove++;

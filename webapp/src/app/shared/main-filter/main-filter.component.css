@@ -38,6 +38,7 @@
 }
 .filter-main-content {
   flex: 1;
+  height:100%;
 }
 .each-filter-column {
   border-right: 1px solid #c3cbd7;

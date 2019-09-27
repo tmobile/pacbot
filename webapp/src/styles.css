@@ -947,6 +947,7 @@ html body .offline-ui.offline-ui-down.offline-ui-waiting .offline-ui-retry {
     box-shadow: -1px 0px 5px -1px rgba(0, 0, 0, 0.15);
     position: relative;
     z-index: 3;
+    min-width: 25.4em;
 }
 
 .compliance-issues-container {
