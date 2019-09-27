@@ -605,5 +605,11 @@ public interface PacmanSdkConstants extends com.tmobile.pacman.commons.PacmanSdk
     
     /**  *. */
     String PACBOT_CREATED_SG_DESC = "PacBot created SG During Autofix";
+    
+    /**  ALLOCATIONID KEY. */
+    String ALLOCATION_ID = "allocationid";
+    
+    /** The boolean true. */
+    String BOOLEAN_TRUE = "true";
 
 }

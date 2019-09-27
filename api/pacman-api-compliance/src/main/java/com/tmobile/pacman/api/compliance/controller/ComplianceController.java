@@ -15,6 +15,11 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.compliance.controller;
 
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -53,12 +58,6 @@ import com.tmobile.pacman.api.compliance.domain.ResponseWithOrder;
 import com.tmobile.pacman.api.compliance.domain.RevokeIssuesException;
 import com.tmobile.pacman.api.compliance.domain.RuleDetails;
 import com.tmobile.pacman.api.compliance.service.ComplianceService;
-import com.tmobile.pacman.api.compliance.service.VulnerabilityService;
-
-import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 
 /**
  * The Class ComplianceController.
@@ -70,10 +69,6 @@ public class ComplianceController implements Constants {
     /** The compliance service. */
     @Autowired
     private ComplianceService complianceService;
-
-    /** The vuln service. */
-    @Autowired
-    private VulnerabilityService vulnService;
 
     /**
      * Gets the issues details.Request expects asssetGroup and domain as
@@ -187,36 +182,6 @@ public class ComplianceController implements Constants {
             output = new OutputDTO(complianceService.getTagging(assetGroup, targetType));
         } catch (ServiceException e) {
               return complianceService.formatException(e);
-        }
-        return ResponseUtils.buildSucessResponse(output);
-    }
-
-    /**
-     * Gets the vulnerabilities.asssetGroup is mandatory. API returns count of
-     * totalVulnerabilities/totalAssets/totalVulnerabilites Assets
-     *
-     * @param assetGroup name of the asset group
-     * @return ResponseEntity
-     */
-    // @Cacheable("trends")
-    
-    @RequestMapping(path = "/v1/vulnerabilites", method = RequestMethod.GET)
-    public ResponseEntity<Object> getVulnerabilities(@RequestParam("ag") String assetGroup) {
-        if (Strings.isNullOrEmpty(assetGroup)) {
-            return ResponseUtils.buildFailureResponse(new Exception(ASSET_MANDATORY));
-        }
-        OutputDTO output = null;
-        try {
-            Map<String, Long> vulnerabilities = new HashMap<>();
-            Map<String, Object> vulnSummary = vulnService.getVulnerabilitySummary(assetGroup,SEVERITY_LEVELS);
-            vulnerabilities.put("vulnerabilities", Long.valueOf(vulnSummary.get("vulnerabilities").toString()));
-            vulnerabilities.put("hosts", Long.valueOf(vulnSummary.get("hosts").toString()));
-            vulnerabilities.put("totalVulnerableAssets",
-                    Long.valueOf(vulnSummary.get("totalVulnerableAssets").toString()));
-            vulnSummary.remove("compliantpercent");
-            output = new OutputDTO(vulnerabilities);
-        } catch (ServiceException e) {
-           return complianceService.formatException(e);
         }
         return ResponseUtils.buildSucessResponse(output);
     }

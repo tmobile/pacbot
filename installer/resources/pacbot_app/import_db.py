@@ -73,7 +73,7 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_SVC_CORP_PASSWORD': "password",
                         'ENV_CERTIFICATE_FEATURE_ENABLED': "false",
                         'ENV_PATCHING_FEATURE_ENABLED': "false",
-                        'ENV_VULNERABILITY_FEATURE_ENABLED': "false",
+                        'ENV_VULNERABILITY_FEATURE_ENABLED': str(Settings.get('ENABLE_VULNERABILITY_FEATURE', False)).lower(),
                         'ENV_MAIL_SERVER': Settings.MAIL_SERVER,
                         'ENV_PACMAN_S3': "pacman-email-templates",
                         'ENV_DATA_IN_DIR': "inventory",
@@ -94,7 +94,9 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_PACMAN_LOGIN_PASSWORD': "pacman",
                         'ENV_CONFIG_CREDENTIALS': "dXNlcjpwYWNtYW4=",
                         'ENV_CONFIG_SERVICE_URL': ApplicationLoadBalancer.get_http_url() + "/api/config/rule/prd/latest",
-                        'ENV_PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID': Settings.get('USER_EMAIL_ID', "")
+                        'ENV_PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID': Settings.get('USER_EMAIL_ID', ""),
+                        'ENV_QUALYS_INFO': Settings.get('QUALYS_INFO', ""),
+                        'ENV_QUALYS_API_URL': Settings.get('QUALYS_API_URL', "")
                     },
                     'interpreter': [Settings.PYTHON_INTERPRETER]
                 }
@@ -120,7 +122,7 @@ class ImportDbSql(NullResource):
         local_execs = [
             {
                 'local-exec': {
-                    'command': "mysql -u %s -p%s -h %s < %s" % (db_user_name, db_password, db_host, ReplaceSQLPlaceHolder.dest_file)
+                    'command': "mysql -u %s --password=%s -h %s < %s" % (db_user_name, db_password, db_host, ReplaceSQLPlaceHolder.dest_file)
                 }
             }
 

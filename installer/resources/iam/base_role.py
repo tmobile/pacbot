@@ -59,6 +59,11 @@ class ECSTaskExecutionRolePolicyDocument(iam.IAMPolicyDocumentData):
             "effect": "Allow",
             "actions": ["logs:*"],
             "resources": ["*"]
+        },
+        {
+            "effect": "Allow",
+            "actions": ["s3:getPublicAccessBlock"],
+            "resources": ["*"]
         }
     ]
 

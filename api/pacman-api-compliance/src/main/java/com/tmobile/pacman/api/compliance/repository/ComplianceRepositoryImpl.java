@@ -132,10 +132,6 @@ public class ComplianceRepositoryImpl implements ComplianceRepository, Constants
     @Autowired
     private AssetServiceClient assetServiceClient;
 
-    /** The vulnerability repository. */
-    @Autowired
-    private VulnerabilityRepository vulnerabilityRepository;
-
     /** The filter repository. */
     @Autowired
     private FilterRepository filterRepository;
@@ -1308,7 +1304,7 @@ if (ruleId.contains(TAGGIG_POLICY)) {
                 body = body + "]";
                 body = body + ",\"minimum_should_match\":1";
             }
-            body = body + "}},\"aggs\":{\"NAME\":{\"terms\":{\"field\":\"tags.Environment.keyword.keyword\",\"size\":1000000}}}}";
+            body = body + "}},\"aggs\":{\"NAME\":{\"terms\":{\"field\":\"tags.Environment.keyword\",\"size\":1000000}}}}";
             requestBody = new StringBuilder(body);
            
         }else{

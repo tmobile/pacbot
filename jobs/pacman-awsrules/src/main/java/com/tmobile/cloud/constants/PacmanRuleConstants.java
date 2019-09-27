@@ -353,4 +353,6 @@ public class PacmanRuleConstants {
 	public static final String ACCESSLOGS_ENABLED_REGIONS = "accessLogsEnabledRegions";
 	public static final String RULE_ID = "ruleId";
 	public static final String STATUS_EXEMPTED = "exempted";
+	public static final String ES_RESOURCE_WITH_VULN_INFO_SEVERITY_URL = "esResourceWithVulnInfoForSeverityUrl";
+	public static final int FIRST_DISCOVERED_DATE_FORMAT_LENGTH = 10;
 }

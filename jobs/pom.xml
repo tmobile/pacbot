@@ -47,6 +47,7 @@
 		<module>pacman-rule-engine-2.0</module>
 		<module>pacman-cloud-notifications</module>
 		<module>recommendation-enricher</module>
+		<module>pacman-qualys-enricher</module>
 	</modules>
 
 </project>

@@ -22,7 +22,7 @@
             <div class='title-val anim-title' [class.complaint]='overallPercentage == 100' [class.after-load]='loaded'>overall</div>
         </div>
     </div>
-    <div class='absolute data-pack' [ngStyle]="{'transform': 'translate(-106%,' + (( donutData.length - 5 ) * 14 - 3 )  + 'px)'}"> 
+    <div class='absolute data-pack' [ngStyle]="{'transform': 'translate(-106%,' + textTransformVal + 'px)', 'line-height': radiusDelta+'px'}"> 
         <div class='ilb v-mid title-wrap'>
             <div title='{{instance[1].title | uppercase}}' class='nowrap-ellipsis anim-title' *ngFor='let instance of donutData' [(class.after-load)]='loaded'>{{instance[1].title}}</div>
         </div>

@@ -52,6 +52,11 @@ export const  DOMAIN_MAPPING = [
                         'groupBy': 'compliance-dashboard',
                         'cloudSpecific': true
                     },
+                    {
+                        'route': 'vulnerabilities-compliance',
+                        'sequence': 4,
+                        'groupBy': 'compliance-dashboard'
+                    },
                 ]
             },
             {

@@ -14,11 +14,10 @@
 
  <div class="compliance-dashboard-wrapper flex flex-between vulnerabilities-wrapper">
     <div class="floating-widgets-section flex flex-col">
-        <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb>
-        <div class="floating-widgets-header flex flex-between">
+        <!-- <app-breadcrumb [breadcrumbLinks]="breadcrumbLinks" [breadcrumbArray]="breadcrumbArray" [breadcrumbPresent]="breadcrumbPresent"></app-breadcrumb> -->
+        <div class="floating-widgets-header dashboards-header flex flex-between">
             <div>
-                <img class="arrow-img" *ngIf="backButtonRequired" (click)="navigateBack()" style="height: 1.4em;" src="../assets/icons/left-arrow.svg">
-                <h1 class="title-text">{{pageTitle}}</h1>
+                <app-back-navigation [pageTitle]='pageTitle'></app-back-navigation>
             </div>
         </div>
         <div class='floating-widgets-filter-wrapper ' *ngIf='filters.length'>
@@ -38,18 +37,8 @@
                         </div>
                     </li>
                     <li class="widget-wrapper">
-                        <div class="widget-container">
-                            <app-vulnerability-summary-distribution></app-vulnerability-summary-distribution>
-                        </div>
-                    </li>
-                    <li class="widget-wrapper">
                         <div class="widget widget-container">
                             <app-vulnerability-aging-graph></app-vulnerability-aging-graph>
-                        </div>
-                    </li>
-                    <li class="widget-wrapper">
-                        <div class="widget-container">
-                            <app-vulnerability-aging-distribution-summary></app-vulnerability-aging-distribution-summary>
                         </div>
                     </li>
                     <li class="widget-wrapper">

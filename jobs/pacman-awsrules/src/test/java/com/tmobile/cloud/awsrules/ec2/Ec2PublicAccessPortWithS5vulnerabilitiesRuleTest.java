@@ -47,13 +47,13 @@ public class Ec2PublicAccessPortWithS5vulnerabilitiesRuleTest {
         when(PacmanUtils.doesAllHaveValue(anyString(),anyString(),anyString(),anyString(),anyString(),anyString())).thenReturn(
                 true);
         when(PacmanUtils.getPacmanHost(anyString())).thenReturn("host");
-        when(PacmanUtils.checkInstanceIdForPortRuleInES(anyString(),anyString(),anyString())).thenReturn(true);
+        when(PacmanUtils.checkInstanceIdForPortRuleInES(anyString(),anyString(),anyString(),anyString())).thenReturn(true);
         assertThat(ec2PublicAccessPortWithS5vulnerabilitiesRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
         
         when(PacmanUtils.getSeverityVulnerabilitiesByInstanceId(anyString(),anyString(),anyString())).thenReturn(CommonTestUtils.getListString());
         assertThat(ec2PublicAccessPortWithS5vulnerabilitiesRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 ")), is(notNullValue()));
 
-        when(PacmanUtils.checkInstanceIdForPortRuleInES(anyString(),anyString(),anyString())).thenThrow(new Exception());
+        when(PacmanUtils.checkInstanceIdForPortRuleInES(anyString(),anyString(),anyString(),anyString())).thenThrow(new Exception());
         assertThatThrownBy( 
                 () -> ec2PublicAccessPortWithS5vulnerabilitiesRule.execute(CommonTestUtils.getMapString("r_123 "),CommonTestUtils.getMapString("r_123 "))).isInstanceOf(RuleExecutionFailedExeption.class);
         

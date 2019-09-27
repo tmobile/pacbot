@@ -66,7 +66,7 @@ export const environment = {
         method: 'GET'
     },
     hostVulnerabilitiesTable: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/detail/{resourceId}',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/detail/{resourceId}',
         method: 'GET'
     },
     InventoryTraker: {
@@ -90,7 +90,7 @@ export const environment = {
         method: 'GET'
     },
     vulnerabilityTrend: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/trend',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/trend',
         method: 'POST'
     },
     ruleDesc: {
@@ -155,8 +155,8 @@ export const environment = {
     },
     complianceCategories: {
         complianceCategoriesData: {
-      Vulnerabilities: {
-                url: '{{baseUrl}}/compliance/v1/vulnerabilites',
+            Vulnerabilities: {
+                url: '{{baseUrl}}/vulnerability/v1/vulnerabilites',
                 method: 'GET'
             },
       Tagging: {
@@ -222,7 +222,7 @@ export const environment = {
         method: 'GET'
     },
     vulnerabilitySummary: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/summary',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/summary',
         method: 'GET'
     },
     issueListing: {
@@ -230,11 +230,11 @@ export const environment = {
         method: 'POST'
     },
     vulnerabilityAcrossApplication: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/summarybyapplication',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/summarybyapplication',
         method: 'GET'
     },
     allVulnerability: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/detail',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/detail',
         method: 'POST'
     },
     saveDefaultAssetGroup: {
@@ -354,7 +354,7 @@ export const environment = {
         method: 'POST'
     },
     vulnerabilityComplianceTrend: {
-        url: '{{baseUrl}}/compliance/v1/trend/compliance/vulnerabilities',
+        url: '{{baseUrl}}/vulnerability/v1/trend/compliance/vulnerabilities',
         method: 'POST'
     },
     certificatesComplianceTrend: {
@@ -374,7 +374,7 @@ export const environment = {
         method: 'GET'
     },
     hostVulnerabilitiesGraph: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/summary/{resourceId}',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/summary/{resourceId}',
         method: 'GET'
     },
     cpuUtilizationGraph: {
@@ -402,7 +402,7 @@ export const environment = {
         method: 'POST'
     },
     vulnerabilityAcrossEnv: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/summarybyenvironment',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/summarybyenvironment',
         method: 'GET'
     },
     assetDetails: {
@@ -474,7 +474,7 @@ export const environment = {
         method: 'GET'
     },
     openVulnerabilityTable: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/distributionsummary',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/distributionsummary',
         method: 'GET'
     },
     devStrategyDist: {
@@ -486,11 +486,11 @@ export const environment = {
         method: 'GET'
     },
     vulnerabilityAgingSummary: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/aging/summary',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/aging/summary',
         method: 'GET'
     },
     vulnerabilityAgingDistributionSummary: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/aging/distributionsummary',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/aging/distributionsummary',
         method: 'GET'
     },
     devStandardPullRequestAge: {
@@ -731,7 +731,7 @@ export const environment = {
         method: 'GET'
     },
     vulnerabilityQidDetails: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/qids',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/qids',
         method: 'GET'
     },
     applicationUntagged: {
@@ -747,19 +747,19 @@ export const environment = {
         method: 'POST'
     },
     VulnerabilitiesDistributionEnv: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/distribution-env',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/distribution-env',
         method: 'GET'
     },
     VulnerabilitiesDistributionInfra: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/distribution-infra',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/distribution-infra',
         method: 'GET'
     },
     VulnerabilitiesDistributionVulnType: {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/distribution-vulntype',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/distribution-vulntype',
         method: 'GET'
     },
     remediationTable : {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/remediations/summary',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/remediations/summary',
         method: 'GET'
     },
     postPlugins : {
@@ -767,19 +767,19 @@ export const environment = {
         method: 'POST'
     },
     performersTable : {
-        url: '{{baseUrl}}/compliance/v2/vulnerabilities/performers',
+        url: '{{baseUrl}}/vulnerability/v2/vulnerabilities/performers',
         method: 'GET'
     },
     vulnReportGraph : {
-      url: '{{baseUrl}}/compliance/v1/vulnerabilities/trend/open-new',
+      url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/trend/open-new',
       method: 'POST'
     },
     getVulnTrendNotes : {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/trend/notes',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/trend/notes',
         method: 'GET'
     },
     postVulnTrendNotes : {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/trend/notes',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/trend/notes',
         method: 'POST'
     },
     azureAuthorize : {
@@ -787,7 +787,7 @@ export const environment = {
         method: 'POST'
     },
     deleteVulnNote : {
-        url: '{{baseUrl}}/compliance/v1/vulnerabilities/trend/notes',
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/trend/notes',
         method: 'DELETE'
     },
     devDistribution: {
@@ -889,5 +889,9 @@ export const environment = {
     recommendationsDetails: {
         url: '{{baseUrl}}/asset/v1/recommendations/detail',
         method: 'POST'
-    }
+    },
+    vulnerabilityGraphSummary: {
+        url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/summarybyassets',
+        method: 'GET'
+    },
 };
