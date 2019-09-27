@@ -27,6 +27,9 @@ public class AssetGroupStatsCollector implements Constants{
 
     /** The Constant compApiUri. */
     private static final String COMP_API_URL = System.getenv("CMPL_API_URL");
+    
+    /** The Constant compApiUri. */
+    private static final String VULN_API_URL = System.getenv("VULN_API_URL");
 
     
     /** The ag stats. */
@@ -80,6 +83,9 @@ public class AssetGroupStatsCollector implements Constants{
         ESManager.createType(AG_STATS, "compliance", errorList);
         ESManager.createType(AG_STATS, "tagcompliance", errorList);
         ESManager.createType(AG_STATS, "issues", errorList);
+        if(VULN_API_URL!=null)
+        	ESManager.createType(AG_STATS, "vulncompliance", errorList);
+
 
         List<String> assetGroups = new ArrayList<>(assetGroupMap.keySet());
         
@@ -164,6 +170,26 @@ public class AssetGroupStatsCollector implements Constants{
                 }
             }
         });
+        
+        if(VULN_API_URL!=null) {
+	        executor.execute(() -> {
+	            try {
+	                uploadAssetGroupVulnCompliance(assetGroups);
+	            } catch (Exception e) {
+	                log.error("Exception in uploadAssetGroupVulnCompliance " , e);
+	                Map<String,String> errorMap = new HashMap<>();
+	                errorMap.put(ERROR, "Exception in uploadAssetGroupVulnCompliance");
+	                errorMap.put(ERROR_TYPE, WARN);
+	                errorMap.put(EXCEPTION, e.getMessage());
+	                synchronized(errorList){
+	                    errorList.add(errorMap);
+	                }
+	            }
+	        });
+        }
+        
+
+
 
         executor.shutdown();
         while (!executor.isTerminated());
@@ -387,4 +413,41 @@ public class AssetGroupStatsCollector implements Constants{
         ESManager.uploadData(AG_STATS, "issues", docs, "@id", false);
         log.info("    End Collecing  issues");
     }
+    
+    /**
+     * Upload asset group vuln compliance.
+     *
+     * @param assetGroups            the asset groups
+     * @throws Exception the exception
+     */
+    public void uploadAssetGroupVulnCompliance(List<String> assetGroups) throws Exception {
+        
+        
+        log.info("    Start Collecing vuln compliance");
+        List<Map<String, Object>> docs = new ArrayList<>();
+        for (String ag : assetGroups) {
+            try {
+                Map<String, Object> doc = AssetGroupUtil.fetchVulnSummary(VULN_API_URL, ag, getToken());
+                if (!doc.isEmpty()) {
+                    doc.put("ag", ag);
+                    doc.put("date", CURR_DATE);
+                    doc.put("@id", Util.getUniqueID(ag + CURR_DATE));
+                    docs.add(doc);
+                }
+            } catch (Exception e) {
+                log.error("Exception in uploadAssetGroupVulnCompliance" , e);
+                Map<String,String> errorMap = new HashMap<>();
+                errorMap.put(ERROR, "Exception in uploadAssetGroupVulnCompliance for Asset Group"+ag);
+                errorMap.put(ERROR_TYPE, WARN);
+                errorMap.put(EXCEPTION, e.getMessage());
+                synchronized(errorList){
+                    errorList.add(errorMap);
+                }
+            }
+        }
+        ESManager.uploadData(AG_STATS, "vulncompliance", docs, "@id", false);
+        log.info("    End Collecing vuln compliance");
+    }
+    
+  
 }
