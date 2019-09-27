@@ -102,8 +102,10 @@ class DataShipperCloudWatchEventTarget(CloudWatchEventTargetResource):
             {'name': "AUTH_API_URL", 'value': ApplicationLoadBalancer.get_api_version_url('auth')},
             {'name': "CONFIG_CREDENTIALS", 'value': "dXNlcjpwYWNtYW4="},
             {'name': "CONFIG_SERVICE_URL", 'value': ApplicationLoadBalancer.get_http_url() + "/api/config/rule/prd/latest"}
-
-        ],
+        ] + ([{
+                'name': "VULN_API_URL",
+                'value': ApplicationLoadBalancer.get_api_version_url('vulnerability')}
+            ] if need_to_deploy_vulnerability_service() else []),
         'params': [
             {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile"},
             {'encrypt': False, 'key': "datasource", 'value': "aws"},
