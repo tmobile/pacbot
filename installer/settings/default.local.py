@@ -8,10 +8,11 @@ VPC = {
 
 
 # CUstom tags that can be defined by user
-CUSTOM_RESOURCE_TAGS = [
-    {'Application': "PacBot"},
-    {'Environment': "Prod"}
-]
+CUSTOM_RESOURCE_TAGS = {
+    'Application': "PacBot",
+    'Environment': "Prod",
+    'Created By': "customer-name"
+}
 
 
 # RDS Related Configurations

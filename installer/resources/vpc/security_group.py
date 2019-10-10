@@ -11,7 +11,12 @@ class InfraSecurityGroupResource(SecurityGroupResource):
             'from_port': 0,
             'to_port': 0,
             'protocol': "-1",
-            'cidr_blocks': Settings.get('VPC')['CIDR_BLOCKS']
+            'cidr_blocks': Settings.get('VPC')['CIDR_BLOCKS'],
+            'ipv6_cidr_blocks': [],
+            'prefix_list_ids': [],
+            'description': "",
+            'self': False,
+            'security_groups': []
         }
     ]
 
@@ -20,6 +25,11 @@ class InfraSecurityGroupResource(SecurityGroupResource):
             'from_port': 0,
             'to_port': 0,
             'protocol': "-1",
-            'cidr_blocks': ["0.0.0.0/0"]
+            'cidr_blocks': ["0.0.0.0/0"],
+            'ipv6_cidr_blocks': [],
+            'prefix_list_ids': [],
+            'description': "",
+            'self': False,
+            'security_groups': []
         }
     ]
