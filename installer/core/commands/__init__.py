@@ -31,7 +31,6 @@ class BaseCommand(metaclass=ABCMeta):
         Args:
             args (List): List of key- value pair of args supplied to the command
         """
-        self.args = args
         self.resource_tags_list = [v for (k, v) in args if k == self.category_field_name]
 
         if self.resource_tags_list:

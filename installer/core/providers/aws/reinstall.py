@@ -8,7 +8,7 @@ import os
 import sys
 
 
-class ReInstall(Install):
+class ReInstall(Install):  # Do not inherit Destroy
     """
     AWS provider for destroy command
 
@@ -22,7 +22,7 @@ class ReInstall(Install):
     """
     destroy = False
 
-    def run_tf_execution_and_status_threads(self, resources, terraform_with_targets, dry_run):
+    def run_tf_execution_and_status_threads(self, resources_to_destroy, resources_to_install, terraform_with_targets, dry_run):
         """
         Creates 2 thread
             1. For actualy installation
@@ -34,8 +34,11 @@ class ReInstall(Install):
             terraform_with_targets (boolean): If partial install is to be done (if --tags is supplied)
             dry_run (boolean): Decides whether original install should be done
         """
-        self.terraform_thread = Thread(target=self.re_create_resources, args=(list(resources), terraform_with_targets, dry_run))
-        progressbar_thread = Thread(target=self.show_progress_status, args=(list(resources), terraform_with_targets, dry_run))
+        self.terraform_thread = Thread(
+            target=self.re_create_resources,
+            args=(list(resources_to_destroy), list(resources_to_install), terraform_with_targets, dry_run)
+        )
+        progressbar_thread = Thread(target=self.show_progress_status_all, args=(list(resources_to_install), terraform_with_targets, dry_run))
 
         self.terraform_thread.start()
         progressbar_thread.start()
@@ -43,7 +46,7 @@ class ReInstall(Install):
         self.terraform_thread.join()
         progressbar_thread.join()
 
-    def re_create_resources(self, resources, terraform_with_targets, dry_run):
+    def re_create_resources(self, resources_to_destroy, resources_to_install, terraform_with_targets, dry_run):
         """
         Start installing the resources by calling PyTerraform class destroy
 
@@ -54,9 +57,9 @@ class ReInstall(Install):
         """
         try:
             if not dry_run:
-                PyTerraform().terraform_destroy(resources)
+                PyTerraform().terraform_destroy(resources_to_destroy)
             self.destroy = True
-            self.terraform_apply(resources, terraform_with_targets, dry_run)
+            self.terraform_apply(resources_to_install, terraform_with_targets, dry_run)
         except Exception as e:
             self.executed_with_error = True
             self.exception = e
@@ -64,7 +67,7 @@ class ReInstall(Install):
         self._cleanup_installation_process(dry_run)
 
 
-    def show_progress_status(self, resources, terraform_with_targets, dry_run):
+    def show_progress_status_all(self, resources, terraform_with_targets, dry_run):
         """
         Show the status of installation continously in this thread
 
@@ -73,8 +76,8 @@ class ReInstall(Install):
             terraform_with_targets (boolean): If partial install is to be done (if --tags is supplied)
             dry_run (boolean): Decides whether original install should be done
         """
-        self.render_terraform_destroy_progress()
-        super().show_progress_status(resources, terraform_with_targets, dry_run)
+        self.render_terraform_destroy_progress()  # Show destroy progress
+        self.show_progress_status(resources, terraform_with_targets, dry_run)  # Show install progress
 
     def render_terraform_destroy_progress(self):
         """Show the status of terraform init command execution"""
