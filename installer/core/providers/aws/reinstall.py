@@ -22,6 +22,23 @@ class ReInstall(Install):  # Do not inherit Destroy
     """
     destroy = False
 
+    def execute(self, resources_to_destroy, resources_to_install, terraform_with_targets, dry_run):
+        """
+        This is the starting method where install begins. This is the actual method called from the main install class
+
+        Args:
+            resources (list): Resources to be installed
+            terraform_with_targets (boolean): If partial install is to be done (if --tags is supplied)
+            dry_run (boolean): Decides whether original install should be done
+        """        
+        self.generate_terraform_files(resources_to_install, terraform_with_targets)
+        self.run_tf_execution_and_status_threads(resources_to_destroy, resources_to_install, terraform_with_targets, dry_run)
+
+        if not self.executed_with_error:
+            self.render_resource_outputs(resources)
+        else:
+            raise self.exception
+
     def run_tf_execution_and_status_threads(self, resources_to_destroy, resources_to_install, terraform_with_targets, dry_run):
         """
         Creates 2 thread
