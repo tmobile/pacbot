@@ -440,7 +440,7 @@ class TerraformData(BaseTerraformResource, metaclass=ABCMeta):
         tf_file_extension (str): File extension for the terraform file
     """
     terraform_type = 'data'
-    tf_file_extension = 'tf'
+    tf_file_extension = 'tf.json'
 
     @classmethod
     def get_output_attr(cls, key):

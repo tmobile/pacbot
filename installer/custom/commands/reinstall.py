@@ -1,6 +1,7 @@
 from core.commands import BaseCommand
 from core.config import Settings
 from core import constants as K
+from threading import Thread
 import time
 import importlib
 import sys
@@ -45,7 +46,7 @@ class Reinstall(BaseCommand):
         redshift_cluster_file_tf = os.path.join(Settings.TERRAFORM_DIR, "datastore_redshift_RedshiftCluster.tf")
         redshift_cluster_file_tf_json = os.path.join(Settings.TERRAFORM_DIR, "datastore_redshift_RedshiftCluster.tf.json")
 
-        if os.path.exists(redshift_cluster_file) or os.path.exists(redshift_cluster_file_tf_json):
+        if os.path.exists(redshift_cluster_file_tf) or os.path.exists(redshift_cluster_file_tf_json):
             need_complete_install = True
 
         return need_complete_install
@@ -86,8 +87,8 @@ class Reinstall(BaseCommand):
         Args:
             input_instance (Input object): User input values
         """
-        resources_to_destroy = self.destroy_resource_tags_list(self.destroy_resource_tags_list, input_instance)
-        resources_to_install = self.destroy_resource_tags_list(self.reinstall_resource_tags_list, input_instance)
+        resources_to_destroy = self.get_resources_to_process(self.destroy_resource_tags_list, input_instance)
+        resources_to_install = self.get_resources_to_process(self.reinstall_resource_tags_list, input_instance)
         
         try:
             resources_to_taint = self.get_resources_with_given_tags(input_instance, ["deploy"])
@@ -100,9 +101,9 @@ class Reinstall(BaseCommand):
         resources_to_install = self.get_complete_resources(input_instance) if self.need_complete_install else resources_to_install
 
         # self.run_pre_deployment_process(resources_to_process)
-        self.run_real_deployment(input_instance, resources_to_process, terraform_with_targets)
+        self.run_real_deployment(input_instance, resources_to_destroy, resources_to_install, terraform_with_targets)
 
-    def run_real_deployment(self, input_instance, resources_to_process, terraform_with_targets):
+    def run_real_deployment(self, input_instance, resources_to_destroy, resources_to_install, terraform_with_targets):
         """
         Main thread method which invokes the 2 thread: one for actual execution and another for displaying status
 
@@ -111,9 +112,13 @@ class Reinstall(BaseCommand):
             resources_to_process (list): List of resources to be created/updated
             terraform_with_targets (boolean): This is True since redeployment is happening
         """
-        self.terraform_thread = Thread(target=self.run_tf_apply, args=(input_instance, list(resources_to_process), terraform_with_targets))
+        self.terraform_thread = Thread(
+            target=self.run_tf_apply,
+            args=(input_instance, list(resources_to_destroy), list(resources_to_install), terraform_with_targets))
         # Dt-run variable is passed as it is rquired otherwise argument parsing issue will occur
-        stop_related_task_thread = Thread(target=self.inactivate_required_services_for_redeploy, args=(list(resources_to_process), self.dry_run))
+        stop_related_task_thread = Thread(
+            target=self.inactivate_required_services_for_redeploy,
+            args=(list(resources_to_destroy), list(resources_to_install), self.dry_run))
 
         self.terraform_thread.start()
         stop_related_task_thread.start()
@@ -121,7 +126,7 @@ class Reinstall(BaseCommand):
         self.terraform_thread.join()
         stop_related_task_thread.join()
 
-    def inactivate_required_services_for_redeploy(self, resources_to_process, dry_run):
+    def inactivate_required_services_for_redeploy(self, resources_to_destroy, resources_to_install, dry_run):
         """
         Before redeploy get started or on redeploy happens stop the tasks and deregister task definition
 
@@ -130,8 +135,8 @@ class Reinstall(BaseCommand):
             only_tasks (boolean): This flasg decides whther to deregister task definition or not
         """
         pass
-        
-    def run_tf_apply(self, input_instance, resources_to_process, terraform_with_targets):
+
+    def run_tf_apply(self, input_instance, resources_to_destroy, resources_to_install, terraform_with_targets):
         """
         Execute the installation of resources by invoking the execute method of provider class
 
@@ -141,11 +146,12 @@ class Reinstall(BaseCommand):
             terraform_with_targets (boolean): This is True since redeployment is happening
         """
         self.install_class(
-            self.args,
+            [],
             input_instance,
             check_dependent_resources=False
         ).execute(
-            resources_to_process,
+            resources_to_destroy,
+            resources_to_install,
             terraform_with_targets,
             self.dry_run
         )
