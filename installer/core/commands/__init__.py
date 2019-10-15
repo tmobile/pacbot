@@ -51,7 +51,7 @@ class BaseCommand(metaclass=ABCMeta):
 
         return resources_to_process
 
-    def get_resources_to_process(self, input_instance):
+    def get_resources_to_process(self, resource_tags_list, input_instance):
         """
         This returns the resources to be processed currently. This can either be full resources or part of resources
 
@@ -61,7 +61,7 @@ class BaseCommand(metaclass=ABCMeta):
         Returns:
             resources_to_process (list): List of resources
         """
-        resource_keys_to_process = self.get_resource_keys_to_process(self.resource_tags_list, self.category_field_name)
+        resource_keys_to_process = self.get_resource_keys_to_process(resource_tags_list, self.category_field_name)
         resources_to_process = self.get_resources_from_the_keys(resource_keys_to_process, input_instance)
 
         return resources_to_process

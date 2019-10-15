@@ -63,7 +63,7 @@ class Reinstall(BaseCommand):
         Args:
             input_instance (Input object): User input values
         """
-        resources_to_process = self.get_resources_to_process(input_instance)
+        resources_to_process = self.get_resources_to_process(self.resource_tags_list, input_instance)
         terraform_with_targets = True
 
         self.install_class(
