@@ -12,7 +12,7 @@ def get_terraform_provider_file():
     """
     return os.path.join(
         Settings.TERRAFORM_DIR,
-        'provider.tf'
+        'provider.tf.json'
     )
 
 
