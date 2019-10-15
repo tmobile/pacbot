@@ -36,7 +36,7 @@ class Destroy(BaseCommand):
             if self.check_pre_requisites() is False:
                 self.exit_system_with_pre_requisites_fail()
 
-            resources_to_process = self.get_resources_to_process(input_instance)
+            resources_to_process = self.get_resources_to_process(self.resource_tags_list, input_instance)
             if resources_to_process:
                 self.destroy_class(self.args, input_instance).execute(
                     resources_to_process,

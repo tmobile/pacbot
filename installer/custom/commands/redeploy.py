@@ -85,7 +85,7 @@ class Redeploy(BaseCommand):
         Args:
             input_instance (Input object): User input values
         """
-        resources_to_process = self.get_resources_to_process(input_instance)
+        resources_to_process = self.get_resources_to_process(self.resource_tags_list, input_instance)
         try:
             resources_to_taint = self.get_resources_with_given_tags(input_instance, ["deploy"])
             resources_to_taint = [resource for resource in resources_to_taint if resource.PROCESS is True]
