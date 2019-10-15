@@ -43,8 +43,10 @@ class Redeploy(BaseCommand):
     def _need_complete_installation(self):
         need_complete_install = False
 
-        redshift_cluster_file = os.path.join(Settings.TERRAFORM_DIR, "datastore_redshift_RedshiftCluster.tf")
-        if os.path.exists(redshift_cluster_file):
+        redshift_cluster_file_tf = os.path.join(Settings.TERRAFORM_DIR, "datastore_redshift_RedshiftCluster.tf")
+        redshift_cluster_file_tf_json = os.path.join(Settings.TERRAFORM_DIR, "datastore_redshift_RedshiftCluster.tf.json")
+
+        if os.path.exists(redshift_cluster_file) or os.path.exists(redshift_cluster_file_tf_json):
             need_complete_install = True
 
         return need_complete_install
