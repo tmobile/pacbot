@@ -1,5 +1,6 @@
 from core.commands import BaseCommand
 from core.config import Settings
+from core.terraform import PyTerraform
 from core import constants as K
 from threading import Thread
 import time
@@ -20,7 +21,7 @@ class Reinstall(BaseCommand):
     def __init__(self, args):
 
         Settings.set('SKIP_RESOURCE_EXISTENCE_CHECK', True)
-        
+
 
         args.append((K.CATEGORY_FIELD_NAME, "deploy"))
         args.append((K.CATEGORY_FIELD_NAME, "upload_tf"))
@@ -89,7 +90,7 @@ class Reinstall(BaseCommand):
         """
         resources_to_destroy = self.get_resources_to_process(self.destroy_resource_tags_list, input_instance)
         resources_to_install = self.get_resources_to_process(self.reinstall_resource_tags_list, input_instance)
-        
+
         try:
             resources_to_taint = self.get_resources_with_given_tags(input_instance, ["deploy"])
             resources_to_taint = [resource for resource in resources_to_taint if resource.PROCESS is True]
@@ -145,6 +146,7 @@ class Reinstall(BaseCommand):
             resources_to_process (list): List of resources to be created/updated
             terraform_with_targets (boolean): This is True since redeployment is happening
         """
+        PyTerraform.terrafomr12_upgrade()
         self.install_class(
             [],
             input_instance,
