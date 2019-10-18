@@ -325,7 +325,7 @@ class PyTerraform():
             json.dump(current_status, jsonfile, indent=4)
 
     @classmethod
-    def get_current_status(self):
+    def get_current_status(cls):
         """
         Write current status for the executed comamnd to status file
 
@@ -339,3 +339,15 @@ class PyTerraform():
                 status_dict = json.load(jsonfile)
 
         return status_dict
+
+    @classmethod
+    def terrafomr12_upgrade(cls):
+        """
+        Write current status for the executed comamnd to status file
+
+        Returns:
+            status_dict (dict): Status dict to be written
+        """
+        response = terraform.cmd("0.12upgradde", yes=True)
+
+        return response
