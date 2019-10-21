@@ -91,12 +91,12 @@ class Reinstall(BaseCommand):
         resources_to_destroy = self.get_resources_to_process(self.destroy_resource_tags_list, input_instance)
         resources_to_install = self.get_resources_to_process(self.reinstall_resource_tags_list, input_instance)
 
-        try:
-            resources_to_taint = self.get_resources_with_given_tags(input_instance, ["deploy"])
-            resources_to_taint = [resource for resource in resources_to_taint if resource.PROCESS is True]
-            response = PyTerraform().terraform_taint(resources_to_taint)  # If tainted or destroyed already then skip it
-        except Exception as e:
-            pass
+        # try:
+        #     resources_to_taint = self.get_resources_with_given_tags(input_instance, ["deploy"])
+        #     resources_to_taint = [resource for resource in resources_to_taint if resource.PROCESS is True]
+        #     response = PyTerraform().terraform_taint(resources_to_taint)  # If tainted or destroyed already then skip it
+        # except Exception as e:
+        #     pass
 
         terraform_with_targets = False if self.need_complete_install else True
         resources_to_install = self.get_complete_resources(input_instance) if self.need_complete_install else resources_to_install
