@@ -38,7 +38,7 @@ class Destroy(BaseCommand):
 
             resources_to_process = self.get_resources_to_process(self.resource_tags_list, input_instance)
             if resources_to_process:
-                self.destroy_class(self.args, input_instance).execute(
+                self.destroy_class(input_instance).execute(
                     resources_to_process,
                     self.terraform_with_targets,
                     self.dry_run
