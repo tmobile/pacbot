@@ -148,7 +148,6 @@ class Reinstall(BaseCommand):
         """
         PyTerraform.terrafomr12_upgrade()  # This is required only when terraform version 12 is used
         self.install_class(
-            [],
             input_instance,
             check_dependent_resources=False
         ).execute(
