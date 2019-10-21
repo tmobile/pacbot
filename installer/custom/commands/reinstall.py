@@ -146,7 +146,7 @@ class Reinstall(BaseCommand):
             resources_to_process (list): List of resources to be created/updated
             terraform_with_targets (boolean): This is True since redeployment is happening
         """
-        PyTerraform.terrafomr12_upgrade()
+        PyTerraform.terrafomr12_upgrade()  # This is required only when terraform version 12 is used
         self.install_class(
             [],
             input_instance,
