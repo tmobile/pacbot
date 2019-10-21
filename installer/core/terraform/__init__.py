@@ -86,6 +86,8 @@ class PyTerraform():
         if exists_teraform_lock():
             raise Exception(K.ANOTHER_PROCESS_RUNNING)
 
+        self.change_tf_extension_to_tf_json()
+
         CMD = Settings.get('running_command', "Terraform Apply")
         terraform = Terraform(
             working_dir=Settings.TERRAFORM_DIR,
@@ -354,3 +356,10 @@ class PyTerraform():
         response = terraform.cmd("0.12upgradde", yes=True)
 
         return response
+
+    @classmethod
+    def change_tf_extension_to_tf_json(cls):
+        working_dir = Settings.TERRAFORM_DIR
+
+        for file in [f for f in os.listdir(working_dir) if item.endswith(".tf")]:
+            os.renmae(f, "%s.json" % f)
