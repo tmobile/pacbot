@@ -348,6 +348,9 @@ class PyTerraform():
         Returns:
             status_dict (dict): Status dict to be written
         """
+        terraform = Terraform(
+            working_dir=Settings.TERRAFORM_DIR,
+        )
         response = terraform.cmd("0.12upgradde", yes=True)
 
         return response
