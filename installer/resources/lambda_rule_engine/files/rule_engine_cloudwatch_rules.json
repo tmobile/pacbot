@@ -1882,7 +1882,7 @@
     "ruleExecutable": "",
     "ruleRestUrl": "",
     "ruleType": "ManageRule",
-    "ruleArn": "arn:aws:events:us-east-1:***REMOVED***:rule/aws_ec2_should_not_be_publicly_accessible_on_port3306",
+    "ruleArn": "arn:aws:events:us-east-1:484695107796:rule/aws_ec2_should_not_be_publicly_accessible_on_port3306",
     "status": "ENABLED",
     "userId": "ASGC",
     "displayName": "EC2 instances should not be publicly accessible on default MySQL port 3306",

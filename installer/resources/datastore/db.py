@@ -31,7 +31,7 @@ class MySQLDatabase(RDSResource):
     engine_version = "5.6.40"
     allocated_storage = 10
     username = "pacbot"
-    password = "***REMOVED***"
+    password = "KHQFpY4bKu6UB3XZ"
     parameter_group_name = DBParameterGroup.get_input_attr('name')
     option_group_name = DBOptionGroup.get_input_attr('name')
     db_subnet_group_name = DBSubnetGroup.get_input_attr('name')
