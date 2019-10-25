@@ -83,7 +83,6 @@ class ReInstall(Install):  # Do not inherit Destroy
 
         self._cleanup_installation_process(dry_run)
 
-
     def show_progress_status_all(self, resources, terraform_with_targets, dry_run):
         """
         Show the status of installation continously in this thread

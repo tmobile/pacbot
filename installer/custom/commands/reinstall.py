@@ -22,7 +22,6 @@ class Reinstall(BaseCommand):
 
         Settings.set('SKIP_RESOURCE_EXISTENCE_CHECK', True)
 
-
         args.append((K.CATEGORY_FIELD_NAME, "deploy"))
         args.append((K.CATEGORY_FIELD_NAME, "upload_tf"))
         self.destroy_resource_tags_list = [v for (k, v) in args if k == self.category_field_name]

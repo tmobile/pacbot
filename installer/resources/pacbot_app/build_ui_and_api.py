@@ -48,7 +48,6 @@ class BuildUiAndApis(NullResource):
 
         return upload_dir
 
-
     def pre_terraform_destroy(self):
         # To support latest terraform version
         PyTerraform.change_tf_extension_to_tf_json()
