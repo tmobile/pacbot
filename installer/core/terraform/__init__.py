@@ -86,8 +86,6 @@ class PyTerraform():
         if exists_teraform_lock():
             raise Exception(K.ANOTHER_PROCESS_RUNNING)
 
-        self.change_tf_extension_to_tf_json()
-
         CMD = Settings.get('running_command', "Terraform Apply")
         terraform = Terraform(
             working_dir=Settings.TERRAFORM_DIR,
