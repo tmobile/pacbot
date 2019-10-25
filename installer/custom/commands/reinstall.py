@@ -136,7 +136,7 @@ class Reinstall(BaseCommand):
         """
         pass
 
-    def generate_terraform_files_and_upgrade_state(self):
+    def generate_terraform_files_and_upgrade_state(self, input_instance):
         all_resources = self.get_complete_resources(input_instance)
         for resource in all_resources:
             resource.generate_terraform()
@@ -151,7 +151,7 @@ class Reinstall(BaseCommand):
             resources_to_process (list): List of resources to be created/updated
             terraform_with_targets (boolean): This is True since redeployment is happening
         """
-        self.generate_terraform_files_and_upgrade_state()
+        self.generate_terraform_files_and_upgrade_state(input_instance)
 
         installer = self.install_class(
             input_instance,
