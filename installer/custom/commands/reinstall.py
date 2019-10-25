@@ -34,7 +34,6 @@ class Reinstall(BaseCommand):
         args.append((K.CATEGORY_FIELD_NAME, "submit-job"))
         args.append((K.CATEGORY_FIELD_NAME, "rule-engine-job"))
         args.append((K.CATEGORY_FIELD_NAME, "upload_tf"))
-        args.append((K.CATEGORY_FIELD_NAME, "security"))
         self.reinstall_resource_tags_list = [v for (k, v) in args if k == self.category_field_name]
 
         self.need_complete_install = self._need_complete_installation()
@@ -146,11 +145,16 @@ class Reinstall(BaseCommand):
             resources_to_process (list): List of resources to be created/updated
             terraform_with_targets (boolean): This is True since redeployment is happening
         """
-        PyTerraform.terrafomr12_upgrade()  # This is required only when terraform version 12 is used
-        self.install_class(
+        installer = self.install_class(
             input_instance,
             check_dependent_resources=False
-        ).execute(
+        )
+
+        all_resources = self.get_complete_resources(input_instance)
+        installer.generate_terraform_files(all_resources, False)  # To make all tf file in compatible with all terraform versions
+
+        PyTerraform.terrafomr12_upgrade()  # This is required only when terraform version 12 is used
+        installer.execute(
             resources_to_destroy,
             resources_to_install,
             terraform_with_targets,
