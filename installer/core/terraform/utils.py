@@ -163,7 +163,6 @@ def get_resource_created_status_op_file(resource_id):
     return _get_resource_status_file_name(resource_id, '1')
 
 
-
 def get_type_corrected_tags(tags):
     """
     Get tags type corrected since earlier version used list and now changed to dict for terraform compatibility
