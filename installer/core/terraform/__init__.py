@@ -360,4 +360,4 @@ class PyTerraform():
         working_dir = Settings.TERRAFORM_DIR
 
         for file in [f for f in os.listdir(working_dir) if f.endswith(".tf")]:
-            os.renmae(f, "%s.json" % f)
+            os.rename(f, "%s.json" % f)
