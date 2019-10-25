@@ -136,6 +136,12 @@ class Reinstall(BaseCommand):
         """
         pass
 
+    def generate_terraform_files_and_upgrade_state(self):
+        all_resources = self.get_complete_resources(input_instance)
+        for resource in all_resources:
+            resource.generate_terraform()
+        PyTerraform.terrafomr12_upgrade()  # This is required only when terraform version 12 is used
+
     def run_tf_apply(self, input_instance, resources_to_destroy, resources_to_install, terraform_with_targets):
         """
         Execute the installation of resources by invoking the execute method of provider class
@@ -145,15 +151,13 @@ class Reinstall(BaseCommand):
             resources_to_process (list): List of resources to be created/updated
             terraform_with_targets (boolean): This is True since redeployment is happening
         """
+        self.generate_terraform_files_and_upgrade_state()
+
         installer = self.install_class(
             input_instance,
             check_dependent_resources=False
         )
 
-        all_resources = self.get_complete_resources(input_instance)
-        installer.generate_terraform_files(all_resources, False)  # To make all tf file in compatible with all terraform versions
-
-        PyTerraform.terrafomr12_upgrade()  # This is required only when terraform version 12 is used
         installer.execute(
             resources_to_destroy,
             resources_to_install,
