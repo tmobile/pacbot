@@ -34,6 +34,7 @@ class Reinstall(BaseCommand):
         args.append((K.CATEGORY_FIELD_NAME, "submit-job"))
         args.append((K.CATEGORY_FIELD_NAME, "rule-engine-job"))
         args.append((K.CATEGORY_FIELD_NAME, "upload_tf"))
+        args.append((K.CATEGORY_FIELD_NAME, "security"))
         self.reinstall_resource_tags_list = [v for (k, v) in args if k == self.category_field_name]
 
         self.need_complete_install = self._need_complete_installation()
