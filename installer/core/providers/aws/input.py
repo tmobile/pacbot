@@ -11,7 +11,7 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
     """Base input class for installation/destruction/status commands. This class reads required input from user for the process to start"""
     AWS_AUTH_CRED = {}
 
-    def __init__(slef, silent_install = False):
+    def __init__(self, silent_install = False):
         self.silent_install = silent_install
 
     def read_input(self):
@@ -19,15 +19,18 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
         self.show_step_heading(K.INPUT_READING_STARTED)
 
         self.AWS_AUTH_CRED['aws_auth_option'] = self.read_aws_auth_mechanism()
+        self.AWS_AUTH_CRED['aws_region'] = self.read_aws_region()
 
         if self.AWS_AUTH_CRED['aws_auth_option'] == 1:
             self.AWS_AUTH_CRED['aws_access_key'] = self.read_aws_access_key()
             self.AWS_AUTH_CRED['aws_secret_key'] = self.read_aws_secret_key()
         elif self.AWS_AUTH_CRED['aws_auth_option'] == 2:
             self.AWS_AUTH_CRED['assume_role_arn'] = self.read_aws_assume_role_arn()
-            self.AWS_AUTH_CRED['tmp_credentials'] = generate_temp_credentials(self.AWS_AUTH_CRED['assume_role_arn'])
+            self.AWS_AUTH_CRED['tmp_credentials'] = generate_temp_credentials(
+                self.AWS_AUTH_CRED['assume_role_arn'],
+                self.AWS_AUTH_CRED['aws_region']
+            )
 
-        self.AWS_AUTH_CRED['aws_region'] = self.read_aws_region()
 
         Settings.set('AWS_AUTH_CRED', self.AWS_AUTH_CRED)
 
@@ -36,10 +39,10 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
 
     def read_aws_auth_mechanism(self):
         if self.silent_install:
-            auth_mechanism = getattr(Settings, 'AWS_ACCESS_KEY', None)
+            auth_mechanism = getattr(Settings, 'AWS_AUTH_MECHANISM', None)
             if auth_mechanism in [1, 2, 3]:
                 return auth_mechanism
-
+            self.show_step_inner_error(K.AWS_AUTH_MECHANISM_NOT_SUPPLIED)
             raise Exception(K.AWS_AUTH_MECHANISM_NOT_SUPPLIED)
 
         while True:
@@ -61,6 +64,7 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
 
         if settings_access_key is None or settings_access_key == '':
             if self.silent_install:
+                self.show_step_inner_error(K.AWS_ACCESS_KEY_NOT_SUPPLIED)
                 raise Exception(K.AWS_ACCESS_KEY_NOT_SUPPLIED)
 
             aws_access_key = input("\n\t%s" % K.AWS_ACCESS_KEY_INPUT)
@@ -77,6 +81,7 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
         settings_secret_key = getattr(Settings, 'AWS_SECRET_KEY', None)
         if settings_secret_key is None or settings_secret_key == '':
             if self.silent_install:
+                self.show_step_inner_error(K.AWS_SECRET_KEY_NOT_SUPPLIED)
                 raise Exception(K.AWS_SECRET_KEY_NOT_SUPPLIED)
 
             aws_secret_key = input("\n\t%s" % K.AWS_SECRET_KEY_INPUT)
@@ -93,6 +98,7 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
         settings_assume_role_arn = getattr(Settings, 'AWS_ASSUME_ROLE_ARN', None)
         if settings_assume_role_arn is None or settings_assume_role_arn == '':
             if self.silent_install:
+                self.show_step_inner_error(K.AWS_ASSUME_ROLE_NOT_SUPPLIED)
                 raise Exception(K.AWS_ASSUME_ROLE_NOT_SUPPLIED)
 
             assume_role_arn = input("\n\t%s" % K.AWS_ASSUME_ROLE_INPUT)
@@ -106,6 +112,7 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
         settings_region = getattr(Settings, 'AWS_REGION', None)
         if settings_region is None or settings_region == '':
             if self.silent_install:
+                self.show_step_inner_error(K.AWS_REGION_NOT_SUPPLIED)
                 raise Exception(K.AWS_REGION_NOT_SUPPLIED)
 
             aws_region = input("\n\t%s" % K.AWS_REGION_INPUT)

@@ -16,9 +16,10 @@ def get_sts_client(aws_auth_cred):
     return prepare_aws_client_with_given_cred('sts', aws_auth_cred)
 
 
-def generate_temp_credentials(assume_role_arn):
+def generate_temp_credentials(assume_role_arn, region_name):
     response = boto3.client(
-        'sts'
+        "sts",
+        region_name=region_name
     ).assume_role(
         RoleArn=assume_role_arn,
         RoleSessionName=str(uuid.uuid4())
