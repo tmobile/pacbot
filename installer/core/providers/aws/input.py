@@ -11,6 +11,9 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
     """Base input class for installation/destruction/status commands. This class reads required input from user for the process to start"""
     AWS_AUTH_CRED = {}
 
+    def __init__(slef, silent_install = False):
+        self.silent_install = silent_install
+
     def read_input(self):
         """Read required inputs from user for the process to start"""
         self.show_step_heading(K.INPUT_READING_STARTED)
@@ -32,6 +35,13 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
         self.show_step_finish(K.INPUT_READING_COMPLETED)
 
     def read_aws_auth_mechanism(self):
+        if self.silent_install:
+            auth_mechanism = getattr(Settings, 'AWS_ACCESS_KEY', None)
+            if auth_mechanism in [1, 2, 3]:
+                return auth_mechanism
+
+            raise Exception(K.AWS_AUTH_MECHANISM_NOT_SUPPLIED)
+
         while True:
             self.show_inner_inline_message("\n\t%s" % K.AWS_AUTH_MECHANISM)
             self.show_inner_inline_message("\n\t%s" % K.AWS_WITH_KEYS)
@@ -48,7 +58,11 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
     def read_aws_access_key(self):
         """Read AWS access key from user if it is not already set in settings"""
         settings_access_key = getattr(Settings, 'AWS_ACCESS_KEY', None)
+
         if settings_access_key is None or settings_access_key == '':
+            if self.silent_install:
+                raise Exception(K.AWS_ACCESS_KEY_NOT_SUPPLIED)
+
             aws_access_key = input("\n\t%s" % K.AWS_ACCESS_KEY_INPUT)
             if len(aws_access_key) < 20:
                 self.show_step_inner_error("\n\t" + K.INVALID_KEY)
@@ -62,8 +76,10 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
         """Read AWS secret key from user if it is not already set in settings"""
         settings_secret_key = getattr(Settings, 'AWS_SECRET_KEY', None)
         if settings_secret_key is None or settings_secret_key == '':
-            aws_secret_key = input("\n\t%s" % K.AWS_SECRET_KEY_INPUT)
+            if self.silent_install:
+                raise Exception(K.AWS_SECRET_KEY_NOT_SUPPLIED)
 
+            aws_secret_key = input("\n\t%s" % K.AWS_SECRET_KEY_INPUT)
             if len(aws_secret_key) < 25:
                 self.show_step_inner_error("\n\t" + K.INVALID_KEY)
                 raise Exception(K.INVALID_KEY)
@@ -76,6 +92,9 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
         """Read AWS secret key from user if it is not already set in settings"""
         settings_assume_role_arn = getattr(Settings, 'AWS_ASSUME_ROLE_ARN', None)
         if settings_assume_role_arn is None or settings_assume_role_arn == '':
+            if self.silent_install:
+                raise Exception(K.AWS_ASSUME_ROLE_NOT_SUPPLIED)
+
             assume_role_arn = input("\n\t%s" % K.AWS_ASSUME_ROLE_INPUT)
         else:
             assume_role_arn = settings_assume_role_arn
@@ -86,6 +105,9 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
         """Read AWS region from user if it is not already set in settings"""
         settings_region = getattr(Settings, 'AWS_REGION', None)
         if settings_region is None or settings_region == '':
+            if self.silent_install:
+                raise Exception(K.AWS_REGION_NOT_SUPPLIED)
+
             aws_region = input("\n\t%s" % K.AWS_REGION_INPUT)
         else:
             aws_region = settings_region
@@ -115,13 +137,6 @@ class SystemDestroyInput(SystemInput):
 
     def read_input(self):
         super().read_input()
-        # for item in Settings.get('INSTALL_INPUTS_REQUIRED', []):
-        #     key_val = input("\n\t%s" % item['input_msg'])
-        #     if item['required']:
-        #         if key_val.strip() == "":
-        #             raise Exception("Value required for %s" % item['input_key'])
-        #     Settings.set(item['input_key'], key_val)
-        #     setattr(self, item['input_key'], key_val)
 
 
 class SystemStatusInput(SystemInput):
