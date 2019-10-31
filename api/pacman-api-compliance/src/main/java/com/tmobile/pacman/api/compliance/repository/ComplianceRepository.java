@@ -435,9 +435,11 @@ public interface ComplianceRepository {
      *
      * @param assetGroup the asset group
      * @param domain the domain
+     * @param application the application
+     * @param type the type
      * @return Map<String, Long>
      */
-    public Map<String, Long> getTotalAssetCount(String assetGroup, String domain);
+    public Map<String, Long> getTotalAssetCount(String assetGroup, String domain, String application,String type);
 
     /**
      * Gets true if it updates the kernel version for the given instanceId
@@ -479,7 +481,7 @@ public interface ComplianceRepository {
      * @return Map<String, Object>
      * @throws DataException the data exception
      */
-    public Map<String, Object> getTaggingByAG(String assetGroup,String ttypes)
+    public Map<String, Object> getTaggingByAG(String assetGroup,String ttypes,String application)
             throws DataException;
 
     /**
@@ -522,17 +524,19 @@ public interface ComplianceRepository {
     public List<Map<String, Object>> getRuleIdWithDisplayNameWithRuleCategoryQuery(
             String targetTypes, String ruleCategory) throws DataException;
 
+  
     /**
-     * This method applicable for ec2 and onpremserver target types. If method
-     * receives,asset group and targettype(ec2/onpremserver) as request
-     * parameters, then it gives the asset count of that target type.
+     * Gets the patchabe assets count.
      *
      * @param assetGroup the asset group
      * @param targetType the target type
-     * @return Long
+     * @param application the application
+     * @param environment the environment
+     * @param searchText the search text
+     * @return the patchabe assets count
      * @throws DataException the data exception
      */
-    public Long getPatchabeAssetsCount(String assetGroup, String targetType)
+    public Long getPatchabeAssetsCount(String assetGroup, String targetType,String application,String environment,String searchText)
             throws DataException;
 
     /**
@@ -543,10 +547,11 @@ public interface ComplianceRepository {
      *
      * @param assetGroup the asset group
      * @param targetType the target type
+     * @param application 
      * @return Long
      * @throws DataException the data exception
      */
-    public Long getUnpatchedAssetsCount(String assetGroup, String targetType)
+    public Long getUnpatchedAssetsCount(String assetGroup, String targetType, String application)
             throws DataException;
 
     /**
@@ -591,7 +596,7 @@ public interface ComplianceRepository {
      * @return the instance count for qualys
      * @throws DataException the data exception
      */
-    public Long getInstanceCountForQualys(String assetGroup,String apiType,String application,String enivironment)
+    public Long getInstanceCountForQualys(String assetGroup,String apiType,String application,String enivironment,String resourceType)
             throws DataException;
 
     /**
@@ -604,7 +609,7 @@ public interface ComplianceRepository {
      * @return the instance count for qualys by apps or env
      * @throws DataException the data exception
      */
-    public Map<String, Long> getInstanceCountForQualysByAppsOrEnv(String assetGroup,String apiType,String application,String enivironment)
+    public Map<String, Long> getInstanceCountForQualysByAppsOrEnv(String assetGroup,String apiType,String application,String enivironment,String targetType)
             throws DataException;
 
     /**
@@ -634,4 +639,29 @@ public interface ComplianceRepository {
  	 * @return the total asset count by environment
  	 */
  	public Map<String,Long> getTotalAssetCountByEnvironment(String assetGroup, String application,String targetType);
+ 	
+ 	/**
+     * Gets the datasource for the target type.
+     *
+     * @param assetGroup
+     *            the asset group
+     * @param domain
+     *            the domain
+     * @param targetType
+     *            the targetType
+     * @return String
+     */
+    public List<Map<String,String>> getDataSourceForTargetTypeForAG(String assetGroup, String domain, String targetType);
+    
+    /**
+	 * Gets the exempted assets count by rule.
+	 *
+	 * @param assetGroup the asset group
+	 * @return the exempted assets count by rule
+	 * @throws DataException the data exception
+	 */
+	public Map<String, Integer> getExemptedAssetsCountByRule(String assetGroup, String application,String type)
+			throws DataException;
+
+
 }

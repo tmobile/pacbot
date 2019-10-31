@@ -224,7 +224,7 @@ public class ComplianceController implements Constants {
         }
         OutputDTO output = null;
         try {
-            output = new OutputDTO(complianceService.getPatching(assetGroup, null));
+            output = new OutputDTO(complianceService.getPatching(assetGroup, null,null));
         } catch (ServiceException e) {
            return complianceService.formatException(e);
         }
