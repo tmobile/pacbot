@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright 2018 T Mobile, Inc. or its affiliates. All Rights Reserved.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not
  * use this file except in compliance with the License.  You may obtain a copy
  * of the License at
- *
+ * 
  *   http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the
@@ -16,21 +16,24 @@
 /**
   Copyright (C) 2017 T Mobile Inc - All Rights Reserve
   Purpose:
-  Author :santoshi
+  Author :SGorle
   Modified Date: Nov 5, 2017
-
+  
  **/
 package com.tmobile.pacman.api.compliance.domain;
 /**
  * The Class AssetCountDTO.
  */
 public class AssetCountDTO {
-
+    
     /** The name. */
     private String name;
-
+    
     /** The type. */
     private String type;
+    
+    /** The provider **/
+    private String provider;
 
     /**
      * Gets the type.
@@ -68,11 +71,19 @@ public class AssetCountDTO {
         this.name = name;
     }
 
-    /* (non-Javadoc)
+    public String getProvider() {
+		return provider;
+	}
+
+	public void setProvider(String provider) {
+		this.provider = provider;
+	}
+
+	/* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        return "ClassPojo [name = " + name + ",type = " + type + "]";
+        return "ClassPojo [name = " + name + ",type = " + type + ",provider = " + provider + "]";
     }
 }
