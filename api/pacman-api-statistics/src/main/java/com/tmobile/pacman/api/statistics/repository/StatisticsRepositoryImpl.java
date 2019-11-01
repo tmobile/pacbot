@@ -78,9 +78,6 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
     /** The Constant LOGGER. */
     private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsRepositoryImpl.class);
     
-    /** The Constant AG_NAME_AWS. */
-    private static final String AG_NAME_AWS = "aws";
-    
     /** The Constant PROTOCOL. */
     private static final String PROTOCOL = "http";
     
@@ -201,7 +198,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
     public JsonArray getTotalViolations() throws DataException {
         try {
             JsonParser parser = new JsonParser();
-            StringBuilder urlToQueryBuffer = new StringBuilder(esUrl).append("/").append(AG_NAME_AWS).append("/")
+            StringBuilder urlToQueryBuffer = new StringBuilder(esUrl).append("/").append(MASTER_ALIAS).append("/")
                     .append(SEARCH);
             StringBuilder requestBody = new StringBuilder(
                     "{\"query\":{\"bool\":{\"must\":[{\"term\":{\"issueStatus.keyword\":{\"value\":\"open\"}}},{\"term\":{\"type.keyword\":{\"value\":\"issue\"}}}]}},\"aggs\":{\"severity\":{\"terms\":{\"field\":\"severity.keyword\",\"size\":10000}}}}");

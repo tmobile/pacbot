@@ -18,7 +18,9 @@ package com.tmobile.pacman.api.asset.controller;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.LongSummaryStatistics;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -30,6 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.tmobile.pacman.api.asset.AssetConstants;
 import com.tmobile.pacman.api.asset.service.AssetService;
+import com.tmobile.pacman.api.commons.Constants;
 import com.tmobile.pacman.api.commons.utils.ResponseUtils;
 
 /**
@@ -58,20 +61,20 @@ public class AssetCountController {
     @GetMapping(value = "/v1/count")
     public ResponseEntity<Object> geAssetCount(@RequestParam(name = "ag", required = true) String assetGroup,
             @RequestParam(name = "type", required = false) String type,
-            @RequestParam(name = "domain", required = false) String domain) {
+            @RequestParam(name = "domain", required = false) String domain,
+            @RequestParam(name = "application", required = false) String application,
+            @RequestParam(name = "provider", required = false) String provider) {
         if (type == null) {
             type = "all";
         }
-        List<Map<String, Object>> countMap = assetService.getAssetCountByAssetGroup(assetGroup, type, domain);
-
+        List<Map<String, Object>> countMap = assetService.getAssetCountAndEnvDistributionByAssetGroup(assetGroup, type, domain, application, provider);
+        LongSummaryStatistics totalCount = countMap.stream().collect(Collectors.summarizingLong(map -> (Long) map.get(Constants.COUNT)));
         Map<String, Object> response = new HashMap<>();
         response.put("ag", assetGroup);
         response.put(AssetConstants.ASSET_COUNT, countMap);
-        if (!countMap.isEmpty()) {
-            return ResponseUtils.buildSucessResponse(response);
-        } else {
-            return ResponseUtils.buildFailureResponse(new Exception("No data found"));
-        }
+        response.put(AssetConstants.ASSET_TYPE, totalCount.getCount());
+        response.put(AssetConstants.TOTAL_ASSETS, totalCount.getSum());
+        return ResponseUtils.buildSucessResponse(response);
     }
 
     /**

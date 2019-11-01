@@ -72,9 +72,6 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
     @Autowired(required=false)
     private HeimdallElasticSearchRepository heimdallElasticSearchRepository;
 
-    /** The Constant AG_AWS_ALL. */
-    private static final String AWS = "aws";
-
     /** The Constant LOGGER. */
     private static final Logger LOGGER = LoggerFactory.getLogger(StatisticsServiceImpl.class);
 
@@ -200,7 +197,7 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
             Long totalAssets = getTotalAssetCount();
             Long eventsProcessed = getTotalEventProcessed();
             Map<String, Long> violationsMap = getIssueDistribution();
-            String targettypes = repository.getTargetTypeForAG(AWS, null);
+            String targettypes = repository.getTargetTypeForAG(MASTER_ALIAS, null);
             ExecutorService executor = Executors.newCachedThreadPool();
             executor.execute(() -> {
              numberOfPoliciesEnforced = getNumberOfPoliciesEnforced(targettypes);
@@ -267,8 +264,7 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         JsonParser parser = new JsonParser();
         try {
         LOGGER.info("before the client call {}",complianceClient.toString());
-        LOGGER.info("before the client call "+complianceClient.toString());
-        String distributionStr = complianceClient.getDistributionAsJson(AWS, null);
+        String distributionStr = complianceClient.getDistributionAsJson(MASTER_ALIAS, null);
         LOGGER.info("after the client call {}",complianceClient.toString());
         if (!Strings.isNullOrEmpty(distributionStr)) {
             JsonObject responseDetailsjson = parser.parse(distributionStr).getAsJsonObject();
@@ -355,7 +351,7 @@ public class StatisticsServiceImpl implements StatisticsService, Constants {
         JsonParser parser = new JsonParser();
         try{
         	LOGGER.debug("before the client call",assetClient.toString());
-        Map<String, Object> assetCounts = assetClient.getTypeCounts(AWS, null, null);
+        Map<String, Object> assetCounts = assetClient.getTypeCounts(MASTER_ALIAS, null, null);
         LOGGER.debug("after the client call",assetClient.toString());
         // Get Total Asset Count
         assetCounts.entrySet().stream().forEach(entry->{

@@ -120,7 +120,7 @@ public class SearchRepositoryTest {
 
         when(pacmanRdsRepository.getDataFromPacman(anyString())).thenReturn(returnFieldsData);
         ReflectionTestUtils.setField(repository, "rdsRepository", pacmanRdsRepository);
-        when(assetService.getTargetTypesForAssetGroup(anyString(), anyString())).thenReturn(tTypeList);
+        when(assetService.getTargetTypesForAssetGroup(anyString(), anyString(), anyString())).thenReturn(tTypeList);
         ReflectionTestUtils.setField(repository, "assetService", assetService);
         when(elasticSearchRepository.buildQuery(anyObject(), anyObject(), anyObject(), anyObject(), anyObject(),
                 anyObject())).thenReturn(queryMap);
@@ -197,7 +197,7 @@ public class SearchRepositoryTest {
                 Matchers.<Header>anyVararg())).thenReturn(response);
         ReflectionTestUtils.setField(repository, "restClient", restClient);
         
-        when(assetService.getTargetTypesForAssetGroup(anyString(), anyString())).thenReturn(tTypeList);
+        when(assetService.getTargetTypesForAssetGroup(anyString(), anyString(), anyString())).thenReturn(tTypeList);
         ReflectionTestUtils.setField(repository, "assetService", assetService);
         
         List<Map<String, Object>> x = repository.fetchTargetTypes("aws-all", "pacman", "Assets", "", true);
