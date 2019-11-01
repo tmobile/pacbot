@@ -347,6 +347,32 @@ public class ElasticSearchRepository implements Constants {
 		}
 		return name;
 	}
+	
+	/**
+	 * 
+	 * @param distributionName
+	 * @param size
+	 * @param aggsName
+	 * @param nestedAggs
+	 * @return
+	 */
+	public Map<String, Object> buildAggs(String distributionName, int size, String aggsName, Map<String, Object> nestedAggs) {
+		Map<String, Object> name = new HashMap<String, Object>();
+		if (!Strings.isNullOrEmpty(distributionName)) {
+			Map<String, Object> terms = new HashMap<String, Object>();
+			Map<String, Object> termDetails = new HashMap<String, Object>();
+			termDetails.put("field", distributionName);
+			if (size > 0) {
+				termDetails.put(SIZE, size);
+			}
+			terms.put(TERMS, termDetails);
+			if (nestedAggs != null && !nestedAggs.isEmpty()) {
+				terms.put(AGGS, nestedAggs);
+			}
+			name.put(( Strings.isNullOrEmpty(aggsName) ? "name" : aggsName ), terms);
+		}
+		return name;
+	}
 
 	/**
 	 *
@@ -684,13 +710,13 @@ public class ElasticSearchRepository implements Constants {
 	}
 
 	/**
-	 *
+	 * 
 	 * @param url
 	 * @param index
 	 * @param type
 	 * @return
 	 */
-	private String buildAggsURL(String url, String index, String type) {
+	public String buildAggsURL(String url, String index, String type) {
 
 		StringBuilder urlToQuery = new StringBuilder(url).append(FORWARD_SLASH).append(index);
 		if (!Strings.isNullOrEmpty(type)) {
@@ -1631,6 +1657,82 @@ public class ElasticSearchRepository implements Constants {
 		}
 		urlToQuery.append(FORWARD_SLASH).append(_SEARCH);
 		return urlToQuery.toString();
+	}
+
+	/**
+	 * 
+	 * @param index
+	 * @param type
+	 * @param mustFilter
+	 * @param mustNotFilter
+	 * @param shouldFilter
+	 * @param aggsFilter
+	 * @param size
+	 * @param mustTermsFilter
+	 * @return
+	 * @throws Exception
+	 */
+	public Map<String, Object> getEnvAndTotalDistributionForIndexAndType(String index, String type,
+			Map<String, Object> mustFilter, Map<String, Object> mustNotFilter,
+			HashMultimap<String, Object> shouldFilter, String aggsFilter, Map<String, Object> nestedaggs, int size, Map<String, Object> mustTermsFilter)
+			throws Exception {
+
+		String urlToQuery = buildAggsURL(esUrl, index, type);
+		Map<String, Object> requestBody = new HashMap<String, Object>();
+		Map<String, Object> matchFilters = Maps.newHashMap();
+		Map<String, Object> distribution = new HashMap<>();
+		Map<String, Long> countMap = new HashMap<>();
+		Map<String, Object> envMap = new HashMap<>();
+		
+		if (mustFilter == null) {
+			matchFilters.put("match_all", new HashMap<String, String>());
+		} else {
+			matchFilters.putAll(mustFilter);
+		}
+		if (null != mustFilter) {
+			requestBody.put(QUERY, buildQuery(matchFilters, mustNotFilter, shouldFilter, null, mustTermsFilter,null));
+			requestBody.put(AGGS, buildAggs(aggsFilter, size, null, nestedaggs));
+
+			if (!Strings.isNullOrEmpty(aggsFilter)) {
+				requestBody.put(SIZE, "0");
+			}
+
+		} else {
+			requestBody.put(QUERY, matchFilters);
+		}
+		String responseDetails = null;
+		Gson gson = new GsonBuilder().create();
+
+		try {
+			String requestJson = gson.toJson(requestBody, Object.class);
+			responseDetails = PacHttpUtils.doHttpPost(urlToQuery, requestJson);
+			Map<String, Object> response = (Map<String, Object>) gson.fromJson(responseDetails, Map.class);
+			Map<String, Object> aggregations = (Map<String, Object>) response.get(AGGREGATIONS);
+			Map<String, Object> name = (Map<String, Object>) aggregations.get(NAME);
+			List<Map<String, Object>> buckets = (List<Map<String, Object>>) name.get(BUCKETS);
+			
+			for (int i = 0; i < buckets.size(); i++) {
+				Map<String, Object> bucket = buckets.get(i);
+				countMap.put(bucket.get("key").toString(), ((Double) bucket.get("doc_count")).longValue());
+				
+				Map<String, Object> enviroments = (Map<String, Object>) bucket.get(ENVIRONMENTS);
+				List<Map<String, Object>> envBuckets = (List<Map<String, Object>>) enviroments.get(BUCKETS);
+				
+				Map<String, Long> environments = new HashMap<>();
+				for(int j=0; j< envBuckets.size(); j++) {
+					Map<String, Object> env = envBuckets.get(j);
+					environments.put(env.get("key").toString(), ((Double) env.get("doc_count")).longValue());
+				}
+				envMap.put(bucket.get("key").toString(), environments);	
+			}
+			distribution.put(Constants.ASSET_COUNT, countMap);
+			distribution.put(Constants.ENV_COUNT, envMap);
+
+		} catch (Exception e) {
+			LOGGER.error(ERROR_RETRIEVING_INVENTORY_FROM_ES, e);
+			throw e;
+		}
+		return distribution;
 	}
 
 }

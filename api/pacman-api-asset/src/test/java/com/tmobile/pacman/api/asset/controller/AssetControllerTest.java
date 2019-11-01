@@ -54,10 +54,10 @@ public class AssetControllerTest {
     public void testgetListOfTargetTypes() throws Exception {
         List<Map<String, Object>> tTypeList = new ArrayList<>();
 
-        when(service.getTargetTypesForAssetGroup(anyObject(), anyObject())).thenReturn(tTypeList);
+        when(service.getTargetTypesForAssetGroup(anyObject(), anyObject(), anyObject()	)).thenReturn(tTypeList);
         ReflectionTestUtils.setField(controller, "assetService", service);
 
-        ResponseEntity<Object> responseObj0 = controller.getListOfTargetTypes("ag", "domain");
+        ResponseEntity<Object> responseObj0 = controller.getListOfTargetTypes("ag", "domain", "provider");
         assertTrue(responseObj0.getStatusCode() == HttpStatus.EXPECTATION_FAILED);
 
         Map<String, Object> tTypeMap = new HashMap<>();
@@ -66,7 +66,7 @@ public class AssetControllerTest {
         tTypeMap.put("domain", "Infra & Platforms");
         tTypeList.add(tTypeMap);
 
-        ResponseEntity<Object> responseObj = controller.getListOfTargetTypes("ag", "domain");
+        ResponseEntity<Object> responseObj = controller.getListOfTargetTypes("ag", "domain", "provider");
         assertTrue(responseObj.getStatusCode() == HttpStatus.OK);
         assertTrue(((Map<String, Object>) responseObj.getBody()).get("data") != null);
     }
