@@ -41,6 +41,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 import com.tmobile.pacman.api.asset.domain.ResponseWithFieldsByTargetType;
 import com.tmobile.pacman.api.asset.repository.AssetRepository;
 import com.tmobile.pacman.api.asset.repository.PacmanRedshiftRepository;
+import com.tmobile.pacman.api.commons.Constants;
 import com.tmobile.pacman.api.commons.repo.ElasticSearchRepository;
 import com.tmobile.pacman.api.commons.repo.PacmanRdsRepository;
 import com.tmobile.pacman.api.commons.utils.PacHttpUtils;
@@ -90,13 +91,24 @@ public class AssetServiceTest {
         mockMap.put("s3", (long) 655);
         mockMap.put("stack", (long) 655);
 
-        when(assetRepository.getAllTargetTypes()).thenReturn(tTypeList);
-        when(assetRepository.getTargetTypesByAssetGroup(anyObject(), anyObject())).thenReturn(tTypeList);
-        when(assetRepository.getAssetCountByAssetGroup(anyObject(), anyObject())).thenReturn(mockMap);
+        List<Map<String,Object>> typeDataSource = new ArrayList<>();
+		Map<String,Object> dataSource = new HashMap<>();
+		dataSource.put(Constants.TYPE, "ec2");
+		dataSource.put(Constants.PROVIDER, "aws");
+		typeDataSource.add(dataSource);
+		dataSource = new HashMap<>();
+		dataSource.put(Constants.TYPE, "s3");
+		dataSource.put(Constants.PROVIDER, "aws");
+		typeDataSource.add(dataSource);
+        
+        when(assetRepository.getAllTargetTypes(anyString())).thenReturn(tTypeList);
+        when(assetRepository.getTargetTypesByAssetGroup(anyObject(), anyObject(), anyObject())).thenReturn(tTypeList);
+        when(assetRepository.getAssetCountByAssetGroup(anyObject(), anyObject(),  anyObject())).thenReturn(mockMap);
+        when(assetRepository.getDataSourceForTargetTypes(anyObject())).thenReturn(typeDataSource);
         ReflectionTestUtils.setField(service, "repository", assetRepository);
 
         List<Map<String, Object>> listOfCountMaps = new ArrayList<>();
-        listOfCountMaps = service.getAssetCountByAssetGroup("testAg", "all", "testDomain");
+        listOfCountMaps = service.getAssetCountByAssetGroup("aws-all", "all", "Infra & Platforms", null, null);
         assertTrue(listOfCountMaps.size() == 2);
     }
 

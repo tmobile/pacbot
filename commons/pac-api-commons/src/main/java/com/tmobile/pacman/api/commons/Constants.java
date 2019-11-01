@@ -297,5 +297,29 @@ public interface Constants {
     String VIRTUALMACHINE = "virtualmachine";
     String VIRTUALMACHINE_QUALYS_RULEID = "PacMan_Ec2InstanceScannedByQualys_version-1_VmInstanceScannedByQualys_virtualmachine";
     String ONPREM_QUALYS_RULEID = "PacMan_Onprem-asset-scanned-by-qualys-API_version-1_OnpremassetscannedbyqualysAPI_onpremserver";
+    String AZURE = "azure";
+    String MASTER_ALIAS = "ds-all";
+    String ROOT_ALIAS = "*";
+    String CLOUD_TYPE_KEYWORD = "_cloudType.keyword";
+    String AGGS_NAME_PROVIDERS = "providers";
+    String APPLICATION_COUNT = "applicationCount";
+    String APPLICATION_PROVIDERS = "applicationproviders";
+    String TYPE_COUNT = "typecount";
+    String PROVIDERS = "providers";
+    String ENVIRONMENTS = "environments";
+    String ENV_COUNT = "envCount";
+	String PRODUCTION_ENV = "Prod";
+	String STAGE_ENV = "Stage";
+	String DEV_ENV = "Dev";
+	String NPE_ENV = "NPE";
+	String OTHER_ENV = "Others";
+	String UNTAGGED_ENV = "Untagged";
+	String PERCENTAGE="percentage";
+	String PROD_PATTERN = "^(((prod)(uction)?)|((prd).*))(:+(((prod)(uction)?)|((prd).*)))?"; 
+	String STG_PATTERN = "(^(stag|stg).*)|(.*:+(stag|stg).*)"; 
+	String DEV_PATTERN = "(^(dev|development).*)|(.*:+(dev).*)"; 
+	String NPE_PATTERN = "(^(npe|non.?prod(uction)?))|(.*:+(npe).*)";
+	String AZURE_WINDOWS = "Windows";
+	String CLOUD_KERNEL_COMPLIANCE_POLICY = "PacMan_cloud-kernel-compliance_version-1";
 }
 

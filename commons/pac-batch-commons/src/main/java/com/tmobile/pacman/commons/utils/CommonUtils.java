@@ -25,22 +25,28 @@ package com.tmobile.pacman.commons.utils;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.http.Consts;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
+import org.apache.http.NameValuePair;
 import org.apache.http.ParseException;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpHead;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.ContentType;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -332,5 +338,98 @@ public class CommonUtils {
 			logger.error("JsonProcessingException : "+ jsonProcessingException.getMessage());
 		}
 		return null;
+	}
+	
+	/**
+	 * Do http post.
+	 *
+	 * @param url the url
+	 * @param requestBody the request body
+	 * @return String
+	 * @throws Exception the exception
+	 */
+	public static String doHttpPost(final String url, final Map<String,String> requestBody) throws Exception {
+		try {
+			
+			HttpClient client = HttpClientBuilder.create().build();
+			HttpPost httppost = new HttpPost(url);
+			
+			List<NameValuePair> form = new ArrayList<>();
+			requestBody.forEach((k,v)-> {
+				form.add(new BasicNameValuePair(k,v));
+			});
+			UrlEncodedFormEntity entity = new UrlEncodedFormEntity(form, Consts.UTF_8);
+			httppost.setEntity(entity);
+			
+			HttpResponse httpresponse = client.execute(httppost);
+			int statusCode = httpresponse.getStatusLine().getStatusCode();
+			if(statusCode==HttpStatus.SC_OK || statusCode==HttpStatus.SC_CREATED)
+			{
+				return EntityUtils.toString(httpresponse.getEntity());
+			}else{
+				logger.error(httpresponse.getStatusLine().getStatusCode() + "---" + httpresponse.getStatusLine().getReasonPhrase());
+				throw new Exception("unable to execute post request because " + httpresponse.getStatusLine().getReasonPhrase());
+			}
+		} catch (ParseException parseException) {
+			logger.error("ParseException in getHttpPost :"+parseException.getMessage());
+			throw parseException;
+		} catch (Exception exception) {
+			logger.error("Exception in getHttpPost :"+exception.getMessage());
+			throw exception;
+		 }
+	}
+	
+	public static String doHttpGet(String uri ,String tokeType, String token) throws Exception  {
+		 
+        HttpGet httpGet = new HttpGet(uri);
+        httpGet.addHeader("content-type", "application/json");
+        httpGet.addHeader("cache-control", "no-cache");
+        if(!Strings.isNullOrEmpty(token)){
+            httpGet.addHeader("Authorization", tokeType+" "+token);
+        }
+    	HttpClient httpClient = HttpClientBuilder.create().build();
+        if(httpClient!=null){
+            HttpResponse httpResponse;
+            try {
+               
+                httpResponse = httpClient.execute(httpGet);
+                if( httpResponse.getStatusLine().getStatusCode()==HttpStatus.SC_OK){
+                	return EntityUtils.toString(httpResponse.getEntity());
+                }else {
+                	throw new Exception("unable to execute put request caused by"+EntityUtils.toString(httpResponse.getEntity()));
+                }
+            } catch (Exception e) {
+            	logger.error("Error getting the data " , e);
+                throw e;
+            }
+        }
+        return "{}";
+    }
+	
+	public static String doHttpPost(String uri, String token, String accessToken) throws Exception {
+
+		HttpPost httpPost = new HttpPost(uri);
+		httpPost.addHeader("content-type", "application/json");
+		httpPost.addHeader("cache-control", "no-cache");
+		if (!Strings.isNullOrEmpty(token)) {
+			httpPost.addHeader("Authorization", token + " " + accessToken);
+		}
+		HttpClient httpClient = HttpClientBuilder.create().build();
+		if (httpClient != null) {
+			HttpResponse httpResponse;
+			try {
+				httpResponse = httpClient.execute(httpPost);
+				if (httpResponse.getStatusLine().getStatusCode() == HttpStatus.SC_OK) {
+					return EntityUtils.toString(httpResponse.getEntity());
+				} else {
+					throw new Exception("unable to execute post request caused by"
+							+ EntityUtils.toString(httpResponse.getEntity()));
+				}
+			} catch (Exception e) {
+				logger.error("Error getting the data ", e);
+				throw e;
+			}
+		}
+		return "{}";
 	}
 }
