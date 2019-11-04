@@ -265,15 +265,15 @@ public class ComplianceServiceImplTest {
 
         when(
                 complianceRepository.getPatchabeAssetsCount(anyString(),
-                        anyString())).thenReturn(1000l);
+                        anyString(),anyString(),anyString(),anyString())).thenReturn(1000l);
 
         when(
                 complianceRepository.getUnpatchedAssetsCount(anyString(),
-                        anyString())).thenReturn(1000l);
+                        anyString(),anyString())).thenReturn(1000l);
 
-        assertThat(complianceService.getPatching("test", ""),
+        assertThat(complianceService.getPatching("test", "",""),
                 is(notNullValue()));
-        assertThat(complianceService.getPatching("test", "test"),
+        assertThat(complianceService.getPatching("test", "test",""),
                 is(notNullValue()));
     }
 
@@ -298,7 +298,7 @@ public class ComplianceServiceImplTest {
     public void getRulecomplianceTest() throws Exception {
         when(complianceRepository.getTargetTypeForAG(anyString(), anyString()))
                 .thenReturn(CommonTestUtil.getTargetTypes());
-        when(complianceRepository.getInstanceCountForQualys(anyString(),anyString(),anyString(),anyString()))
+        when(complianceRepository.getInstanceCountForQualys(anyString(),anyString(),anyString(),anyString(),anyString()))
         .thenReturn(5000l);
 
         when(
@@ -308,14 +308,14 @@ public class ComplianceServiceImplTest {
                 CommonTestUtil.getMapList());
         when(complianceRepository.getRulesLastScanDate()).thenReturn(
                 CommonTestUtil.getMapList());
-        when(complianceRepository.getTotalAssetCount(anyString(), anyString()))
+        when(complianceRepository.getTotalAssetCount(anyString(), anyString(),anyString(),anyString()))
                 .thenReturn(CommonTestUtil.getMapLong());
         when(complianceRepository.getRuleIdDetails(anyString())).thenReturn(
                 CommonTestUtil.getMapList());
         when(complianceRepository.getRuleIDsForTargetType(anyString()))
                 .thenReturn(CommonTestUtil.getMapList());
 
-        when(complianceRepository.getTaggingByAG(anyString(),anyString())).thenReturn(CommonTestUtil.
+        when(complianceRepository.getTaggingByAG(anyString(),anyString(),anyString())).thenReturn(CommonTestUtil.
                 getMapObject());
         when(
                 complianceRepository.getNonCompliancePolicyByEsWithAssetGroup(
@@ -379,7 +379,7 @@ public class ComplianceServiceImplTest {
         
         when(
                 complianceRepository.getInstanceCountForQualysByAppsOrEnv(
-                        anyString(), anyString(),anyString(), anyString())).thenReturn(
+                        anyString(), anyString(),anyString(), anyString(),anyString())).thenReturn(
                 CommonTestUtil.getMapLong());
         
         assertThat(
@@ -422,7 +422,7 @@ public class ComplianceServiceImplTest {
         
         when(
         		complianceRepository.getInstanceCountForQualys(
-                        anyString(), anyString(),anyString(), anyString())).thenReturn(5000l);
+                        anyString(), anyString(),anyString(), anyString(),anyString())).thenReturn(5000l);
 
         assertThat(
                 complianceService.getRuleDetailsbyEnvironment(
