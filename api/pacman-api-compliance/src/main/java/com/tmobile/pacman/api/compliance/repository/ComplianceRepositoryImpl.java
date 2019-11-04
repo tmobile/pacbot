@@ -445,7 +445,7 @@ public class ComplianceRepositoryImpl implements ComplianceRepository, Constants
         ruleIdWithTargetTypeQuery = "SELECT  A.targetType FROM cf_RuleInstance A, cf_Policy B WHERE A.policyId = B.policyId AND A.status = 'ENABLED' AND B.policyId = 'PacMan_TaggingRule_version-1'";
         ruleIdwithTargetType = rdsepository.getDataFromPacman(ruleIdWithTargetTypeQuery);
         if (Strings.isNullOrEmpty(targetType)) {
-            assetCount = assetServiceClient.getTotalAssetsCount(assetGroup, targetType, null,null);
+            assetCount = assetServiceClient.getTotalAssetsCount(assetGroup, targetType, null,null,"");
             data = assetCount.getData();
             assetcountCount = data.getAssetcount();
 
@@ -593,7 +593,7 @@ public class ComplianceRepositoryImpl implements ComplianceRepository, Constants
      */
     public Long getTotalAssetCountForAnytargetType(String assetGroup, String targetType) {
 
-        AssetCount totalAssets = assetServiceClient.getTotalAssetsCount(assetGroup, targetType, null,null);
+        AssetCount totalAssets = assetServiceClient.getTotalAssetsCount(assetGroup, targetType, null,null,"");
         AssetCountData data = totalAssets.getData();
         AssetCountByAppEnvDTO[] assetcount = data.getAssetcount();
         Long totalAssetsCount = 0l;
@@ -2482,7 +2482,7 @@ if (ruleId.contains(TAGGIG_POLICY)) {
 	 * getTotalAssetCount(java.lang.String, java.lang.String)
 	 */
 	public Map<String, Long> getTotalAssetCount(String assetGroup, String domain, String application, String type) {
-		AssetCount totalAssets = assetServiceClient.getTotalAssetsCount(assetGroup, type, domain, application);   
+		AssetCount totalAssets = assetServiceClient.getTotalAssetsCount(assetGroup, type, domain, application,"");   
 		AssetCountData data = totalAssets.getData();
 		AssetCountByAppEnvDTO[] assetcount = data.getAssetcount();
 		Map<String, Long> assetCountByType = new HashMap<>();
