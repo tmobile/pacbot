@@ -42,8 +42,7 @@ class Install(BaseAction):
     terraform_outputs = {}
     terraform_thread = None
 
-    def __init__(self, args, input_obj, check_dependent_resources=True):
-        self.args = args
+    def __init__(self, input_obj, check_dependent_resources=True):
         self.check_dependent_resources = check_dependent_resources
         super().__init__(input_obj)
         logging.disable(logging.ERROR)  # To disable python terraform unwanted warnings

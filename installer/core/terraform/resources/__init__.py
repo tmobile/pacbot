@@ -374,7 +374,7 @@ class TerraformResource(BaseTerraformResource, metaclass=ABCMeta):
     """
     terraform_type = 'resource'
     MANDATORY_OUTPUT = 'id'
-    tf_file_extension = 'tf'
+    tf_file_extension = 'tf.json'
     tags = get_all_resource_tags()
 
     def check_exists_before(self, input, outputs):
@@ -440,7 +440,7 @@ class TerraformData(BaseTerraformResource, metaclass=ABCMeta):
         tf_file_extension (str): File extension for the terraform file
     """
     terraform_type = 'data'
-    tf_file_extension = 'tf'
+    tf_file_extension = 'tf.json'
 
     @classmethod
     def get_output_attr(cls, key):

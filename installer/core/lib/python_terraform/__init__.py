@@ -432,7 +432,8 @@ class VariableFiles(object):
             self.files.append(temp)
             log.debug(
                 'variables wrote to tempfile: {0}'.format(str(variables)))
-            temp.write(json.dumps(variables))
+            if variables:
+                temp.write(json.dumps(variables))
             file_name = temp.name
 
         return file_name

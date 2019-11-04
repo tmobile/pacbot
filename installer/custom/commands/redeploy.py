@@ -7,26 +7,36 @@ from resources.pacbot_app.alb import ApplicationLoadBalancer
 from core.providers.aws.boto3 import elb
 from core.terraform import PyTerraform
 from core.providers.aws.boto3.ecs import stop_all_tasks_in_a_cluster, deregister_task_definition
+from core.commands import BaseCommand
+from core.config import Settings
+from core.terraform import PyTerraform
+from core import constants as K
 from threading import Thread
 import time
 import importlib
 import sys
-import inspect
 import os
 
 
 class Redeploy(BaseCommand):
     """
-    This calss is defined to redeploy PacBot which is already installed by Installer command
+    This calss is defined to reinstall PacBot which is already installed by Redeploy command
 
     Attributes:
         validation_class (class): This validate the input and resources
         input_class (class): Main class to read input from user
         install_class (class): Provider based install class
         need_complete_install (boolean): True if complete installation is required else False
-
+        dry_run (boolean): Need actual insalltion or not
     """
     def __init__(self, args):
+
+        Settings.set('SKIP_RESOURCE_EXISTENCE_CHECK', True)
+
+        args.append((K.CATEGORY_FIELD_NAME, "deploy"))
+        args.append((K.CATEGORY_FIELD_NAME, "upload_tf"))
+        self.destroy_resource_tags_list = [v for (k, v) in args if k == self.category_field_name]
+
         args.append((K.CATEGORY_FIELD_NAME, "deploy"))
         args.append((K.CATEGORY_FIELD_NAME, "roles"))
         args.append((K.CATEGORY_FIELD_NAME, "all_read_role"))
@@ -35,16 +45,22 @@ class Redeploy(BaseCommand):
         args.append((K.CATEGORY_FIELD_NAME, "submit-job"))
         args.append((K.CATEGORY_FIELD_NAME, "rule-engine-job"))
         args.append((K.CATEGORY_FIELD_NAME, "upload_tf"))
+        self.reinstall_resource_tags_list = [v for (k, v) in args if k == self.category_field_name]
 
         self.need_complete_install = self._need_complete_installation()
-        Settings.set('SKIP_RESOURCE_EXISTENCE_CHECK', True)
-        super().__init__(args)
+
+        self.dry_run = True if any([x[1] for x in args if x[0] == "dry-run"]) else self.dry_run
 
     def _need_complete_installation(self):
+        """
+        Checj whether the redeploy need complete reinstallation.
+        """
         need_complete_install = False
 
-        redshift_cluster_file = os.path.join(Settings.TERRAFORM_DIR, "datastore_redshift_RedshiftCluster.tf")
-        if os.path.exists(redshift_cluster_file):
+        redshift_cluster_file_tf = os.path.join(Settings.TERRAFORM_DIR, "datastore_redshift_RedshiftCluster.tf")
+        redshift_cluster_file_tf_json = os.path.join(Settings.TERRAFORM_DIR, "datastore_redshift_RedshiftCluster.tf.json")
+
+        if os.path.exists(redshift_cluster_file_tf) or os.path.exists(redshift_cluster_file_tf_json):
             need_complete_install = True
 
         return need_complete_install
@@ -76,7 +92,7 @@ class Redeploy(BaseCommand):
         self.input_class = getattr(importlib.import_module(
             provider.provider_module + '.input'), 'SystemInstallInput')
         self.install_class = getattr(importlib.import_module(
-            provider.provider_module + '.install'), 'Install')
+            provider.provider_module + '.reinstall'), 'ReInstall')
 
     def re_deploy_pacbot(self, input_instance):
         """
@@ -85,93 +101,32 @@ class Redeploy(BaseCommand):
         Args:
             input_instance (Input object): User input values
         """
-        resources_to_process = self.get_resources_to_process(input_instance)
-        try:
-            resources_to_taint = self.get_resources_with_given_tags(input_instance, ["deploy"])
-            resources_to_taint = [resource for resource in resources_to_taint if resource.PROCESS is True]
-            response = PyTerraform().terraform_taint(resources_to_taint)  # If tainted or destroyed already then skip it
-        except Exception as e:
-            pass
+        resources_to_destroy = self.get_resources_to_process(self.destroy_resource_tags_list, input_instance)
+        resources_to_install = self.get_resources_to_process(self.reinstall_resource_tags_list, input_instance)
 
         terraform_with_targets = False if self.need_complete_install else True
-        resources_to_process = self.get_complete_resources(input_instance) if self.need_complete_install else resources_to_process
+        resources_to_install = self.get_complete_resources(input_instance) if self.need_complete_install else resources_to_install
 
-        self.run_pre_deployment_process(resources_to_process)
-        self.run_real_deployment(input_instance, resources_to_process, terraform_with_targets)
+        # self.run_pre_deployment_process(resources_to_process)
+        self.run_real_deployment(input_instance, resources_to_destroy, resources_to_install, terraform_with_targets)
 
-    def run_pre_deployment_process(self, resources_to_process):
-        """
-        Before redeploy get started do predeployment activities
-
-        Args:
-            resources_to_process (list): List of resources to be created/updated
-        """
-        if not self.dry_run:
-            elb.delete_all_listeners_of_alb(
-                ApplicationLoadBalancer.get_input_attr('name'),
-                Settings.AWS_AUTH_CRED)
-
-            tg_resources = self._get_resources_of_a_given_class_type(resources_to_process, ALBTargetGroupResource)
-            tg_names = [resource.get_input_attr('name') for resource in tg_resources]
-            elb.delete_alltarget_groups(
-                tg_names,
-                Settings.AWS_AUTH_CRED)
-
-    def inactivate_required_services_for_redeploy(self, resources_to_process, dry_run):
-        """
-        Before redeploy get started or on redeploy happens stop the tasks and deregister task definition
-
-        Args:
-            resources_to_process (list): List of resources to be created/updated
-            only_tasks (boolean): This flasg decides whther to deregister task definition or not
-        """
-        if dry_run:
-            return
-
-        for resource in resources_to_process:
-            if self.terraform_thread.isAlive():
-                resource_base_classes = inspect.getmro(resource.__class__)
-
-                if ECSTaskDefinitionResource in resource_base_classes:
-                    try:
-                        deregister_task_definition(
-                            resource.get_input_attr('family'),
-                            Settings.AWS_AUTH_CRED,
-                        )
-                    except:
-                        pass
-                elif ECSClusterResource in resource_base_classes:
-                    cluster_name = resource.get_input_attr('name')
-            else:
-                return
-
-        for i in range(3):
-            if self.terraform_thread.isAlive():
-                try:
-                    stop_all_tasks_in_a_cluster(
-                        cluster_name,
-                        Settings.AWS_ACCESS_KEY,
-                        Settings.AWS_SECRET_KEY,
-                        Settings.AWS_REGION
-                    )
-                except:
-                    pass
-                time.sleep(20)
-            else:
-                return
-
-    def run_real_deployment(self, input_instance, resources_to_process, terraform_with_targets):
+    def run_real_deployment(self, input_instance, resources_to_destroy, resources_to_install, terraform_with_targets):
         """
         Main thread method which invokes the 2 thread: one for actual execution and another for displaying status
 
         Args:
             input_instance (Input obj): Input object with values read from user
-            resources_to_process (list): List of resources to be created/updated
+            resources_to_destroy (list): List of resources to be destroyed for recreation
+            resources_to_install (list): List of resources to be recreated
             terraform_with_targets (boolean): This is True since redeployment is happening
         """
-        self.terraform_thread = Thread(target=self.run_tf_apply, args=(input_instance, list(resources_to_process), terraform_with_targets))
+        self.terraform_thread = Thread(
+            target=self.run_reinstallation,
+            args=(input_instance, list(resources_to_destroy), list(resources_to_install), terraform_with_targets))
         # Dt-run variable is passed as it is rquired otherwise argument parsing issue will occur
-        stop_related_task_thread = Thread(target=self.inactivate_required_services_for_redeploy, args=(list(resources_to_process), self.dry_run))
+        stop_related_task_thread = Thread(
+            target=self.inactivate_required_services_for_redeploy,
+            args=(list(resources_to_destroy), list(resources_to_install), self.dry_run))
 
         self.terraform_thread.start()
         stop_related_task_thread.start()
@@ -179,21 +134,43 @@ class Redeploy(BaseCommand):
         self.terraform_thread.join()
         stop_related_task_thread.join()
 
-    def run_tf_apply(self, input_instance, resources_to_process, terraform_with_targets):
+    def inactivate_required_services_for_redeploy(self, resources_to_destroy, resources_to_install, dry_run):
+        """
+        This is a place holder to run some script parallely if there is anything to do
+
+        Args:
+            resources_to_destroy (list): List of resources to be destroyed for recreation
+            resources_to_install (list): List of resources to be recreated
+            only_tasks (boolean): This flasg decides whther to deregister task definition or not
+        """
+        pass
+
+    def generate_terraform_files_and_upgrade_state(self, input_instance):
+        all_resources = self.get_complete_resources(input_instance)
+        for resource in all_resources:
+            resource.generate_terraform()
+        PyTerraform.terrafomr12_upgrade()  # This is required only when terraform version 12 is used
+
+    def run_reinstallation(self, input_instance, resources_to_destroy, resources_to_install, terraform_with_targets):
         """
         Execute the installation of resources by invoking the execute method of provider class
 
         Args:
             input_instance (Input obj): Input object with values read from user
-            resources_to_process (list): List of resources to be created/updated
+            resources_to_destroy (list): List of resources to be destroyed for recreation
+            resources_to_install (list): List of resources to be recreated
             terraform_with_targets (boolean): This is True since redeployment is happening
         """
-        self.install_class(
-            self.args,
+        self.generate_terraform_files_and_upgrade_state(input_instance)
+
+        installer = self.install_class(
             input_instance,
             check_dependent_resources=False
-        ).execute(
-            resources_to_process,
+        )
+
+        installer.execute(
+            resources_to_destroy,
+            resources_to_install,
             terraform_with_targets,
             self.dry_run
         )

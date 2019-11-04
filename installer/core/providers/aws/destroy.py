@@ -29,8 +29,7 @@ class Destroy(BaseAction):
     exception = None
     terraform_thread = None
 
-    def __init__(self, args, input_obj):
-        self.args = args
+    def __init__(self, input_obj):
         super().__init__(input_obj)
 
     def execute(self, resources, terraform_with_targets, dry_run):

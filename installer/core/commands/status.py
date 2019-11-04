@@ -43,7 +43,7 @@ class Status(BaseCommand, MsgMixin):
         need_instance = False
         display_op_list = []
 
-        resources = self.get_resources_to_process(input_instance)
+        resources = self.get_resources_to_process(self.resource_tags_list, input_instance)
         terraform_outputs = py_terraform.save_terraform_output()
         status = py_terraform.get_current_status()
         if not status and not terraform_outputs:

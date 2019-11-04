@@ -325,7 +325,7 @@ class PyTerraform():
             json.dump(current_status, jsonfile, indent=4)
 
     @classmethod
-    def get_current_status(self):
+    def get_current_status(cls):
         """
         Write current status for the executed comamnd to status file
 
@@ -339,3 +339,26 @@ class PyTerraform():
                 status_dict = json.load(jsonfile)
 
         return status_dict
+
+    @classmethod
+    def terrafomr12_upgrade(cls):
+        """
+        Write current status for the executed comamnd to status file
+
+        Returns:
+            status_dict (dict): Status dict to be written
+        """
+        terraform = Terraform(
+            working_dir=Settings.TERRAFORM_DIR,
+        )
+        response = terraform.cmd("0.12upgradde", yes=True)
+
+        return response
+
+    @classmethod
+    def change_tf_extension_to_tf_json(cls):
+        working_dir = Settings.TERRAFORM_DIR
+
+        for file in [f for f in os.listdir(working_dir) if f.endswith(".tf")]:
+            file_path = os.path.join(working_dir, file)
+            os.rename(file_path, "%s.json" % file_path)
