@@ -100,6 +100,8 @@ public final class AssetConstants {
     public static final String FILTER_CATEGORY = "category";
     public static final String FILTER_GENERAL = "general";
     public static final String FILTER_RECOMMENDATION_ID = "recommendationId";
+    public static final String ASSET_TYPE = "assettype";
+	public static final String TOTAL_ASSETS = "totalassets";
     
 }
 

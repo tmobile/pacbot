@@ -291,4 +291,10 @@ public interface PacmanSdkConstants {
     String SOURCE = "source";
     
     String TAGGING_MANDATORY_TAGS = "tagging.mandatoryTags";
+    
+    String CLOUD_INSIGHT_SQL_SERVER = "CLOUD_INSIGHT_SQL_SERVER";
+	
+	String CLOUD_INSIGHT_USER = "CLOUD_INSIGHT_USER";
+	
+	String CLOUD_INSIGHT_PASSWORD = "CLOUD_INSIGHT_PASSWORD";
 }

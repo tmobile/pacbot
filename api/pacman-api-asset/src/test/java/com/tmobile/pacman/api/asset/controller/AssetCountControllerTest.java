@@ -53,10 +53,10 @@ public class AssetCountControllerTest {
     public void testgeAssetCount() throws Exception {
         List<Map<String, Object>> tTypeList = new ArrayList<>();
 
-        when(service.getAssetCountByAssetGroup(anyObject(), anyObject(), anyObject())).thenReturn(tTypeList);
+        when(service.getAssetCountByAssetGroup(anyObject(), anyObject(), anyObject(), anyObject(), anyObject())).thenReturn(tTypeList);
         ReflectionTestUtils.setField(controller, "assetService", service);
 
-        ResponseEntity<Object> responseObj3 = controller.geAssetCount("ag", "type", "domain");
+        ResponseEntity<Object> responseObj3 = controller.geAssetCount("ag", "type", "domain", null, null);
 
         assertTrue(responseObj3.getStatusCode() == HttpStatus.EXPECTATION_FAILED);
 
@@ -65,15 +65,15 @@ public class AssetCountControllerTest {
         tTypeMap.put("type", "ec2");
         tTypeList.add(tTypeMap);
 
-        when(service.getAssetCountByAssetGroup(anyObject(), anyObject(), anyObject())).thenReturn(tTypeList);
+        when(service.getAssetCountByAssetGroup(anyObject(), anyObject(), anyObject(), anyObject(), anyObject())).thenReturn(tTypeList);
         ReflectionTestUtils.setField(controller, "assetService", service);
 
-        ResponseEntity<Object> responseObj = controller.geAssetCount("ag", "type", "domain");
+        ResponseEntity<Object> responseObj = controller.geAssetCount("ag", "type", "domain", null, null);
 
         assertTrue(responseObj.getStatusCode() == HttpStatus.OK);
         assertTrue(((Map<String, Object>) responseObj.getBody()).get("data") != null);
 
-        ResponseEntity<Object> responseObj2 = controller.geAssetCount("ag", null, "domain");
+        ResponseEntity<Object> responseObj2 = controller.geAssetCount("ag", null, "domain", null, null);
         assertTrue(responseObj2.getStatusCode() == HttpStatus.OK);
 
     }

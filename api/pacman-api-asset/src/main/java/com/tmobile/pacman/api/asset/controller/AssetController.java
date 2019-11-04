@@ -69,9 +69,10 @@ public class AssetController {
      */
     @GetMapping(value = "/v1/list/targettype")
     public ResponseEntity<Object> getListOfTargetTypes(@RequestParam(name = "ag", required = true) String assetGroup,
-            @RequestParam(name = "domain", required = false) String domain) {
+            @RequestParam(name = "domain", required = false) String domain,
+    	@RequestParam(name = "provider", required = false) String provider) {
         Map<String, Object> targetTypesResponse = new HashMap<>();
-        List<Map<String, Object>> targetTypes = assetService.getTargetTypesForAssetGroup(assetGroup, domain);
+        List<Map<String, Object>> targetTypes = assetService.getTargetTypesForAssetGroup(assetGroup, domain, provider);
         if (targetTypes.isEmpty()) {
             return ResponseUtils.buildFailureResponse(new Exception(
                     "No target types found for the asset group . Please check the asset group configuration"));

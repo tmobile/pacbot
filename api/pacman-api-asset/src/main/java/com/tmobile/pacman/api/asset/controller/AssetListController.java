@@ -446,7 +446,7 @@ public class AssetListController {
             return ResponseUtils.buildFailureResponse(new Exception("Asset group/TargetType is Mandatory"));
         }
         boolean isTargetTypePresent = false;
-        for (Map<String, Object> targetType : assetService.getTargetTypesForAssetGroup(assetGroup, null)) {
+        for (Map<String, Object> targetType : assetService.getTargetTypesForAssetGroup(assetGroup, null, null)) {
             if (targetType.get("type").toString().equals(resourceType)) {
                 isTargetTypePresent = true;
                 break;

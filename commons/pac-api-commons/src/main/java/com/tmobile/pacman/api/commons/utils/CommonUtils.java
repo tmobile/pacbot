@@ -42,6 +42,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.tmobile.pacman.api.commons.Constants;
 
 public class CommonUtils {
 
@@ -370,4 +371,32 @@ public class CommonUtils {
         } 
         return s.toString().trim(); 
     } 
+	
+	/**
+	 * returns environment from the env tag based on the regex match -
+	 * prod/stg/dev/npe/others 
+	 * 
+	 * prod - either starts with production, prod or prd or if it
+	 * is after ":"
+	 * 
+	 * stg - starts with stg or stag or after ":"
+	 * 
+	 * dev - starts with dev or development or after ":"
+	 * 
+	 * npe - starts with npe or non production or after ":"
+	 */
+	public static String getEnvironmentForTag(String key) {
+		
+		if (key.toLowerCase().matches(Constants.PROD_PATTERN)) {
+			return Constants.PRODUCTION_ENV;
+		} else if (key.toLowerCase().matches(Constants.STG_PATTERN)) {
+			return Constants.STAGE_ENV;
+		} else if (key.toLowerCase().matches(Constants.DEV_PATTERN)) {
+			return Constants.DEV_ENV;
+		} else if (key.toLowerCase().matches(Constants.NPE_PATTERN)) {
+			return Constants.NPE_ENV;
+		} else {
+			return Constants.OTHER_ENV;
+		}
+	}
 }

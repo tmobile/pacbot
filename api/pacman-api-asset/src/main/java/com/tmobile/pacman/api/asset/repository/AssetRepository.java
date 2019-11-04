@@ -38,11 +38,11 @@ public interface AssetRepository {
      *
      * @param aseetGroupName name of the asset group
      * @param type target type
-     * @param domain the domain of asset group
+     * @param application the application of asset group
      * 
      * @return list of type and its asset count.
      */
-    public Map<String, Long> getAssetCountByAssetGroup(String aseetGroupName, String type);
+    public Map<String, Long> getAssetCountByAssetGroup(String aseetGroupName, String type, String application);
 
     /**
      * Fetches all the target types for the particular asset group. If asset
@@ -53,7 +53,7 @@ public interface AssetRepository {
      * 
      * @return list of target types.
      */
-    public List<Map<String, Object>> getTargetTypesByAssetGroup(String aseetGroupName, String domain);
+    public List<Map<String, Object>> getTargetTypesByAssetGroup(String aseetGroupName, String domain, String provider);
 
     /**
      * Fetches all the applications for the particular asset group.
@@ -93,7 +93,7 @@ public interface AssetRepository {
      *
      * @return list of target type details.
      */
-    public List<Map<String, Object>> getAllTargetTypes();
+    public List<Map<String, Object>> getAllTargetTypes(String datasource);
 
     /**
      * Fetches all the asset groups and its name, display name, description,
@@ -515,6 +515,31 @@ public interface AssetRepository {
      * @return list of applications.
      * @throws DataException when there is an error while fetching data from ES
      */
-    public Map<String, Long> getApplicationAssetCountByAssetGroup(String assetGroupName, String domain) throws DataException;
+    public Map<String, Long> getApplicationAssetCountByAssetGroup(String assetGroupName, String domain, String provider) throws DataException;
+    
+    /**
+     * Fetches all the datasource and its targetName for the list of targetNames
+     *
+     * @return list of target type details.s
+     */
+    public List<Map<String, Object>> getDataSourceForTargetTypes(List<String> targetTypes);
+
+	public Map<String, Object> getApplicationAssetCountByAssetGroupWithProvider(String assetGroupName, String domain,
+			String provider) throws DataException;
+	
+	/**
+     * Fetches the total count of assets and distribution based on environment for the particular asset group. If no
+     * type is passed, all the assets of valid target type for the asset group
+     * is considered.
+     *
+     * @param aseetGroupName name of the asset group
+     * @param type target type
+     * @param domain the domain of asset group
+     * @param application the application of asset group
+     * 
+     * @return list of type and its asset count.
+     */
+	public Map<String, Object> getAssetCountAndEnvDistributionByAssetGroup(String aseetGroupName, String type,
+			String application);
     
 }

@@ -399,7 +399,7 @@ public class ESManager implements Constants {
         Iterator<String> it = types.iterator();
         while (it.hasNext()) {
             String _type = it.next();
-            String indexName = ds + "_" + _type;
+            String indexName = ds+ "_" + _type;
             if (!indexExists(indexName)) {
                 StringBuilder payLoad = new StringBuilder(_payLoad);
                 payLoad.append("\"" + _type + "\":{},\"issue_" + _type + "\": { \"_parent\": {\"type\": \"" + _type
@@ -410,7 +410,6 @@ public class ESManager implements Constants {
                 payLoad.append("}}");
                 try {
                     invokeAPI("PUT", indexName, payLoad.toString());
-                    invokeAPI("PUT", "/" + indexName + "/_alias/" + ds, null);
                 } catch (IOException e) {
                     LOGGER.error("Error in configureIndexAndTypes",e);
                     Map<String,String> errorMap = new HashMap<>();
@@ -420,9 +419,14 @@ public class ESManager implements Constants {
                     errorList.add(errorMap);
                 }
             }
+            try {
+				invokeAPI("PUT", "/" + indexName + "/_alias/" + ds, null);
+				invokeAPI("PUT", "/" + indexName + "/_alias/" + "ds-all", null);
+			} catch (IOException e) {
+				
+			}
         }
-
-    }
+     }
 
     /**
      * Gets the existing info.
