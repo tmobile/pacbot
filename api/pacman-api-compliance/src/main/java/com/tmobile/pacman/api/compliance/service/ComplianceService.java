@@ -90,17 +90,15 @@ public interface ComplianceService {
     /**
      * Gets the patching.
      *
-     * @param assetGroup
-     *            name of the asset group
-     * @param targetType
-     *            the target type
+     * @param assetGroup            name of the asset group
+     * @param targetType            the target type
+     * @param application the application
      * @return Method description: asssetGroup is mandatory. Method returns
      *         count of totalPached/toalUnpatched/TotalInstances for given
      *         assetGroup.
-     * @throws ServiceException
-     *             the service exception
+     * @throws ServiceException             the service exception
      */
-    public Map<String, Long> getPatching(String assetGroup, String targetType) throws ServiceException;
+    public Map<String, Long> getPatching(String assetGroup, String targetType, String application) throws ServiceException;
 
     /**
      * If method receives
@@ -306,5 +304,5 @@ public interface ComplianceService {
      * @throws ServiceException the service exception
      */
     public IssueExceptionResponse revokeMultipleIssueException(List<String> issueIds) throws ServiceException;
-
+    
 }

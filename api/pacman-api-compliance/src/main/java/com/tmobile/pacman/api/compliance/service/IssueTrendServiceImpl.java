@@ -350,7 +350,7 @@ public class IssueTrendServiceImpl implements IssueTrendService, Constants {
                 break;
 
             case "patching":
-                baseApiReturnMap = complianceService.getPatching(ag, null);
+                baseApiReturnMap = complianceService.getPatching(ag, null,null);
                 compliantQuantity = baseApiReturnMap.get("patched_instances");
                 noncompliantQuantity = baseApiReturnMap
                         .get("unpatched_instances");

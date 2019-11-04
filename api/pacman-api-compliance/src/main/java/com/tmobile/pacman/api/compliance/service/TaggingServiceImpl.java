@@ -195,7 +195,7 @@ public class TaggingServiceImpl implements TaggingService, Constants {
         Map<String, String> filterTags = request.getFilter();
 
         List<Map<String, Object>> unTagsList = new ArrayList<>();
-        Map<String, Long> assetCountByTypes = complainceRepository.getTotalAssetCount(request.getAg(), null);
+        Map<String, Long> assetCountByTypes = complainceRepository.getTotalAssetCount(request.getAg(), null,null,null);
         Map<String, Long> untaggedCountMap = getUntaggedTargetTypeIssues(request, tagsList);
         // process records to format the response
         for (Map<String, Object> targetType : targetTypes) {
