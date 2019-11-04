@@ -82,7 +82,7 @@ class BaseAction(MsgMixin):
     def _delete_all_terraform_files(self):
         """"Delete all terraform files before terraform regeneration if the install is done on all resources"""
         for file in os.listdir(Settings.TERRAFORM_DIR):
-            if file.endswith(".tf"):
+            if file.endswith(".tf") or file.endswith(".tf.json"):
                 file_abs_path = os.path.join(Settings.TERRAFORM_DIR, file)
                 os.remove(file_abs_path)
 

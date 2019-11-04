@@ -2,6 +2,7 @@ from core.terraform.resources.misc import NullResource
 from resources.s3.bucket import BucketStorage
 from resources.pacbot_app.alb import ApplicationLoadBalancer
 from core.terraform.utils import get_terraform_scripts_dir, get_terraform_provider_file
+from core.terraform import PyTerraform
 from core.config import Settings
 import os
 
@@ -46,3 +47,11 @@ class BuildUiAndApis(NullResource):
                 raise Exception("Not able to create directory to store API Jars and UI code")
 
         return upload_dir
+
+    def pre_terraform_destroy(self):
+        # To support latest terraform version
+        PyTerraform.change_tf_extension_to_tf_json()
+
+    def pre_generate_terraform(self):
+        # To support latest terraform version
+        PyTerraform.change_tf_extension_to_tf_json()
