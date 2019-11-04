@@ -84,7 +84,7 @@ public class AssetRepositoryTest {
         ReflectionTestUtils.setField(repository, "esRepository", elasticSearchRepository);
 
         Map<String, Long> countMap = new HashMap<>();
-        countMap = repository.getAssetCountByAssetGroup("aws-all", "all");
+        countMap = repository.getAssetCountByAssetGroup("aws-all", "all", null);
         assertTrue(countMap.size() > 2);
     }
 
@@ -96,7 +96,7 @@ public class AssetRepositoryTest {
         ReflectionTestUtils.setField(repository, "esRepository", elasticSearchRepository);
 
         Map<String, Long> countMap = new HashMap<>();
-        countMap = repository.getAssetCountByAssetGroup("aws-all", "s3");
+        countMap = repository.getAssetCountByAssetGroup("aws-all", "s3", null);
         assertEquals(1, countMap.size());
     }
 
@@ -107,7 +107,7 @@ public class AssetRepositoryTest {
         ReflectionTestUtils.setField(repository, "esRepository", elasticSearchRepository);
 
         Map<String, Long> countMap = new HashMap<>();
-        countMap = repository.getAssetCountByAssetGroup("invalid-ag", "s3");
+        countMap = repository.getAssetCountByAssetGroup("invalid-ag", "s3", null);
         assertEquals(1, countMap.size());
         assertEquals(0, countMap.get("s3").longValue());
     }
@@ -119,7 +119,7 @@ public class AssetRepositoryTest {
         ReflectionTestUtils.setField(repository, "esRepository", elasticSearchRepository);
 
         Map<String, Long> countMap = new HashMap<>();
-        countMap = repository.getAssetCountByAssetGroup("aws-all", "invalid-type");
+        countMap = repository.getAssetCountByAssetGroup("aws-all", "invalid-type", null);
         assertEquals("0", countMap.get("invalid-type").toString());
     }
 
@@ -131,7 +131,7 @@ public class AssetRepositoryTest {
         when(pacmanRdsRepository.getDataFromPacman(anyString())).thenReturn(tTypeList);
         ReflectionTestUtils.setField(repository, "rdsRepository", pacmanRdsRepository);
 
-        List<Map<String, Object>> targetTypesList = repository.getTargetTypesByAssetGroup("aws-all", "invalid-domain");
+        List<Map<String, Object>> targetTypesList = repository.getTargetTypesByAssetGroup("aws-all", "invalid-domain", null);
 
         assertEquals(0, targetTypesList.size());
 
@@ -154,7 +154,7 @@ public class AssetRepositoryTest {
         ReflectionTestUtils.setField(repository, "rdsRepository", pacmanRdsRepository);
 
         List<Map<String, Object>> targetTypesList = repository.getTargetTypesByAssetGroup("aws-all",
-                "Infra & Platforms");
+                "Infra & Platforms", null);
 
         assertTrue(targetTypesList.size() > 1);
     }
@@ -174,7 +174,7 @@ public class AssetRepositoryTest {
         when(pacmanRdsRepository.getDataFromPacman(anyString())).thenReturn(tTypeList);
         ReflectionTestUtils.setField(repository, "rdsRepository", pacmanRdsRepository);
 
-        List<Map<String, Object>> allTypes = repository.getAllTargetTypes();
+        List<Map<String, Object>> allTypes = repository.getAllTargetTypes("*");
         assertTrue(allTypes.size() > 1);
 
     }

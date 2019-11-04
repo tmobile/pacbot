@@ -17,6 +17,7 @@ package com.tmobile.pacman.api.asset.controller;
 
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Matchers.anyObject;
+import static org.mockito.Matchers.anyString;
 import static org.powermock.api.mockito.PowerMockito.doThrow;
 import static org.powermock.api.mockito.PowerMockito.when;
 
@@ -52,14 +53,14 @@ public class UtilTest {
         tTypeMap.put("domain", "Infra & Platforms");
         tTypeList.add(tTypeMap);
 
-        when(service.getTargetTypesForAssetGroup(anyObject(), anyObject())).thenReturn(tTypeList);
+        when(service.getTargetTypesForAssetGroup(anyObject(), anyObject(), anyString())).thenReturn(tTypeList);
         
         ReflectionTestUtils.setField(Util.class, "assetService", service);
         boolean valid = Util.isValidTargetType("aws-all", "ec2");
 
         assertTrue(valid);
 
-        doThrow(new NullPointerException()).when(service).getTargetTypesForAssetGroup(anyObject(), anyObject());
+        doThrow(new NullPointerException()).when(service).getTargetTypesForAssetGroup(anyObject(), anyObject(), anyString());
         valid = Util.isValidTargetType("aws-all", "ec2");
 
         assertTrue(!valid);

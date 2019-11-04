@@ -64,5 +64,8 @@ public interface TargetTypesRepository extends JpaRepository<TargetTypes, String
 
 	@Query("SELECT target.targetName AS id, target.targetName AS text FROM TargetTypes target GROUP BY target.targetName")
 	public List<TargetTypesProjection> getAllTargetTypes(); 
+	
+	@Query("SELECT dataSourceName FROM TargetTypes WHERE targetName = (:targetType) ")
+	public String findDataSourceByTargetType(@Param("targetType") String targetType);
 
 }
