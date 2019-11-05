@@ -6,6 +6,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.microsoft.azure.PagedList;
@@ -14,21 +17,24 @@ import com.microsoft.azure.management.sql.SqlDatabase;
 import com.microsoft.azure.management.sql.SqlFirewallRule;
 import com.microsoft.azure.management.sql.SqlServer;
 import com.microsoft.azure.management.sql.SqlVirtualNetworkRule;
-import com.tmobile.pacbot.azure.inventory.vo.FirewallRules;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.SQLDatabaseVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacbot.azure.inventory.vo.VirtualNetworkRuleVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 
 @Component
 public class SQLDatabaseInventoryCollector {
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
+	private static Logger log = LoggerFactory.getLogger(SQLDatabaseInventoryCollector.class);
 
 	public List<SQLDatabaseVH> fetchSQLDatabaseDetails(SubscriptionVH subscription,
 			Map<String, Map<String, String>> tagMap) {
 
 		List<SQLDatabaseVH> sqlDatabaseList = new ArrayList<SQLDatabaseVH>();
 
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
+		Azure azure = azureCredentialProvider.getClient(subscription.getTenant(),subscription.getSubscriptionId());
 		PagedList<SqlServer> sqlServers = azure.sqlServers().list();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ");
 		for (SqlServer sqlServer : sqlServers) {
@@ -69,46 +75,17 @@ public class SQLDatabaseInventoryCollector {
 					}
 
 					firewallRule(sqlServer, sqlDatabaseVH);
-					// sqlDatabaseVH.setFirewallRuleDetails(getFirewallRuleDetails(sqlServer.firewallRules().list()));
-					// sqlDatabaseVH.setVirtualNetworkRuleDetails(
-					// getVirtualNetworkRuleDetails(sqlServer.virtualNetworkRules().list()));
 					sqlDatabaseList.add(sqlDatabaseVH);
 				}
 
 			}
 
 		}
+		log.info("Target Type : {}  Total: {} ","Sql Databse",sqlDatabaseList.size());
 		return sqlDatabaseList;
 
 	}
 
-	/*
-	 * private List<FirewallRules> getFirewallRuleDetails(List<SqlFirewallRule>
-	 * sqlFirewallRuleList) { List<FirewallRules> firewallRulesList = new
-	 * ArrayList<>(); for (SqlFirewallRule sqlFirewallRule : sqlFirewallRuleList) {
-	 * FirewallRules firewallRuleVH = new FirewallRules();
-	 * firewallRuleVH.setName(sqlFirewallRule.name());
-	 * firewallRuleVH.setStartIPAddress(sqlFirewallRule.startIPAddress());
-	 * firewallRuleVH.setEndIPAddress(sqlFirewallRule.endIPAddress());
-	 * firewallRulesList.add(firewallRuleVH); } return firewallRulesList;
-	 * 
-	 * }
-	 * 
-	 * private List<VirtualNetworkRule> getVirtualNetworkRuleDetails(
-	 * List<SqlVirtualNetworkRule> sqlVirtualNetworkRuleList) {
-	 * List<VirtualNetworkRule> virtualNetworkRuleList = new ArrayList<>(); for
-	 * (SqlVirtualNetworkRule sqlVirtualNetworkRule : sqlVirtualNetworkRuleList) {
-	 * VirtualNetworkRule virtualNetworkRuleVH = new VirtualNetworkRule();
-	 * virtualNetworkRuleVH.setName(sqlVirtualNetworkRule.name());
-	 * virtualNetworkRuleVH.setSubnetId(sqlVirtualNetworkRule.subnetId());
-	 * virtualNetworkRuleVH.setResourceGroupName(sqlVirtualNetworkRule.
-	 * resourceGroupName());
-	 * virtualNetworkRuleVH.setState(sqlVirtualNetworkRule.state());
-	 * virtualNetworkRuleList.add(virtualNetworkRuleVH); } return
-	 * virtualNetworkRuleList;
-	 * 
-	 * }
-	 */
 
 	private void firewallRule(SqlServer sqlServer, SQLDatabaseVH sqlDatabaseVH) {
 		List<Map<String, String>> firewallRuleList = new ArrayList<>();

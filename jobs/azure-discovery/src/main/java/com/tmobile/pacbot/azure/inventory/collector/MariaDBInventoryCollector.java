@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -12,28 +15,25 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.microsoft.azure.management.Azure;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.MariaDBVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 import com.tmobile.pacman.commons.utils.CommonUtils;
 
 @Component
 public class MariaDBInventoryCollector {
-
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
+	private static Logger log = LoggerFactory.getLogger(MariaDBInventoryCollector.class);
 	private String apiUrlTemplate = "https://management.azure.com/subscriptions/%s/providers/Microsoft.DBforMariaDB/servers?api-version=2018-06-01-preview";
 
 	public List<MariaDBVH> fetchMariaDBDetails(SubscriptionVH subscription) {
 
-		List<MariaDBVH> mariaDBList = new ArrayList<MariaDBVH>();
-		String accessToken;
-		try {
-			accessToken = AzureCredentialManager.getAuthToken();
-		} catch (Exception e1) {
-			return mariaDBList;
-		}
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
-
+		List<MariaDBVH> mariaDBList = new ArrayList<>();
+		String accessToken = azureCredentialProvider.getToken(subscription.getTenant());
+		
 		String url = String.format(apiUrlTemplate, URLEncoder.encode(subscription.getSubscriptionId()));
 		try {
 			String response = CommonUtils.doHttpGet(url, "Bearer", accessToken);
@@ -61,10 +61,10 @@ public class MariaDBInventoryCollector {
 				mariaDBList.add(mariaDBVH);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Error Collecting MariaDB",e);
 		}
 
-		System.out.println(mariaDBList.size());
+		log.info("Target Type : {}  Total: {} ","MariaDB",mariaDBList.size());
 		return mariaDBList;
 	}
 

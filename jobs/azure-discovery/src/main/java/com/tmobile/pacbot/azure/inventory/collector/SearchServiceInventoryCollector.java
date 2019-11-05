@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -14,28 +15,24 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.SearchServiceVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 import com.tmobile.pacman.commons.utils.CommonUtils;
 
 @Component
 public class SearchServiceInventoryCollector {
-
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
 	private static Logger log = LoggerFactory.getLogger(SearchServiceInventoryCollector.class);
 	private String apiUrlTemplate = "https://management.azure.com/subscriptions/%s/providers/Microsoft.Search/searchServices?api-version=2015-08-19";
 
 	public List<SearchServiceVH> fetchSearchServiceDetails(SubscriptionVH subscription) throws Exception {
 
 		List<SearchServiceVH> searchServiceList = new ArrayList<SearchServiceVH>();
-		String accessToken;
-		try {
-			accessToken = AzureCredentialManager.getAuthToken();
-
-		} catch (Exception e1) {
-			return searchServiceList;
-		}
-
+		String accessToken = azureCredentialProvider.getToken(subscription.getTenant());
 		String url = String.format(apiUrlTemplate, URLEncoder.encode(subscription.getSubscriptionId()));
 		try {
 
@@ -69,10 +66,10 @@ public class SearchServiceInventoryCollector {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Error collecting Search Service",e);
 		}
 
-		System.out.println(searchServiceList.size());
+		log.info("Target Type : {}  Total: {} ","Search Service",searchServiceList.size());
 		return searchServiceList;
 	}
 

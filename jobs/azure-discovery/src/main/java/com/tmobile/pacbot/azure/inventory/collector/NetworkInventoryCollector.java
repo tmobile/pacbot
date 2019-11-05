@@ -1,26 +1,33 @@
 package com.tmobile.pacbot.azure.inventory.collector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.microsoft.azure.PagedList;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.network.Network;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.NetworkVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 
 @Component
 public class NetworkInventoryCollector {
-
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
+	private static Logger log = LoggerFactory.getLogger(NetworkInventoryCollector.class);
+	
 	public List<NetworkVH> fetchNetworkDetails(SubscriptionVH subscription, Map<String, Map<String, String>> tagMap) {
-		List<NetworkVH> networkList = new ArrayList<NetworkVH>();
+		List<NetworkVH> networkList = new ArrayList<>();
 
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
+		Azure azure = azureCredentialProvider.getClient(subscription.getTenant(),subscription.getSubscriptionId());
 		PagedList<Network> networks = azure.networks().list();
 
 		for (Network network : networks) {
@@ -41,7 +48,7 @@ public class NetworkInventoryCollector {
 			networkVH.setSubscriptionName(subscription.getSubscriptionName());
 			networkList.add(networkVH);
 		}
-
+		log.info("Target Type : {}  Total: {} ","vnet",networkList.size());
 		return networkList;
 	}
 }

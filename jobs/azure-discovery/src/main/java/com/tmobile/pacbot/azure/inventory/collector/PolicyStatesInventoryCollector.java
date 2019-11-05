@@ -4,33 +4,36 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.PolicyDefinitionVH;
 import com.tmobile.pacbot.azure.inventory.vo.PolicyStatesVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 import com.tmobile.pacman.commons.utils.CommonUtils;
 
 @Component
 public class PolicyStatesInventoryCollector {
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
+	private static Logger log = LoggerFactory.getLogger(PolicyStatesInventoryCollector.class);
+	
 	private String apiUrlTemplate = "https://management.azure.com/subscriptions/%s/providers/Microsoft.PolicyInsights/policyStates/latest/queryResults?api-version=2018-04-04";
 
 	public List<PolicyStatesVH> fetchPolicyStatesDetails(SubscriptionVH subscription,
 			List<PolicyDefinitionVH> policyDefinitionList) throws Exception {
 
 		List<PolicyStatesVH> policyStatesList = new ArrayList<PolicyStatesVH>();
-		String accessToken;
-		try {
-			accessToken = AzureCredentialManager.getAuthToken();
-
-		} catch (Exception e1) {
-			return policyStatesList;
-		}
+		String accessToken = azureCredentialProvider.getToken(subscription.getTenant());
 
 		String url = String.format(apiUrlTemplate, URLEncoder.encode(subscription.getSubscriptionId()));
 		try {
@@ -90,10 +93,10 @@ public class PolicyStatesInventoryCollector {
 				policyStatesList.add(policyStatesVH);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Error collleting Policy States",e);
 		}
 
-		System.out.println(policyStatesList.size());
+		log.info("Target Type : {}  Total: {} ","Policy States",policyStatesList.size());
 		return policyStatesList;
 	}
 

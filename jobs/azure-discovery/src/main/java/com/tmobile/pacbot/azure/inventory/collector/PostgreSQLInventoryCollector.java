@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -12,26 +15,25 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.microsoft.azure.management.Azure;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.PostgreSQLServerVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 import com.tmobile.pacman.commons.utils.CommonUtils;
 
 @Component
 public class PostgreSQLInventoryCollector {
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
+	private static Logger log = LoggerFactory.getLogger(PostgreSQLInventoryCollector.class);
+	
 	private String apiUrlTemplate = "https://management.azure.com/subscriptions/%s/providers/Microsoft.DBforPostgreSQL/servers?api-version=2017-12-01";
 
 	public List<PostgreSQLServerVH> fetchPostgreSQLServerDetails(SubscriptionVH subscription) {
 
 		List<PostgreSQLServerVH> postgreSQLServerList = new ArrayList<PostgreSQLServerVH>();
-		String accessToken;
-		try {
-			accessToken = AzureCredentialManager.getAuthToken();
-		} catch (Exception e1) {
-			return postgreSQLServerList;
-		}
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
+		String accessToken = azureCredentialProvider.getToken(subscription.getTenant());
 
 		String url = String.format(apiUrlTemplate, URLEncoder.encode(subscription.getSubscriptionId()));
 		try {
@@ -60,10 +62,10 @@ public class PostgreSQLInventoryCollector {
 				postgreSQLServerList.add(postgreSQLServerVH);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Error collectig PostGresDB",e);
 		}
 
-		System.out.println(postgreSQLServerList.size());
+		log.info("Target Type : {}  Total: {} ","Postgres DB",postgreSQLServerList.size());
 		return postgreSQLServerList;
 	}
 
