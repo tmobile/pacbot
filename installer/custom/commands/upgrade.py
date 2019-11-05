@@ -83,7 +83,6 @@ class Upgrade(BaseCommand):
         self.run_pre_deployment_process(resources_to_process)
 
         self.install_class(
-            self.args,
             input_instance,
             check_dependent_resources=False
         ).execute(

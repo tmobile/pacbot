@@ -321,5 +321,10 @@ public interface Constants {
 	String NPE_PATTERN = "(^(npe|non.?prod(uction)?))|(.*:+(npe).*)";
 	String AZURE_WINDOWS = "Windows";
 	String CLOUD_KERNEL_COMPLIANCE_POLICY = "PacMan_cloud-kernel-compliance_version-1";
+	String RESOURCE_IDS = "resourceIds";
+   	String RULE_IDS = "ruleIds";
+	String TOTAL_VIOLATIONS = "totalViolations";
+	String CLOUD_QUALYS_POLICY="PacMan_Ec2InstanceScannedByQualys_version-1";
+	 String VIRTUALMACHINE_KERNEL_COMPLIANCE_RULE = "PacMan_cloud-kernel-compliance_version-1_Virtualmachine-Kernel-Compliance-Rule_virtualmachine";
 }
 
