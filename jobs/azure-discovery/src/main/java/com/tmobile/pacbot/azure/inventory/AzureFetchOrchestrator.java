@@ -12,6 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.microsoft.azure.PagedList;
+import com.microsoft.azure.management.Azure.Authenticated;
+import com.microsoft.azure.management.resources.Subscription;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.file.AssetFileGenerator;
 import com.tmobile.pacbot.azure.inventory.file.S3Uploader;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
@@ -21,6 +25,9 @@ public class AzureFetchOrchestrator {
 	
 	@Autowired
 	AssetFileGenerator fileGenerator;
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
 	
 	/** The s 3 uploader. */
 	@Autowired
@@ -32,6 +39,8 @@ public class AzureFetchOrchestrator {
 	/** The target types. */
 	@Value("${subscriptions:}")
 	private String subscriptions;
+	@Value("${tenants:}")
+	private String tenants;
 	
 	@Value("${s3}")
 	private String s3Bucket ;
@@ -81,7 +90,7 @@ public class AzureFetchOrchestrator {
 
 		List<SubscriptionVH> subscriptionList  = new ArrayList<>();
 		
-		if(subscriptions != null && !"".equals(subscriptions)){
+		/*if(subscriptions != null && !"".equals(subscriptions)){
 			String[] subscriptionsArray = subscriptions.split(",");
 			for(String subcritpionInfo : subscriptionsArray){
 				SubscriptionVH subscription= new SubscriptionVH();
@@ -90,7 +99,24 @@ public class AzureFetchOrchestrator {
 				subscription.setSubscriptionName(subIdName.length>1?subIdName[1].trim():"");
 				subscriptionList.add(subscription);
 			}
+		}*/
+		
+		if(tenants != null && !"".equals(tenants)){
+			String[] tenantList = tenants.split(",");
+			for(String tenant : tenantList){
+				Authenticated azure = azureCredentialProvider.authenticate(tenant);
+				PagedList<Subscription> subscriptions = azure.subscriptions().list();
+				for(Subscription subscription : subscriptions) {
+					SubscriptionVH subscriptionVH= new SubscriptionVH();
+					subscriptionVH.setTenant(tenant);
+					subscriptionVH.setSubscriptionId(subscription.subscriptionId());
+					subscriptionVH.setSubscriptionName(subscription.displayName());
+					subscriptionList.add(subscriptionVH);
+				}
+			}
 		}
+		log.info("Total Subscription in Scope : {}",subscriptionList.size());
+		log.info("Subscriptions : {}",subscriptionList);
 		return subscriptionList;
 	}
 }

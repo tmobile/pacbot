@@ -84,7 +84,6 @@ public class FileManager {
 		FileGenerator.writeToFile("azure-vnet.data", "[", false);
 		FileGenerator.writeToFile("azure-loadbalancer.data", "[", false);
 		FileGenerator.writeToFile("azure-securitycenter.data", "[", false);
-		FileGenerator.writeToFile("azure-sqlserver.data", "[", false);
 		FileGenerator.writeToFile("azure-blobcontainer.data", "[", false);
 		FileGenerator.writeToFile("azure-resourcegroup.data", "[", false);
 		FileGenerator.writeToFile("azure-cosmosdb.data", "[", false);
@@ -119,7 +118,6 @@ public class FileManager {
 		FileGenerator.writeToFile("azure-vnet.data", "]", true);
 		FileGenerator.writeToFile("azure-securitycenter.data", "]", true);
 		FileGenerator.writeToFile("azure-loadbalancer.data", "]", true);
-		FileGenerator.writeToFile("azure-sqlserver.data", "]", true);
 		FileGenerator.writeToFile("azure-blobcontainer.data", "]", true);
 		FileGenerator.writeToFile("azure-resourcegroup.data", "]", true);
 		FileGenerator.writeToFile("azure-cosmosdb.data", "]", true);
@@ -197,10 +195,6 @@ public class FileManager {
 
 		FileGenerator.generateJson(recommendations, "azure-securitycenter.data");
 
-	}
-
-	public static void generateSQLServerFiles(List<SQLServerVH> sqlServerList) throws IOException {
-		FileGenerator.generateJson(sqlServerList, "azure-sqlserver.data");
 	}
 
 	public static void generateBlobContainerFiles(List<BlobContainerVH> blobDetailsList) throws IOException {

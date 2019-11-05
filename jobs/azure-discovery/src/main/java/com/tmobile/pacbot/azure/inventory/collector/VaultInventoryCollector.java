@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -15,26 +16,24 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
 import com.tmobile.pacbot.azure.inventory.vo.VaultVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 import com.tmobile.pacman.commons.utils.CommonUtils;
 
 @Component
 public class VaultInventoryCollector {
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
 	private static Logger log = LoggerFactory.getLogger(VaultInventoryCollector.class);
 	private String apiUrlTemplate = "https://management.azure.com/subscriptions/%s/providers/Microsoft.KeyVault/vaults?api-version=2018-02-14";
 
 	public List<VaultVH> fetchVaultDetails(SubscriptionVH subscription) throws Exception {
 
 		List<VaultVH> vaultList = new ArrayList<VaultVH>();
-		String accessToken;
-		try {
-			accessToken = AzureCredentialManager.getAuthToken();
-
-		} catch (Exception e1) {
-			return vaultList;
-		}
+		String accessToken = azureCredentialProvider.getToken(subscription.getTenant());
 
 		String url = String.format(apiUrlTemplate, URLEncoder.encode(subscription.getSubscriptionId()));
 		try {
@@ -76,10 +75,10 @@ public class VaultInventoryCollector {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Error Colectting vaults ",e);
 		}
 
-		System.out.println(vaultList.size());
+		log.info("Target Type : {}  Total: {} ","Vault",vaultList.size());
 		return vaultList;
 	}
 
