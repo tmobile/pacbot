@@ -99,7 +99,7 @@ public class IssueTrendServiceImplTest {
         when(complianceService.getRulecompliance(anyObject()))
         .thenReturn(CommonTestUtil.getResponseWithOrder());
         
-        when(complianceService.getPatching(anyString(),anyString()))
+        when(complianceService.getPatching(anyString(),anyString(),anyString()))
         .thenReturn(taggingInfoMap);
 
         when(complianceService.getOverallComplianceByDomain(anyString(),anyString()))

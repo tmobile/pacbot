@@ -12,7 +12,7 @@ def get_terraform_provider_file():
     """
     return os.path.join(
         Settings.TERRAFORM_DIR,
-        'provider.tf'
+        'provider.tf.json'
     )
 
 
@@ -163,6 +163,28 @@ def get_resource_created_status_op_file(resource_id):
     return _get_resource_status_file_name(resource_id, '1')
 
 
+def get_type_corrected_tags(tags):
+    """
+    Get tags type corrected since earlier version used list and now changed to dict for terraform compatibility
+
+    Args:
+        tags (List/Dict): Tags
+
+    Returns:
+        type_corrected_tags (dict): Dict of tags
+    """
+    type_corrected_tags = {}
+
+    if isinstance(tags, list):  # To make tags compatible with earlier version
+        for tag in tags:
+            for key, value in tag.items():
+                type_corrected_tags[key] = value
+    else:
+        return tags
+
+    return type_corrected_tags
+
+
 def get_system_default_resource_tags():
     """
     Get all tags required for resources
@@ -170,7 +192,9 @@ def get_system_default_resource_tags():
     Returns:
         tags (list): List of tags
     """
-    return [Settings.DEFAULT_RESOURCE_TAG]
+    type_corrected_tags = get_type_corrected_tags(Settings.DEFAULT_RESOURCE_TAG)
+
+    return type_corrected_tags
 
 
 def get_user_defined_resource_tags():
@@ -180,7 +204,9 @@ def get_user_defined_resource_tags():
     Returns:
         tags (list): List of tags
     """
-    return Settings.CUSTOM_RESOURCE_TAGS
+    type_corrected_tags = get_type_corrected_tags(Settings.CUSTOM_RESOURCE_TAGS)
+
+    return type_corrected_tags
 
 
 def get_all_resource_tags():
@@ -192,5 +218,6 @@ def get_all_resource_tags():
     """
     default_tags = get_system_default_resource_tags()
     user_defined_tags = get_user_defined_resource_tags()
+    default_tags.update(user_defined_tags)
 
-    return default_tags + user_defined_tags
+    return default_tags
