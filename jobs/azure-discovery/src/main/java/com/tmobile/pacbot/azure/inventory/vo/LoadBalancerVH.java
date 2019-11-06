@@ -8,7 +8,6 @@ import com.microsoft.azure.management.network.LoadBalancer;
 import com.microsoft.azure.management.network.LoadBalancerPrivateFrontend;
 import com.microsoft.azure.management.network.LoadBalancerPublicFrontend;
 import com.microsoft.azure.management.network.LoadBalancingRule;
-import com.microsoft.azure.management.resources.fluentcore.arm.Region;
 
 @JsonSerialize
 public class LoadBalancerVH extends AzureVH {

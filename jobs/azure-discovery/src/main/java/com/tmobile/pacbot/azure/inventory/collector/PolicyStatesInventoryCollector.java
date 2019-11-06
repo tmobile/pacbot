@@ -32,7 +32,7 @@ public class PolicyStatesInventoryCollector {
 	public List<PolicyStatesVH> fetchPolicyStatesDetails(SubscriptionVH subscription,
 			List<PolicyDefinitionVH> policyDefinitionList) throws Exception {
 
-		List<PolicyStatesVH> policyStatesList = new ArrayList<PolicyStatesVH>();
+		List<PolicyStatesVH> policyStatesList = new ArrayList<>();
 		String accessToken = azureCredentialProvider.getToken(subscription.getTenant());
 
 		String url = String.format(apiUrlTemplate, URLEncoder.encode(subscription.getSubscriptionId()));
@@ -53,8 +53,10 @@ public class PolicyStatesInventoryCollector {
 				policyStatesVH.setPolicyType(PolicyDefinitionVH.getPolicyType());
 				policyStatesVH.setPolicyRule(PolicyDefinitionVH.getPolicyRule());
 				policyStatesVH.setTimestamp(policyStatesObject.get("timestamp").getAsString());
-				policyStatesVH.setId(policyStatesObject.get("resourceId").getAsString());
-				policyStatesVH.setResourceId(policyStatesObject.get("resourceId").getAsString());
+				policyStatesVH.setId(policyStatesObject.get("policyDefinitionName").getAsString()+"_"+policyStatesObject.get("resourceId").getAsString().toLowerCase());
+				policyStatesVH.setResourceId(Util.removeFirstSlash(policyStatesObject.get("resourceId").getAsString()));
+				policyStatesVH.setResourceIdLower(Util.removeFirstSlash(policyStatesObject.get("resourceId").getAsString().toLowerCase()));
+
 				policyStatesVH.setPolicyAssignmentId(policyStatesObject.get("policyAssignmentId").getAsString());
 				policyStatesVH.setPolicyDefinitionId(policyStatesObject.get("policyDefinitionId").getAsString());
 				policyStatesVH.setEffectiveParameters(policyStatesObject.get("effectiveParameters").getAsString());

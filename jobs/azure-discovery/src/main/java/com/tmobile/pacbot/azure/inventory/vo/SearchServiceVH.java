@@ -4,16 +4,12 @@ import java.util.Map;
 
 public class SearchServiceVH extends AzureVH {
 
-	private String id;
 	private String name;
 	private String type;
 	private String location;
 	private Map<String, Object> properties;
 	private Map<String, Object> sku;
 
-	public String getId() {
-		return id;
-	}
 
 	public String getName() {
 		return name;
@@ -33,10 +29,6 @@ public class SearchServiceVH extends AzureVH {
 
 	public Map<String, Object> getSku() {
 		return sku;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public void setName(String name) {
