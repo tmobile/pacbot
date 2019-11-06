@@ -4,7 +4,6 @@ import java.util.Map;
 
 public class NamespaceVH extends AzureVH {
 
-	private String id;
 	private String name;
 	private String type;
 	private String location;
@@ -12,10 +11,7 @@ public class NamespaceVH extends AzureVH {
 	private Map<String, Object> properties;
 	private Map<String, Object> sku;
 
-	public String getId() {
-		return id;
-	}
-
+	
 	public String getName() {
 		return name;
 	}
@@ -34,10 +30,6 @@ public class NamespaceVH extends AzureVH {
 
 	public Map<String, Object> getProperties() {
 		return properties;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public void setName(String name) {

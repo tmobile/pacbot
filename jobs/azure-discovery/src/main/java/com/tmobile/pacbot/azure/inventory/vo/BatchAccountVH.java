@@ -4,7 +4,6 @@ import java.util.Map;
 
 public class BatchAccountVH extends AzureVH {
 
-	private String id;
 	private String name;
 	private String type;
 	private String location;
@@ -20,9 +19,7 @@ public class BatchAccountVH extends AzureVH {
 	private boolean dedicatedCoreQuotaPerVMFamilyEnforced;
 	private Map<String, Object> autoStorage;
 
-	public String getId() {
-		return id;
-	}
+	
 
 	public String getName() {
 		return name;
@@ -40,9 +37,7 @@ public class BatchAccountVH extends AzureVH {
 		return tags;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
+	
 
 	public void setName(String name) {
 		this.name = name;

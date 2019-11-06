@@ -3,7 +3,7 @@ package com.tmobile.pacbot.azure.inventory.vo;
 import java.util.Map;
 
 public class SitesVH extends AzureVH  {
-	private String id;
+
 	private String etag;
 	private String location;
 	private String name;
@@ -11,10 +11,6 @@ public class SitesVH extends AzureVH  {
 	private Map<String, Object> tags;
 	private Map<String, Object> properties;
 	
-	
-	public String getId() {
-		return id;
-	}
 	public String getEtag() {
 		return etag;
 	}
@@ -28,9 +24,7 @@ public class SitesVH extends AzureVH  {
 		return type;
 	}
 
-	public void setId(String id) {
-		this.id = id;
-	}
+	
 	public void setEtag(String etag) {
 		this.etag = etag;
 	}

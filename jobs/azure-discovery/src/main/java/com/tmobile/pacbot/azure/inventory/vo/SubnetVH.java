@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.Map;
 
 public class SubnetVH extends AzureVH {
-
-	private String id;
 	private String etag;
 	private String name;
 	private String type;
@@ -55,10 +53,6 @@ public class SubnetVH extends AzureVH {
 		this.privateEndpointNetworkPolicies = privateEndpointNetworkPolicies;
 	}
 
-	public String getId() {
-		return id;
-	}
-
 	public String getEtag() {
 		return etag;
 	}
@@ -69,10 +63,6 @@ public class SubnetVH extends AzureVH {
 
 	public String getType() {
 		return type;
-	}
-
-	public void setId(String id) {
-		this.id = id;
 	}
 
 	public void setEtag(String etag) {

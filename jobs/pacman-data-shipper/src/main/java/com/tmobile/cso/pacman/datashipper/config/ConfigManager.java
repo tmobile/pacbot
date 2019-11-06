@@ -50,7 +50,7 @@ public class ConfigManager {
         
         if (typeInfo == null) {
             typeInfo = new HashMap<>();
-            List<Map<String, String>> typeList = RDSDBManager.executeQuery(System.getProperty(Constants.CONFIG_QUERY));
+            List<Map<String, String>> typeList = RDSDBManager.executeQuery(System.getProperty(Constants.CONFIG_QUERY)+" and dataSourceName ='"+datasoruce+"'");
             try{
                 for (Map<String, String> _type : typeList) {
                     String typeName =  _type.get("targetName");

@@ -38,6 +38,7 @@ import com.tmobile.pacbot.azure.inventory.collector.ResourceGroupInventoryCollec
 import com.tmobile.pacbot.azure.inventory.collector.RouteTableInventoryCollector;
 import com.tmobile.pacbot.azure.inventory.collector.SCRecommendationsCollector;
 import com.tmobile.pacbot.azure.inventory.collector.SQLDatabaseInventoryCollector;
+import com.tmobile.pacbot.azure.inventory.collector.SQLServerInventoryCollector;
 import com.tmobile.pacbot.azure.inventory.collector.SearchServiceInventoryCollector;
 import com.tmobile.pacbot.azure.inventory.collector.SecurityAlertsInventoryCollector;
 import com.tmobile.pacbot.azure.inventory.collector.SitesInventoryCollector;
@@ -89,6 +90,9 @@ public class AssetFileGenerator {
 
 	@Autowired
 	SCRecommendationsCollector scRecommendationsCollector;
+
+	@Autowired
+	SQLServerInventoryCollector sqlServerInventoryCollector;
 
 	@Autowired
 	BlobContainerInventoryCollector blobContainerInventoryCollector;
@@ -292,6 +296,19 @@ public class AssetFileGenerator {
 				try {
 					FileManager.generateSecurityCenterFiles(
 							scRecommendationsCollector.fetchSecurityCenterRecommendations(subscription));
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			});
+
+			executor.execute(() -> {
+				if (!(isTypeInScope("sqlserver"))) {
+					return;
+				}
+
+				try {
+					FileManager.generateSQLServerFiles(
+							sqlServerInventoryCollector.fetchSQLServerDetails(subscription, tagMap));
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

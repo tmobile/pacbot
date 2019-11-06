@@ -70,8 +70,8 @@ public class ESManagerTest {
     @Test 
     public void uploadDataTest() throws Exception{
         
-        List<Map<String, String>> docs = new ArrayList<>();
-        Map<String,String> doc = new HashMap<>();
+        List<Map<String, Object>> docs = new ArrayList<>();
+        Map<String,Object> doc = new HashMap<>();
         doc.put("id", "id");
         docs.add(doc);
         
@@ -170,8 +170,8 @@ public class ESManagerTest {
     @Test 
     public void uploadDataWithParentTest() throws Exception{
         
-        List<Map<String, String>> docs = new ArrayList<>();
-        Map<String,String> doc = new HashMap<>();
+        List<Map<String, Object>> docs = new ArrayList<>();
+        Map<String,Object> doc = new HashMap<>();
         doc.put("id", "id");
         docs.add(doc);
         

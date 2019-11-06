@@ -3,6 +3,7 @@ package com.tmobile.pacbot.azure.inventory.vo;
 public class PolicyStatesVH extends AzureVH {
 	private String timestamp;
 	private String resourceId;
+	private String resourceIdLower;
 	private String policyAssignmentId;
 	private String policyDefinitionId;
 	private String effectiveParameters;
@@ -261,6 +262,14 @@ public class PolicyStatesVH extends AzureVH {
 
 	public void setPolicyRule(String policyRule) {
 		this.policyRule = policyRule;
+	}
+
+	public String getResourceIdLower() {
+		return resourceIdLower;
+	}
+
+	public void setResourceIdLower(String resourceIdLower) {
+		this.resourceIdLower = resourceIdLower;
 	}
 
 }

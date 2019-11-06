@@ -1,6 +1,5 @@
 package com.tmobile.pacbot.azure.inventory.vo;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -11,7 +10,7 @@ public class BlobContainerVH extends AzureVH {
 	private String name;
 	private String type;
 	private String tag;
-	private HashMap<String, Object> propertiesMap;
+	private Map<String, Object> propertiesMap;
 	private Map<String, String> tags;
 
 	public String getName() {
@@ -38,11 +37,11 @@ public class BlobContainerVH extends AzureVH {
 		this.tag = tag;
 	}
 
-	public HashMap<String, Object> getPropertiesMap() {
+	public Map<String, Object> getPropertiesMap() {
 		return propertiesMap;
 	}
 
-	public void setPropertiesMap(HashMap<String, Object> propertiesMap) {
+	public void setPropertiesMap(Map<String, Object> propertiesMap) {
 		this.propertiesMap = propertiesMap;
 	}
 
