@@ -33,12 +33,9 @@ public class AzureFetchOrchestrator {
 	@Autowired
 	S3Uploader s3Uploader;
 	
-	
 	@Value("${file.path}")
 	private String filePath ;
-	/** The target types. */
-	@Value("${subscriptions:}")
-	private String subscriptions;
+
 	@Value("${tenants:}")
 	private String tenants;
 	
@@ -89,17 +86,6 @@ public class AzureFetchOrchestrator {
 	private List<SubscriptionVH> fetchSubscriptions() {
 
 		List<SubscriptionVH> subscriptionList  = new ArrayList<>();
-		
-		/*if(subscriptions != null && !"".equals(subscriptions)){
-			String[] subscriptionsArray = subscriptions.split(",");
-			for(String subcritpionInfo : subscriptionsArray){
-				SubscriptionVH subscription= new SubscriptionVH();
-				String[] subIdName = subcritpionInfo.split("~");
-				subscription.setSubscriptionId(subIdName[0].trim());
-				subscription.setSubscriptionName(subIdName.length>1?subIdName[1].trim():"");
-				subscriptionList.add(subscription);
-			}
-		}*/
 		
 		if(tenants != null && !"".equals(tenants)){
 			String[] tenantList = tenants.split(",");
