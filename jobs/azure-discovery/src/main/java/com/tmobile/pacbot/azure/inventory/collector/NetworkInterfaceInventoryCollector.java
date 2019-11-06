@@ -1,29 +1,36 @@
 package com.tmobile.pacbot.azure.inventory.collector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.microsoft.azure.PagedList;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.network.NetworkInterface;
 import com.microsoft.azure.management.network.NicIPConfiguration;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.NIIPConfigVH;
 import com.tmobile.pacbot.azure.inventory.vo.NetworkInterfaceVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 
 @Component
 public class NetworkInterfaceInventoryCollector {
-
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
+	private static Logger log = LoggerFactory.getLogger(NetworkInterfaceInventoryCollector.class);
+	
 	public List<NetworkInterfaceVH> fetchNetworkInterfaceDetails(SubscriptionVH subscription,
 			Map<String, Map<String, String>> tagMap) {
 		List<NetworkInterfaceVH> networkInterfaceList = new ArrayList<NetworkInterfaceVH>();
 
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
+		Azure azure = azureCredentialProvider.getClient(subscription.getTenant(),subscription.getSubscriptionId());
 		PagedList<NetworkInterface> networkInterfaces = azure.networkInterfaces().list();
 
 		for (NetworkInterface networkInterface : networkInterfaces) {
@@ -50,6 +57,7 @@ public class NetworkInterfaceInventoryCollector {
 			networkInterfaceList.add(networkInterfaceVH);
 
 		}
+		log.info("Target Type : {}  Total: {} ","Networkinterface",networkInterfaceList.size());
 		return networkInterfaceList;
 	}
 

@@ -5,24 +5,32 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.microsoft.azure.PagedList;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.storage.PublicEndpoints;
 import com.microsoft.azure.management.storage.StorageAccount;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.StorageAccountVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 
 @Component
 public class StorageAccountInventoryCollector {
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
+	private static Logger log = LoggerFactory.getLogger(StorageAccountInventoryCollector.class);
 
 	public List<StorageAccountVH> fetchStorageAccountDetails(SubscriptionVH subscription,
 			Map<String, Map<String, String>> tagMap) {
 		List<StorageAccountVH> storageAccountList = new ArrayList<StorageAccountVH>();
 
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
+		Azure azure = azureCredentialProvider.getClient(subscription.getTenant(),subscription.getSubscriptionId());
 		PagedList<StorageAccount> storageAccounts = azure.storageAccounts().list();
 		for (StorageAccount storageAccount : storageAccounts) {
 			StorageAccountVH storageAccountVH = new StorageAccountVH();
@@ -48,7 +56,7 @@ public class StorageAccountInventoryCollector {
 			endPointDetails(storageAccount.endPoints(), storageAccountVH);
 			storageAccountList.add(storageAccountVH);
 		}
-
+		log.info("Target Type : {}  Total: {} ","Storage Account",storageAccountList.size());
 		return storageAccountList;
 	}
 

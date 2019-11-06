@@ -57,7 +57,7 @@ public class Util {
      *            the keys
      * @return true, if successful
      */
-    public static boolean contains(Map<String, String> x, Map<String, String> y, String[] keys) {
+    public static boolean contains(Map<String, ?> x, Map<String, ?> y, String[] keys) {
         for (String key : keys) {
             if (!x.get(key).equals(y.get(key)))
                 return false;
@@ -76,10 +76,10 @@ public class Util {
      *            the delimiter
      * @return the string
      */
-    public static String concatenate(Map<String, String> map, String[] keys, String delimiter) {
+    public static String concatenate(Map<String, Object> map, String[] keys, String delimiter) {
         List<String> values = new ArrayList<>();
         for (String key : keys) {
-            values.add(map.get(key));
+            values.add(map.get(key).toString());
         }
         return values.stream().collect(Collectors.joining(delimiter));
     }
@@ -172,12 +172,12 @@ public class Util {
         return authToken;
     }
 
-	public static List<Map<String, String>> fetchDataFromS3(String s3Account,String s3Region,String s3Role, String bucketName,String path) throws IOException{
+    public static <T> List<Map<String, T>> fetchDataFromS3(String s3Account,String s3Region,String s3Role, String bucketName,String path) throws IOException{
 		AmazonS3 s3Client = AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(new CredentialProvider().getCredentials(s3Account,s3Role))).withRegion(s3Region).build();
 		S3Object entitiesData = s3Client.getObject(new GetObjectRequest(bucketName, path));
 		try (BufferedReader reader = new BufferedReader(new InputStreamReader(entitiesData.getObjectContent()))) {
-			return new ObjectMapper().readValue(reader.lines().collect(Collectors.joining("\n")),new TypeReference<List<Map<String, String>>>() {});
+			return new ObjectMapper().readValue(reader.lines().collect(Collectors.joining("\n")),new TypeReference<List<Map<String, T>>>() {});
 	    }
 	}
 	

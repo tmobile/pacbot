@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -14,13 +15,16 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
 import com.tmobile.pacbot.azure.inventory.vo.WorkflowVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 import com.tmobile.pacman.commons.utils.CommonUtils;
 
 @Component
 public class WorkflowInventoryCollector {
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
 	
 	private static Logger log = LoggerFactory.getLogger(WorkflowInventoryCollector.class);
 	private String apiUrlTemplate = "https://management.azure.com/subscriptions/%s/providers/Microsoft.Logic/workflows?api-version=2016-06-01";
@@ -28,13 +32,7 @@ public class WorkflowInventoryCollector {
 	public List<WorkflowVH> fetchWorkflowDetails(SubscriptionVH subscription) throws Exception {
 
 		List<WorkflowVH> workflowList = new ArrayList<WorkflowVH>();
-		String accessToken;
-		try {
-			accessToken = AzureCredentialManager.getAuthToken();
-
-		} catch (Exception e1) {
-			return workflowList;
-		}
+		String accessToken = azureCredentialProvider.getToken(subscription.getTenant());
 
 		String url = String.format(apiUrlTemplate, URLEncoder.encode(subscription.getSubscriptionId()));
 		try {
@@ -71,7 +69,7 @@ public class WorkflowInventoryCollector {
 			e.printStackTrace();
 		}
 
-		System.out.println(workflowList.size());
+		log.info("Target Type : {}  Total: {} ","workflow",workflowList.size());
 		return workflowList;
 	}
 

@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -18,27 +19,25 @@ import com.google.gson.JsonParser;
 import com.microsoft.azure.PagedList;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.storage.StorageAccount;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.BlobContainerVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 import com.tmobile.pacman.commons.utils.CommonUtils;
 
 @Component
 public class BlobContainerInventoryCollector {
-
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
 	private String apiUrlTemplate = "https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Storage/storageAccounts/%s/blobServices/default/containers?api-version=2019-04-01";
 	private static Logger log = LoggerFactory.getLogger(BlobContainerInventoryCollector.class);
 	
 	public List<BlobContainerVH> fetchBlobContainerDetails(SubscriptionVH subscription,Map<String, Map<String, String>> tagMap) {
 
 		List<BlobContainerVH> blobContainerList = new ArrayList<BlobContainerVH>();
-		String accessToken;
-		try {
-			accessToken = AzureCredentialManager.getAuthToken();
-		} catch (Exception e1) {
-			return blobContainerList;
-		}
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
+		String accessToken = azureCredentialProvider.getToken(subscription.getTenant());
+		Azure azure = azureCredentialProvider.getClient(subscription.getTenant(),subscription.getSubscriptionId());
 		PagedList<StorageAccount> storageAccounts = azure.storageAccounts().list();
 		for (StorageAccount storageAccount : storageAccounts) {
 			String url = String.format(apiUrlTemplate, URLEncoder.encode(subscription.getSubscriptionId()),
@@ -71,7 +70,7 @@ public class BlobContainerInventoryCollector {
 		
 			}
 		}
-		System.out.println(blobContainerList.size());
+		log.info("Target Type : {}  Total: {} ","Blob Container",blobContainerList.size());
 		return blobContainerList;
 	}
 

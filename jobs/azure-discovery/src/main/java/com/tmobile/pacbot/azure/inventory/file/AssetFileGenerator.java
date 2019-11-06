@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import com.microsoft.azure.management.Azure;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.collector.BatchAccountInventoryCollector;
 import com.tmobile.pacbot.azure.inventory.collector.BlobContainerInventoryCollector;
 import com.tmobile.pacbot.azure.inventory.collector.CosmosDBInventoryCollector;
@@ -53,8 +55,10 @@ import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
 @Component
 public class AssetFileGenerator {
 
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
 	/** The target types. */
-	@Value("${targetTypes:virtualmachine}")
+	@Value("${targetTypes:}")
 	private String targetTypes;
 
 	/** The log. */
@@ -164,6 +168,19 @@ public class AssetFileGenerator {
 
 		for (SubscriptionVH subscription : subscriptions) {
 			log.info("Started Discovery for sub {}", subscription);
+		
+			try {
+				String accessToken = azureCredentialProvider.getAuthToken(subscription.getTenant());
+				Azure azure = azureCredentialProvider.authenticate(subscription.getTenant(),subscription.getSubscriptionId());
+				azureCredentialProvider.putClient(subscription.getTenant(),subscription.getSubscriptionId(), azure);
+				azureCredentialProvider.putToken(subscription.getTenant(), accessToken);
+
+			} catch (Exception e) {
+				log.error("Error authenticating for {}",subscription,e);
+				continue;
+			}
+		
+
 			List<ResourceGroupVH> resourceGroupList = new ArrayList<ResourceGroupVH>();
 			try {
 				resourceGroupList = resourceGroupInventoryCollector.fetchResourceGroupDetails(subscription);

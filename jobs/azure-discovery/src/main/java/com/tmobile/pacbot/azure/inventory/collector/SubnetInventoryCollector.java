@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -18,6 +19,7 @@ import com.google.gson.JsonParser;
 import com.microsoft.azure.PagedList;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.network.Network;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.SubnetVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
 import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
@@ -25,20 +27,18 @@ import com.tmobile.pacman.commons.utils.CommonUtils;
 
 @Component
 public class SubnetInventoryCollector {
-
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
 	private String apiUrlTemplate = "https://management.azure.com/subscriptions/%s/resourceGroups/%s/providers/Microsoft.Network/virtualNetworks/%s/subnets?api-version=2019-07-01";
 	private static Logger log = LoggerFactory.getLogger(SubnetInventoryCollector.class);
 
 	public List<SubnetVH> fetchSubnetDetails(SubscriptionVH subscription) {
 
-		List<SubnetVH> subnetList = new ArrayList<SubnetVH>();
-		String accessToken;
-		try {
-			accessToken = AzureCredentialManager.getAuthToken();
-		} catch (Exception e1) {
-			return subnetList;
-		}
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
+		List<SubnetVH> subnetList = new ArrayList<>();
+		String accessToken = azureCredentialProvider.getToken(subscription.getTenant());
+		Azure azure = azureCredentialProvider.authenticate(subscription.getTenant(),subscription.getSubscriptionId());
 		PagedList<Network> networks = azure.networks().list();
 		for (Network network : networks) {
 			String url = String.format(apiUrlTemplate, URLEncoder.encode(subscription.getSubscriptionId()),
@@ -77,7 +77,7 @@ public class SubnetInventoryCollector {
 
 			}
 		}
-		System.out.println(subnetList.size());
+		log.info("Target Type : {}  Total: {} ","Subnet",subnetList.size());
 		return subnetList;
 	}
 

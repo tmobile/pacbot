@@ -4,15 +4,12 @@ import java.util.Map;
 
 public class WorkflowVH extends AzureVH{
 	
-	private String id;
 	private String name;
 	private String type;
 	private String location;
 	private Map<String, Object> tags;
 	private Map<String, Object> properties;
-	public String getId() {
-		return id;
-	}
+	
 	public String getName() {
 		return name;
 	}
@@ -28,9 +25,7 @@ public class WorkflowVH extends AzureVH{
 	public Map<String, Object> getProperties() {
 		return properties;
 	}
-	public void setId(String id) {
-		this.id = id;
-	}
+	
 	public void setName(String name) {
 		this.name = name;
 	}

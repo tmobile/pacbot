@@ -4,10 +4,18 @@ public class SubscriptionVH {
 
 	@Override
 	public String toString() {
-		return "[subscriptionId=" + subscriptionId + ", subscriptionName=" + subscriptionName + "]";
+		return "{ subscriptionName=" + subscriptionName + ", subscriptionId=" + subscriptionId +", tenant="+tenant +"}";
 	}
 	private String subscriptionId;
 	private String subscriptionName;
+	private String tenant;
+	
+	public String getTenant() {
+		return tenant;
+	}
+	public void setTenant(String tenant) {
+		this.tenant = tenant;
+	}
 	public String getSubscriptionId() {
 		return subscriptionId;
 	}

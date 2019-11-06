@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -15,27 +16,24 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.BatchAccountVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 import com.tmobile.pacman.commons.utils.CommonUtils;
 
 @Component
 public class BatchAccountInventoryCollector {
 	
-	private static Logger log = LoggerFactory.getLogger(BatchAccountInventoryCollector.class);
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
+	private static Logger LOGGER = LoggerFactory.getLogger(BatchAccountInventoryCollector.class);
 	private String apiUrlTemplate = "https://management.azure.com/subscriptions/%s/providers/Microsoft.Batch/batchAccounts?api-version=2019-08-01";
 
 	public List<BatchAccountVH> fetchBatchAccountDetails(SubscriptionVH subscription) throws Exception {
 
 		List<BatchAccountVH> batchAccountList = new ArrayList<BatchAccountVH>();
-		String accessToken;
-		try {
-			accessToken = AzureCredentialManager.getAuthToken();
-
-		} catch (Exception e1) {
-			return batchAccountList;
-		}
+		String accessToken = azureCredentialProvider.getToken(subscription.getTenant());
 
 		String url = String.format(apiUrlTemplate, URLEncoder.encode(subscription.getSubscriptionId()));
 		try {
@@ -80,8 +78,10 @@ public class BatchAccountInventoryCollector {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			LOGGER.error("Error fetching BatchAccount",e);
 		}
+
+		LOGGER.info("Target Type : {}  Total: {} ","Batch Account",batchAccountList.size());
 		return batchAccountList;
 	}
 

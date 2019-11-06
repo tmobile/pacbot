@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.microsoft.azure.PagedList;
@@ -19,21 +20,25 @@ import com.microsoft.azure.management.compute.VirtualMachine;
 import com.microsoft.azure.management.network.NetworkInterface;
 import com.microsoft.azure.management.network.NicIPConfiguration;
 import com.microsoft.azure.management.network.Subnet;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
 import com.tmobile.pacbot.azure.inventory.vo.VMDiskVH;
 import com.tmobile.pacbot.azure.inventory.vo.VirtualMachineVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 
 @Component
 public class VMInventoryCollector {
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
 	
 
 	private static Logger log = LoggerFactory.getLogger(VMInventoryCollector.class);
 
 	public List<VirtualMachineVH> fetchVMDetails(SubscriptionVH subscription, Map<String, Map<String, String>> tagMap) {
-		List<VirtualMachineVH> vmList = new ArrayList<VirtualMachineVH>();
+		List<VirtualMachineVH> vmList = new ArrayList<>();
 
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
+		Azure azure = azureCredentialProvider.getClient(subscription.getTenant(),subscription.getSubscriptionId());
+		
 		List<NetworkInterface> networkInterfaces = azure.networkInterfaces().list();
 
 		PagedList<VirtualMachine> vms = azure.virtualMachines().list();
@@ -100,7 +105,8 @@ public class VMInventoryCollector {
 	
 				vmList.add(vmVH);
 			}catch(Exception e) {
-				log.error("Error Collecting info for {} {} ",virtualMachine.computerName(), virtualMachine.name(),e.getMessage());
+				e.printStackTrace();
+				log.error("Error Collecting info for {} {} ",virtualMachine.computerName(),e.getMessage());
 			}
 		}
 		log.info("Target Type : {}  Total: {} ", "virtualmachine", vmList.size());
@@ -189,9 +195,13 @@ public class VMInventoryCollector {
 		vmDisk.setName(osDisk.name());
 		vmDisk.setSizeInGB(osDisk.diskSizeGB());
 		vmDisk.setCachingType(osDisk.caching().toString());
-		vmDisk.setStorageAccountType(
+		try {
+			vmDisk.setStorageAccountType(
 				osDisk.managedDisk().storageAccountType() != null ? osDisk.managedDisk().storageAccountType().toString()
 						: "Unknown");
+		}catch(Exception e) {
+			vmDisk.setStorageAccountType("Unknown");
+		}
 		vmDisk.setType("OSDisk");
 		vmDisks.add(vmDisk);
 
@@ -200,9 +210,13 @@ public class VMInventoryCollector {
 			vmDisk = new VMDiskVH();
 			vmDisk.setName(dataDisk.name());
 			vmDisk.setSizeInGB(dataDisk.diskSizeGB());
-			vmDisk.setStorageAccountType(dataDisk.managedDisk().storageAccountType() != null
-					? dataDisk.managedDisk().storageAccountType().toString()
-					: "Unknown");
+			try {
+				vmDisk.setStorageAccountType(dataDisk.managedDisk().storageAccountType() != null
+						? dataDisk.managedDisk().storageAccountType().toString()
+						: "Unknown");
+			}catch(Exception e) {
+				vmDisk.setStorageAccountType("Unknown");
+			}
 			vmDisk.setCachingType(dataDisk.caching().toString());
 			vmDisk.setType("DataDisk");
 			vmDisks.add(vmDisk);
@@ -222,5 +236,7 @@ public class VMInventoryCollector {
 		}
 		return "";
 	}
+	
+	
 
 }
