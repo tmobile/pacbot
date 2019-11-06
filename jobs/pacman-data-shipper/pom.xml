@@ -196,6 +196,7 @@
 						<configuration>
 							<target>
 								<copy file="target/data-shipper-jar-with-dependencies.jar" tofile="../../dist/jobs/data-shipper-jar-with-dependencies.jar"/>
+								<copy file="target/data-shipper-jar-with-dependencies.jar" tofile="../../dist/jobs/data-shipper-azure.jar"/>
 							</target>
 						</configuration>
 						<goals>
