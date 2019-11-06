@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -14,26 +15,24 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.SitesVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 import com.tmobile.pacman.commons.utils.CommonUtils;
 
 @Component
 public class SitesInventoryCollector {
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
 	private static Logger log = LoggerFactory.getLogger(SitesInventoryCollector.class);
 	private String apiUrlTemplate = "https://management.azure.com/subscriptions/%s/providers/Microsoft.Network/vpnSites?api-version=2019-06-01";
 
 	public List<SitesVH> fetchSitesDetails(SubscriptionVH subscription) throws Exception {
 
 		List<SitesVH> sitesList = new ArrayList<SitesVH>();
-		String accessToken;
-		try {
-			accessToken = AzureCredentialManager.getAuthToken();
-
-		} catch (Exception e1) {
-			return sitesList;
-		}
+		String accessToken = azureCredentialProvider.getToken(subscription.getTenant());
 
 		String url = String.format(apiUrlTemplate, URLEncoder.encode(subscription.getSubscriptionId()));
 		try {
@@ -68,10 +67,10 @@ public class SitesInventoryCollector {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Error Collecting sites",e);
 		}
 
-		System.out.println(sitesList.size());
+		log.info("Target Type : {}  Total: {} ","Site",sitesList.size());
 		return sitesList;
 	}
 

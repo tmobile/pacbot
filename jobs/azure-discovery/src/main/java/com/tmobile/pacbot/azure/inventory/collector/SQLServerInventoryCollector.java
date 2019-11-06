@@ -5,6 +5,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.microsoft.azure.PagedList;
@@ -14,19 +17,25 @@ import com.microsoft.azure.management.sql.SqlFailoverGroup;
 import com.microsoft.azure.management.sql.SqlFirewallRule;
 import com.microsoft.azure.management.sql.SqlServer;
 import com.microsoft.azure.management.sql.SqlVirtualNetworkRule;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.ElasticPoolVH;
 import com.tmobile.pacbot.azure.inventory.vo.FailoverGroupVH;
 import com.tmobile.pacbot.azure.inventory.vo.SQLServerVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 
 @Component
 public class SQLServerInventoryCollector {
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
+	private static Logger log = LoggerFactory.getLogger(SQLServerInventoryCollector.class);
+	
 	public List<SQLServerVH> fetchSQLServerDetails(SubscriptionVH subscription,
 			Map<String, Map<String, String>> tagMap) {
 
-		List<SQLServerVH> sqlServerList = new ArrayList<SQLServerVH>();
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
+		List<SQLServerVH> sqlServerList = new ArrayList<>();
+		Azure azure = azureCredentialProvider.getClient(subscription.getTenant(),subscription.getSubscriptionId());
 		PagedList<SqlServer> sqlServers = azure.sqlServers().list();
 		for (SqlServer sqlServer : sqlServers) {
 			SQLServerVH sqlServerVH = new SQLServerVH();
@@ -49,7 +58,7 @@ public class SQLServerInventoryCollector {
 			getFailoverGroupList(sqlServer.failoverGroups().list(), sqlServerVH);
 			sqlServerList.add(sqlServerVH);
 		}
-
+		log.info("Target Type : {}  Total: {} ","SqlServer",sqlServerList.size());
 		return sqlServerList;
 
 	}

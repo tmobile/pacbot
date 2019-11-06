@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.microsoft.azure.PagedList;
@@ -11,22 +14,26 @@ import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.network.Route;
 import com.microsoft.azure.management.network.RouteTable;
 import com.microsoft.azure.management.network.Subnet;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.RouteTableSubnet;
 import com.tmobile.pacbot.azure.inventory.vo.RouteTableVH;
 import com.tmobile.pacbot.azure.inventory.vo.RouteVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 
 @Component
 public class RouteTableInventoryCollector {
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
+	private static Logger log = LoggerFactory.getLogger(RouteTableInventoryCollector.class);
 
 	public List<RouteTableVH> fetchRouteTableDetails(SubscriptionVH subscription,
 			Map<String, Map<String, String>> tagMap) {
 		List<RouteTableVH> routeTableDetailsList = new ArrayList<RouteTableVH>();
 
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
+		Azure azure = azureCredentialProvider.getClient(subscription.getTenant(),subscription.getSubscriptionId());
 		PagedList<RouteTable> routTableList = azure.routeTables().list();
-		System.out.println(routTableList.size());
 		for (RouteTable routTable : routTableList) {
 			RouteTableVH routeTableVH = new RouteTableVH();
 			routeTableVH.setHashCode(routTable.hashCode());
@@ -44,7 +51,7 @@ public class RouteTableInventoryCollector {
 			routeTableDetailsList.add(routeTableVH);
 
 		}
-
+		log.info("Target Type : {}  Total: {} ","Route Table",routeTableDetailsList.size());
 		return routeTableDetailsList;
 	}
 

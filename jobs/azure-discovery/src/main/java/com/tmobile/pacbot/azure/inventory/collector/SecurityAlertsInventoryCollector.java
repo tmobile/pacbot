@@ -5,6 +5,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.google.gson.Gson;
@@ -12,28 +15,24 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.microsoft.azure.management.Azure;
-import com.tmobile.pacbot.azure.inventory.vo.DatabricksVH;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.SecurityAlertsVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 import com.tmobile.pacman.commons.utils.CommonUtils;
 
 @Component
 public class SecurityAlertsInventoryCollector {
-
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
 	private String apiUrlTemplate = "https://management.azure.com/subscriptions/%s/providers/Microsoft.Security/alerts?api-version=2019-01-01";
-
+	private static Logger log = LoggerFactory.getLogger(SecurityAlertsInventoryCollector.class);
+	
 	public List<SecurityAlertsVH> fetchSecurityAlertsDetails(SubscriptionVH subscription) throws Exception {
 
 		List<SecurityAlertsVH> securityAlertsList = new ArrayList<SecurityAlertsVH>();
-		String accessToken;
-		try {
-			accessToken = AzureCredentialManager.getAuthToken();
-
-		} catch (Exception e1) {
-			return securityAlertsList;
-		}
+		String accessToken = azureCredentialProvider.getToken(subscription.getTenant());
 
 		String url = String.format(apiUrlTemplate, URLEncoder.encode(subscription.getSubscriptionId()));
 		try {
@@ -57,10 +56,10 @@ public class SecurityAlertsInventoryCollector {
 				securityAlertsList.add(securityAlertsVH);
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("Error collecting Security Alerts",e);
 		}
 
-		System.out.println(securityAlertsList.size());
+		log.info("Target Type : {}  Total: {} ","Security Alerts",securityAlertsList.size());
 		return securityAlertsList;
 	}
 

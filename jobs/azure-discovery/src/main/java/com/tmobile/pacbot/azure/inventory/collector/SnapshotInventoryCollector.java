@@ -4,24 +4,31 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.microsoft.azure.PagedList;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.compute.Snapshot;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.SnapshotVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 
 @Component
 public class SnapshotInventoryCollector {
-
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
+	private static Logger log = LoggerFactory.getLogger(SnapshotInventoryCollector.class);
+	
 	public List<SnapshotVH> fetchSnapshotDetails(SubscriptionVH subscription, Map<String, Map<String, String>> tagMap) {
 		List<SnapshotVH> snapshotList = new ArrayList<SnapshotVH>();
 
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
+		Azure azure = azureCredentialProvider.getClient(subscription.getTenant(),subscription.getSubscriptionId());
 		PagedList<Snapshot> snapshots = azure.snapshots().list();
-		System.out.println(snapshots.size());
 		for (Snapshot snapshot : snapshots) {
 			SnapshotVH snapshotVH = new SnapshotVH();
 			snapshotVH.setId(snapshot.id());
@@ -37,6 +44,7 @@ public class SnapshotInventoryCollector {
 			snapshotList.add(snapshotVH);
 
 		}
+		log.info("Target Type : {}  Total: {} ","Snapshot {}",snapshots.size());
 
 		return snapshotList;
 	}

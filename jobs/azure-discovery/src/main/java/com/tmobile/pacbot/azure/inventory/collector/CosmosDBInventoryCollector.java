@@ -4,25 +4,32 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.microsoft.azure.PagedList;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.cosmosdb.CosmosDBAccount;
 import com.microsoft.azure.management.cosmosdb.VirtualNetworkRule;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.CosmosDBVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
 import com.tmobile.pacbot.azure.inventory.vo.VirtualNetworkRuleVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 
 @Component
 public class CosmosDBInventoryCollector {
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
 
+	private static Logger log = LoggerFactory.getLogger(CosmosDBInventoryCollector.class);
 	public List<CosmosDBVH> fetchCosmosDBDetails(SubscriptionVH subscription, Map<String, Map<String, String>> tagMap) {
-		List<CosmosDBVH> cosmosDBList = new ArrayList<CosmosDBVH>();
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
+		List<CosmosDBVH> cosmosDBList = new ArrayList<>();
+		Azure azure = azureCredentialProvider.getClient(subscription.getTenant(),subscription.getSubscriptionId());
 		PagedList<CosmosDBAccount> CosmosDB = azure.cosmosDBAccounts().list();
-		System.out.println(CosmosDB.size());
 		for (CosmosDBAccount cosmosDB : CosmosDB) {
 			CosmosDBVH cosmosDBVH = new CosmosDBVH();
 			cosmosDBVH.setSubscription(subscription.getSubscriptionId());
@@ -38,22 +45,8 @@ public class CosmosDBInventoryCollector {
 			cosmosDBVH.setMultipleWriteLocationsEnabled(cosmosDB.multipleWriteLocationsEnabled());
 			cosmosDBVH.setVirtualNetworkRuleList(getVirtualNetworkRule(cosmosDB.virtualNetworkRules()));
 			cosmosDBList.add(cosmosDBVH);
-			/*
-			 * boolean flag = false; Map<String, String> tagsFinal = new HashMap<String,
-			 * String>();
-			 * 
-			 * for (Map.Entry<String, Map<String, String>> resourceGroupTag :
-			 * tagMap.entrySet()) {
-			 * 
-			 * if (resourceGroupTag.getKey().equalsIgnoreCase(cosmosDB.resourceGroupName()))
-			 * { flag = true; tagsFinal.putAll(resourceGroupTag.getValue());
-			 * tagsFinal.putAll(cosmosDB.tags()); break; }
-			 * 
-			 * } if (flag == true) { cosmosDBVH.setTags(tagsFinal); } else {
-			 * cosmosDBVH.setTags(cosmosDB.tags()); }
-			 */
-
 		}
+		log.info("Target Type : {}  Total: {} ","Cosom DB",cosmosDBList.size());
 		return cosmosDBList;
 	}
 

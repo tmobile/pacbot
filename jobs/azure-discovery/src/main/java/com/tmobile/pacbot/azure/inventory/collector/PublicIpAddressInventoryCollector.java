@@ -4,26 +4,33 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import com.microsoft.azure.PagedList;
 import com.microsoft.azure.management.Azure;
 import com.microsoft.azure.management.network.PublicIPAddress;
+import com.tmobile.pacbot.azure.inventory.auth.AzureCredentialProvider;
 import com.tmobile.pacbot.azure.inventory.vo.PublicIpAddressVH;
 import com.tmobile.pacbot.azure.inventory.vo.SubscriptionVH;
-import com.tmobile.pacman.commons.azure.clients.AzureCredentialManager;
 
 @Component
 public class PublicIpAddressInventoryCollector {
+	
+	@Autowired
+	AzureCredentialProvider azureCredentialProvider;
+	
+	private static Logger log = LoggerFactory.getLogger(PublicIpAddressInventoryCollector.class);
 
 	public List<PublicIpAddressVH> fetchPublicIpAddressDetails(SubscriptionVH subscription,
 			Map<String, Map<String, String>> tagMap) {
 
 		List<PublicIpAddressVH> publicIpAddressList = new ArrayList<PublicIpAddressVH>();
 
-		Azure azure = AzureCredentialManager.authenticate(subscription.getSubscriptionId());
+		Azure azure = azureCredentialProvider.getClient(subscription.getTenant(),subscription.getSubscriptionId());
 		PagedList<PublicIPAddress> publicIPAddresses = azure.publicIPAddresses().list();
-		System.out.println(publicIPAddresses.size());
 		for (PublicIPAddress publicIPAddress : publicIPAddresses) {
 			PublicIpAddressVH publicIpAddressVH = new PublicIpAddressVH();
 			publicIpAddressVH.setId(publicIPAddress.id());
@@ -44,6 +51,7 @@ public class PublicIpAddressInventoryCollector {
 			publicIpAddressList.add(publicIpAddressVH);
 
 		}
+		log.info("Target Type : {}  Total: {} ","PublicIPAddress",publicIpAddressList.size());
 
 		return publicIpAddressList;
 	}

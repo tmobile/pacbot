@@ -98,7 +98,7 @@ public class ESManager implements Constants {
      * @param loaddate the loaddate
      * @return the map
      */
-    public static Map<String, Object> uploadData(String index, String type, List<Map<String, String>> docs, String loaddate) {
+    public static Map<String, Object> uploadData(String index, String type, List<Map<String, Object>> docs, String loaddate) {
 
         Map<String, Object> status = new LinkedHashMap<>();
         List<String> errors = new ArrayList<>();
@@ -112,7 +112,7 @@ public class ESManager implements Constants {
             LOGGER.info("*********# of docs *** {}" , docs.size());
             StringBuilder bulkRequest = new StringBuilder();
             int i = 0;
-            for (Map<String, String> doc : docs) {
+            for (Map<String, Object> doc : docs) {
 
                 String id = Util.concatenate(doc, _keys, "_");
                 StringBuilder _doc = new StringBuilder(createESDoc(doc));
@@ -628,7 +628,7 @@ public class ESManager implements Constants {
      * @param docs the docs
      * @param parentKey the parent key
      */
-    public static void uploadData(String index, String type, List<Map<String, String>> docs, String[] parentKey) {
+    public static void uploadData(String index, String type, List<Map<String, Object>> docs, String[] parentKey) {
         String actionTemplate = "{ \"index\" : { \"_index\" : \"%s\", \"_type\" : \"%s\", \"_parent\" : \"%s\" } }%n"; // added
                                                                                                                        // _parent
                                                                                                                        // node
@@ -637,7 +637,7 @@ public class ESManager implements Constants {
         if (null != docs && !docs.isEmpty()) {
             StringBuilder bulkRequest = new StringBuilder();
             int i = 0;
-            for (Map<String, String> doc : docs) {
+            for (Map<String, Object> doc : docs) {
 
                 StringBuilder _doc = new StringBuilder(new Gson().toJson(doc));
                 String parent = Util.concatenate(doc, parentKey, "_");
