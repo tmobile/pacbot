@@ -52,3 +52,7 @@ AWS_REGION = ""
 ENABLE_VULNERABILITY_FEATURE = False
 QUALYS_API_URL = ""  # Qualys API Url without trailing slash
 QUALYS_INFO = ""  # Base64 encoded user:password of qualys
+
+# This settings enable Vulnerability feature and servie
+ENABLE_AZURE = False
+AZURE_TENANTS = ""
