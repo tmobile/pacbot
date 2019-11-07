@@ -10,7 +10,7 @@ from resources.batch.job import SubmitAndRuleEngineJobDefinition, BatchJobsQueue
 from resources.data.aws_info import AwsAccount, AwsRegion
 from resources.lambda_submit.s3_upload import UploadLambdaSubmitJobZipFile, BATCH_JOB_FILE_NAME
 from resources.pacbot_app.alb import ApplicationLoadBalancer
-from resources.pacbot_app.utils import need_to_deploy_vulnerability_service
+from resources.pacbot_app.utils import need_to_deploy_vulnerability_service, need_to_enable_azure
 import json
 
 
