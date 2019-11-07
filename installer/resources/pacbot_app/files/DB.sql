@@ -83,7 +83,6 @@ SET @CONFIG_SERVICE_URL='$CONFIG_SERVICE_URL';
 SET @PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID='$PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID';
 SET @QUALYS_INFO='$QUALYS_INFO';
 SET @QUALYS_API_URL='$QUALYS_API_URL';
-SET @AZURE_TENANTS='$AZURE_TENANTS';
 
 CREATE TABLE IF NOT EXISTS `OmniSearch_Config` (
   `SEARCH_CATEGORY` varchar(100) COLLATE utf8_bin NOT NULL,
@@ -1851,7 +1850,6 @@ INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('vuln
 INSERT IGNORE INTO pac_config_key_metadata (`cfkey`,`description`) VALUES ('vulnerability.application.resourcedetailsboth','Description PlaceHolder');
 INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('qualys_info','Base64 encoded user:password of qualys');
 INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('qualys_api_url','Qualys api url');
-INSERT IGNORE INTO `pac_config_key_metadata` (`cfkey`, `description`) values('tenants','Azure tenants');
 
 
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('logging.config','classpath:spring-logback.xml','application','prd','latest',NULL,NULL,NULL,NULL);
@@ -2143,7 +2141,8 @@ INSERT IGNORE INTO pac_config_properties(`cfkey`,`value`,`application`,`profile`
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('server.servlet.context-path','/api/vulnerability','vulnerability-service','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('qualys_info',concat(@QUALYS_INFO,''),'qualys-enricher','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('qualys_api_url',concat(@QUALYS_API_URL,''),'qualys-enricher','prd','latest',NULL,NULL,NULL,NULL);
-INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('tenants',concat(@AZURE_TENANTS,''),'azure-discovery','prd','latest',NULL,NULL,NULL,NULL);
+INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('s3.data','azure-inventory','azure-discovery','prd','latest',NULL,NULL,NULL,NULL);
+INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('s3.processed','backup-azure',''),'azure-discovery','prd','latest',NULL,NULL,NULL,NULL);
 
 
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('vulnerability.application.occurance','severity,_resourceid,pciflag,_vulnage,vulntype,title,classification,_firstFound,_lastFound,qid,patchable,category','vulnerability-service','prd','latest',NULL,NULL,NULL,NULL);
