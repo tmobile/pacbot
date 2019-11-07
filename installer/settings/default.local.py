@@ -55,4 +55,4 @@ QUALYS_INFO = ""  # Base64 encoded user:password of qualys
 
 # This settings enable Vulnerability feature and servie
 ENABLE_AZURE = False
-AZURE_TENANTS = ""
+AZURE_TENANTS = ""  # Comma seperated values for tenants if ENABLE_AZURE is True
