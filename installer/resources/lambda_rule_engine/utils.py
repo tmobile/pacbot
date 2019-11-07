@@ -16,8 +16,8 @@ def get_rule_engine_cloudwatch_rules_var():
 
     variable_dict_input = json.loads(data)
     for index in range(len(variable_dict_input)):
-        if not need_to_enable_azure and variable_dict_input['assetGroup'] == "azure":
-            continue
+        if variable_dict_input[index]['assetGroup'] == "azure" and not need_to_enable_azure:
+            del(variable_dict_input[index])
 
         mod = index % 20 + 5
         item = {
