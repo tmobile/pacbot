@@ -101,3 +101,7 @@ class ReInstall(Install):  # Do not inherit Destroy
         self.show_step_heading(K.TERRAFORM_REDEPLOY_DESTROY_STARTED, write_log=False)
         while self.destroy is False and self.terraform_thread.isAlive():
             self.show_progress_message(K.TERRAFORM_DESTROY_STARTED, 0.5)
+
+        end_time = datetime.now()
+        self.show_step_finish(K.TERRAFORM_DESTROY_COMPLETED, write_log=False, color=self.GREEN_ANSI)
+        self.display_process_duration(start_time, end_time)
