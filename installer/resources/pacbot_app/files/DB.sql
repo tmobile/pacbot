@@ -83,6 +83,7 @@ SET @CONFIG_SERVICE_URL='$CONFIG_SERVICE_URL';
 SET @PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID='$PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID';
 SET @QUALYS_INFO='$QUALYS_INFO';
 SET @QUALYS_API_URL='$QUALYS_API_URL';
+SET @AZURE_CREDENTIALS='$AZURE_CREDENTIALS';
 
 CREATE TABLE IF NOT EXISTS `OmniSearch_Config` (
   `SEARCH_CATEGORY` varchar(100) COLLATE utf8_bin NOT NULL,
@@ -1235,7 +1236,7 @@ INSERT IGNORE INTO `cf_Policy` (`policyId`,`policyName`,`policyDesc`,`resolution
 INSERT IGNORE INTO `cf_Policy` (`policyId`,`policyName`,`policyDesc`,`resolution`,`policyUrl`,`policyVersion`,`status`,`userId`,`createdDate`,`modifiedDate`) VALUES ('PacMan_Azure_Resolve_monitoring_agent_version-1','Resolve monitoring agent health issues on your machines','This is Azure Secuirty Rule',"",NULL,'version-1','fed',NULL,'2019-08-05','2019-08-05');
 INSERT IGNORE INTO `cf_Policy` (`policyId`,`policyName`,`policyDesc`,`resolution`,`policyUrl`,`policyVersion`,`status`,`userId`,`createdDate`,`modifiedDate`) VALUES ('PacMan_Azure_harden-NSGs_internet_version-1','Harden Network Security Group rules of internet facing Virtual Machines','This is Azure Secuirty Rule',"",NULL,'version-1','fed',NULL,'2019-08-05','2019-08-05');
 
-
+                                                                                                                                                
 /* Rule  Initialisation */
 
 INSERT IGNORE INTO cf_RuleInstance (ruleId,ruleUUID,policyId,ruleName,targetType,assetGroup,alexaKeyword,ruleParams,ruleFrequency,ruleExecutable,ruleRestUrl,ruleType,ruleArn,status,userId,displayName,createdDate,modifiedDate,severity,category) VALUES ('PacMan_VpcFlowLogsEnabled_version-1_VpcFlowLogsEnabled_vpc','aws_account_should_have_vpclogs_enabled','PacMan_VpcFlowLogsEnabled_version-1','VpcFlowLogsEnabled','vpc','aws','VpcFlowLogsEnabled','{"params":[{"encrypt":"false","value":"role/pacbot_ro","key":"roleIdentifyingString"},{"encrypt":"false","value":"check-for-vpc-flowlog-enabled","key":"ruleKey"},{"encrypt":false,"value":"high","key":"severity"},{"isValueNew":true,"encrypt":false,"value":"security","key":"ruleCategory"}],"environmentVariables":[{"encrypt":false,"value":"123","key":"abc"}],"ruleId":"PacMan_VpcFlowLogsEnabled_version-1_VpcFlowLogsEnabled_vpc","autofix":false,"alexaKeyword":"VpcFlowLogsEnabled","ruleRestUrl":"","targetType":"vpc","pac_ds":"aws","policyId":"PacMan_VpcFlowLogsEnabled_version-1","assetGroup":"aws","ruleUUID":"aws_account_should_have_vpclogs_enabled","ruleType":"ManageRule"}','0 0/12 * * ? *','','','ManageRule',concat('arn:aws:events:',@region,':',@account,':rule/aws_account_should_have_vpclogs_enabled'),'ENABLED','ASGC','VPC flowlogs should be enabled for all VPCs',{d '2017-08-11'},{d '2018-08-31'},null,null);
@@ -2142,7 +2143,8 @@ INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('qualys_info',concat(@QUALYS_INFO,''),'qualys-enricher','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('qualys_api_url',concat(@QUALYS_API_URL,''),'qualys-enricher','prd','latest',NULL,NULL,NULL,NULL);
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('s3.data','azure-inventory','azure-discovery','prd','latest',NULL,NULL,NULL,NULL);
-INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('s3.processed','backup-azure',''),'azure-discovery','prd','latest',NULL,NULL,NULL,NULL);
+INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('s3.processed','backup-azure','azure-discovery','prd','latest',NULL,NULL,NULL,NULL);
+INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('azure.credentials',concat(@AZURE_CREDENTIALS,''),'azure-discovery','prd','latest',NULL,NULL,NULL,NULL);
 
 
 INSERT IGNORE INTO pac_config_properties (`cfkey`,`value`,`application`,`profile`,`label`,`createdBy`,`createdDate`,`modifiedBy`,`modifiedDate`) VALUES ('vulnerability.application.occurance','severity,_resourceid,pciflag,_vulnage,vulntype,title,classification,_firstFound,_lastFound,qid,patchable,category','vulnerability-service','prd','latest',NULL,NULL,NULL,NULL);
