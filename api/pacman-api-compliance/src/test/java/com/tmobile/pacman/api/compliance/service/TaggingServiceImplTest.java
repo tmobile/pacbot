@@ -171,7 +171,7 @@ public class TaggingServiceImplTest {
                 .thenReturn(maintargetTypesList);
         ReflectionTestUtils.setField(taggingServiceImpl, "mandatoryTags",
                 "Application,Environment");
-        when(complainceRepository.getTotalAssetCount(anyString(), anyString()))
+        when(complainceRepository.getTotalAssetCount(anyString(), anyString(),anyString(),anyString()))
                 .thenReturn(assetCountMap);
  
         when(repository.getUntaggedTargetTypeIssues(anyObject(), anyObject()))

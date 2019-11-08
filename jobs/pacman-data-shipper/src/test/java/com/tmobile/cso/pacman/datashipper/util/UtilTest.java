@@ -20,7 +20,7 @@ public class UtilTest {
 
     @Test
     public void testConcatenate() {
-        HashMap<String, String> hash = new HashMap<>();
+        HashMap<String, Object> hash = new HashMap<>();
         hash.put("foo", "3");
         hash.put("bar", "4");
         hash.put("baz", "5");

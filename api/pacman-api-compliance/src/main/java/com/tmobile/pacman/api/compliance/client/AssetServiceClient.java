@@ -29,6 +29,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.tmobile.pacman.api.compliance.domain.AssetApi;
 import com.tmobile.pacman.api.compliance.domain.AssetCount;
+import com.tmobile.pacman.api.compliance.domain.ExemptedAssetByPolicy;
 
 /**
  * The Interface AssetServiceClient.
@@ -36,18 +37,21 @@ import com.tmobile.pacman.api.compliance.domain.AssetCount;
 @FeignClient(name = "assetclient", url = "${service.url.asset}")
 public interface AssetServiceClient {
 
-    /**
+	/**
      * Gets the total assets count.
      *
      * @param assetGroup the asset group
      * @param targetType the target type
      * @param domain the domain
+     * @param application the application
      * @return AssetCount
      */
     @RequestMapping(method = RequestMethod.GET, value = "/v1/count")
     AssetCount getTotalAssetsCount(@RequestParam("ag") String assetGroup,
             @RequestParam("type") String targetType,
-            @RequestParam("domain") String domain);
+            @RequestParam("domain") String domain,
+            @RequestParam("application") String application,
+            @RequestParam("provider") String provider);
 
     /**
      * Gets the applications list.
@@ -128,5 +132,21 @@ public interface AssetServiceClient {
      */
     @RequestMapping(method = RequestMethod.GET, value = "/v1/list/targettype")
     AssetApi getTargetTypeListByDomain(@RequestParam("ag") String assetGroup,
+            @RequestParam("domain") String domain);
+    
+    /**
+     * Gets the total assets exempted by policy.
+     *
+     * @param assetGroup the asset group
+     * @param application the application
+     * @param targetType the target type
+     * @param domain the domain
+     * @return the total assets exempted by policy
+     */
+    @RequestMapping(method = RequestMethod.GET, value = "v1/count/exempted/bypolicy")
+    ExemptedAssetByPolicy getTotalAssetsExemptedByPolicy(
+            @RequestParam("ag") String assetGroup,
+            @RequestParam("application") String application,
+            @RequestParam("type") String targetType,
             @RequestParam("domain") String domain);
 }
