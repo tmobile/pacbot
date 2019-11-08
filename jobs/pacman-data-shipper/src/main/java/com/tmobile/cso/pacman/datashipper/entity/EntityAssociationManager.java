@@ -38,6 +38,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tmobile.cso.pacman.datashipper.config.ConfigManager;
 import com.tmobile.cso.pacman.datashipper.config.CredentialProvider;
+import com.tmobile.cso.pacman.datashipper.error.ErrorManager;
 import com.tmobile.cso.pacman.datashipper.es.ESManager;
 import com.tmobile.cso.pacman.datashipper.util.Constants;
 
@@ -95,16 +96,16 @@ public class EntityAssociationManager implements Constants {
                     if (!childType.equalsIgnoreCase("tags")) {
                         ESManager.createType(indexName, childTypeES, type);
                         LOGGER.info("Fetching data for {}", childTypeES);
-                        List<Map<String, String>> entities = new ArrayList<>();
+                        List<Map<String, Object>> entities = new ArrayList<>();
                         S3Object entitiesData = s3Client.getObject(new GetObjectRequest(bucketName, dataPath+"/"+filePrefix+childType+".data"));
 						try (BufferedReader reader = new BufferedReader(new InputStreamReader(entitiesData.getObjectContent()))) {
-                        	entities = objectMapper.readValue(reader.lines().collect(Collectors.joining("\n")),new TypeReference<List<Map<String, String>>>() {});
+                        	entities = objectMapper.readValue(reader.lines().collect(Collectors.joining("\n")),new TypeReference<List<Map<String, Object>>>() {});
                         }
                         String loaddate = new SimpleDateFormat("yyyy-MM-dd HH:mm:00Z").format(new java.util.Date());
                         entities.parallelStream().forEach(obj -> obj.put("_loaddate", loaddate));
                         LOGGER.info("Collected :  {}", entities.size());
                         if (!entities.isEmpty()) {
-                        	AWSErrorManager.getInstance().handleError(dataSource, indexName, childTypeES, loaddate, errorList,false);
+                        	ErrorManager.getInstance(dataSource).handleError(indexName, childTypeES, loaddate, errorList,false);
                             ESManager.uploadData(indexName, childTypeES, entities, key.split(","));
                             ESManager.deleteOldDocuments(indexName, childTypeES, "_loaddate.keyword",
                                     loaddate);

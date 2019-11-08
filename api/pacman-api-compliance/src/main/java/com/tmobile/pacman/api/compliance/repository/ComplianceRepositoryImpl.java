@@ -87,6 +87,8 @@ import com.tmobile.pacman.api.compliance.domain.AssetCountDTO;
 import com.tmobile.pacman.api.compliance.domain.AssetCountData;
 import com.tmobile.pacman.api.compliance.domain.AssetCountEnvCount;
 import com.tmobile.pacman.api.compliance.domain.Compare;
+import com.tmobile.pacman.api.compliance.domain.ExemptedAssetByPolicy;
+import com.tmobile.pacman.api.compliance.domain.ExemptedAssetByPolicyData;
 import com.tmobile.pacman.api.compliance.domain.IssueExceptionResponse;
 import com.tmobile.pacman.api.compliance.domain.IssueResponse;
 import com.tmobile.pacman.api.compliance.domain.IssuesException;
@@ -443,7 +445,7 @@ public class ComplianceRepositoryImpl implements ComplianceRepository, Constants
         ruleIdWithTargetTypeQuery = "SELECT  A.targetType FROM cf_RuleInstance A, cf_Policy B WHERE A.policyId = B.policyId AND A.status = 'ENABLED' AND B.policyId = 'PacMan_TaggingRule_version-1'";
         ruleIdwithTargetType = rdsepository.getDataFromPacman(ruleIdWithTargetTypeQuery);
         if (Strings.isNullOrEmpty(targetType)) {
-            assetCount = assetServiceClient.getTotalAssetsCount(assetGroup, targetType, null);
+            assetCount = assetServiceClient.getTotalAssetsCount(assetGroup, targetType, null,null,"");
             data = assetCount.getData();
             assetcountCount = data.getAssetcount();
 
@@ -591,7 +593,7 @@ public class ComplianceRepositoryImpl implements ComplianceRepository, Constants
      */
     public Long getTotalAssetCountForAnytargetType(String assetGroup, String targetType) {
 
-        AssetCount totalAssets = assetServiceClient.getTotalAssetsCount(assetGroup, targetType, null);
+        AssetCount totalAssets = assetServiceClient.getTotalAssetsCount(assetGroup, targetType, null,null,"");
         AssetCountData data = totalAssets.getData();
         AssetCountByAppEnvDTO[] assetcount = data.getAssetcount();
         Long totalAssetsCount = 0l;
@@ -601,24 +603,6 @@ public class ComplianceRepositoryImpl implements ComplianceRepository, Constants
             }
         }
         return totalAssetsCount;
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.tmobile.pacman.api.compliance.repository.ComplianceRepository#
-     * getTotalAssetCount(java.lang.String, java.lang.String)
-     */
-    public Map<String, Long> getTotalAssetCount(String assetGroup, String domain) {
-
-        AssetCount totalAssets = assetServiceClient.getTotalAssetsCount(assetGroup, null, domain);
-        AssetCountData data = totalAssets.getData();
-        AssetCountByAppEnvDTO[] assetcount = data.getAssetcount();
-        Map<String, Long> assetCountByType = new HashMap<>();
-        for (AssetCountByAppEnvDTO assetCount_Count : assetcount) {
-            assetCountByType.put(assetCount_Count.getType(), Long.parseLong(assetCount_Count.getCount()));
-        }
-        return assetCountByType;
     }
 
     /**
@@ -1676,54 +1660,59 @@ if (ruleId.contains(TAGGIG_POLICY)) {
     }
 
     /*
-     * (non-Javadoc)
-     *
-     * @see com.tmobile.pacman.api.compliance.repository.ComplianceRepository#
-     * getTaggingByAG(java.lang.String)
-     */
-    @SuppressWarnings("rawtypes")
-    public Map<String, Object> getTaggingByAG(String assetGroup,String targetTypes) throws DataException {
-        List<String> targetTypeList = Arrays.asList(targetTypes.split("\\s*,\\s*"));
+	 * (non-Javadoc)
+	 * 
+	 * @see com.tmobile.pacman.api.compliance.repository.ComplianceRepository#
+	 * getTaggingByAG(java.lang.String)
+	 */
+	@SuppressWarnings("rawtypes")
+	public Map<String, Object> getTaggingByAG(String assetGroup, String targetTypes, String application)
+			throws DataException {
+		List<String> targetTypeList = Arrays.asList(targetTypes.split("\\s*,\\s*"));
 
-        Gson gson = new GsonBuilder().create();
-        String responseDetails = null;
-        StringBuilder urlToQueryBuffer = new StringBuilder(esUrl).append("/").append(assetGroup).append("/")
-                .append(SEARCH);
-        StringBuilder requestBody = null;
-        List<String> tagsList = new ArrayList<>(Arrays.asList(mandatoryTags.split(",")));
+		Gson gson = new GsonBuilder().create();
+		String responseDetails = null;
+		StringBuilder urlToQueryBuffer = new StringBuilder(esUrl).append("/").append(assetGroup).append("/")
+				.append(SEARCH);
+		StringBuilder requestBody = null;
+		List<String> tagsList = new ArrayList<>(Arrays.asList(mandatoryTags.split(",")));
 
-        String body = "{\"size\":0,\"query\":{\"bool\":{\"must\":[{\"term\":{\"type.keyword\":{\"value\":\"issue\"}}},{\"term\":{\"policyId.keyword\":{\"value\":\"PacMan_TaggingRule_version-1\"}}},{\"term\":{\"issueStatus.keyword\":{\"value\":\"open\"}}}";
+		String body = "{\"size\":0,\"query\":{\"bool\":{\"must\":[{\"term\":{\"type.keyword\":{\"value\":\"issue\"}}},{\"term\":{\"policyId.keyword\":{\"value\":\"PacMan_TaggingRule_version-1\"}}},{\"term\":{\"issueStatus.keyword\":{\"value\":\"open\"}}}";
 
-        body = body + "]";
-        if (!tagsList.isEmpty()) {
-            body = body + ",\"should\":[";
+		// Added resourceType to the Query
+		String targetTypesTerms = targetTypes.replaceAll("'", "\"");
+		body = body + ",{\"terms\":{\"targetType.keyword\":[" + targetTypesTerms + "]}}";
+		if (application != null) {
+			body = body + ",{\"match\":{\"tags.Application.keyword\":\"" + application + "\"}}";
+		}
+		body = body + "]";
+		if (!tagsList.isEmpty()) {
+			body = body + ",\"should\":[";
 
-            for (String tag : tagsList) {
-                body = body + "{\"match_phrase_prefix\":{\"missingTags\":\"" + tag + "\"}},";
-            }
-            body = body.substring(0, body.length() - 1);
-            body = body + "]";
-            body = body + ",\"minimum_should_match\":1";
-        }
-        body = body + "}},\"aggs\":{\"name\":{\"terms\":{\"field\":\"targetType.keyword\",\"size\":"+targetTypeList.size()+"}}}}";
-        requestBody = new StringBuilder(body);
-        try {
-            responseDetails = PacHttpUtils.doHttpPost(urlToQueryBuffer.toString(), requestBody.toString());
-        } catch (Exception e) {
-            throw new DataException(e);
-        }
-        Map<String, Object> response = (Map<String, Object>) gson.fromJson(responseDetails, Map.class);
-        Map<String, Object> aggregations = (Map<String, Object>) response.get(AGGREGATIONS);
-        Map<String, Object> name = (Map<String, Object>) aggregations.get("name");
-        List<Map<String, Object>> buckets = (List<Map<String, Object>>) name.get(BUCKETS);
+			for (String tag : tagsList) {
+				body = body + "{\"match_phrase_prefix\":{\"missingTags\":\"" + tag + "\"}},";
+			}
+			body = body.substring(0, body.length() - 1);
+			body = body + "]";
+			body = body + ",\"minimum_should_match\":1";
+		}
+		body = body + "}},\"aggs\":{\"name\":{\"terms\":{\"field\":\"targetType.keyword\",\"size\":"
+				+ targetTypeList.size() + "}}}}";
+		requestBody = new StringBuilder(body);
+		try {
+			responseDetails = PacHttpUtils.doHttpPost(urlToQueryBuffer.toString(), requestBody.toString());
+		} catch (Exception e) {
+			throw new DataException(e);
+		}
+		Map<String, Object> response = (Map<String, Object>) gson.fromJson(responseDetails, Map.class);
+		Map<String, Object> aggregations = (Map<String, Object>) response.get(AGGREGATIONS);
+		Map<String, Object> name = (Map<String, Object>) aggregations.get("name");
+		List<Map<String, Object>> buckets = (List<Map<String, Object>>) name.get(BUCKETS);
 
-        return buckets
-                .parallelStream()
-                .filter(buket -> buket.get("doc_count") != null)
-                .collect(
-                        Collectors.toMap(buket -> buket.get("key").toString(), buket -> buket.get("doc_count"), (
-                                oldValue, newValue) -> newValue));
-    }
+		return buckets.parallelStream().filter(buket -> buket.get("doc_count") != null)
+				.collect(Collectors.toMap(buket -> buket.get("key").toString(), buket -> buket.get("doc_count"),
+						(oldValue, newValue) -> newValue));
+	}
 
     /*
      * (non-Javadoc)
@@ -1857,26 +1846,30 @@ if (ruleId.contains(TAGGIG_POLICY)) {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.tmobile.pacman.api.compliance.repository.ComplianceRepository#
-     * getUnpatchedAssetsCount(java.lang.String, java.lang.String)
-     */
-    public Long getUnpatchedAssetsCount(String assetGroup, String targetType) throws DataException {
-        String ruleId = null;
-        if (EC2.equalsIgnoreCase(targetType)) {
-            ruleId = EC2_KERNEL_COMPLIANCE_RULE;
-        }
-        Map<String, Object> mustFilter = formatUnpatchedMustFilter(targetType, ruleId);
-        String type = ISSUE_UNDERSCORE + targetType;
-        try {
-            return elasticSearchRepository.getTotalDocumentCountForIndexAndType(assetGroup, type, mustFilter, null,
-                    null, null, null);
-        } catch (Exception e) {
-            throw new DataException("" + e);
-        }
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.tmobile.pacman.api.compliance.repository.ComplianceRepository#
+	 * getUnpatchedAssetsCount(java.lang.String, java.lang.String)
+	 */
+	public Long getUnpatchedAssetsCount(String assetGroup, String targetType, String application) throws DataException {
+		String policyId = null;
+		if (EC2.equalsIgnoreCase(targetType) || VIRTUALMACHINE.equalsIgnoreCase(targetType)) {
+			policyId = CLOUD_KERNEL_COMPLIANCE_POLICY;
+		}
+
+		Map<String, Object> mustFilter = formatUnpatchedMustFilter(targetType, policyId);
+		if (StringUtils.isNotBlank(application)) {
+			mustFilter.put(TAGS_APPS, application);
+		}
+		String type = ISSUE_UNDERSCORE + targetType;
+		try {
+			return elasticSearchRepository.getTotalDocumentCountForIndexAndType(assetGroup, type, mustFilter, null,
+					null, null, null);
+		} catch (Exception e) {
+			throw new DataException("" + e);
+		}
+	}
 
     /*
      * (non-Javadoc)
@@ -1950,56 +1943,85 @@ if (ruleId.contains(TAGGIG_POLICY)) {
         return ruleCategoryPercentage;
     }
 
-    private JsonObject getResopnse(String assetGroup,String apiType,String application,String environment) throws DataException{
-        StringBuilder urlToQuery = formatURL(assetGroup, EC2,apiType);
-        String responseJson = "";
-        try {
-            responseJson = PacHttpUtils.doHttpPost(urlToQuery.toString(),
-                    getQueryForQualys(apiType,application,environment).toString());
-        } catch (Exception e) {
-            logger.error(e.toString());
-            throw new DataException(e.getMessage());
-        }
-        JsonParser jsonParser = new JsonParser();
-        return (JsonObject) jsonParser.parse(responseJson);
-    }
+    private JsonObject getResopnse(String assetGroup, String apiType, String application, String environment,
+			String resourceType) throws DataException {
+		StringBuilder urlToQuery = formatURL(assetGroup, resourceType, apiType);
+		String responseJson = "";
+		try {
+			responseJson = PacHttpUtils.doHttpPost(urlToQuery.toString(),
+					getQueryForQualys(apiType, application, environment, resourceType).toString());
+		} catch (Exception e) {
+			logger.error(e.toString());
+			throw new DataException(e.getMessage());
+		}
+		JsonParser jsonParser = new JsonParser();
+		return (JsonObject) jsonParser.parse(responseJson);
+	}
 
-    public Long getInstanceCountForQualys(String assetGroup,String apiType,String application,String environment)
-            throws DataException {
-        return getResopnse(assetGroup, apiType, application, environment).get(COUNT).getAsLong();
-    }
 
-    public Map<String, Long> getInstanceCountForQualysByAppsOrEnv(String assetGroup,String apiType,String application,String environment )
-            throws DataException {
-        Map<String, Long> assetWithTagsMap = new HashMap<>();
-        JsonObject resultJson = getResopnse(assetGroup, apiType, application, environment);
+    public Long getInstanceCountForQualys(String assetGroup, String apiType, String application, String environment,
+			String resourceType) throws DataException {
+		return getResopnse(assetGroup, apiType, application, environment, resourceType).get(COUNT).getAsLong();
+	}
 
-            JsonObject aggs = (JsonObject) resultJson.get(AGGREGATIONS);
-            JsonObject name = (JsonObject) aggs.get("NAME");
-            JsonArray buckets = name.get(BUCKETS).getAsJsonArray();
-            // convert Json Array to Map object
-            for (JsonElement bucket : buckets) {
-                assetWithTagsMap.put(bucket.getAsJsonObject().get("key").getAsString(), bucket.getAsJsonObject()
-                        .get(DOC_COUNT).getAsLong());
-            }
+    public Map<String, Long> getInstanceCountForQualysByAppsOrEnv(String assetGroup, String apiType, String application,
+			String environment, String resourceType) throws DataException {
+		Map<String, Long> assetWithTagsMap = new HashMap<>();
+		JsonObject resultJson = getResopnse(assetGroup, apiType, application, environment, resourceType);
 
-        return assetWithTagsMap;
-    }
+		JsonObject aggs = (JsonObject) resultJson.get(AGGREGATIONS);
+		JsonObject name = (JsonObject) aggs.get("NAME");
+		JsonArray buckets = name.get(BUCKETS).getAsJsonArray();
+		// convert Json Array to Map object
+		for (JsonElement bucket : buckets) {
+			assetWithTagsMap.put(bucket.getAsJsonObject().get("key").getAsString(),
+					bucket.getAsJsonObject().get(DOC_COUNT).getAsLong());
+		}
 
-    private StringBuilder getQueryForQualys(String apiType,String application,String environment){
-        StringBuilder requestBody = new StringBuilder(
-                         "{\"query\":{\"bool\":{\"must\":[{\"match\":{\"latest\":\"true\"}},{\"match\":{\"statename\":\"running\"}}],\"should\":[{\"script\":{\"script\":\"LocalDate.parse(doc['firstdiscoveredon.keyword'].value.substring(0,10)).isBefore(LocalDate.from(Instant.ofEpochMilli(new Date().getTime()).atZone(ZoneId.systemDefault())).minusDays(7))\"}},{\"has_child\":{\"type\":\"qualysinfo\",\"query\":{\"match\":{\"latest\":\"true\"}}}}],\"minimum_should_match\":1}}");
-        if ("noncompliancepolicy".equals(apiType)) {
-            requestBody
-                    .append("}");
-        }else if ("policydetailsbyapplication".equals(apiType)) {
-            requestBody
-                    .append(",\"aggs\":{\"NAME\":{\"terms\":{\"field\":\"tags.Application.keyword\",\"size\":10000}}}}");
-        } else if ("policydetailsbyenvironment".equals(apiType)) {
-            requestBody = new StringBuilder("{\"query\":{\"bool\":{\"must\":[{\"match\":{\"latest\":\"true\"}},{\"match\":{\"statename\":\"running\"}},{\"match\":{\"tags.Application.keyword\":\""+application+"\"}},{\"match\":{\"tags.Environment.keyword\":\""+environment+"\"}}],\"should\":[{\"script\":{\"script\":\"LocalDate.parse(doc['firstdiscoveredon.keyword'].value.substring(0,10)).isBefore(LocalDate.from(Instant.ofEpochMilli(new Date().getTime()).atZone(ZoneId.systemDefault())).minusDays(7))\"}},{\"has_child\":{\"type\":\"qualysinfo\",\"query\":{\"match\":{\"latest\":\"true\"}}}}],\"minimum_should_match\":1}}}");
-        }
-        return requestBody;
-    }
+		return assetWithTagsMap;
+	}
+
+	private StringBuilder getQueryForQualys(String apiType, String application, String environment,
+			String resourceType) {
+		StringBuilder requestBody = new StringBuilder();
+
+		if (EC2.equals(resourceType)) {
+			requestBody = new StringBuilder(
+					"{\"query\":{\"bool\":{\"must\":[{\"match\":{\"latest\":\"true\"}},{\"match\":{\"statename.keyword\":\"running\"}}");
+		} else if (VIRTUALMACHINE.equals(resourceType)) {
+			requestBody = new StringBuilder(
+					"{\"query\":{\"bool\":{\"must\":[{\"match\":{\"latest\":\"true\"}},{\"match\":{\"status.keyword\":\"running\"}}");
+		}
+		if (StringUtils.isNotBlank(application)) {
+			requestBody.append(",{\"match\":{\"tags.Application.keyword\":\"" + application + "\"}}");
+		}
+		if (StringUtils.isNotBlank(environment)) {
+			requestBody.append(",{\"match\":{\"tags.Environment.keyword\":\"" + environment + "\"}}");
+		}
+		requestBody.append(
+				"],\"should\":[{\"script\":{\"script\":\"LocalDate.parse(doc['firstdiscoveredon.keyword'].value.substring(0,10)).isBefore(LocalDate.from(Instant.ofEpochMilli(new Date().getTime()).atZone(ZoneId.systemDefault())).minusDays(7))\"}},{\"has_child\":{\"type\":\"qualysinfo\",\"query\":{\"match\":{\"latest\":\"true\"}}}}],\"minimum_should_match\":1}}");
+		if ("noncompliancepolicy".equals(apiType)) {
+
+			requestBody.append("}");
+		} else if ("policydetailsbyapplication".equals(apiType)) {
+			requestBody.append(
+					",\"aggs\":{\"NAME\":{\"terms\":{\"field\":\"tags.Application.keyword\",\"size\":10000}}}}");
+		} else if ("policydetailsbyenvironment".equals(apiType)) {
+
+			if (EC2.equals(resourceType)) {
+				requestBody = new StringBuilder(
+						"{\"query\":{\"bool\":{\"must\":[{\"match\":{\"latest\":\"true\"}},{\"match\":{\"statename.keyword\":\"running\"}},{\"match\":{\"tags.Application.keyword\":\""
+								+ application + "\"}},{\"match\":{\"tags.Environment.keyword\":\"" + environment
+								+ "\"}}],\"should\":[{\"script\":{\"script\":\"LocalDate.parse(doc['firstdiscoveredon.keyword'].value.substring(0,10)).isBefore(LocalDate.from(Instant.ofEpochMilli(new Date().getTime()).atZone(ZoneId.systemDefault())).minusDays(7))\"}},{\"has_child\":{\"type\":\"qualysinfo\",\"query\":{\"match\":{\"latest\":\"true\"}}}}],\"minimum_should_match\":1}}}");
+			} else if (VIRTUALMACHINE.equals(resourceType)) {
+				requestBody = new StringBuilder(
+						"{\"query\":{\"bool\":{\"must\":[{\"match\":{\"latest\":\"true\"}},{\"match\":{\"status.keyword\":\"running\"}},{\"match\":{\"tags.Application.keyword\":\""
+								+ application + "\"}},{\"match\":{\"tags.Environment.keyword\":\"" + environment
+								+ "\"}}],\"should\":[{\"script\":{\"script\":\"LocalDate.parse(doc['firstdiscoveredon.keyword'].value.substring(0,10)).isBefore(LocalDate.from(Instant.ofEpochMilli(new Date().getTime()).atZone(ZoneId.systemDefault())).minusDays(7))\"}},{\"has_child\":{\"type\":\"qualysinfo\",\"query\":{\"match\":{\"latest\":\"true\"}}}}],\"minimum_should_match\":1}}}");
+			}
+		}
+		return requestBody;
+	}
 
     private StringBuilder formatURL(String assetGroup, String resourcetype,String apiType) {
         StringBuilder urlToQuery = new StringBuilder(esUrl).append("/").append(
@@ -2422,4 +2444,104 @@ if (ruleId.contains(TAGGIG_POLICY)) {
         }
         return assetCountByEnv;
     }
+    
+	/**
+	 * Function for getting dataSource and target type of an asset group and domain
+	 * 
+	 * @see com.tmobile.pacman.api.compliance.repository.ComplianceRepository#
+	 *      getDataSourceForTargetTypeForAG(java.lang.String, java.lang.String)
+	 */
+	public List<Map<String, String>> getDataSourceForTargetTypeForAG(String assetGroup, String domain,
+			String targetType) {
+
+		List<Map<String, String>> dataSourceForTargetType = new ArrayList<Map<String, String>>();
+		AssetApi assetApi = assetServiceClient.getTargetTypeList(assetGroup, domain);
+		AssetApiData data = assetApi.getData();
+		AssetCountDTO[] targetTypes = data.getTargettypes();
+		for (AssetCountDTO name : targetTypes) {
+			Map<String, String> datasourceTargetType = new HashMap<String, String>();
+			if (!Strings.isNullOrEmpty(name.getType())) {
+				datasourceTargetType.put(TYPE, name.getType());
+				datasourceTargetType.put(PROVIDER, name.getProvider());
+				if (targetType == null) {
+					dataSourceForTargetType.add(datasourceTargetType);
+				} else {
+					if (datasourceTargetType.get(TYPE).equals(targetType)) {
+						dataSourceForTargetType.add(datasourceTargetType);
+					}
+				}
+			}
+		}
+		return dataSourceForTargetType;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.tmobile.pacman.api.compliance.repository.ComplianceRepository#
+	 * getTotalAssetCount(java.lang.String, java.lang.String)
+	 */
+	public Map<String, Long> getTotalAssetCount(String assetGroup, String domain, String application, String type) {
+		AssetCount totalAssets = assetServiceClient.getTotalAssetsCount(assetGroup, type, domain, application,"");   
+		AssetCountData data = totalAssets.getData();
+		AssetCountByAppEnvDTO[] assetcount = data.getAssetcount();
+		Map<String, Long> assetCountByType = new HashMap<>();
+		for (AssetCountByAppEnvDTO assetCount_Count : assetcount) {
+			assetCountByType.put(assetCount_Count.getType(), Long.parseLong(assetCount_Count.getCount()));
+		}
+		return assetCountByType;
+	}
+	
+	@Override
+	public Map<String, Integer> getExemptedAssetsCountByRule(String assetGroup, String application, String type)
+			throws DataException {
+
+		Map<String, Integer> exemptedAssetsCount = new HashMap<>();
+		ExemptedAssetByPolicy exemptedAssetByPolicy = assetServiceClient.getTotalAssetsExemptedByPolicy(assetGroup,
+				application, type, null);
+		ExemptedAssetByPolicyData data = exemptedAssetByPolicy.getData();
+		for (Map<String, Object> exempted : data.getExempted()) {
+			exemptedAssetsCount.put(exempted.get("ruleid").toString(),
+					Integer.parseInt(exempted.get(COUNT).toString()));
+		}
+		return exemptedAssetsCount;
+	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.tmobile.pacman.api.compliance.repository.ComplianceRepository#
+	 * getPatchabeAssetsCount(java.lang.String, java.lang.String)
+	 */
+	public Long getPatchabeAssetsCount(String assetGroup, String targetType, String application, String environment,
+			String searchText) throws DataException {
+		Map<String, Object> mustFilter = new HashMap<>();
+		Map<String, Object> mustNotFilter = null;
+
+		if (!StringUtils.isEmpty(application)) {
+			mustFilter.put(CommonUtils.convertAttributetoKeyword(TAGS_APPLICATION), application);
+		}
+		if (!StringUtils.isEmpty(environment)) {
+			mustFilter.put(CommonUtils.convertAttributetoKeyword(TAGS_ENVIRONMENT), environment);
+		}
+
+		mustFilter.put(LATEST, true);
+		if (EC2.equalsIgnoreCase(targetType)) {
+			mustFilter.put(CommonUtils.convertAttributetoKeyword(STATE_NAME), RUNNING);
+			mustNotFilter = new HashMap<>();
+			mustNotFilter.put(CommonUtils.convertAttributetoKeyword(PLATFORM), WINDOWS);
+		} else if (VIRTUALMACHINE.equalsIgnoreCase(targetType)) {
+			mustFilter.put(CommonUtils.convertAttributetoKeyword("status"), RUNNING);
+			mustNotFilter = new HashMap<>();
+			mustNotFilter.put(CommonUtils.convertAttributetoKeyword("osType"), AZURE_WINDOWS);
+		}
+		try {
+			return elasticSearchRepository.getTotalDocumentCountForIndexAndType(assetGroup, targetType, mustFilter,
+					mustNotFilter, null, searchText, null);
+		} catch (Exception e) {
+			throw new DataException(e);
+		}
+	}
+
+	
 }

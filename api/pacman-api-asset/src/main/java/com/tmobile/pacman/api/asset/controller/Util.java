@@ -59,7 +59,7 @@ public class Util {
      */
     public static boolean isValidTargetType(String ag, String type) {
         try {
-            List<Map<String, Object>> targetTypes = assetService.getTargetTypesForAssetGroup(ag, null);
+            List<Map<String, Object>> targetTypes = assetService.getTargetTypesForAssetGroup(ag, null, null);
             return targetTypes.stream().filter(obj -> type.equals(obj.get("type"))).count() > 0 ? true : false;
         } catch (Exception e) {
             LOGGER.error("Error in isValidTargetType ",e);

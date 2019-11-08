@@ -74,6 +74,8 @@ public class SearchRepositoryImpl implements SearchRepository {
     private int esPort;
     @Value("${vulnerability.types}")
     private String configuredVulnTargetTypes;
+    @Value("${datasource.types:aws,azure}")
+    private String dataSourceTypes;
 
     @Autowired
     ElasticSearchRepository esRepository;
@@ -347,7 +349,7 @@ public class SearchRepositoryImpl implements SearchRepository {
     }
 
     private List<String> getTypesForDomain(String ag, String domain) {
-        List<Map<String, Object>> domainData = assetService.getTargetTypesForAssetGroup(ag, domain);
+        List<Map<String, Object>> domainData = assetService.getTargetTypesForAssetGroup(ag, domain, null);
         List<String> typesForDomain = new ArrayList<>();
         domainData.forEach(domainMap -> {
             domainMap.forEach((key, value) -> {
@@ -465,13 +467,18 @@ public class SearchRepositoryImpl implements SearchRepository {
         JsonArray types = resultJson.get("aggregations").getAsJsonObject().get(aggName).getAsJsonObject().get("buckets")
                 .getAsJsonArray();
         List<Map<String, Object>> bucketList = new ArrayList<>();
+        String dsArray[] = dataSourceTypes.split(",");
         for (JsonElement type : types) {
             JsonObject typeObj = type.getAsJsonObject();
             String fieldName = typeObj.get("key").getAsString();
 
             // To handle vulnerabilities type
-            if (fieldName.startsWith("aws_")) {
-                fieldName = fieldName.substring(4);
+       
+            for(String ds : dsArray) {
+	            if (fieldName.startsWith(ds+"_")) {
+	                fieldName = fieldName.substring(ds.length()+1);
+	                break;
+	            }
             }
 
             long count = typeObj.get("doc_count").getAsLong();

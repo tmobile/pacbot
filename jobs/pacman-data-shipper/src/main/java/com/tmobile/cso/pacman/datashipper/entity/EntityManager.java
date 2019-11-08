@@ -31,6 +31,7 @@ import org.slf4j.LoggerFactory;
 
 import com.tmobile.cso.pacman.datashipper.config.ConfigManager;
 import com.tmobile.cso.pacman.datashipper.dao.RDSDBManager;
+import com.tmobile.cso.pacman.datashipper.error.ErrorManager;
 import com.tmobile.cso.pacman.datashipper.es.ESManager;
 import com.tmobile.cso.pacman.datashipper.util.Constants;
 import com.tmobile.cso.pacman.datashipper.util.Util;
@@ -74,7 +75,6 @@ public class EntityManager implements Constants {
      * @return the list
      */
     public List<Map<String, String>> uploadEntityData(String datasource) {
-    		
     	List<Map<String,String>> errorList = new ArrayList<>();
         Set<String> types = ConfigManager.getTypes(datasource);
         Iterator<String> itr = types.iterator();
@@ -95,7 +95,7 @@ public class EntityManager implements Constants {
                 Map<String, Map<String, String>> currentInfo = ESManager.getExistingInfo(indexName, type, filters);
                 LOGGER.info("Existing no of docs : {}" , currentInfo.size());
                 
-                List<Map<String, String>> entities = fetchEntitiyInfoFromS3(datasource,type,errorList);
+                List<Map<String, Object>> entities = fetchEntitiyInfoFromS3(datasource,type,errorList);
                 List<Map<String, String>> tags = fetchTagsForEntitiesFromS3(datasource, type);
                 
                 LOGGER.info("Fetched from S3");
@@ -113,7 +113,7 @@ public class EntityManager implements Constants {
 	                String[] keysArray = keys.split(",");
 	                
 	                prepareDocs(currentInfo, entities, tags, overridableInfo, overridesMap, idColumn, keysArray, type);
-	                Map<String,Long> errUpdateInfo = AWSErrorManager.getInstance().handleError(datasource,indexName,type,loaddate,errorList,true);
+	                Map<String,Long> errUpdateInfo = ErrorManager.getInstance(datasource).handleError(indexName,type,loaddate,errorList,true);
 	                Map<String, Object> uploadInfo = ESManager.uploadData(indexName, type, entities, loaddate);
 	                stats.putAll(uploadInfo);
 	                stats.put("errorUpdates", errUpdateInfo);
@@ -149,8 +149,8 @@ public class EntityManager implements Constants {
 		return tags;
 	}
 
-	private List<Map<String, String>> fetchEntitiyInfoFromS3(String datasource,String type,List<Map<String, String>> errorList) {
-		List<Map<String, String>> entities = new ArrayList<>() ;
+	private List<Map<String, Object>> fetchEntitiyInfoFromS3(String datasource,String type,List<Map<String, String>> errorList) {
+		List<Map<String, Object>> entities = new ArrayList<>() ;
 		try{
 			entities = Util.fetchDataFromS3(s3Account,s3Region, s3Role,bucketName, dataPath+"/"+datasource + "-" + type+".data");
 		} catch (Exception e) {
@@ -178,11 +178,11 @@ public class EntityManager implements Constants {
      * @param _keys the keys
      * @param _type the type
      */
-    private  void prepareDocs(Map<String, Map<String, String>> currentInfo, List<Map<String, String>> entities,
+    private  void prepareDocs(Map<String, Map<String, String>> currentInfo, List<Map<String, Object>> entities,
             List<Map<String, String>> tags, List<Map<String, String>> overridableInfo,
             Map<String, List<Map<String, String>>> overridesMap, String idColumn, String[] _keys, String _type) {
         entities.parallelStream().forEach(entityInfo -> {
-            String id = entityInfo.get(idColumn);
+            String id = entityInfo.get(idColumn).toString();
             String docId = Util.concatenate(entityInfo, _keys, "_");
             entityInfo.put("_resourceid", id);
             entityInfo.put("_docid", docId);
@@ -192,7 +192,7 @@ public class EntityManager implements Constants {
                 Map<String, String> _currInfo = currentInfo.get(docId);
                 if (_currInfo != null) {
                     if (_currInfo.get(FIRST_DISCOVERED) == null) {
-                        _currInfo.put(FIRST_DISCOVERED, entityInfo.get(DISCOVERY_DATE));
+                    	_currInfo.put(FIRST_DISCOVERED, entityInfo.get(DISCOVERY_DATE).toString());
                     }
                     entityInfo.putAll(_currInfo);
                 } else {
@@ -224,8 +224,8 @@ public class EntityManager implements Constants {
      * @param entity
      *            the entity
      */
-    private static void updateOnPremData(Map<String, String> entity) {
-        entity.put("tags.Application", entity.get("u_business_service").toLowerCase());
+    private static void updateOnPremData(Map<String, Object> entity) {
+        entity.put("tags.Application", entity.get("u_business_service").toString().toLowerCase());
         entity.put("tags.Environment", entity.get("used_for"));
         entity.put("inScope", "true");
     }
@@ -240,7 +240,7 @@ public class EntityManager implements Constants {
      * @param overrideFields
      *            the override fields
      */
-    private static void override(Map<String, String> entity, List<Map<String, String>> overrideList,
+    private static void override(Map<String, Object> entity, List<Map<String, String>> overrideList,
             List<Map<String, String>> overrideFields) {
 
         if (overrideList != null && !overrideList.isEmpty()) {
@@ -262,7 +262,7 @@ public class EntityManager implements Constants {
                     entity.put(_strOverrideField, "");
                 }
 
-                String value = entity.get(_strOverrideField);
+                String value = entity.get(_strOverrideField).toString();
                 if (_strOverrideField.startsWith(PAC_OVERRIDE)) {
                     String originalField = _strOverrideField.replace(PAC_OVERRIDE, "");
                     String finalField = _strOverrideField.replace(PAC_OVERRIDE, "final_");
@@ -270,7 +270,7 @@ public class EntityManager implements Constants {
                                                              // field exists in
                                                              // source, we need
                                                              // to add
-                        String originalValue = entity.get(originalField);
+                        String originalValue = entity.get(originalField).toString();
                         if ("".equals(value)) {
                             entity.put(finalField, originalValue);
                         } else {

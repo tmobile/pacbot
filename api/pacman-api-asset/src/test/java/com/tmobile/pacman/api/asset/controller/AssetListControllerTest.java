@@ -298,7 +298,7 @@ public class AssetListControllerTest {
         aMap.put("type", "ec2");
         aList.add(aMap);
         
-        when(service.getTargetTypesForAssetGroup(anyString(),anyString())).thenReturn(aList);
+        when(service.getTargetTypesForAssetGroup(anyString(),anyString(),anyString())).thenReturn(aList);
         ReflectionTestUtils.setField(controller, "assetService", service);
         ResponseEntity<Object> responseObj2 = controller.getEditableFieldsByTargetType("ag","ec2");
         assertTrue(responseObj2.getStatusCode()==HttpStatus.OK);

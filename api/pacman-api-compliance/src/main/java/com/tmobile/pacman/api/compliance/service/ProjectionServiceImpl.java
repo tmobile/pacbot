@@ -87,7 +87,7 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
         try {
             return repository.updateProjectionByTargetType(projectionRequest);
         } catch (DataException e) {
-            logger.error(e.getMessage());
+        	logger.error("Error @ updateProjection", e);
             throw new ServiceException(e);
         }
     }
@@ -109,6 +109,7 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
                 totalAssets = repository
                         .getTotalAssetCountByTargetType(resourceType);
             } catch (DataException e) {
+            	logger.error("Error @ getProjection", e);
                 throw new ServiceException(e);
             }
         }
@@ -129,6 +130,7 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
         try {
             return repository.getTotalAssetCountByTargetType(targetType);
         } catch (DataException e) {
+        	logger.error("Error @ getTotalAsseCountByTargetType", e);
             throw new ServiceException(e);
         }
     }
@@ -177,9 +179,9 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
                         }
                        Long onpremTotalAssets = 0l;
                        if(complianceService.getPatching(
-                               assetGroup, resourceType).containsKey(TOTAL_INSTANCES)){
+                               assetGroup, resourceType, null).containsKey(TOTAL_INSTANCES)){
                            onpremTotalAssets = complianceService.getPatching(
-                                   assetGroup, resourceType).get(TOTAL_INSTANCES);
+                                   assetGroup, resourceType, null).get(TOTAL_INSTANCES);
                        }
                        
                         totalAssets += onpremTotalAssets;
@@ -205,9 +207,9 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
                         }
                        Long ec2TotalAssets = 0l;
                        if(complianceService.getPatching(
-                               assetGroup, resourceType).containsKey(TOTAL_INSTANCES)){
+                               assetGroup, resourceType, null).containsKey(TOTAL_INSTANCES)){
                            ec2TotalAssets = complianceService.getPatching(
-                                   assetGroup, resourceType).get(TOTAL_INSTANCES);
+                                   assetGroup, resourceType, null).get(TOTAL_INSTANCES);
                        }
                        
                         totalAssets += ec2TotalAssets;
@@ -228,6 +230,7 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
                         }
                     }
                 } catch (DataException e) {
+                	logger.error("Error @ getPatchingAndProjectionByWeek", e);
                     throw new ServiceException(e);
                 }
             }
@@ -235,6 +238,7 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
             try {
                 patchingSnapshot = repository.getPatchingSnapshot(assetGroup);
             } catch (DataException e) {
+            	logger.error("Error @ getPatchingAndProjectionByWeek while getting the patching snapshot", e);
                 throw new ServiceException(e);
             }
             List<LocalDate> lastDayOfEachWeek = repository
@@ -348,7 +352,7 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
 
                         if (!appsDetails.isEmpty()) {
                            Long onpremTotalAssets = complianceService.getPatching(
-                                    assetGroup, resourceType).get(
+                                    assetGroup, resourceType, null).get(
                                     TOTAL_INSTANCES);
                             totalAssets += onpremTotalAssets;
                             directorListMap = getDirectorsOrExecutorsPatchingProgress(
@@ -374,7 +378,7 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
                         List<Map<String, Object>> appsDetails = repository.getAppsDetails("Cloud");
                         if (!appsDetails.isEmpty()) {
                            Long ec2TotalAssets = complianceService.getPatching(
-                                    assetGroup, resourceType).get(
+                                    assetGroup, resourceType, null).get(
                                     TOTAL_INSTANCES);
                             totalAssets += ec2TotalAssets;
                             directorListMap = getDirectorsOrExecutorsPatchingProgress(
@@ -386,6 +390,7 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
                         }
                     }
                 } catch (DataException e) {
+                	logger.error("Error @ getPatchingProgressByDirector", e);
                     throw new ServiceException(e);
                 }
             }
@@ -450,7 +455,7 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
                         List<Map<String, Object>> appsDetails = repository.getAppsDetails("OnPrem");
                         if (!appsDetails.isEmpty()) {
                             Long onpremTotalAssets = complianceService.getPatching(
-                                    assetGroup, resourceType).get(TOTAL_INSTANCES);
+                                    assetGroup, resourceType, null).get(TOTAL_INSTANCES);
                             totalAssets += onpremTotalAssets;
                             executorsListMap = getDirectorsOrExecutorsPatchingProgress(
                                     EXCUTIVE_SPONSOR, quarterScope, resourceType,
@@ -460,6 +465,7 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
                                     patchingProgressByExecutorsList);
                         }
                     } catch (DataException e) {
+                    	logger.error("Error @ patchProgByExSponsor", e);
                         throw new ServiceException(e);
                     }
                    
@@ -480,7 +486,7 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
                         List<Map<String, Object>> appsDetails = repository.getAppsDetails("Cloud");
                         if (!appsDetails.isEmpty()) {
                             Long ec2TotalAssets = complianceService.getPatching(
-                                    assetGroup, resourceType).get(TOTAL_INSTANCES);
+                                    assetGroup, resourceType, null).get(TOTAL_INSTANCES);
                             totalAssets += ec2TotalAssets;
                             executorsListMap = getDirectorsOrExecutorsPatchingProgress(
                                     EXCUTIVE_SPONSOR, quarterScope, resourceType,
@@ -490,6 +496,7 @@ public class ProjectionServiceImpl implements ProjectionService, Constants {
                                     patchingProgressByExecutorsList);
                         }
                     } catch (DataException e) {
+                    	logger.error("Error @ patchProgByExSponsor", e);
                         throw new ServiceException(e);
                     }
                     
