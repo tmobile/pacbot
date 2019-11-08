@@ -43,10 +43,13 @@ MAIL_SMTP_SSL_TEST_CONNECTION = "false"
 USER_EMAIL_ID = ""
 
 # System reads below data from user if not updated here
+AWS_AUTH_MECHANISM = None  # Value should be numeric 1 or 2 or 3. I. If kept like this input is read from
+# if AWS_AUTH_MECHANISM == 1
 AWS_ACCESS_KEY = ""
 AWS_SECRET_KEY = ""
 AWS_REGION = ""
-
+# If AWS_AUTH_MECHANISM == 2, AWS_ASSUME_ROLE_ARN is required
+AWS_ASSUME_ROLE_ARN = ""
 
 # This settings enable Vulnerability feature and servie
 ENABLE_VULNERABILITY_FEATURE = False
