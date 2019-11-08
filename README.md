@@ -6,7 +6,7 @@
 
 
 <img src="./wiki/images/banner_magenta.png">
-<img src="./wiki/images/icon-cloud-aws.png" alt="aws" width="10" height="10">
+<img src="./wiki/images/icon-cloud-aws.png" alt="aws" width="50" height="50">
 
 
 
