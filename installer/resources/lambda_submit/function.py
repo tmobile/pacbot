@@ -10,7 +10,7 @@ from resources.batch.job import SubmitAndRuleEngineJobDefinition, BatchJobsQueue
 from resources.data.aws_info import AwsAccount, AwsRegion
 from resources.lambda_submit.s3_upload import UploadLambdaSubmitJobZipFile, BATCH_JOB_FILE_NAME
 from resources.pacbot_app.alb import ApplicationLoadBalancer
-from resources.pacbot_app.utils import need_to_deploy_vulnerability_service
+from resources.pacbot_app.utils import need_to_deploy_vulnerability_service, need_to_enable_azure
 import json
 
 
@@ -37,7 +37,6 @@ class SubmitJobLambdaFunction(LambdaFunctionResource):
 class DataCollectorEventRule(CloudWatchEventRuleResource):
     name = "AWS-Data-Collector"
     schedule_expression = "cron(0 * * * ? *)"
-
     DEPENDS_ON = [SubmitJobLambdaFunction]
 
 
@@ -74,7 +73,6 @@ class DataCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
 class DataShipperEventRule(CloudWatchEventRuleResource):
     name = "aws-redshift-es-data-shipper"
     schedule_expression = "cron(0 * * * ? *)"
-
     DEPENDS_ON = [SubmitJobLambdaFunction, ESDomainPolicy]
 
 
@@ -119,7 +117,6 @@ class DataShipperCloudWatchEventTarget(CloudWatchEventTargetResource):
 class RecommendationsCollectorEventRule(CloudWatchEventRuleResource):
     name = "AWS-Recommendations-Collector"
     schedule_expression = "cron(0 * * * ? *)"
-
     DEPENDS_ON = [SubmitJobLambdaFunction]
 
 
@@ -161,7 +158,6 @@ class RecommendationsCollectorCloudWatchEventTarget(CloudWatchEventTargetResourc
 class CloudNotificationCollectorEventRule(CloudWatchEventRuleResource):
     name = "AWS-CloudNotification-Collector"
     schedule_expression = "cron(0 * * * ? *)"
-
     DEPENDS_ON = [SubmitJobLambdaFunction]
 
 
@@ -203,7 +199,6 @@ class CloudNotificationCollectorCloudWatchEventTarget(CloudWatchEventTargetResou
 class QualysKBCollectorEventRule(CloudWatchEventRuleResource):
     name = "qualys-kb-collector"
     schedule_expression = "cron(0 0 * * ? *)"
-
     DEPENDS_ON = [SubmitJobLambdaFunction]
     PROCESS = need_to_deploy_vulnerability_service()
 
@@ -214,7 +209,6 @@ class QualysKBCollectorEventRuleLambdaPermission(LambdaPermission):
     function_name = SubmitJobLambdaFunction.get_output_attr('function_name')
     principal = "events.amazonaws.com"
     source_arn = QualysKBCollectorEventRule.get_output_attr('arn')
-
     PROCESS = need_to_deploy_vulnerability_service()
 
 
@@ -243,7 +237,6 @@ class QualysKBCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
 class QualysAssetDataImporterEventRule(CloudWatchEventRuleResource):
     name = "qualys-asset-data-importer"
     schedule_expression = "cron(0 1 * * ? *)"
-
     DEPENDS_ON = [SubmitJobLambdaFunction]
     PROCESS = need_to_deploy_vulnerability_service()
 
@@ -254,7 +247,6 @@ class QualysAssetDataImporterEventRuleLambdaPermission(LambdaPermission):
     function_name = SubmitJobLambdaFunction.get_output_attr('function_name')
     principal = "events.amazonaws.com"
     source_arn = QualysAssetDataImporterEventRule.get_output_attr('arn')
-
     PROCESS = need_to_deploy_vulnerability_service()
 
 
@@ -278,5 +270,78 @@ class QualysAssetDataImporterCloudWatchEventTarget(CloudWatchEventTargetResource
             {'encrypt': False, 'key': "datasource", 'value': "aws"}
         ]
     })
-
     PROCESS = need_to_deploy_vulnerability_service()
+
+
+class AzureDataCollectorEventRule(CloudWatchEventRuleResource):
+    name = "pacbot-azure-discovery"
+    schedule_expression = "cron(0 * * * ? *)"
+    DEPENDS_ON = [SubmitJobLambdaFunction]
+    PROCESS = need_to_enable_azure()
+
+
+class AzureDataCollectorEventRuleLambdaPermission(LambdaPermission):
+    statement_id = "AllowExecutionFromAzureDataCollectorEvent"
+    action = "lambda:InvokeFunction"
+    function_name = SubmitJobLambdaFunction.get_output_attr('function_name')
+    principal = "events.amazonaws.com"
+    source_arn = AzureDataCollectorEventRule.get_output_attr('arn')
+    PROCESS = need_to_enable_azure()
+
+
+class AzureDataCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
+    rule = AzureDataCollectorEventRule.get_output_attr('name')
+    arn = SubmitJobLambdaFunction.get_output_attr('arn')
+    target_id = 'AzureDataCollectorTarget'  # Unique identifier
+    target_input = json.dumps({
+        'jobName': "pacbot-azure-discovery",
+        'jobUuid': "pacbot-azure-discovery",
+        'jobType': "jar",
+        'jobDesc': "Collects azure data and upload to S3",
+        'environmentVariables': [
+            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,azure-discovery/prd/latest"},
+        ],
+        'params': [
+            {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile.pacbot"},
+            {'encrypt': False, 'key': "file.path", 'value': "/home/ec2-user/azure-data"},
+        ]
+    })
+    PROCESS = need_to_enable_azure()
+
+
+class AzureDataShipperEventRule(CloudWatchEventRuleResource):
+    name = "data-shipper-azure"
+    schedule_expression = "cron(0 * * * ? *)"
+    DEPENDS_ON = [SubmitJobLambdaFunction, ESDomainPolicy]
+    PROCESS = need_to_enable_azure()
+
+
+class AzureDataShipperEventRuleLambdaPermission(LambdaPermission):
+    statement_id = "AllowExecutionFromAzureDataShipper"
+    action = "lambda:InvokeFunction"
+    function_name = SubmitJobLambdaFunction.get_output_attr('function_name')
+    principal = "events.amazonaws.com"
+    source_arn = AzureDataShipperEventRule.get_output_attr('arn')
+    PROCESS = need_to_enable_azure()
+
+
+class AzureDataShipperCloudWatchEventTarget(CloudWatchEventTargetResource):
+    rule = AzureDataShipperEventRule.get_output_attr('name')
+    arn = SubmitJobLambdaFunction.get_output_attr('arn')
+    target_id = 'AzureDataShipperTarget'  # Unique identifier
+    target_input = json.dumps({
+        'jobName': "data-shipper-azure",
+        'jobUuid': "data-shipper-azure",
+        'jobType': "jar",
+        'jobDesc': "Ship Azure Data from S3 to PacBot ES",
+        'environmentVariables': [
+            {'name': "CONFIG_URL", 'value': ApplicationLoadBalancer.get_api_base_url() + "/config/batch,azure-discovery/prd/latest"},
+        ],
+        'params': [
+            {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile.cso.pacman"},
+            {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
+            {'encrypt': False, 'key': "datasource", 'value': "azure"},
+            {'encrypt': False, 'key': "s3.data", 'value': "azure-inventory"}
+        ]
+    })
+    PROCESS = need_to_enable_azure()

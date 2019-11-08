@@ -1,4 +1,5 @@
 from resources.iam.base_role import BaseRole
+from resources.pacbot_app.utils import need_to_enable_azure
 import json
 
 
@@ -14,7 +15,10 @@ def get_rule_engine_cloudwatch_rules_var():
     data = data.replace("role/pacman_ro", "role/" + BaseRole.get_input_attr('name'))
 
     variable_dict_input = json.loads(data)
+    required_rules = []
     for index in range(len(variable_dict_input)):
+        if variable_dict_input[index]['assetGroup'] == "azure" and not need_to_enable_azure():
+            continue
         mod = index % 20 + 5
         item = {
             'ruleId': variable_dict_input[index]['ruleUUID'],
@@ -22,6 +26,6 @@ def get_rule_engine_cloudwatch_rules_var():
             'schedule': "cron(%s * * * ? *)" % str(mod)
         }
 
-        variable_dict_input[index] = item
+        required_rules.append(item)
 
-    return variable_dict_input
+    return required_rules

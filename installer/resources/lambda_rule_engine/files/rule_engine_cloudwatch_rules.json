@@ -2792,7 +2792,7 @@
     "modifiedDate": "2019-11-04",
     "severity": "high",
     "category": "security"
-  }
+  },
   {
     "ruleId": "PacMan_Azure_Enable_Adaptive_Application_controls_version-1_SecurityCenter_virtualmachine",
     "ruleUUID": "azure_virtualmachine_enable_adaptive_application",
