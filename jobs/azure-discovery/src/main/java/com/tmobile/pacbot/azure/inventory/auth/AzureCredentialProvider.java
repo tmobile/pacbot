@@ -1,5 +1,6 @@
 package com.tmobile.pacbot.azure.inventory.auth;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -56,8 +57,9 @@ public class AzureCredentialProvider {
 
 	
 	private  ApplicationTokenCredentials getCredentials(String tenant){
-		String clientId = System.getProperty("azure.clientId."+tenant);
-		String secret = System.getProperty("azure.secret."+tenant);
+		Map<String,String> creds = decodeCredetials().get(tenant);
+		String clientId = creds.get("clientId");
+		String secret = creds.get("secretId");
 		return new ApplicationTokenCredentials(clientId, 
 				tenant, secret, AzureEnvironment.AZURE);
 	}
@@ -65,8 +67,9 @@ public class AzureCredentialProvider {
 	public  String getAuthToken(String tenant) throws Exception {
 		String url = "https://login.microsoftonline.com/%s/oauth2/token";
 		
-		String clientId = System.getProperty("azure.clientId."+tenant);
-		String secret = System.getProperty("azure.secret."+tenant);
+		Map<String,String> creds = decodeCredetials().get(tenant);
+		String clientId = creds.get("clientId");
+		String secret = creds.get("secretId");
 		
 		
 		Map<String,String> params = new HashMap<>();
@@ -84,6 +87,17 @@ public class AzureCredentialProvider {
 			logger.error("Error getting mangement API token from Azure",e);
 			throw e;
 		}
+	}
+	
+	private Map<String,Map<String,String>> decodeCredetials() {
+		Map<String,Map<String,String>> credsMap = new HashMap<>();
+		String azureCreds = System.getProperty("azure.credentials");
+		Arrays.asList(azureCreds.split("##")).stream().forEach(cred-> {
+			 Map<String,String> credInfoMap = new HashMap<>();
+			 Arrays.asList(cred.split(",")).stream().forEach(str-> credInfoMap.put(str.split(":")[0],str.split(":")[1]));
+			 credsMap.put(credInfoMap.get("tenant"), credInfoMap);
+		});
+		return credsMap;
 	}
 
 	
