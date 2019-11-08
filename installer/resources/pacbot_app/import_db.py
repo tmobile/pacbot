@@ -25,11 +25,25 @@ class ReplaceSQLPlaceHolder(NullResource):
 
     DEPENDS_ON = [MySQLDatabase, ESDomain]
 
+    def prepare_azure_tenants_credentias(self):
+        tenants = Settings.get('AZURE_TENANTS', [])
+        credential_string = ""
+
+        for tenant in tenants:
+            tenant_id = tenant['tenant']
+            client_id = tenant['clientId']
+            seccret_id = tenant['secretId']
+            credential_string = "" if credential_string == "" else (credential_string + "##")
+            credential_string += "tenant:%s,clientId:%s,secretId:%s" % (tenant_id, client_id, seccret_id)
+
+        return credential_string
+
     def get_provisioners(self):
         script = os.path.join(get_terraform_scripts_dir(), 'sql_replace_placeholder.py')
         db_user_name = MySQLDatabase.get_input_attr('username')
         db_password = MySQLDatabase.get_input_attr('password')
         db_host = MySQLDatabase.get_output_attr('endpoint')
+        azure_credentails = self.prepare_azure_tenants_credentias()
         local_execs = [
             {
                 'local-exec': {
@@ -96,7 +110,8 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_CONFIG_SERVICE_URL': ApplicationLoadBalancer.get_http_url() + "/api/config/rule/prd/latest",
                         'ENV_PACBOT_AUTOFIX_RESOURCEOWNER_FALLBACK_MAILID': Settings.get('USER_EMAIL_ID', ""),
                         'ENV_QUALYS_INFO': Settings.get('QUALYS_INFO', ""),
-                        'ENV_QUALYS_API_URL': Settings.get('QUALYS_API_URL', "")
+                        'ENV_QUALYS_API_URL': Settings.get('QUALYS_API_URL', ""),
+                        'ENV_AZURE_CREDENTIALS': azure_credentails,
                     },
                     'interpreter': [Settings.PYTHON_INTERPRETER]
                 }
