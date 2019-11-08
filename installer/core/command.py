@@ -17,7 +17,11 @@ class Command:
         optional_args (list): Optional arguments passed to CLI
     """
     base_dir = 'commands'
-    valid_arg_keys = ["--" + K.CATEGORY_FIELD_NAME, "--dry-run"]
+    valid_arg_keys = [
+        "--" + K.CATEGORY_FIELD_NAME,
+        "--dry-run",
+        "--silent"
+    ]
 
     def __init__(self):
         self.commands_dir_path = self.get_core_commands_dir_path()
