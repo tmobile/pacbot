@@ -14,6 +14,7 @@ from resources.iam.base_role import BaseRole
 from resources.lambda_submit.function import SubmitJobLambdaFunction
 from resources.lambda_rule_engine.function import RuleEngineLambdaFunction
 from resources.s3.bucket import BucketStorage
+from resources.pacbot_app.utils import need_to_enable_azure
 
 from shutil import copy2
 import os
@@ -29,12 +30,13 @@ class ReplaceSQLPlaceHolder(NullResource):
         tenants = Settings.get('AZURE_TENANTS', [])
         credential_string = ""
 
-        for tenant in tenants:
-            tenant_id = tenant['tenant']
-            client_id = tenant['clientId']
-            seccret_id = tenant['secretId']
-            credential_string = "" if credential_string == "" else (credential_string + "##")
-            credential_string += "tenant:%s,clientId:%s,secretId:%s" % (tenant_id, client_id, seccret_id)
+        if need_to_enable_azure():
+            for tenant in tenants:
+                tenant_id = tenant['tenant']
+                client_id = tenant['clientId']
+                seccret_id = tenant['secretId']
+                credential_string = "" if credential_string == "" else (credential_string + "##")
+                credential_string += "tenant:%s,clientId:%s,secretId:%s" % (tenant_id, client_id, seccret_id)
 
         return credential_string
 
