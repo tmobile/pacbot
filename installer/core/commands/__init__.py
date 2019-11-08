@@ -23,6 +23,7 @@ class BaseCommand(metaclass=ABCMeta):
     category_field_name = K.CATEGORY_FIELD_NAME
     terraform_with_targets = False
     dry_run = False
+    silent_install = False
 
     def __init__(self, args):
         """
@@ -37,6 +38,7 @@ class BaseCommand(metaclass=ABCMeta):
             self.terraform_with_targets = True
 
         self.dry_run = True if any([x[1] for x in args if x[0] == "dry-run"]) else self.dry_run
+        self.silent_install = True if any([x[1] for x in args if x[0] == "silent"]) else self.silent_install
 
     def get_complete_resources(self, input_instance):
         """
@@ -140,7 +142,7 @@ class BaseCommand(metaclass=ABCMeta):
         Returns:
             input_instancce (object): Provider Input instance
         """
-        input_instancce = self.input_class()
+        input_instancce = self.input_class(self.silent_install)
         input_instancce.read_input()
 
         return input_instancce
