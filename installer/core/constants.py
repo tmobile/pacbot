@@ -93,10 +93,11 @@ TERRAFORM_APPLY_DRY_RUN = "Terraform apply is not executed as dry-run is enabled
 TERRAFORM_OUTPUT_STORED = "Terraform output is stored"
 
 TERRAFORM_DESTROY_STARTED = "Terraform destroy started"
-TERRAFORM_REDEPLOY_DESTROY_STARTED = "Terraform destroy started as part of Redeploy"
+TERRAFORM_REDEPLOY_DESTROY_STARTED = "Deleting resources for redeployment"
 TERRAFORM_DESTROY_RUNNING = "Destroying resources"
 TERRAFORM_DESTROY_ERROR = "Terraform destroy encountered an error"
 TERRAFORM_DESTROY_COMPLETED = "Terraform destroy executed successfully!!! Please check destroy log for more details"
+TERRAFORM_REDEP_DESTROY_COMPLETED = "Successful!!! Resources will be recreated in next steps."
 TERRAFORM_DESTROY_DRY_RUN = "Terraform destroy is not executed as dry-run is enabled"
 
 TERRAFORM_TAINT_STARTED = "Terraform taint(destroy and re-install) started"

@@ -21,6 +21,7 @@ class ReInstall(Install):  # Do not inherit Destroy
         current_install_status (int): Current install status
     """
     destroy = False
+    exception = None
 
     def execute(self, resources_to_destroy, resources_to_install, terraform_with_targets, dry_run):
         """
@@ -105,7 +106,10 @@ class ReInstall(Install):  # Do not inherit Destroy
             message = "Time elapsed: %s" % duration
             self.show_progress_message(message, 1.5)
         end_time = datetime.now()
-
         self.erase_printed_line()
-        self.show_step_finish(K.TERRAFORM_DESTROY_COMPLETED, write_log=False, color=self.GREEN_ANSI)
+        if self.exception:
+            self.show_step_finish(K.TERRAFORM_DESTROY_ERROR, write_log=False, color=self.ERROR_ANSI)
+        else:
+            self.show_step_finish(K.TERRAFORM_REDEP_DESTROY_COMPLETED, write_log=False, color=self.GREEN_ANSI)
+
         self.display_process_duration(start_time, end_time)
