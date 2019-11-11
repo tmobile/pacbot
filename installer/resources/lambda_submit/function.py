@@ -36,7 +36,7 @@ class SubmitJobLambdaFunction(LambdaFunctionResource):
 
 class DataCollectorEventRule(CloudWatchEventRuleResource):
     name = "AWS-Data-Collector"
-    schedule_expression = "cron(0 * * * ? *)"
+    schedule_expression = "cron(0 */6 * * ? *)"
     DEPENDS_ON = [SubmitJobLambdaFunction]
 
 
@@ -72,7 +72,7 @@ class DataCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
 
 class DataShipperEventRule(CloudWatchEventRuleResource):
     name = "aws-redshift-es-data-shipper"
-    schedule_expression = "cron(0 * * * ? *)"
+    schedule_expression = "cron(5 */6 * * ? *)"
     DEPENDS_ON = [SubmitJobLambdaFunction, ESDomainPolicy]
 
 
@@ -116,7 +116,7 @@ class DataShipperCloudWatchEventTarget(CloudWatchEventTargetResource):
 
 class RecommendationsCollectorEventRule(CloudWatchEventRuleResource):
     name = "AWS-Recommendations-Collector"
-    schedule_expression = "cron(0 * * * ? *)"
+    schedule_expression = "cron(6 */6 * * ? *)"
     DEPENDS_ON = [SubmitJobLambdaFunction]
 
 
@@ -157,7 +157,7 @@ class RecommendationsCollectorCloudWatchEventTarget(CloudWatchEventTargetResourc
 
 class CloudNotificationCollectorEventRule(CloudWatchEventRuleResource):
     name = "AWS-CloudNotification-Collector"
-    schedule_expression = "cron(0 * * * ? *)"
+    schedule_expression = "cron(7 */6 * * ? *)"
     DEPENDS_ON = [SubmitJobLambdaFunction]
 
 
@@ -274,8 +274,8 @@ class QualysAssetDataImporterCloudWatchEventTarget(CloudWatchEventTargetResource
 
 
 class AzureDataCollectorEventRule(CloudWatchEventRuleResource):
-    name = "pacbot-azure-discovery"
-    schedule_expression = "cron(0 * * * ? *)"
+    name = "azure-discovery"
+    schedule_expression = "cron(10 */6 * * ? *)"
     DEPENDS_ON = [SubmitJobLambdaFunction]
     PROCESS = need_to_enable_azure()
 
@@ -311,7 +311,7 @@ class AzureDataCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
 
 class AzureDataShipperEventRule(CloudWatchEventRuleResource):
     name = "data-shipper-azure"
-    schedule_expression = "cron(0 * * * ? *)"
+    schedule_expression = "cron(11 */6 * * ? *)"
     DEPENDS_ON = [SubmitJobLambdaFunction, ESDomainPolicy]
     PROCESS = need_to_enable_azure()
 
