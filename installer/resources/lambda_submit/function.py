@@ -274,7 +274,7 @@ class QualysAssetDataImporterCloudWatchEventTarget(CloudWatchEventTargetResource
 
 
 class AzureDataCollectorEventRule(CloudWatchEventRuleResource):
-    name = "pacbot-azure-discovery"
+    name = "azure-discovery"
     schedule_expression = "cron(10 */6 * * ? *)"
     DEPENDS_ON = [SubmitJobLambdaFunction]
     PROCESS = need_to_enable_azure()
