@@ -19,11 +19,11 @@ def get_rule_engine_cloudwatch_rules_var():
     for index in range(len(variable_dict_input)):
         if variable_dict_input[index]['assetGroup'] == "azure" and not need_to_enable_azure():
             continue
-        mod = index % 20 + 5
+        mod = int(index % 20 + 5)
         item = {
             'ruleId': variable_dict_input[index]['ruleUUID'],
             'ruleParams': variable_dict_input[index]['ruleParams'],
-            'schedule': "cron(%s * * * ? *)" % str(mod)
+            'schedule': "cron(%s */6 * * ? *)" % str(mod)
         }
 
         required_rules.append(item)
