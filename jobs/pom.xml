@@ -48,6 +48,7 @@
 		<module>pacman-cloud-notifications</module>
 		<module>recommendation-enricher</module>
 		<module>pacman-qualys-enricher</module>
+		<module>azure-discovery</module>
 	</modules>
 
 </project>
