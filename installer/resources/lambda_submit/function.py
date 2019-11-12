@@ -304,6 +304,7 @@ class AzureDataCollectorCloudWatchEventTarget(CloudWatchEventTargetResource):
         'params': [
             {'encrypt': False, 'key': "package_hint", 'value': "com.tmobile.pacbot"},
             {'encrypt': False, 'key': "file.path", 'value': "/home/ec2-user/azure-data"},
+            {'encrypt': False, 'key': "config_creds", 'value': "dXNlcjpwYWNtYW4="},
         ]
     })
     PROCESS = need_to_enable_azure()
