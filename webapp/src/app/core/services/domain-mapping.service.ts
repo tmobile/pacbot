@@ -18,11 +18,12 @@ import { COMPLIANCE_ROUTES, TOOLS_ROUTES, ADMIN_ROUTES, OMNISEARCH_ROUTES } from
 import { ASSETS_ROUTES } from '../../shared/constants/routes';
 import { DataCacheService } from './data-cache.service';
 import * as _ from 'lodash';
+import { Router } from '@angular/router';
 import { CONFIGURATIONS } from '../../../config/configurations';
 
 @Injectable()
 export class DomainMappingService {
-    constructor(private dataCacheService: DataCacheService) {}
+    constructor(private dataCacheService: DataCacheService, private router: Router) {}
 
     getDomainInfoForSelectedDomain(key) {
         /*
@@ -53,6 +54,26 @@ export class DomainMappingService {
                 const dashboardsObj = this.getDashboardsPathForADomain(domainObj.dashboards, moduleName);
                 ListOfDashboards = ListOfDashboards.concat(dashboardsObj.dashboards);
             });
+
+            const currentSelectedAg = this.dataCacheService.getCurrentSelectedAssetGroup();
+            let recentList = '';
+            let provider = [];
+            recentList = this.dataCacheService.getRecentlyViewedAssetGroups();
+            if (recentList) {
+            const currentAGDetails = JSON.parse(recentList).filter(element => element.ag === currentSelectedAg);
+            provider = this.fetchprovider(currentAGDetails);
+            }
+            if (currentSelectedAg.includes('azure') || (provider.length === 1 && provider[0] === 'azure')) {
+                ListOfDashboards = ListOfDashboards.filter(element => {
+                    if (window.location.pathname.includes(element.route) && element.cloudSpecific) {
+                        this.router.navigate(['pl/compliance/compliance-dashboard'], {
+                            queryParams: { domain: domainName },
+                            queryParamsHandling: 'merge'
+                        });
+                    }
+                    return element.cloudSpecific !== true;
+                });
+            }
 
              // check qualys enabled or not
             if (!CONFIGURATIONS.optional.general.qualysEnabled) {
@@ -126,6 +147,16 @@ export class DomainMappingService {
             }
         });
 
+    }
+
+    fetchprovider(assetGroupObject) {
+        const provider = [];
+        if (assetGroupObject.length && assetGroupObject[0].providers) {
+          assetGroupObject[0].providers.forEach(element => {
+            provider.push(element.provider);
+          });
+        }
+        return provider;
     }
 
     getDashboardsPathForADomain(dashboards, moduleName) {

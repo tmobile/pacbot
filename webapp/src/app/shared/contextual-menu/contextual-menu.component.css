@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
-.contextual-menu-wrapper {
+ .contextual-menu-wrapper {
     width: 100%;
     height: 100%;
     border-radius: 5px;
@@ -26,7 +26,8 @@
 
 .contextual-menu-wrapper ul {
     height: 100%;
-    overflow: auto;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .contextual-menu-title {
@@ -46,16 +47,15 @@
     min-height: 3em;
     line-height: 1.5;
     cursor: pointer;
-    transition: 0.28s ease;
-}
-
-.contextual-menu-item a {
     padding: 0.4em 0.91em;
     text-transform: capitalize;
     min-height: 3em;
     display: flex;
     align-items: center;
-    transition: 0.23s ease;
+}
+
+.contextual-menu-item:hover {
+    background-color: #687a92;
 }
 
 .contextual-menu-item.active {
@@ -75,6 +75,51 @@
     background-color: #e20074;
 }
 
-.contextual-menu-item:hover a {
-    letter-spacing: 0.3px;
+.arrow {
+    width: 7px;
+    height: 7px;
+    transition: transform 0.3s;
+    border-top: 2px solid #ffffff;
+    border-right: 2px solid #ffffff;
+    transform: rotate(45deg);
+    position: absolute;
+    right: 1em;
+}
+
+.sub-list {
+    width:100%;
+}
+
+.arrow-checked {
+    transition: transform 0.3s;
+    transform:rotate(135deg);
+}
+
+.list-wrapper {
+    display: block;
+}
+
+.list-wrapper .contextual-menu-item:active,
+.list-wrapper .contextual-menu-item:hover {
+    background-color: #687a92;
+}
+
+.sub-list-container .contextual-menu-item {
+    padding-left: 1.8em;
+}
+
+.plus-mark {
+    font-size: 1em;
+    color: #aaaaaa;
+}
+
+.mr-multicloud-text {
+    font-size: 0.8em;
+    color: #aaaaaa;
+}
+
+.contextual-list-wrapper {
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
 }

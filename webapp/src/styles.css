@@ -832,7 +832,6 @@ input:-webkit-autofill {
 .mr-icon:hover {
     color: #868686;
 }
-
 .mat-form-field-infix {
     border-top: none!important;
 }
@@ -1884,5 +1883,31 @@ img.trend-img-holder {
 .available-items li {
     padding-top:.3em !important;
     padding-bottom:.3em !important;
+}
+
+/* style related to multi-cloud */
+
+.mr-multicloud-wrapper {
+    margin: 1.5em 1em;
+}
+
+.mr-multicloud {
+    margin: 0.5em;
+}
+
+.each-cloud {
+    margin: 0 0.5em;
+    font-size: 10px;
+    font-family: ex2-regular;
+}
+
+.mr-multicloud-text {
+    padding: 0.2em 0;
+    font-size: 1.5em;
+    text-align: center;
+}
+
+.plus-mark {
+    font-size: 2em;
 }
 

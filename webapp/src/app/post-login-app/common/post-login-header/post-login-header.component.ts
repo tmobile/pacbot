@@ -23,53 +23,98 @@ import { AssetGroupObservableService } from '../../../core/services/asset-group-
 import { PermissionGuardService } from '../../../core/services/permission-guard.service';
 import { CONFIGURATIONS } from '../../../../config/configurations';
 import { CONTENT } from './../../../../config/static-content';
+import { RecentlyViewedObservableService } from '../../../core/services/recently-viewed-observable.service';
 import { environment } from './../../../../environments/environment';
+import { ActivatedRoute, Router } from '@angular/router';
+import { UpdateRecentAGService } from '../../common/services/update-recent-ag.service';
+import { RouterUtilityService } from '../../../shared/services/router-utility.service';
+import { HttpHeaders } from '@angular/common/http';
+import { AdalService } from '../../../core/services/adal.service';
+import { HttpService } from '../../../shared/services/http-response.service';
+import { UtilsService } from '../../../shared/services/utils.service';
 
 @Component({
     selector: 'app-post-login-header',
     templateUrl: './post-login-header.component.html',
     styleUrls: ['./post-login-header.component.css'],
-    providers: []
-
+    providers: [UpdateRecentAGService]
 })
+
 export class PostLoginHeaderComponent implements OnInit, OnDestroy {
 
-    constructor(private dataCacheService: DataCacheService,
-                private workflowService: WorkflowService,
-                private loggerService: LoggerService,
-                private domainMappingService: DomainMappingService,
-                private domainTypeObservableService: DomainTypeObservableService,
-                private assetGroupObservableService: AssetGroupObservableService,
-                private permissions: PermissionGuardService
-    ) {
-       this.config = CONFIGURATIONS;
-       this.staticContent = CONTENT;
-       this.environment = environment;
-    }
-
     @Input() navigationDetails: any;
+    @Input() authorizationPassed: any;
 
     config;
+    dynamicIconPath;
+    showRecents = false;
     staticContent;
     assetGroupSubscription: Subscription;
     subscriptionToDomainType: Subscription;
+    recentSubscription: Subscription;
     showUserInfo = false;
     FirstName: string;
     userType;
     haveAdminPageAccess = false;
-    dynamicIconPath;
+    currentAg;
+    recentTiles = [];
+    provider = [];
+    profilePictureSrc: any = '/assets/icons/profile-picture.svg';
+    cloudIconDataLoaded = false;
     public agAndDomain = {};
     private selectedDomainName;
     public burgerMenuModuleLinks;
     public footerData;
     public showMenu;
     public environment;
-    profilePictureSrc: any = '/assets/icons/profile-picture.svg';
+    tvState;
+    querySubscription: Subscription;
+    updateRecentAGSubscription: Subscription;
+    subscriptionToAssetGroup: Subscription;
+
+    constructor(private dataCacheService: DataCacheService,
+                private workflowService: WorkflowService,
+                private loggerService: LoggerService,
+                private activatedRoute: ActivatedRoute,
+                private router: Router,
+                private recentAssetsObservableService: RecentlyViewedObservableService,
+                private domainMappingService: DomainMappingService,
+                private domainTypeObservableService: DomainTypeObservableService,
+                private assetGroupObservableService: AssetGroupObservableService,
+                private permissions: PermissionGuardService,
+                private routerUtilityService: RouterUtilityService,
+                private updateRecentAGService: UpdateRecentAGService,
+                private adalService: AdalService,
+                private httpResponseService: HttpService,
+                private utilService: UtilsService
+    ) {
+       this.config = CONFIGURATIONS;
+       this.staticContent = CONTENT;
+       this.environment = environment;
+       this.subscriptionToAssetGroup = this.assetGroupObservableService
+            .getAssetGroup()
+            .subscribe(assetGroupName => {
+            if (assetGroupName) {
+                this.currentAg = assetGroupName;
+                this.cloudIconDataLoaded = false;
+                this.updateRecentAssetGroup(this.currentAg);
+            }
+       });
+
+       this.recentSubscription = this.recentAssetsObservableService.getRecentAssets().subscribe(recentList => {
+        this.recentTiles = recentList;
+      });
+    }
+
 
     ngOnInit() {
         try {
-            this.haveAdminPageAccess = this.permissions.checkAdminPermission();
+            document.addEventListener('keyup', this.logKey.bind(this));
+            this.querySubscription = this.activatedRoute.queryParams.subscribe(queryParams => {
+                this.tvState = queryParams['tv'];
+            });
             this.dynamicIconPath = '../assets/icons/' + this.config.required.APP_NAME.toLowerCase() + '-white-text-logo.svg';
+            this.haveAdminPageAccess = this.permissions.checkAdminPermission();
             this.userType = this.haveAdminPageAccess ? 'Admin' : '';
             this.FirstName = 'Guest';
             const detailsData = this.dataCacheService.getUserDetailsValue();
@@ -77,16 +122,24 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
             if (firstNameData) {
                 this.FirstName = firstNameData;
             }
-
             this.selectedDomainName = '';
-
             this.getModuleLinks();
             this.subscribeToAssetGroup();
             this.subscribeToDomainType();
+
+            this.getProfilePictureOfUser();
+
         } catch (error) {
             this.loggerService.log('error', 'JS Error' + error);
         }
     }
+
+    logKey(e) {
+        e.stopPropagation();
+        if (e.keyCode === 27) {
+          this.showMenu = false;
+        }
+      }
 
     closeUserInfo() {
       try {
@@ -100,12 +153,7 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
 
     }
 
-    /**
-     * added by Trinanjan on 09/02/2018 for back button functionality
-     * To clear page levels
-     */
     clearPageLevel() {
-
       this.workflowService.clearAllLevels();
     }
 
@@ -142,35 +190,14 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
 
     getModuleLinks() {
         const complianceLinks = this.domainMappingService.getDashboardsApplicableForADomain(this.selectedDomainName, 'compliance');
-        const assetsLinks = this.domainMappingService.getDashboardsApplicableForADomain(this.selectedDomainName, 'assets');
         const toolsLinks = this.domainMappingService.getDashboardsApplicableForADomain(this.selectedDomainName, 'tools');
-        const statisticsLinks = [
-            {
-                route: 'stats-overlay',
-                name: 'Statistics',
-                overlay: true
-            }
-            // {
-            //     route: 'domain-overlay',
-            //     name: 'Compliance',
-            //     overlay: true
-            // }
-            // {
-            //     route: 'vulnerability-report',
-            //     name: 'Vulnerability Report',
-            //     overlay: true
-            // }
-        ];
+        const reportsLinks = this.domainMappingService.getDashboardsApplicableForADomain(this.selectedDomainName, 'reports');
+        const myboardLinks = this.domainMappingService.getDashboardsApplicableForADomain(this.selectedDomainName, 'myboard');
+
 
         let complianceLinksUpdated = JSON.parse(JSON.stringify(complianceLinks));
         complianceLinksUpdated = complianceLinksUpdated.map(eachRoute => {
             eachRoute.route = 'compliance/' + eachRoute.route;
-            return eachRoute;
-        });
-
-        let assetsLinksUpdated = JSON.parse(JSON.stringify(assetsLinks));
-        assetsLinksUpdated = assetsLinksUpdated.map(eachRoute => {
-            eachRoute.route = 'assets/' + eachRoute.route;
             return eachRoute;
         });
 
@@ -180,18 +207,30 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
             return eachRoute;
         });
 
+        let myboardLinksUpdated = JSON.parse(JSON.stringify(myboardLinks));
+        myboardLinksUpdated = myboardLinksUpdated.map(eachRoute => {
+            eachRoute.route = 'myboard/' + eachRoute.route;
+            return eachRoute;
+        });
+
+        let reportsLinksUpdated = JSON.parse(JSON.stringify(reportsLinks));
+        reportsLinksUpdated = reportsLinksUpdated.map(eachRoute => {
+            eachRoute.route = 'reports/' + eachRoute.route;
+            return eachRoute;
+        });
+
         this.burgerMenuModuleLinks = [
             {
                 img: '../assets/icons/compliance.svg',
-                title: 'compliance',
+                title: 'PacBoard',
                 rows: complianceLinksUpdated,
                 shown: this.config.required.featureModules.COMPLIANCE_MODULE
             },
             {
-                img: '../assets/icons/assets.svg',
-                title: 'assets',
-                rows: assetsLinksUpdated,
-                shown: this.config.required.featureModules.ASSETS_MODULE
+                img: '../assets/icons/reports.svg',
+                title: 'reports',
+                rows: reportsLinksUpdated,
+                shown: this.config.required.featureModules.REPORTS_MODULE
             },
             {
                 img: '../assets/icons/tools.svg',
@@ -200,10 +239,10 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
                 shown: this.config.required.featureModules.TOOLS_MODULE
             },
             {
-                img: '../assets/icons/Statistics.svg',
-                title: 'Statistics',
-                rows: statisticsLinks,
-                shown: true
+                img: '../assets/icons/myboard.svg',
+                title: 'my board',
+                rows: myboardLinksUpdated,
+                shown: this.config.required.featureModules.MYBOARD_MODULE
             }
         ];
         this.footerData = [];
@@ -242,9 +281,93 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
         return true;
     }
 
+    changeAg(agData) {
+        const updatedFilters = JSON.parse(JSON.stringify(this.routerUtilityService.getQueryParametersFromSnapshot(this.router.routerState.snapshot.root)));
+        updatedFilters['ag'] = agData.ag;
+        this.router.navigate([], {
+            relativeTo: this.activatedRoute,
+            queryParams: updatedFilters
+          });
+        this.showRecents = false;
+    }
+
+    updateRecentAssetGroup(groupName) {
+        if (this.updateRecentAGSubscription) {
+          this.updateRecentAGSubscription.unsubscribe();
+        }
+        const updateRecentAGUrl = environment.updateRecentAG.url;
+        const updateRecentAGMethod = environment.updateRecentAG.method;
+        const userId = this.dataCacheService.getUserDetailsValue().getUserId();
+        const queryParams = {
+          'ag': groupName,
+          'userId': userId
+        };
+        if (queryParams['ag'] !== undefined) {
+         this.updateRecentAGSubscription = this.updateRecentAGService.updateRecentlyViewedAG(queryParams, updateRecentAGUrl, updateRecentAGMethod).subscribe(
+           response => {
+             this.recentTiles = response.data.response[0].recentlyViewedAg;
+             /* Store the recently viewed asset list in stringify format */
+             this.dataCacheService.setRecentlyViewedAssetGroups(JSON.stringify(this.recentTiles));
+             const currentAGDetails = this.recentTiles.filter(element => element.ag === groupName);
+             this.provider = this.fetchprovider(currentAGDetails);
+             this.cloudIconDataLoaded = true;
+             this.recentAssetsObservableService.updateRecentAssets(this.recentTiles);
+          },
+          error => {
+
+          });
+        }
+      }
+
+      fetchprovider(assetGroupObject) {
+        const provider = [];
+        if (assetGroupObject.length && assetGroupObject[0].providers) {
+          assetGroupObject[0].providers.forEach(element => {
+            provider.push(element.provider);
+          });
+        }
+        return provider;
+    }
+
+    openAgModal() {
+        this.router.navigate(['/pl', {outlets: { modal: ['change-default-asset-group'] } }], {queryParamsHandling: 'merge'});
+    }
+
+    handleAssetGroupFlow() {
+        if (this.recentTiles.length) {
+            this.showRecents = !this.showRecents;
+        } else {
+            this.openAgModal();
+        }
+    }
+
+    getProfilePictureOfUser() {
+        // Get profile picture of user from azure ad.
+
+        // this.adalService.acquireToken(CONFIGURATIONS.optional.auth.resource).subscribe(token => {
+        //     const api = environment.fetchProfilePic.url;
+        //     const httpMethod = environment.fetchProfilePic.method;
+        //     const header = new HttpHeaders();
+        //     const updatedHeader = header.append('Authorization', 'Bearer ' + token);
+
+        //     this.httpResponseService.getBlobHttpResponse(api, httpMethod, {}, {}, {headers: updatedHeader}).subscribe(response => {
+        //         this.utilService.generateBase64String(response).subscribe(image => {
+        //             this.loggerService.log('info', 'user profile pic received');
+        //             this.dataCacheService.setUserProfileImage(image);
+        //             this.profilePictureSrc = image;
+        //         });
+        //     },
+        //     error => {
+        //         this.loggerService.log('error', 'error while fetching image from azure ad - ' + error);
+        //     });
+
+        // }, error => {
+        //     this.loggerService.log('error', 'Error while fetching access token for resource - ' + error);
+        // });
+    }
 
     ngOnDestroy() {
-        if (this.assetGroupSubscription) {this.assetGroupSubscription.unsubscribe(); }
+        if (this.assetGroupSubscription) { this.assetGroupSubscription.unsubscribe(); }
         if (this.subscriptionToDomainType) { this.subscriptionToDomainType.unsubscribe(); }
     }
 
