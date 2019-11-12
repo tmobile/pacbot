@@ -22,6 +22,8 @@ export const CONTENT = {
         'companyLogo': '/assets/icons/tmo-black.svg',
         'heading': APP_NAME,
         'subHeading': 'Policy as Code Manager',
+        'awsLogo': '/assets/icons/aws-color.svg',
+        'azureLogo': '/assets/icons/azure-color.svg',
         'productBrief': 'A platform for continuous compliance monitoring, compliance reporting and security automation for Cloud.',
         'applicationCore' : [
             {

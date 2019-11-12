@@ -15,21 +15,25 @@
 /* CSS styles of default asset group starts here */
 
 .default-asset-group-wrapper {
-    display: inline-block;
+    display: flex;
     border: 1px solid #ffffff;
     border-radius: 5px;
-    /* margin-left: 1.2em; */
     padding: .4em 1em;
     font-size: 1em;
     cursor: pointer;
-}
-
-.default-asset-group-wrapper:hover {
-    background: rgba(2, 2, 2, 0.08);
+    align-items: center;
+    max-width: 30em;
 }
 
 .default-asset-group-icon {
     vertical-align: middle;
+    transition: 0.5s ease;
+    transform: scale(0);
+    transform-origin: center;
+}
+
+.default-asset-group-icon.after-load {
+    transform: scale(1);
 }
 
 .default-asset-group-text {
@@ -37,12 +41,17 @@
     display: inline-block;
     padding: 0 .9em 0 .4em;
     vertical-align: middle;
+    padding-bottom: 2px;
     text-transform: capitalize;
+    overflow: hidden;
+    user-select: none;
+    text-overflow: ellipsis;
 }
 
 .mr-right-arrow {
     color: #fff;
     font-size: 2em;
+    padding-block-end: 1px;
     vertical-align: middle;
 }
 

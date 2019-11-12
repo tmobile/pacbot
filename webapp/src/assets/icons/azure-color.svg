@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="69px" height="54px" viewBox="0 0 69 54" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 55.1 (78136) - https://sketchapp.com -->
+    <title>Azure</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <path d="M115.235363,137.329809 C123.632107,135.864734 130.567338,134.652384 130.64699,134.6357 L130.791814,134.605364 L122.86446,125.291896 C118.504419,120.169488 114.93711,115.958566 114.93711,115.934292 C114.93711,115.888334 123.122772,93.6237867 123.16879,93.5445216 C123.184175,93.518094 128.754767,103.017385 136.67227,116.571487 C144.084781,129.26108 150.196037,139.723695 150.252839,139.821737 L150.356121,140 L125.162336,139.99679 L99.9685556,139.993594 L115.235363,137.329818 L115.235363,137.329809 Z M85,134.48965 C85,134.476537 88.7353308,128.071977 93.3007349,120.257288 L101.601469,106.048765 L111.275014,98.0304631 C116.595464,93.6203982 120.962887,90.0067715 120.980397,90 C120.997907,89.9935921 120.927918,90.1675816 120.824865,90.386827 C120.721812,90.6060723 115.994963,100.620079 110.320756,112.640175 L100.004018,134.494893 L92.5020089,134.504183 C88.3759049,134.509298 85,134.502748 85,134.489645 L85,134.48965 Z" id="path-1"></path>
+        <filter x="-5.4%" y="-5.0%" width="110.7%" height="114.0%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="1" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.335500437 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Multi-Cloud" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Statistics" transform="translate(-315.000000, -571.000000)" fill-rule="nonzero">
+            <g id="Group-5" transform="translate(232.000000, 482.000000)">
+                <g id="Group-8-Copy-4">
+                    <g id="Group-22">
+                        <g id="Azure">
+                            <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                            <use fill="#0089D6" xlink:href="#path-1"></use>
+                        </g>
+                    </g>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

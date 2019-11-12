@@ -3,16 +3,16 @@
  *
  * Licensed under the Apache License, Version 2.0 (the "License"); You may not use
  * this file except in compliance with the License. A copy of the License is located at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * or in the "license" file accompanying this file. This file is distributed on
  * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, express or
  * implied. See the License for the specific language governing permissions and
  * limitations under the License.
  */
 
-import { Component, Input, EventEmitter, Output } from '@angular/core';
+import { Component, Input, EventEmitter, Output, OnChanges } from '@angular/core';
 import { AssetTilesService } from '../../../core/services/asset-tiles.service';
 
 @Component({
@@ -22,7 +22,7 @@ import { AssetTilesService } from '../../../core/services/asset-tiles.service';
   providers: [AssetTilesService]
 })
 
-export class AssetGroupDetailsComponent {
+export class AssetGroupDetailsComponent implements OnChanges {
 
     @Input() selectedValue: any;
     @Input() detailsVal: any = {};
@@ -30,15 +30,33 @@ export class AssetGroupDetailsComponent {
 
     public errorMessage: any;
     @Output() navigatePage: EventEmitter<any> = new EventEmitter();
+    provider = [];
+    constructor () {
+    }
 
-    constructor(
-    ) { }
+    ngOnChanges() {
+      this.createProviderArray();
+    }
 
     capitalizeFirstLetter(string): any {
       return string.charAt(0).toUpperCase() + string.slice(1);
     }
 
-    instructParentToNavigate (data) {
-      this.navigatePage.emit(data);
+    createProviderArray() {
+      this.provider = [];
+      if (this.detailsVal && this.detailsVal.providers) {
+        this.detailsVal.providers.forEach(element => {
+          this.provider.push(element.provider);
+        });
+      }
+    }
+
+    instructParentToNavigate (data, agDetails) {
+      const obj = {
+        data: data,
+        agDetails: agDetails
+      };
+      this.navigatePage.emit(obj);
    }
+
 }
