@@ -50,6 +50,7 @@ class Redeploy(BaseCommand):
         self.need_complete_install = self._need_complete_installation()
 
         self.dry_run = True if any([x[1] for x in args if x[0] == "dry-run"]) else self.dry_run
+        self.silent_install = True if any([x[1] for x in args if x[0] == "silent"]) else self.silent_install
 
     def _need_complete_installation(self):
         """
