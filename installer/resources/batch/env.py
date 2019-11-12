@@ -15,7 +15,7 @@ import sys
 class RuleEngineBatchJobEnv(BatchComputeEnvironmentResource):
     compute_environment_name = ""
     instance_role = ECSRoleInstanceProfile.get_output_attr('arn')
-    instance_type = ["m4.xlarge"]
+    instance_type = [Settings.get('BATCH_INSTANCE_TYPE', "m4.xlarge")]
     max_vcpus = 256
     min_vcpus = 0
     desired_vcpus = 0
