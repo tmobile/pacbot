@@ -878,19 +878,18 @@ public class ComplianceServiceImpl implements ComplianceService, Constants {
             ruleParamsJson = (JsonObject) parser.parse(ruleDetail.get(RULE_PARAMS).toString());
             paramsList = new Gson().fromJson(ruleParamsJson.get(PARAMS), new TypeToken<List<Object>>() {
             }.getType());
-
+            ruleSevCatDetail.put(RULEID, ruleDetail.get(RULEID));
+            ruleSevCatDetail.put("autofix", ruleParamsJson.get("autofix").getAsBoolean());
+            ruleSevCatDetail.put("targetType", ruleDetail.get("targetType"));
+            ruleSevCatDetail.put(DISPLAY_NAME, ruleDetail.get(DISPLAY_NAME));
             for (Map<String, String> param : paramsList) {
-                ruleSevCatDetail.put(RULEID, ruleDetail.get(RULEID));
                 if (param.get(KEY).equalsIgnoreCase(RULE_CATEGORY)) {
-
                     ruleSevCatDetail.put(RULE_CATEGORY, param.get(VALUE));
-
                 } else if (param.get(KEY).equalsIgnoreCase(SEVERITY)) {
                     ruleSevCatDetail.put(SEVERITY, param.get(VALUE));
-
                 }
-                ruleSevCatDetails.add(ruleSevCatDetail);
             }
+            ruleSevCatDetails.add(ruleSevCatDetail);
 
         }
         return ruleSevCatDetails;
