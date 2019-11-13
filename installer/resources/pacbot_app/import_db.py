@@ -32,7 +32,7 @@ class ReplaceSQLPlaceHolder(NullResource):
 
         if need_to_enable_azure():
             for tenant in tenants:
-                tenant_id = tenant['tenant']
+                tenant_id = tenant['tenantId']
                 client_id = tenant['clientId']
                 seccret_id = tenant['secretId']
                 credential_string = "" if credential_string == "" else (credential_string + "##")
