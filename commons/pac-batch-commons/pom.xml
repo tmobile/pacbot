@@ -24,7 +24,7 @@
 			<dependency>
 				<groupId>com.amazonaws</groupId>
 				<artifactId>aws-java-sdk-bom</artifactId>
-				<version>1.11.432</version>
+				<version>1.11.636</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
@@ -100,7 +100,6 @@
 		<dependency>
 		    <groupId>com.amazonaws</groupId>
 		    <artifactId>aws-java-sdk-s3</artifactId>
-		    <version>1.11.636</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/com.amazonaws/aws-java-sdk-rds -->
