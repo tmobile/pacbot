@@ -25,7 +25,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -60,13 +59,10 @@ public class DatasourceControllerTest {
 
 	@Test
 	public void getAllDatasourceDetailsTest() throws Exception {
-		Collection<Object[]> allDatasources = new ArrayList<Object[]>();
-		Object[] datasources = { "aws", "azure" };
-		allDatasources.add(datasources);
-		when(datasourceService.getAllDatasourceDetails()).thenReturn(allDatasources);
+		when(datasourceService.getAllDatasourceDetails()).thenReturn(new ArrayList<>());
 		mockMvc.perform(get("/datasource/list")).andExpect(status().isOk())
 				.andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-				.andExpect(jsonPath("$.data", hasSize(1)));
+				.andExpect(jsonPath("$.data", hasSize(0)));
 	}
 
 	@Test

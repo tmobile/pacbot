@@ -20,7 +20,6 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
-import java.util.Collection;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,10 +40,7 @@ public class DatasourceServiceImplTest {
 
 	@Test
 	public void getAllDatasourceDetailsTest() throws Exception {
-		Collection<Object[]> allDatasources = new ArrayList<Object[]>();
-		Object[] datasources = { "aws", "azure" };
-		allDatasources.add(datasources);
-		when(datasourceService.getAllDatasourceDetails()).thenReturn(allDatasources);
-		assertThat(datasourceRepository.getAllDatasourceDetails().size(), is(1));
+		when(datasourceRepository.findAll()).thenReturn(new ArrayList<>());
+		assertThat(datasourceService.getAllDatasourceDetails().size(), is(0));
 	}
 }

@@ -15,12 +15,13 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.admin.repository.service;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.tmobile.pacman.api.admin.repository.DatasourceRepository;
+import com.tmobile.pacman.api.admin.repository.model.Datasource;
 import com.tmobile.pacman.api.commons.Constants;
 
 /**
@@ -33,7 +34,7 @@ public class DatasourceServiceImpl implements DatasourceService, Constants {
 	private DatasourceRepository datasourceRepository;
 
 	@Override
-	public Collection<Object[]> getAllDatasourceDetails() {
-		return datasourceRepository.getAllDatasourceDetails();
+	public List<Datasource> getAllDatasourceDetails() {
+		return datasourceRepository.findAll();
 	}
 }
