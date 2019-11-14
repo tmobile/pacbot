@@ -933,7 +933,7 @@ INSERT IGNORE INTO `task`(`id`,`index`,`mappings`,`data`) values (1,'exceptions'
 /*Insert Data Source to necessary tables*/
 
 INSERT IGNORE INTO `cf_Datasource`(`dataSourceId`,`dataSourceName`,`dataSourceDesc`,`config`,`createdDate`,`modifiedDate`) VALUES (1,'aws','Amazon WebService','N/A','2017-08-01','2018-03-09');
-INSERT IGNORE INTO `cf_Datasource` (dataSourceId,dataSourceName,dataSourceDesc,config,createdDate,modifiedDate) VALUES (2,'azure','Azure','N/A',{d '2019-11-13'},{d '2019-11-13'})
+INSERT IGNORE INTO `cf_Datasource` (dataSourceId,dataSourceName,dataSourceDesc,config,createdDate,modifiedDate) VALUES (2,'azure','Azure','N/A',{d '2019-11-13'},{d '2019-11-13'});
 /*Insert Data Asset Group to necessary tables*/
 
 INSERT IGNORE INTO cf_AssetGroupDetails (groupId,groupName,dataSource,displayName,groupType,createdBy,createdUser,createdDate,modifiedUser,modifiedDate,description,aliasQuery,isVisible) VALUES ('201','aws','aws','aws all','admin','Cloud Security','','','pacman','03/26/2018 23:00','Asset Group to segregate all data related to aws.','',true);
