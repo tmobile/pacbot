@@ -1723,12 +1723,13 @@ if (ruleId.contains(TAGGIG_POLICY)) {
     @SuppressWarnings("rawtypes")
     public Map<String, Object> getPolicyViolationDetailsByIssueId(String assetGroup, String issueId)
             throws DataException {
-        Map<String, Object> issueDetails = new HashMap<>();
-        StringBuilder urlToQuery = new StringBuilder(esUrl).append("/").append(assetGroup);
-        urlToQuery.append("/").append(SEARCH).append("?").append("q").append("=").append("_id").append(":")
-                .append(issueId);
+    	Map<String, Object> issueDetails = new HashMap<>();
+		StringBuilder urlToQuery = new StringBuilder(esUrl).append("/").append(assetGroup);
+		urlToQuery.append("/").append(SEARCH);
 
-        StringBuilder requestBody = new StringBuilder();
+		StringBuilder requestBody = new StringBuilder();
+		requestBody.append("{\"query\":{\"bool\":{\"must\":[{\"match\":{\"type\":\"issue\"}},{\"match\":{\"_id\":\"")
+				.append(issueId).append("\"}}]}}}");
         String responseJson = "";
         try {
             responseJson = PacHttpUtils.doHttpPost(urlToQuery.toString(), requestBody.toString());
