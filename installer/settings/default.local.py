@@ -58,15 +58,15 @@ QUALYS_INFO = ""  # Base64 encoded user:password of qualys
 
 # This settings enable Vulnerability feature and servie
 ENABLE_AZURE = False
-# Tenants should be a list of dict containing tenant, clientId and secretId
+# Tenants should be a list of dict containing tenantId, clientId and secretId
 AZURE_TENANTS = [
     {
-        'tenant': "t111",
+        'tenantId': "t111",
         'clientId': "c111",
         'secretId': "s111"
     },
     {
-        'tenant': "t222",
+        'tenantId': "t222",
         'clientId': "c222",
         'secretId': "s222"
     },
