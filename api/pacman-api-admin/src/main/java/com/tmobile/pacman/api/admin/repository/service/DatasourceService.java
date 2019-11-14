@@ -15,7 +15,9 @@
  ******************************************************************************/
 package com.tmobile.pacman.api.admin.repository.service;
 
-import java.util.Collection;
+import java.util.List;
+
+import com.tmobile.pacman.api.admin.repository.model.Datasource;
 
 /**
  * DataSource Service Functionalities
@@ -28,5 +30,5 @@ public interface DatasourceService {
      * @author Nidhish
      * @return All dataSource details list
      */
-	public Collection<Object[]> getAllDatasourceDetails();
+	public List<Datasource> getAllDatasourceDetails();
 }
