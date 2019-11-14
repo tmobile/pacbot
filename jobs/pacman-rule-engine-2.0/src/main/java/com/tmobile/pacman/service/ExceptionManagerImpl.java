@@ -64,7 +64,7 @@ public class ExceptionManagerImpl implements ExceptionManager {
      */
     @Override
     public Map<String, IssueException> getIndividualExceptions(String resourceType) throws Exception {
-        String indexName = "aws_" + resourceType;
+        String indexName = "*_" + resourceType;
         String type = "issue_" + resourceType + "_exception";
         Map<String, Object> mustFilter = new HashMap<>();
         //mustFilter.put("exemptedStatus", "active");
