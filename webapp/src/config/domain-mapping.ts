@@ -162,7 +162,8 @@ export const  DOMAIN_MAPPING = [
                     },
                     {
                         'route': 'health-notifications',
-                        'sequence': 3
+                        'sequence': 3,
+                        'cloudSpecific': true
                     }
                 ]
             },
