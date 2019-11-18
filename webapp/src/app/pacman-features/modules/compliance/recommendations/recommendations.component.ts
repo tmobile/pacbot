@@ -359,7 +359,7 @@ export class RecommendationsComponent implements OnInit, OnChanges, OnDestroy {
       'order': 1
     };
     response.forEach((element) => {
-      element['displayName'] = this.refactorFieldsService.getDisplayNameForAKey(element['category'].toLocaleLowerCase()) || element['category'];
+      element['displayName'] = this.refactorFieldsService.getDisplayNameForAKey(element['category'].trim().toLocaleLowerCase()) || element['category'];
       element['icon'] = '../../../../../assets/icons/recommand_' + element.category.trim() + '.svg';
       element['color'] = summaryTabsColor[element.category];
       element['order'] = displayOrder[element.category];

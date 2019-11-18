@@ -41,7 +41,7 @@
         <div class='tabs-container flex flex-align-center'>
             <div class='pk-tabs tab-list capitalize' *ngFor="let tabs of tabName | orderBy : { property: 'order', direction: 1}"
                 [class.loaded]='errorVal.summaryStatus === 1' (click)='selectedTabName = tabs; navigateToTab(selectedTabName.category);' [class.active]='tabs == selectedTabName'>{{tabs.displayName}} 
-                <span *ngIf='tabs.recommendations'>({{tabs.recommendations}})</span>
+                <span *ngIf='tabs.displayName!=="Summary"'>({{tabs.recommendations}})</span>
             </div>
         </div>
     </div>
