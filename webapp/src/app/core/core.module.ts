@@ -30,6 +30,7 @@ import {AdalService} from './services/adal.service';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { RequestInterceptorService } from './services/request-interceptor.service';
 import { AuthSessionStorageService } from './services/auth-session-storage.service';
+import {RecentlyViewedObservableService} from './services/recently-viewed-observable.service';
 
 @NgModule({
   imports: [
@@ -52,6 +53,7 @@ import { AuthSessionStorageService } from './services/auth-session-storage.servi
     AuthService,
     AdalService,
     AuthSessionStorageService,
+    RecentlyViewedObservableService,
     {
       provide: HTTP_INTERCEPTORS,
       useClass: RequestInterceptorService,
