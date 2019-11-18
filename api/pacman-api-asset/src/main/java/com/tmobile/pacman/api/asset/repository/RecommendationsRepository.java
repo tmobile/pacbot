@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -408,12 +409,15 @@ public class RecommendationsRepository {
 		return responseDetailsjson.get("_scroll_id").getAsString();
 	}
 	
-	public List<Map<String,Object>> getGeneralRecommendationSummary() throws DataException {
+	public List<Map<String,Object>> getGeneralRecommendationSummary(List<String> providers) throws DataException {
     	
     	List<Map<String,Object>> recommendationSummary = new ArrayList<>();
     	StringBuilder urlToQuery = new StringBuilder(esUrl).append("/").append("global_recommendations").append("/")
     			.append("recommendation").append("/").append(Constants.SEARCH);
-		StringBuilder requestBody = new StringBuilder("{\"size\":0,\"query\":{\"term\":{\"latest\":{\"value\":\"true\"}}},\"aggs\":{\"category\":{\"terms\":{\"field\":\"category.keyword\",\"size\":100}}}}");
+		StringBuilder requestBody = new StringBuilder("{\"size\":0,\"query\":{\"bool\": {\"filter\":[{\"term\":{\"latest\":\"true\"}},{\"terms\":{\"_cloudType\":[\"");
+		requestBody.append(String.join("\",\" ", providers.stream().collect(Collectors.toList())));
+		requestBody.append("\"]}}]}},\"aggs\":{\"category\":{\"terms\":{\"field\":\"category.keyword\",\"size\":100}}}}");
+		
 		String responseDetails;
 		try {
 			responseDetails = PacHttpUtils.doHttpPost(urlToQuery.toString(), requestBody.toString());
@@ -439,7 +443,7 @@ public class RecommendationsRepository {
         return recommendationSummary;
     }
 	
-	public Map<String,Object> getGeneralRecommendations(String category) throws DataException {
+	public Map<String,Object> getGeneralRecommendations(String category, List<String> providers) throws DataException {
 		
 		Map<String,Object> result = new HashMap<>();
 		List<Map<String,Object>> recommendations = new ArrayList<>();
@@ -448,7 +452,9 @@ public class RecommendationsRepository {
     			.append("recommendation").append("/").append(Constants.SEARCH);
 		StringBuilder requestBody = new StringBuilder("{\"size\":0,\"query\":{\"bool\":{\"must\":[{\"match\":{\"latest\":true}},{\"match\":{\"category.keyword\":\"");
 		requestBody.append(category);
-		requestBody.append("\"}}]}},\"aggs\":{\"recommendations\":{\"terms\":{\"field\":\"recommendationId.keyword\",\"size\":10000}}}}");
+		requestBody.append("\"}}],\"filter\":[{\"terms\":{\"_cloudType\":[\"");
+		requestBody.append(String.join("\",\" ", providers.stream().collect(Collectors.toList())));
+		requestBody.append("\"]}}]}},\"aggs\":{\"recommendations\":{\"terms\":{\"field\":\"recommendationId.keyword\",\"size\":10000}}}}");
 		String responseDetails;
 		try {
 			responseDetails = PacHttpUtils.doHttpPost(urlToQuery.toString(), requestBody.toString());

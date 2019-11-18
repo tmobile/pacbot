@@ -10,6 +10,7 @@ import java.util.Map;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -22,13 +23,18 @@ public class RecommendationServiceTest {
 	@Mock
 	RecommendationsRepository recommendationsRepository;
 	
+	@Mock
+	AssetService assetService;
+	
 	RecommendationsService recommendationsService = new RecommendationsService();
 	
 	@Test
 	public void getRecommendationSummaryTest() throws Exception {
 		
-		when(recommendationsRepository.getGeneralRecommendationSummary()).thenReturn(new ArrayList<>());
+		when(recommendationsRepository.getGeneralRecommendationSummary(Matchers.anyListOf(String.class))).thenReturn(new ArrayList<>());
+		when(assetService.getProvidersForAssetGroup(anyString())).thenReturn(new ArrayList<String>());
 		ReflectionTestUtils.setField(recommendationsService, "recommendationsRepository", recommendationsRepository);
+		ReflectionTestUtils.setField(recommendationsService, "assetService", assetService);
 		assertTrue(recommendationsService.getRecommendationSummary(null,null,true).size() == 0);
 		when(recommendationsRepository.getRecommendationSummary(anyString(), anyString())).thenReturn(new ArrayList<>());
 		assertTrue(recommendationsService.getRecommendationSummary("ag","app",false).size() == 0);
@@ -47,10 +53,12 @@ public class RecommendationServiceTest {
 	@Test
 	public void getRecommendationsTest() throws Exception {
 		
-		when(recommendationsRepository.getGeneralRecommendations(anyString())).thenReturn(new HashMap<>());
+		when(recommendationsRepository.getGeneralRecommendations(anyString(), Matchers.anyListOf(String.class))).thenReturn(new HashMap<>());
 		ReflectionTestUtils.setField(recommendationsService, "recommendationsRepository", recommendationsRepository);
 		assertTrue(recommendationsService.getRecommendations(null,"category",null,"false").size() == 0);
 		when(recommendationsRepository.getRecommendations(anyString(), anyString(), anyString())).thenReturn(new HashMap<>());
+		when(assetService.getProvidersForAssetGroup(anyString())).thenReturn(new ArrayList<String>());
+		ReflectionTestUtils.setField(recommendationsService, "assetService", assetService);
 		assertTrue(recommendationsService.getRecommendations("ag","category","app","true").size() == 0);
 	}
 	
