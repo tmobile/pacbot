@@ -1118,4 +1118,13 @@ public class AssetServiceImpl implements AssetService {
 		envOrder.put(Constants.UNTAGGED_ENV, 6);
 		return envOrder;
 	}
+
+	@Override
+	public List<String> getProvidersForAssetGroup(String assetGroup) throws DataException {
+		try {
+			return repository.getProvidersForAssetGroup(assetGroup);
+		} catch (Exception e) {
+			throw new DataException(e);
+		}
+	}
 }

@@ -19,6 +19,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
+import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -129,14 +130,14 @@ public class RecommendationsRepositoryTest {
 		String summary = "{\"aggregations\":{\"category\":{\"buckets\":[{\"key\":\"performance\",\"doc_count\":55}]}}}";
 		 mockStatic(PacHttpUtils.class);
 	     when(PacHttpUtils.doHttpPost(anyString(), anyString())).thenReturn(summary);
-	     assertTrue(recommendationsRepository.getGeneralRecommendationSummary().size() == 1);
+	     assertTrue(recommendationsRepository.getGeneralRecommendationSummary(new ArrayList<String>()).size() == 1);
 	}
 	
 	@Test
 	public void getGeneralRecommendationSummaryTest_Exception() throws Exception {
 		mockStatic(PacHttpUtils.class);
         when(PacHttpUtils.doHttpPost(anyString(), anyString())).thenThrow(new DataException());
-        assertThatThrownBy(() -> recommendationsRepository.getGeneralRecommendationSummary()).isInstanceOf(DataException.class);
+        assertThatThrownBy(() -> recommendationsRepository.getGeneralRecommendationSummary(new ArrayList<String>())).isInstanceOf(DataException.class);
 	}
 	
 	@SuppressWarnings("deprecation")
@@ -151,7 +152,7 @@ public class RecommendationsRepositoryTest {
 	    recommendation.put("checkdescription","description");
 	    recommendations.add(recommendation);
 	    when(elasticSearchRepository.getDataFromES(anyString(), anyString(), anyObject(), anyObject(), anyObject(), anyObject(), anyObject())).thenReturn(recommendations);
-	    assertTrue(recommendationsRepository.getGeneralRecommendations("category").size() == 2);
+	    assertTrue(recommendationsRepository.getGeneralRecommendations("category", new ArrayList<String>()).size() == 2);
 	}
 	
 	@Test
@@ -159,7 +160,7 @@ public class RecommendationsRepositoryTest {
 		
 		mockStatic(PacHttpUtils.class);
         when(PacHttpUtils.doHttpPost(anyString(), anyString())).thenThrow(new DataException());
-        assertThatThrownBy(() -> recommendationsRepository.getGeneralRecommendations("category")).isInstanceOf(DataException.class);
+        assertThatThrownBy(() -> recommendationsRepository.getGeneralRecommendations("category", new ArrayList<String>())).isInstanceOf(DataException.class);
 	}
 	
 	@Test
