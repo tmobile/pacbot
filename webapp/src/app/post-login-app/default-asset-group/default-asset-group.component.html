@@ -12,9 +12,11 @@
  * limitations under the License.
  -->
 
- <a [routerLink]="[  {outlets: { modal: ['change-default-asset-group'] } } ]" queryParamsHandling='merge'>
-    <div class="default-asset-group-wrapper">
-        <img class="default-asset-group-icon" src="/assets/icons/asset-group.svg" width="19px" />
+ <a>
+    <div title="Change Asset Group" class="default-asset-group-wrapper">
+        <img [class.after-load]='dataLoaded' *ngIf='provider.length == 0' class="default-asset-group-icon" src="/assets/icons/asset-group.svg" width="22px" />
+        <img [class.after-load]='dataLoaded' *ngIf='provider.length == 1' class="default-asset-group-icon" src="/assets/icons/{{provider[0]}}-white.svg" width="22px" />
+        <img [class.after-load]='dataLoaded' *ngIf='provider.length > 1' class="default-asset-group-icon" src="/assets/icons/multi-cloud-white.svg" width="22px" />
         <h4 *ngIf='assetGroupDisplayName' class="default-asset-group-text">{{assetGroupDisplayName}} - Assets</h4>
         <h4 *ngIf='!assetGroupDisplayName' class="default-asset-group-text">Select - Assets</h4>
         <i class="fa fa-angle-right mr-right-arrow" aria-hidden="true"></i>

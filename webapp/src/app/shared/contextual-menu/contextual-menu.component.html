@@ -17,8 +17,18 @@
         <h6>{{pageTitle}}</h6>
     </div>
     <ul>
-        <li #rla="routerLinkActive"  class="contextual-menu-item flex flex-align-center" *ngFor="let menu of listOfMenus" (click)="onSelect(menu)" routerLink={{menu.route}} routerLinkActive="active" [queryParams]="agAndDomain" [ngStyle]="theme && (rla.isActive ? {'background-color': theme['contextual-menu-active-color']} : {})">
-            <a class='pointer'>{{menu.name}}</a>
+        <li  *ngFor="let list of listOfMenus" >
+            <div class='contextual-menu-item flex flex-align-center' [class.hide]='list.cloudSpecific && ((provider.length == 1 && provider[0] == "azure") || (agAndDomain["ag"] && agAndDomain["ag"].includes("azure")))' (click)="$event.stopPropagation(); onSelect(list)" #rla="routerLinkActive" routerLink={{list.route}} routerLinkActive="active" [queryParams]="agAndDomain" [ngStyle]="theme && (rla.isActive ? {'background-color': theme['contextual-menu-active-color']} : {})">
+                <a class='pointer'> {{list.name}}</a>
+            </div>
         </li>
     </ul>
+    <div *ngIf="this.agAndDomain['domain'] ==='Infra & Platforms' " [class.hide]='showPacLoader.length' class='mr-multicloud-wrapper flex flex-col flex-align-center flex-center'>
+        <div class='mr-multicloud flex flex-row flex-align-center flex-center'>
+            <img class='each-cloud' alt='Azure' width="20px" src="/assets/icons/azure-grey.svg">
+            <div class='each-cloud plus-mark'>+</div>
+            <img class='each-cloud' alt='AWS' width="20px" src="/assets/icons/aws-grey.svg">
+        </div>
+        <div class='mr-multicloud-text'>Multi-Cloud Supported</div>
+    </div>
 </div>
