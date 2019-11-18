@@ -17,10 +17,13 @@ public class RecommendationsService {
 	
 	@Autowired
 	RecommendationsRepository recommendationsRepository;
+	@Autowired
+	AssetService assetService;
 
 	public List<Map<String,Object>> getRecommendationSummary(String assetGroup, String application, Boolean general) throws DataException {
 		if(general) {
-			return recommendationsRepository.getGeneralRecommendationSummary();
+			List<String> providerList = assetService.getProvidersForAssetGroup(assetGroup);
+			return recommendationsRepository.getGeneralRecommendationSummary(providerList);
 		} else {
 			return recommendationsRepository.getRecommendationSummary(assetGroup,application);
 		}
@@ -40,7 +43,8 @@ public class RecommendationsService {
 		if(general.equals(AssetConstants.FALSE)) {
 			return recommendationsRepository.getRecommendations(assetGroup, category, application);
 		} else {
-			return recommendationsRepository.getGeneralRecommendations(category);
+			List<String> providerList = assetService.getProvidersForAssetGroup(assetGroup);
+			return recommendationsRepository.getGeneralRecommendations(category, providerList);
 		}
 	}
 

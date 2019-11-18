@@ -541,5 +541,14 @@ public interface AssetRepository {
      */
 	public Map<String, Object> getAssetCountAndEnvDistributionByAssetGroup(String aseetGroupName, String type,
 			String application);
+
+	/**
+     * Fetches provider list for an asset group
+     *
+     * @param Asset Group
+     * @return list of providers.
+     * @throws DataException
+     */
+    public List<String> getProvidersForAssetGroup(String assetGroup) throws DataException;
     
 }

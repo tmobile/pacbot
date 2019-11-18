@@ -2685,4 +2685,17 @@ public class AssetRepositoryImpl implements AssetRepository {
 		return countMap;
 	}
 
+	@Override
+	public List<String> getProvidersForAssetGroup(String assetGroup) throws DataException {
+		List<String> providerList = new ArrayList<String>();
+		String query = "select distinct dataSourceName as " + Constants.PROVIDER + " from cf_AssetGroupTargetDetails a , cf_AssetGroupDetails b ,cf_Target c where a.groupId = b.groupId and a.targetType = c.targetName and b.groupName ='"
+				+ assetGroup.trim() + "'";
+		
+		List<Map<String, Object>> providers= rdsRepository.getDataFromPacman(query);
+		providers.forEach(providerMap -> {
+			providerList.add(providerMap.get(Constants.PROVIDER).toString());
+			});
+		return providerList;
+	}
+
 }

@@ -500,4 +500,14 @@ public interface AssetService {
 	public List<Map<String, Object>> getAssetCountAndEnvDistributionByAssetGroup(String assetGroup, String type, String domain,
 			String application, String provider);
 
+	/**
+     * Fetches the provider info for the given asset group.
+     *
+     * @param Asset Group
+     * 
+     * @return  list of provider info
+     * @throws ServiceException
+     */
+	public List<String> getProvidersForAssetGroup(String assetGroup) throws DataException;
+
 }
