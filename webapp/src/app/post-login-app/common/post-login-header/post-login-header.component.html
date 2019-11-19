@@ -78,7 +78,7 @@
                     <div class="menu-underline"></div>
                 </div>
                 <div [class.hide]='row.cloudSpecific && ((provider.length == 1 && provider[0] == "azure") || (agAndDomain["ag"] && agAndDomain["ag"].includes("azure")))' class="menu-content-item" *ngFor="let row of data.rows">
-                    <span routerLinkActive="active" routerLink={{row.route}} [queryParams]=agAndDomain (click)='clearPageLevel()'>{{row.name}}</span>
+                    <span routerLinkActive="active" [routerLink]="row.overlay ? [  {outlets: { modalBGMenu : [row.route] } } ] : [row.route] " [queryParams]=agAndDomain (click)='clearPageLevel()'>{{row.name}}</span>
                 </div>
             </div>
         </ng-container>
