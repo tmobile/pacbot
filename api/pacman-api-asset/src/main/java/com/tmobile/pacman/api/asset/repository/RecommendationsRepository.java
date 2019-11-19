@@ -1,7 +1,10 @@
 package com.tmobile.pacman.api.asset.repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -428,18 +431,32 @@ public class RecommendationsRepository {
         JsonParser parser = new JsonParser();
         JsonObject responseDetailsjson = parser.parse(responseDetails).getAsJsonObject();
         JsonObject aggregations = responseDetailsjson.get(Constants.AGGREGATIONS).getAsJsonObject();
-        JsonArray categoryBuckets = aggregations.get("category").getAsJsonObject().get(Constants.BUCKETS).getAsJsonArray();
-        if (categoryBuckets.size() > 0) {
-            for (int i=0; i<categoryBuckets.size();i++) {
-                JsonObject categoryObj = (JsonObject) categoryBuckets.get(i);
-                if (categoryObj != null) {
-                	Map<String,Object> category = new HashMap<>();
-                	category.put("category", categoryObj.get("key").getAsString());
-                	category.put("recommendations", categoryObj.get("doc_count").getAsLong());
-                	recommendationSummary.add(category);
-                }
-            }
-        }
+        
+		if (aggregations != null) {
+
+			JsonArray categoryBuckets = aggregations.get("category").getAsJsonObject().get(Constants.BUCKETS)
+					.getAsJsonArray();
+			if (categoryBuckets.size() > 0) {
+				for (int i = 0; i < categoryBuckets.size(); i++) {
+					JsonObject categoryObj = (JsonObject) categoryBuckets.get(i);
+					if (categoryObj != null) {
+						Map<String, Object> category = new HashMap<>();
+						category.put("category", categoryObj.get("key").getAsString());
+						category.put("recommendations", categoryObj.get("doc_count").getAsLong());
+						recommendationSummary.add(category);
+					}
+				}
+			} else {
+				//   passing 0 values if there are no recommendations
+				String[] categories = recommendationCategories.split(",");
+				for (int i = 0; i < categories.length; i++) {
+					Map<String, Object> category = new HashMap<>();
+					category.put("category", categories[i]);
+					category.put("recommendations", 0L);
+					recommendationSummary.add(category);
+				}
+			}
+		}
         return recommendationSummary;
     }
 	
