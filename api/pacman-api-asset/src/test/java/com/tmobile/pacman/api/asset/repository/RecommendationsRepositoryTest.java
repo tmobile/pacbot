@@ -23,6 +23,7 @@ import org.mockito.Matchers;
 import org.mockito.Mock;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import com.tmobile.pacman.api.commons.exception.DataException;
 import com.tmobile.pacman.api.commons.repo.ElasticSearchRepository;
@@ -45,6 +46,7 @@ public class RecommendationsRepositoryTest {
 	@Before
 	public void init() {
 		recommendationsRepository.init();
+		ReflectionTestUtils.setField(recommendationsRepository, "recommendationCategories", "fault_tolerance, performance");
 	}
 	
 	@Test
@@ -54,6 +56,14 @@ public class RecommendationsRepositoryTest {
 		 mockStatic(PacHttpUtils.class);
 	     when(PacHttpUtils.doHttpPost(anyString(), anyString())).thenReturn(summary);
 	     assertTrue(recommendationsRepository.getRecommendationSummary("ag", "app").size() == 2);
+	}
+	
+	@Test
+	public void getRecommendationSummaryAzureTest() throws Exception {
+		String summary = "{\"aggregations\":{\"recommendations\":{\"doc_count\":0}}}";
+		 mockStatic(PacHttpUtils.class);
+	     when(PacHttpUtils.doHttpPost(anyString(), anyString())).thenReturn(summary);
+	     assertTrue(recommendationsRepository.getRecommendationSummary("ag", null).size() == 2);	     
 	}
 	
 	@Test
