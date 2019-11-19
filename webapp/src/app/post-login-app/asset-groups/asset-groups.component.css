@@ -266,3 +266,9 @@ img.delete-icon {
         overflow: auto;
     }
 }
+
+.asset-details-content {
+    width: 100%;
+    max-width: 22em;
+    padding: 0 1em;
+}
