@@ -272,8 +272,11 @@ export class AssetGroupsComponent implements AfterViewInit, OnDestroy {
     if (!name || !this.selectedTabName) {
       return false;
     }
+    const tiles = this.recentTiles.map(item => {
+      return item['ag'];
+    });
     if (this.selectedTabName.toLowerCase() === 'recently viewed') {
-       if (this.recentTiles.includes(name.name.toLowerCase())) {
+       if (tiles.includes(name.name.toLowerCase())) {
          return true;
        } else {
          return false;
