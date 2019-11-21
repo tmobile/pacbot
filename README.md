@@ -4,7 +4,7 @@
 [![GitHub contributors](https://img.shields.io/github/contributors/tmobile/pacbot.svg)](https://github.com/tmobile/pacbot/graphs/contributors)
 [![Gitter](https://github.com/tmobile/pacbot/blob/master/wiki/images/chat.svg)](https://gitter.im/TMO-OSS/PacBot)
 
-
+ 
 <img src="./wiki/images/banner_magenta.png">
 
 # Introduction
