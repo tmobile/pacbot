@@ -266,9 +266,3 @@ img.delete-icon {
         overflow: auto;
     }
 }
-
-.asset-details-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
