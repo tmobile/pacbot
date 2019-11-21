@@ -15,12 +15,15 @@
 .policy-violation-label {
     font-size: 1.2em;
     padding-bottom: 1.5em;
-    
 }
 
 .policy-violation-label-header {
     padding-bottom: 8px;
     font-family: ex2-bold;
+}
+
+.policy-violation-desc-wrapper {
+     word-break: break-word;
 }
 
 .policy-violation-label-content {
