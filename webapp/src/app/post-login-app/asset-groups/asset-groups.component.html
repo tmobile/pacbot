@@ -51,7 +51,7 @@
                             </div>
                         </div>
                     </section>
-                    <section class="asset-details-content" *ngIf='thisAssetTile && loaded && !showError'>
+                    <section class="asset-details-content flex flex-col flex-between" *ngIf='thisAssetTile && loaded && !showError'>
                         <div class="transformState" [class.transformBack]="thisAssetTile">
                             <app-asset-group-details [assetDetailsState]='assetDetailsState' [detailsVal]='assetDetailTiles' (navigatePage)="navigatePage($event,thisAssetTile)"></app-asset-group-details>
                         </div>

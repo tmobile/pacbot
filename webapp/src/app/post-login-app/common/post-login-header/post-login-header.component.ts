@@ -190,9 +190,14 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
 
     getModuleLinks() {
         const complianceLinks = this.domainMappingService.getDashboardsApplicableForADomain(this.selectedDomainName, 'compliance');
-        const toolsLinks = this.domainMappingService.getDashboardsApplicableForADomain(this.selectedDomainName, 'tools');
-        const reportsLinks = this.domainMappingService.getDashboardsApplicableForADomain(this.selectedDomainName, 'reports');
-        const myboardLinks = this.domainMappingService.getDashboardsApplicableForADomain(this.selectedDomainName, 'myboard');
+        const assetsLinks = this.domainMappingService.getDashboardsApplicableForADomain(this.selectedDomainName, 'assets');
+        const statisticsLinks = [
+            {
+                route: 'stats-overlay',
+                name: 'Statistics',
+                overlay: true
+            }
+        ];
 
 
         let complianceLinksUpdated = JSON.parse(JSON.stringify(complianceLinks));
@@ -201,48 +206,30 @@ export class PostLoginHeaderComponent implements OnInit, OnDestroy {
             return eachRoute;
         });
 
-        let toolsLinksUpdated = JSON.parse(JSON.stringify(toolsLinks));
-        toolsLinksUpdated = toolsLinksUpdated.map(eachRoute => {
-            eachRoute.route = 'tools/' + eachRoute.route;
-            return eachRoute;
-        });
-
-        let myboardLinksUpdated = JSON.parse(JSON.stringify(myboardLinks));
-        myboardLinksUpdated = myboardLinksUpdated.map(eachRoute => {
-            eachRoute.route = 'myboard/' + eachRoute.route;
-            return eachRoute;
-        });
-
-        let reportsLinksUpdated = JSON.parse(JSON.stringify(reportsLinks));
-        reportsLinksUpdated = reportsLinksUpdated.map(eachRoute => {
-            eachRoute.route = 'reports/' + eachRoute.route;
+        let assetsLinksUpdated = JSON.parse(JSON.stringify(assetsLinks));
+        assetsLinksUpdated = assetsLinksUpdated.map(eachRoute => {
+            eachRoute.route = 'assets/' + eachRoute.route;
             return eachRoute;
         });
 
         this.burgerMenuModuleLinks = [
             {
                 img: '../assets/icons/compliance.svg',
-                title: 'PacBoard',
+                title: 'compliance',
                 rows: complianceLinksUpdated,
                 shown: this.config.required.featureModules.COMPLIANCE_MODULE
             },
             {
-                img: '../assets/icons/reports.svg',
-                title: 'reports',
-                rows: reportsLinksUpdated,
-                shown: this.config.required.featureModules.REPORTS_MODULE
+                img: '../assets/icons/assets.svg',
+                title: 'assets',
+                rows: assetsLinksUpdated,
+                shown: this.config.required.featureModules.ASSETS_MODULE
             },
             {
-                img: '../assets/icons/tools.svg',
-                title: 'tools',
-                rows: toolsLinksUpdated,
-                shown: this.config.required.featureModules.TOOLS_MODULE
-            },
-            {
-                img: '../assets/icons/myboard.svg',
-                title: 'my board',
-                rows: myboardLinksUpdated,
-                shown: this.config.required.featureModules.MYBOARD_MODULE
+                img: '../assets/icons/Statistics.svg',
+                title: 'Statistics',
+                rows: statisticsLinks,
+                shown: true
             }
         ];
         this.footerData = [];

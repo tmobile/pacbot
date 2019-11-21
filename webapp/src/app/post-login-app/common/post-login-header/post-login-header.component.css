@@ -386,3 +386,6 @@ nav .nav-icon:last-child {
 .user-profile-wrapper:hover > .profile {
     transform: scale(1.2);
 }
+.cloud-icon-wrapper {
+    padding-right: .6em;
+}
