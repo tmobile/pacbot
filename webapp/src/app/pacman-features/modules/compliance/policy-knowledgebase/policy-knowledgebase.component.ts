@@ -184,7 +184,7 @@ export class PolicyKnowledgebaseComponent implements AfterViewInit, OnDestroy {
     * this function is used to fetch the rule id and to navigate to the next page
     */
 
-  gotoNextPage(tileData) {
+  gotoNextPage(tileData){
    let autofixEnabled = false;
     if ( tileData.autoFixEnabled) {
       autofixEnabled = true;
@@ -193,7 +193,7 @@ export class PolicyKnowledgebaseComponent implements AfterViewInit, OnDestroy {
     try {
       this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
       this.router.navigate(
-        ['pl', { outlets: { details: ['policy-knowledgebase-details', ruleId , autofixEnabled]}}],
+        ['pl', 'compliance', 'policy-knowledgebase-details', ruleId],
         { queryParams: this.agAndDomain,
           queryParamsHandling: 'merge' });
     } catch (error) {
