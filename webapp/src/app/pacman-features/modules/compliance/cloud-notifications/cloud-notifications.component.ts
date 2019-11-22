@@ -123,7 +123,7 @@ export class CloudNotificationsComponent implements OnInit, OnDestroy {
         this.selectedAssetGroup = assetGroupName;
         if (this.selectedAssetGroup.match('azure')) {
           setTimeout(() => {
-            this.router.navigate(['pl', 'compliance/compliance-dashboard'], {
+            this.router.navigate(['pl', 'compliance', 'compliance-dashboard'], {
               queryParamsHandling: 'merge'
             });
           }, 10);
