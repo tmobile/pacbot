@@ -121,9 +121,17 @@ export class CloudNotificationsComponent implements OnInit, OnDestroy {
       .getAssetGroup()
       .subscribe(assetGroupName => {
         this.selectedAssetGroup = assetGroupName;
-        this.calibrateFilter();
-        this.getSummary();
-        this.updateComponent();
+        if (this.selectedAssetGroup.match('azure')) {
+          setTimeout(() => {
+            this.router.navigate(['pl', 'compliance', 'compliance-dashboard'], {
+              queryParamsHandling: 'merge'
+            });
+          }, 10);
+        } else {
+          this.calibrateFilter();
+          this.getSummary();
+          this.updateComponent();
+        }
     });
   }
 
