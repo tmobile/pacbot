@@ -473,13 +473,20 @@ export class AssetListComponent implements OnInit, OnDestroy {
     data.map(function(responseData){
       const KeysTobeChanged = Object.keys(responseData);
       let newObj = {};
+      let entityType;
       KeysTobeChanged.forEach(element => {
+        if ( element === '_entitytype') {
+          entityType = responseData['_entitytype'];
+        }
         const elementnew =
           refactoredService.getDisplayNameForAKey(
             element.toLocaleLowerCase()
           ) || element;
         newObj = Object.assign(newObj, { [elementnew]: responseData[element] });
       });
+      if (entityType) {
+        newObj['Asset Type'] = entityType;
+      }
       newData.push(newObj);
     });
     return newData;
