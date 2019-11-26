@@ -37,7 +37,7 @@ export class PolicyKnowledgebaseDetailsComponent implements OnInit, OnDestroy {
   breadcrumbPresent: any;
   selectedAssetGroup: string;
   subscriptionToAssetGroup: Subscription;
-
+  public autoFix = false;
   public ruleID: any = '';
   public setRuleIdObtained = false;
   public dataComing = true;
@@ -106,6 +106,7 @@ export class PolicyKnowledgebaseDetailsComponent implements OnInit, OnDestroy {
       /*  TODO:Trinanjan Wrong way of doing it */
       this.routeSubscription = this.activatedRoute.params.subscribe(params => {
           this.ruleID = params['ruleID'];
+          this.autoFix = (params['autoFix'] === 'true');
       });
       if (this.ruleID !== undefined) {
           this.setRuleIdObtained = true;
