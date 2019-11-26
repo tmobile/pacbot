@@ -79,7 +79,6 @@ class ReplaceSQLPlaceHolder(NullResource):
                         'ENV_JOB_FUNCTION_NAME': SubmitJobLambdaFunction.get_input_attr('function_name'),
                         'ENV_JOB_FUNCTION_ARN': SubmitJobLambdaFunction.get_output_attr('arn'),
                         'ENV_RULE_BUCKET_REGION': AwsRegion.get_output_attr('name'),
-                        'ENV_RULE_JOB_BUCKET_NAME': BucketStorage.get_output_attr('bucket'),
                         'ENV_RULE_LAMBDA_REGION': AwsRegion.get_output_attr('name'),
                         'ENV_RULE_FUNCTION_NAME': RuleEngineLambdaFunction.get_input_attr('function_name'),
                         'ENV_RULE_FUNCTION_ARN': RuleEngineLambdaFunction.get_output_attr('arn'),

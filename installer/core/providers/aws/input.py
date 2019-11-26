@@ -11,7 +11,7 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
     """Base input class for installation/destruction/status commands. This class reads required input from user for the process to start"""
     AWS_AUTH_CRED = {}
 
-    def __init__(self, silent_install = False):
+    def __init__(self, silent_install=False):
         self.silent_install = silent_install
 
     def read_input(self):
@@ -30,7 +30,6 @@ class SystemInput(MsgMixin, metaclass=ABCMeta):
                 self.AWS_AUTH_CRED['assume_role_arn'],
                 self.AWS_AUTH_CRED['aws_region']
             )
-
 
         Settings.set('AWS_AUTH_CRED', self.AWS_AUTH_CRED)
 
