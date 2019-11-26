@@ -193,7 +193,7 @@ export class PolicyKnowledgebaseComponent implements AfterViewInit, OnDestroy {
     try {
       this.workflowService.addRouterSnapshotToLevel(this.router.routerState.snapshot.root);
       this.router.navigate(
-        ['pl', 'compliance', 'policy-knowledgebase-details', ruleId],
+        ['pl', 'compliance', 'policy-knowledgebase-details', ruleId, autofixEnabled],
         { queryParams: this.agAndDomain,
           queryParamsHandling: 'merge' });
     } catch (error) {
