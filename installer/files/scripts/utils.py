@@ -49,7 +49,6 @@ def prepare_aws_client_with_given_aws_details(service_name, aws_details):
         auth_data['aws_secret_access_key'] = temp_cred['SecretAccessKey']
         auth_data['aws_session_token'] = temp_cred['SessionToken']
 
-
     return boto3.client(service_name, **auth_data)
 
 
@@ -65,7 +64,6 @@ def prepare_aws_resource_with_given_aws_details(service_name, aws_details):
         auth_data['aws_access_key_id'] = temp_cred['AccessKeyId']
         auth_data['aws_secret_access_key'] = temp_cred['SecretAccessKey']
         auth_data['aws_session_token'] = temp_cred['SessionToken']
-
 
     return boto3.resource(service_name, **auth_data)
 

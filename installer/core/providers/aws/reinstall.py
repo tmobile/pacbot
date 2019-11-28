@@ -81,7 +81,7 @@ class ReInstall(Install):  # Do not inherit Destroy
         except Exception as e:
             self.executed_with_error = True
             self.exception = e
-            self.destroy = True  #If there is any error in destroy set destroy to True
+            self.destroy = True  # If there is any error in destroy set destroy to True
 
         self._cleanup_installation_process(dry_run)
 
