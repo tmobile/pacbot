@@ -12,6 +12,7 @@ def need_to_enable_azure():
 
     return feature_status
 
+
 def get_azure_tenants():
     if need_to_enable_azure():
         tenants = Settings.get('AZURE_TENANTS', [])
