@@ -99,7 +99,7 @@ export class DownloadService {
         const payload = downloadRequest;
 
         try {
-            return this.httpService.getBlobResponse(url, method, payload, queryParams)
+            return this.httpService.getBlobHttpResponse(url, method, payload, queryParams)
                     .map(response => {
                         const downloadResponse = response['_body'] || response;
 

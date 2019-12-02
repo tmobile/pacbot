@@ -45,6 +45,7 @@
     "ngx-highlight": "0.0.3",
     "ngx-infinite-scroll": "^0.8.3",
     "ngx-select-dropdown": "^1.0.1",
+    "object-hash": "^2.0.1",
     "offline-js": "^0.7.19",
     "rxjs": "^5.4.2",
     "zone.js": "^0.8.14"

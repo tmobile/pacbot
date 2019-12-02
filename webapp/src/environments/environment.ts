@@ -426,7 +426,7 @@ export const environment = {
         method: 'GET'
     },
     logout: {
-        url: '{{baseUrl}}/user/logout-session',
+        url: '{{baseUrl}}/auth/user/logout-session',
         method: 'GET'
     },
     refresh: {
