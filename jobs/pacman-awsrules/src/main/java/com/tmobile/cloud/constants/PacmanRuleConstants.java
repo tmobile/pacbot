@@ -359,4 +359,6 @@ public class PacmanRuleConstants {
 	public static final String AZURERESOURCEID= "recommendation._resourceIdLower";
 	public static final String RECOMMENDATION = "recommendation";
 	public static final String DETAILS = "details";
+	public static final String AZURE_SUBSCRIPTION = "subscription";
+    public static final String AZURE_SUBSCRIPTION_NAME = "subscriptionName";
 }
