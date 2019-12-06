@@ -30,18 +30,25 @@
      </div>
  </div>
   <div class="post-login-header-wrapper flex-align-center flex flex-between relative ">
-     <div class="header-left flex flex-align-center">
-         <a (click)='$event.stopPropagation(); handleAssetGroupFlow();' class="asset-group-selection" [class.active]='showRecents && recentTiles.length'>
-             <app-default-asset-group></app-default-asset-group>
-         </a>
-         <div (click)='showRecents = false;' [class.show-recents]='showRecents && recentTiles.length' class='relative flex flex-align-center recently-viewed-wrap'>
-             <h4 class="recently-viewed-txt">Recently Viewed</h4>
-             <div class="absolute recently-viewed-list">
-                 <div class="each-recent flex flex-align-center" (click)='$event.stopPropagation(); changeAg(row);' *ngFor='let row of recentTiles'>{{row.displayName}}</div>
-                 <div class="view-more-list" (click)='$event.stopPropagation(); openAgModal(); showRecents = false;'>View More</div>
-             </div>
-         </div>
-     </div>
+    <div class="header-left flex flex-align-center">
+        <a (click)='$event.stopPropagation(); handleAssetGroupFlow();' class="asset-group-selection" [class.active]='showRecents && recentTiles.length'>
+            <app-default-asset-group [provider]='provider' [dataLoaded]='cloudIconDataLoaded'></app-default-asset-group>
+        </a>
+        <div (click)='showRecents = false;' [class.show-recents]='showRecents && recentTiles.length' class='relative flex flex-align-center recently-viewed-wrap'>
+            <h4 class="recently-viewed-txt">Recently Viewed</h4>
+            <div class="absolute recently-viewed-list">
+                <div class="each-recent flex flex-align-center" (click)='$event.stopPropagation(); changeAg(row);' *ngFor='let row of recentTiles'>
+                 <div class='cloud-icon-wrapper flex flex-align-center' >
+                    <img *ngIf='(row.providers && row.providers.length == 0) || !row.providers' class="default-asset-group-icon" src="/assets/icons/asset-group-magenta.svg" width="20px" />
+                    <img *ngIf='row.providers && row.providers.length == 1' class="default-asset-group-icon" src="/assets/icons/{{row.providers[0].provider}}-color.svg" width="20px" />
+                    <img *ngIf='row.providers && row.providers.length > 1' class="default-asset-group-icon" src="/assets/icons/multi-cloud.svg" width="20px" />
+                 </div>
+                <div>{{row.displayName}}</div>
+                </div>
+                <div class="view-more-list" (click)='$event.stopPropagation(); openAgModal(); showRecents = false;'>View More</div>
+            </div>
+        </div>
+    </div>
      <div class="center nav-holder">
          <nav>
             <app-nav-icon class="nav-icon" [moduleName]="'compliance'" [iconImage]="navigationDetails.compliance.image" [activeIconImage]="navigationDetails.compliance.activeImage" [linkToRoute]="navigationDetails['compliance'].route" *ngIf="config.required.featureModules.COMPLIANCE_MODULE"></app-nav-icon>
@@ -61,22 +68,21 @@
      <span class='pacman-version'>stable (v{{environment.version}})</span>
      <img class="absolute close-img" src="../assets/png/delete.png">
      <div class='menu-content start'>
-         <ng-container *ngFor="let data of burgerMenuModuleLinks">
-             <div class='menu-container' *ngIf='data.shown'>
-                 <div class='flex flex-align-center menu-head-container'>
-                     <div>
-                         <img style='height: 1.33em; width: 1.33em;' src="{{data.img}}">
-                     </div>
-                     <div class='menu-head'>{{data.title}}</div>
-                     <div class="menu-underline"></div>
-                 </div>
-                 <div class="menu-content-item" *ngFor="let row of data.rows">
-                    <span *ngIf="row.overlay" routerLinkActive="active" [routerLink]="[  {outlets: { modalBGMenu : [row.route] } } ]" [queryParams]=agAndDomain (click)='clearPageLevel()'>{{row.name}}</span>
-                    <span *ngIf="!row.overlay" routerLinkActive="active" routerLink={{row.route}} [queryParams]=agAndDomain (click)='clearPageLevel()'>{{row.name}}</span>
-                 </div>
-             </div>
-         </ng-container>
-     </div>
+        <ng-container *ngFor="let data of burgerMenuModuleLinks">
+            <div class='menu-container' *ngIf='data.shown'>
+                <div class='flex flex-align-center menu-head-container'>
+                    <div>
+                        <img style='height: 1.33em; width: 1.33em;' src="{{data.img}}">
+                    </div>
+                    <div class='menu-head'>{{data.title}}</div>
+                    <div class="menu-underline"></div>
+                </div>
+                <div [class.hide]='row.cloudSpecific && ((provider.length == 1 && provider[0] == "azure") || (agAndDomain["ag"] && agAndDomain["ag"].includes("azure")))' class="menu-content-item" *ngFor="let row of data.rows">
+                    <span routerLinkActive="active" [routerLink]="row.overlay ? [  {outlets: { modalBGMenu : [row.route] } } ] : [row.route] " [queryParams]=agAndDomain (click)='clearPageLevel()'>{{row.name}}</span>
+                </div>
+            </div>
+        </ng-container>
+    </div>
      <div class='menu-footer'>
          <img class="pacman-logo" src="../../../../assets/icons/application-logo.svg" alt="">
          <div class="flex">

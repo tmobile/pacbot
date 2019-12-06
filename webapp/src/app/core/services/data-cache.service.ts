@@ -170,6 +170,16 @@ export class DataCacheService {
     if (domainList) { this.set(key, domainList); }
   }
 
+  public getRecentlyViewedAssetGroups() {
+    const key = 'recentlyViewedAssetGroups';
+    return this.get(key);
+  }
+  public setRecentlyViewedAssetGroups(recentlyViewedAssetGroups) {
+    const key = 'recentlyViewedAssetGroups';
+    if (recentlyViewedAssetGroups) { this.set(key, recentlyViewedAssetGroups); }
+  }
+
+
   public getCurrentSelectedDomainList() {
     const key = 'domainList';
     return this.get(key);

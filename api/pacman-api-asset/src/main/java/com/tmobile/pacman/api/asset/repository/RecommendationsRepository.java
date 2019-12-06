@@ -1,9 +1,13 @@
 package com.tmobile.pacman.api.asset.repository;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
@@ -38,6 +42,9 @@ public class RecommendationsRepository {
     private static final String PROTOCOL = "http";
     private String esUrl;
     
+    @Value("${recommendation.categories}")
+    private String recommendationCategories;
+    
     /** The elastic search repository. */
     @Autowired
     private ElasticSearchRepository elasticSearchRepository;
@@ -69,31 +76,51 @@ public class RecommendationsRepository {
 		try {
 			responseDetails = PacHttpUtils.doHttpPost(urlToQuery.toString(), requestBody.toString());
 		} catch (Exception e) {
-			LOGGER.error("Error in getRecommendationSummary "+e);
+			LOGGER.error("Error while fetching recommendation summary from ES ", e);
 			throw new DataException(e);
 		}
         JsonParser parser = new JsonParser();
         JsonObject responseDetailsjson = parser.parse(responseDetails).getAsJsonObject();
         JsonObject aggregations = responseDetailsjson.get(Constants.AGGREGATIONS).getAsJsonObject();
-        JsonArray categoryBuckets = aggregations.get("recommendations").getAsJsonObject().get("latest").getAsJsonObject().get("category").getAsJsonObject().get(Constants.BUCKETS).getAsJsonArray();
-        if (categoryBuckets.size() > 0) {
-            for (int i=0; i<categoryBuckets.size();i++) {
-                JsonObject categoryObj = (JsonObject) categoryBuckets.get(i);
-                if (categoryObj != null) {
-                	Map<String,Object> category = new HashMap<>();
-                	category.put("category", categoryObj.get("key").getAsString());
-                	category.put("recommendations", categoryObj.get("doc_count").getAsLong());
-                	JsonObject savingsObj = categoryObj.get("savings").getAsJsonObject();
-                	if(savingsObj.size() != 0) {
-                		long potentialMonthlySavings = Math.round(savingsObj.get("value").getAsDouble());
-                		if(potentialMonthlySavings > 0) {
-                			category.put("potentialMonthlySavings", potentialMonthlySavings);
-                		}
-                	}
-                	recommendationSummary.add(category);
+        boolean dataAvailable = false;
+        if(aggregations != null) {
+        	JsonObject recommendations = aggregations.get("recommendations").getAsJsonObject();
+        	if(recommendations.has("latest") && recommendations.get("latest").getAsJsonObject().has("category")) {
+				JsonArray categoryBuckets = recommendations.get("latest").getAsJsonObject().get("category")
+						.getAsJsonObject().get(Constants.BUCKETS).getAsJsonArray();
+				if (categoryBuckets.size() > 0) {
+					dataAvailable = true;
+                    for (int i=0; i<categoryBuckets.size();i++) {
+                        JsonObject categoryObj = (JsonObject) categoryBuckets.get(i);
+                        if (categoryObj != null) {
+                        	Map<String,Object> category = new HashMap<>();
+                        	category.put("category", categoryObj.get("key").getAsString());
+                        	category.put("recommendations", categoryObj.get("doc_count").getAsLong());
+                        	JsonObject savingsObj = categoryObj.get("savings").getAsJsonObject();
+                        	if(savingsObj.size() != 0) {
+                        		long potentialMonthlySavings = Math.round(savingsObj.get("value").getAsDouble());
+                        		if(potentialMonthlySavings > 0) {
+                        			category.put("potentialMonthlySavings", potentialMonthlySavings);
+                        		}
+                        	}
+                        	recommendationSummary.add(category);
+                        }
+                    }
                 }
-            }
+        	}
+        	
         }
+        if(!dataAvailable) {
+    		//for azure there are no recommendations currently, so passing 0 values for azure asset group
+    		String[] categories = recommendationCategories.split(",");
+    		for(int i=0; i < categories.length; i++) {
+    			Map<String,Object> category = new HashMap<>();
+            	category.put("category", categories[i]);
+            	category.put("recommendations", 0L);
+            	recommendationSummary.add(category);
+    		}
+    	}
+        
         return recommendationSummary;
     }
     
@@ -385,12 +412,15 @@ public class RecommendationsRepository {
 		return responseDetailsjson.get("_scroll_id").getAsString();
 	}
 	
-	public List<Map<String,Object>> getGeneralRecommendationSummary() throws DataException {
+	public List<Map<String,Object>> getGeneralRecommendationSummary(List<String> providers) throws DataException {
     	
     	List<Map<String,Object>> recommendationSummary = new ArrayList<>();
     	StringBuilder urlToQuery = new StringBuilder(esUrl).append("/").append("global_recommendations").append("/")
     			.append("recommendation").append("/").append(Constants.SEARCH);
-		StringBuilder requestBody = new StringBuilder("{\"size\":0,\"query\":{\"term\":{\"latest\":{\"value\":\"true\"}}},\"aggs\":{\"category\":{\"terms\":{\"field\":\"category.keyword\",\"size\":100}}}}");
+		StringBuilder requestBody = new StringBuilder("{\"size\":0,\"query\":{\"bool\": {\"filter\":[{\"term\":{\"latest\":\"true\"}},{\"terms\":{\"_cloudType\":[\"");
+		requestBody.append(String.join("\",\" ", providers.stream().collect(Collectors.toList())));
+		requestBody.append("\"]}}]}},\"aggs\":{\"category\":{\"terms\":{\"field\":\"category.keyword\",\"size\":100}}}}");
+		
 		String responseDetails;
 		try {
 			responseDetails = PacHttpUtils.doHttpPost(urlToQuery.toString(), requestBody.toString());
@@ -401,22 +431,36 @@ public class RecommendationsRepository {
         JsonParser parser = new JsonParser();
         JsonObject responseDetailsjson = parser.parse(responseDetails).getAsJsonObject();
         JsonObject aggregations = responseDetailsjson.get(Constants.AGGREGATIONS).getAsJsonObject();
-        JsonArray categoryBuckets = aggregations.get("category").getAsJsonObject().get(Constants.BUCKETS).getAsJsonArray();
-        if (categoryBuckets.size() > 0) {
-            for (int i=0; i<categoryBuckets.size();i++) {
-                JsonObject categoryObj = (JsonObject) categoryBuckets.get(i);
-                if (categoryObj != null) {
-                	Map<String,Object> category = new HashMap<>();
-                	category.put("category", categoryObj.get("key").getAsString());
-                	category.put("recommendations", categoryObj.get("doc_count").getAsLong());
-                	recommendationSummary.add(category);
-                }
-            }
-        }
+        
+		if (aggregations != null) {
+
+			JsonArray categoryBuckets = aggregations.get("category").getAsJsonObject().get(Constants.BUCKETS)
+					.getAsJsonArray();
+			if (categoryBuckets.size() > 0) {
+				for (int i = 0; i < categoryBuckets.size(); i++) {
+					JsonObject categoryObj = (JsonObject) categoryBuckets.get(i);
+					if (categoryObj != null) {
+						Map<String, Object> category = new HashMap<>();
+						category.put("category", categoryObj.get("key").getAsString());
+						category.put("recommendations", categoryObj.get("doc_count").getAsLong());
+						recommendationSummary.add(category);
+					}
+				}
+			} else {
+				//   passing 0 values if there are no recommendations
+				String[] categories = recommendationCategories.split(",");
+				for (int i = 0; i < categories.length; i++) {
+					Map<String, Object> category = new HashMap<>();
+					category.put("category", categories[i]);
+					category.put("recommendations", 0L);
+					recommendationSummary.add(category);
+				}
+			}
+		}
         return recommendationSummary;
     }
 	
-	public Map<String,Object> getGeneralRecommendations(String category) throws DataException {
+	public Map<String,Object> getGeneralRecommendations(String category, List<String> providers) throws DataException {
 		
 		Map<String,Object> result = new HashMap<>();
 		List<Map<String,Object>> recommendations = new ArrayList<>();
@@ -425,7 +469,9 @@ public class RecommendationsRepository {
     			.append("recommendation").append("/").append(Constants.SEARCH);
 		StringBuilder requestBody = new StringBuilder("{\"size\":0,\"query\":{\"bool\":{\"must\":[{\"match\":{\"latest\":true}},{\"match\":{\"category.keyword\":\"");
 		requestBody.append(category);
-		requestBody.append("\"}}]}},\"aggs\":{\"recommendations\":{\"terms\":{\"field\":\"recommendationId.keyword\",\"size\":10000}}}}");
+		requestBody.append("\"}}],\"filter\":[{\"terms\":{\"_cloudType\":[\"");
+		requestBody.append(String.join("\",\" ", providers.stream().collect(Collectors.toList())));
+		requestBody.append("\"]}}]}},\"aggs\":{\"recommendations\":{\"terms\":{\"field\":\"recommendationId.keyword\",\"size\":10000}}}}");
 		String responseDetails;
 		try {
 			responseDetails = PacHttpUtils.doHttpPost(urlToQuery.toString(), requestBody.toString());

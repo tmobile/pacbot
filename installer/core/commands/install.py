@@ -9,13 +9,10 @@ class Install(BaseCommand):
     Base install class which identify actual provide install class and execute installation
 
     Attributes:
-        terraform_with_targets (Boolean): Identify whether complete installation or partial installation is required
         validation_class (class): Provider validation class for validating inputs (aws validator)
         input_class (class): Provider input class
         install_class (class): Provider install class
     """
-    terraform_with_targets = False
-
     def __init__(self, args):
         """
         Constructor method for install
@@ -23,7 +20,6 @@ class Install(BaseCommand):
         Args:
             args (List): List of key- value pair of args supplied to the command
         """
-        self.terraform_with_targets = False
         super().__init__(args)
 
     def execute(self, provider):
@@ -40,9 +36,9 @@ class Install(BaseCommand):
             if self.check_pre_requisites() is False:
                 self.exit_system_with_pre_requisites_fail()
 
-            resources_to_process = self.get_resources_to_process(input_instance)
+            resources_to_process = self.get_resources_to_process(self.resource_tags_list, input_instance)
             if resources_to_process:
-                self.install_class(self.args, input_instance).execute(
+                self.install_class(input_instance).execute(
                     resources_to_process,
                     self.terraform_with_targets,
                     self.dry_run

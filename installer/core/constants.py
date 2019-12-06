@@ -32,6 +32,11 @@ AWS_WITH_ASSUME_ROLE = "2. Assuming an IAM role"
 AWS_WITH_EC2_ROLE = "3. Using IAM role attached to the this instance"
 AWS_CHOOSE_AUTH_OPTION = "Type 1 or 2 or 3 to continue to create services in AWS: "
 AWS_INCORRECT_MECHANISM = "Entered an incorrect value!!!"
+AWS_AUTH_MECHANISM_NOT_SUPPLIED = "Please add value 1 or 2 or 3 for AWS_AUTH_MECHANISM in settings/local.py"
+AWS_ACCESS_KEY_NOT_SUPPLIED = "Please enter value for AWS_ACCESS_KEY in settings/local.py file"
+AWS_SECRET_KEY_NOT_SUPPLIED = "Please enter value for AWS_SECRET_KEY in settings/local.py file"
+AWS_REGION_NOT_SUPPLIED = "Please enter value for AWS_REGION in settings/local.py file"
+AWS_ASSUME_ROLE_NOT_SUPPLIED = "Please enter value for AWS_ASSUME_ROLE_ARN in settings/local.py file"
 
 AWS_ACCESS_KEY_INPUT = "Please enter AWS access key: "
 AWS_SECRET_KEY_INPUT = "Please enter AWS secret key: "
@@ -88,9 +93,11 @@ TERRAFORM_APPLY_DRY_RUN = "Terraform apply is not executed as dry-run is enabled
 TERRAFORM_OUTPUT_STORED = "Terraform output is stored"
 
 TERRAFORM_DESTROY_STARTED = "Terraform destroy started"
+TERRAFORM_REDEPLOY_DESTROY_STARTED = "Deleting resources for redeployment"
 TERRAFORM_DESTROY_RUNNING = "Destroying resources"
 TERRAFORM_DESTROY_ERROR = "Terraform destroy encountered an error"
 TERRAFORM_DESTROY_COMPLETED = "Terraform destroy executed successfully!!! Please check destroy log for more details"
+TERRAFORM_REDEP_DESTROY_COMPLETED = "Successful!!! Resources will be recreated in next steps."
 TERRAFORM_DESTROY_DRY_RUN = "Terraform destroy is not executed as dry-run is enabled"
 
 TERRAFORM_TAINT_STARTED = "Terraform taint(destroy and re-install) started"

@@ -40,7 +40,8 @@ public interface AssetService {
      * 
      * @return list of type and its asset count.
      */
-    public List<Map<String, Object>> getAssetCountByAssetGroup(String aseetGroupName, String type, String domain);
+    public List<Map<String, Object>> getAssetCountByAssetGroup(String assetGroup, String type, String domain,
+			String application, String provider);
 
     /**
      * Fetches all the target types for the particular asset group. If asset
@@ -51,7 +52,7 @@ public interface AssetService {
      * 
      * @return list of target types.
      */
-    public List<Map<String, Object>> getTargetTypesForAssetGroup(String aseetGroupName, String domain);
+    public List<Map<String, Object>> getTargetTypesForAssetGroup(String aseetGroupName, String domain, String provider);
 
     /**
      * Fetches all the applications for the particular asset group.
@@ -485,5 +486,28 @@ public interface AssetService {
      */
     public List<Map<String, Object>> getDataTypeInfoByTargetType(String resourceId) throws ServiceException;
     
+    /**
+     * Fetches the total count of assets for the particular asset group and distribution of assets based on environment. If no
+     * type is passed, all the assets of valid target type for the asset group
+     * is considered.,
+     *
+     * @param aseetGroupName name of the asset group
+     * @param type target type
+     * @param domain the domain of asset group
+     * 
+     * @return list of type, asset count and env distribution.
+     */
+	public List<Map<String, Object>> getAssetCountAndEnvDistributionByAssetGroup(String assetGroup, String type, String domain,
+			String application, String provider);
+
+	/**
+     * Fetches the provider info for the given asset group.
+     *
+     * @param Asset Group
+     * 
+     * @return  list of provider info
+     * @throws ServiceException
+     */
+	public List<String> getProvidersForAssetGroup(String assetGroup) throws DataException;
 
 }

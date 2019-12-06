@@ -36,9 +36,7 @@ export class RoutingService {
             assetGroupAndDomain['domain'] = agAndDomain['domain'];
 
           const savedPath = this.workflowService.getPreviouslyOpenedPageInModule(moduleName);
-
           if (savedPath) {
-
             const queryParams = this.workflowService.getPreviouslyOpenedPageQueryParamsInModule(moduleName)
               ? JSON.parse(this.workflowService.getPreviouslyOpenedPageQueryParamsInModule(moduleName))
               : {};
@@ -47,6 +45,18 @@ export class RoutingService {
 
             url = savedPath;
             queryParamsToBePassed = queryParams;
+            const level = this.workflowService.getDetailsFromStorage();
+            const newLevel = [];
+            if (level['level0'] && level['level0'].length > 0) {
+              for (let i = 0; i < level['level0'].length; i++) {
+                if (level['level0'][i]['url'] === savedPath) {
+                  break;
+                } else {
+                  newLevel.push(level['level0'][i]);
+                }
+              }
+              this.workflowService.saveToStorage({level0: newLevel});
+            }
           } else {
 
             const listOfContextualMenuItems = this.domainMappingService.getDashboardsApplicableForADomain(agAndDomain['domain'], moduleName);
@@ -56,11 +66,10 @@ export class RoutingService {
               url = 'pl' + '/' + moduleName + '/';
             }
             queryParamsToBePassed = assetGroupAndDomain;
+            this.clearPageLevel();
           }
-
           this.router.navigate([url], {queryParams: queryParamsToBePassed}).then(response => {
             // Clearig page levels.
-            this.clearPageLevel();
           });
         } catch (error) {
             this.loggerService.log('error', 'js error - ' + error);

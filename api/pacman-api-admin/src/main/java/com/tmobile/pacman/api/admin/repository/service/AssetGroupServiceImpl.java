@@ -304,7 +304,7 @@ public class AssetGroupServiceImpl implements AssetGroupService {
 				targetTypesIndex.put(targetTypeDetails.getTargetType(), idx[0]);
 				targetTypes.setAdded(true);
 				targetTypes.setTargetName(targetTypeDetails.getTargetType());
-				targetTypes.setAllAttributesName(commonService.getFieldNames(existingAssetGroupDetails.getDataSource() + "_" + targetTypeDetails.getTargetType(), targetTypeDetails.getTargetType()));
+				targetTypes.setAllAttributesName(commonService.getFieldNames(targetTypesRepository.findDataSourceByTargetType(targetTypeDetails.getTargetType()) + "_" + targetTypeDetails.getTargetType(), targetTypeDetails.getTargetType()));
 				if(targetTypeDetails.getAttributeName().equalsIgnoreCase("all") && targetTypeDetails.getAttributeValue().equalsIgnoreCase("all")) {
 					targetTypes.setIncludeAll(true);
 					targetTypes.setAttributes(Lists.newArrayList());
@@ -335,7 +335,7 @@ public class AssetGroupServiceImpl implements AssetGroupService {
 			TargetTypesDetails targetTypeAttribute = new TargetTypesDetails();
 			targetTypeAttribute.setAttributes(Lists.newArrayList());
 			targetTypeAttribute.setTargetName(targetName.trim());
-			targetTypeAttribute.setAllAttributesName(commonService.getFieldNames(existingAssetGroupDetails.getDataSource() + "_" + targetName, targetName));
+			targetTypeAttribute.setAllAttributesName(commonService.getFieldNames(targetTypesRepository.findDataSourceByTargetType(targetName) + "_" + targetName, targetName));
 			targetTypeAttribute.setIncludeAll(false);
 			attributes.add(targetTypeAttribute);
 		}
@@ -353,8 +353,9 @@ public class AssetGroupServiceImpl implements AssetGroupService {
 			
 			if(!targetTypes.isEmpty()) {
 				targetTypes.forEach(targetType -> {
+					String targetName = targetType.getTargetType().toLowerCase().trim().replaceAll(" ", "-");
 					Map<String, Object> addObj = Maps.newHashMap();
-					addObj.put("index", assetGroupDetails.getDataSource().toLowerCase().trim().replaceAll(" ", "-")+"_"+targetType.getTargetType().toLowerCase().trim().replaceAll(" ", "-"));
+					addObj.put("index", targetTypesRepository.findDataSourceByTargetType(targetName).toLowerCase().trim().replaceAll(" ", "-")+"_"+targetName);
 					addObj.put("alias", aliasName);
 					Map<String, Object> add = Maps.newHashMap();
 					add.put("remove", addObj);
@@ -384,7 +385,8 @@ public class AssetGroupServiceImpl implements AssetGroupService {
 			final String aliasName = assetGroupDetailsJson.getGroupName().toLowerCase().trim().replaceAll(" ", "-");
 			for (int targetIndex = 0; targetIndex < targetTypes.size(); targetIndex++) {
 				Map<String, Object> addObj = Maps.newHashMap();
-				addObj.put("index", assetGroupDetailsJson.getDataSourceName().toLowerCase().trim().replaceAll(" ", "-") + "_" + targetTypes.get(targetIndex).getTargetName().toLowerCase().trim().replaceAll(" ", "-"));
+				String targetType = targetTypes.get(targetIndex).getTargetName().toLowerCase().trim().replaceAll(" ", "-");
+				addObj.put("index", targetTypesRepository.findDataSourceByTargetType(targetType).toLowerCase().trim().replaceAll(" ", "-") + "_" + targetType);
 				addObj.put("alias", aliasName);
 				List<AttributeDetails> attributes = Lists.newArrayList();
 				if (!targetTypes.get(targetIndex).isIncludeAll()) {

@@ -127,7 +127,7 @@ public class ProjectionServiceImplTest {
         when(complainceRepository.getTargetTypeForAG(anyString(), anyString()))
                 .thenReturn(targetTypes);
         
-        when(complianceService.getPatching(anyString(),anyString()))
+        when(complianceService.getPatching(anyString(),anyString(),anyString()))
                 .thenReturn(patchingMap);
         
         when(repository.getProjectionDetailsFromDb(anyString(), anyInt(),anyInt()))
@@ -194,7 +194,7 @@ public class ProjectionServiceImplTest {
         when(repository.getAppsDetails(anyString()))
         .thenReturn(maintargetTypesList);
         
-        when(complianceService.getPatching(anyString(),anyString()))
+        when(complianceService.getPatching(anyString(),anyString(),anyString()))
         .thenReturn(assetMap);
         
         assertThat(projectionServiceImpl.getPatchingProgressByDirector("onprem-vm"),
@@ -237,7 +237,7 @@ public class ProjectionServiceImplTest {
         when(repository.getAppsDetails(anyString()))
         .thenReturn(maintargetTypesList);
         
-        when(complianceService.getPatching(anyString(),anyString()))
+        when(complianceService.getPatching(anyString(),anyString(),anyString()))
         .thenReturn(assetMap);
         
         assertThat(projectionServiceImpl.patchProgByExSponsor("onprem-vm"),

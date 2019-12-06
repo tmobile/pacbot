@@ -121,11 +121,11 @@ public class ComplianceControllerTest {
     
     @Test
     public void getPatchingTest() throws Exception {
-        when(complianceService.getPatching(anyString(),anyString())).thenReturn(CommonTestUtil.getMapLong());
+        when(complianceService.getPatching(anyString(),anyString(),anyString())).thenReturn(CommonTestUtil.getMapLong());
         assertThat(complianceController.getPatching("ag"), is(notNullValue()));
         assertThat(complianceController.getPatching(""), is(notNullValue()));
         
-        when(complianceService.getPatching(anyString(),anyString())).thenThrow(new ServiceException());
+        when(complianceService.getPatching(anyString(),anyString(),anyString())).thenThrow(new ServiceException());
         when(complianceService.formatException(anyObject())).thenReturn(ResponseUtils.buildFailureResponse(new ServiceException()));
         ResponseEntity<Object> responseObj = complianceController.getPatching("ag");
         assertTrue(responseObj.getStatusCode() == HttpStatus.EXPECTATION_FAILED);

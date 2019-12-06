@@ -246,8 +246,7 @@ export class CreateRuleComponent implements OnInit, OnDestroy {
     this.adminService.executeHttpAction(url, method, {}, {}).subscribe(reponse => {
       const fullDatasourceNames = [];
       for (let index = 0; index < reponse[0].length; index++) {
-        const datasourceDetail = reponse[0][index];
-        fullDatasourceNames.push(datasourceDetail[0]);
+        fullDatasourceNames.push(reponse[0][index].dataSourceName);
       }
       this.datasourceDetails = fullDatasourceNames;
       this.getAllAssetGroupNames();

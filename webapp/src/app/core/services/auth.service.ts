@@ -66,15 +66,19 @@ export class AuthService {
     }
 
     doLogout() {
-        this.dataStore.clearAll(); // Calling clear session from data store
-        localStorage.setItem('logout', 'true');
-        localStorage.removeItem('logout');
-
         if (this.adAuthentication) {
+            this.clearSessionStorage();
            this.adalService.logout();
         } else {
             this.onPremAuthentication.logout();
+            this.clearSessionStorage();
         }
+    }
+
+    clearSessionStorage() {
+        this.dataStore.clearAll(); // Calling clear session from data store
+        localStorage.setItem('logout', 'true');
+        localStorage.removeItem('logout');
     }
 
     authenticateUserOnPrem(url, method, payload, headers) {

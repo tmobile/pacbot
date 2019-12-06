@@ -99,7 +99,7 @@ class SysLog:
 
         self.write_debug_log(K.TERRAFORM_PLAN_COMPLETED)
 
-    def write_terraform_apply_log_header(self):
+    def write_terraform_apply_log_header(self, header=None):
         """
         Write terraform apply command response to install log
 
@@ -111,9 +111,10 @@ class SysLog:
             logfile.write("\n*** Terraform Apply Started")
             logfile.write("\nDateTime: %s\n" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             logfile.write("*" * 100)
-        self.write_debug_log(K.TERRAFORM_APPLY_STARTED)
+        header = header if header else K.TERRAFORM_APPLY_STARTED
+        self.write_debug_log(header)
 
-    def write_terraform_destroy_log_header(self):
+    def write_terraform_destroy_log_header(self, header=None):
         """
         Write terraform destroy command response to destroy log
 
@@ -125,7 +126,8 @@ class SysLog:
             logfile.write("\n*** Terraform Destroy  Started ***")
             logfile.write("\nDateTime: %s\n" % datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
             logfile.write("*" * 100)
-        self.write_debug_log(K.TERRAFORM_DESTROY_STARTED)
+        header = header if header else K.TERRAFORM_DESTROY_STARTED
+        self.write_debug_log(header)
 
     def _write_header(self, head_msg=None):
         """

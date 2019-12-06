@@ -12,10 +12,14 @@
  * limitations under the License.
  -->
 
- <div class="asset-details-wrapper relative">
+ <div class="asset-details-wrapper relative" [class.height100]='assetDetailsState<1'>
     <section class="details-section-content" *ngIf='detailsVal && assetDetailsState > 0'>
         <article class="basic-desc">
-            <div class="name-title">{{detailsVal.displayname}}</div>
+            <div class='name-title flex flex-row flex-align-center'>
+                <div>{{detailsVal.displayname}}</div>
+                <div class='flex flex-align-center' *ngIf='provider.length > 1'><img class='each-cloud' alt='Multi-Cloud' width="22px" src="/assets/icons/multi-cloud.svg"></div>
+                <div class='flex flex-align-center' *ngIf='provider.length == 1'><img class='each-cloud' alt='{{provider}}' width="22px" src="/assets/icons/{{provider}}-color.svg"></div>
+            </div>
             <div *ngIf='detailsVal.description' class="desc-title">{{detailsVal.description}}</div>
             <div *ngIf='!detailsVal.description' class="description desc-title">Select this asset group to fetch data under this asset group</div>
         </article>
@@ -38,7 +42,16 @@
             <div class="desc-detail flex flex-between">
                 <div class="keyword">Asset Count</div>
                 <div class="dotted-line"></div>
-                <div class="key-value pointer link-text-secondary" (click)="detailsVal.assetcount > 0 && instructParentToNavigate('total asset')">{{detailsVal.assetcount | number}}</div>
+                <div class="key-value pointer" [class.link-text-secondary]='detailsVal.assetcount > 0' (click)="detailsVal.assetcount > 0 && instructParentToNavigate('total asset', detailsVal)">{{detailsVal.assetcount | number}}</div>
+            </div>
+            <div class="desc-detail flex flex-between">
+                <div class="keyword">Cloud Types</div>
+                <div class="dotted-line"></div>
+                <div class="key-value uppercase">
+                    <span *ngFor='let val of provider; let i = index; '>{{val}}
+                        <span *ngIf='i !== (provider.length - 1) '>, </span>
+                    </span>
+                </div>
             </div>
         </article>
     </section>

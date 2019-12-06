@@ -28,6 +28,9 @@ export class RequestInterceptorService implements HttpInterceptor {
         if (req.url.includes('user/authorize') || req.url.includes('user/login') || req.url.includes('refreshtoken')) {
             this.loggerService.log('info', 'Not adding the access token for this api - ' + req.url);
             return next.handle(req);
+        } else if (req.url.includes('user/logout-session')) {
+            this.loggerService.log('info', 'Do not retry when logging user out - ' + req.url);
+            return next.handle(this.addToken(req, authService.getAuthToken()));
         }
         return next.handle(this.addToken(req, authService.getAuthToken())).pipe(
             catchError(error => {

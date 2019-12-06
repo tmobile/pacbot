@@ -426,7 +426,7 @@ export const environment = {
         method: 'GET'
     },
     logout: {
-        url: '{{baseUrl}}/user/logout-session',
+        url: '{{baseUrl}}/auth/user/logout-session',
         method: 'GET'
     },
     refresh: {
@@ -893,5 +893,5 @@ export const environment = {
     vulnerabilityGraphSummary: {
         url: '{{baseUrl}}/vulnerability/v1/vulnerabilities/summarybyassets',
         method: 'GET'
-    },
+    }
 };

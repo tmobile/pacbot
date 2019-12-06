@@ -61,6 +61,9 @@ public class FileGenerator {
 	/** The current date. */
 	protected static String currentDate =  new SimpleDateFormat("yyyy-MM-dd HH:00:00Z").format(new java.util.Date());
 	
+	public static final String CLOUD_TYPE = "_cloudType";	
+	public static final String AWS = "Aws";
+	
 	/** The log. */
 	private static Logger log = LoggerFactory.getLogger(FileGenerator.class);
 	
@@ -339,7 +342,8 @@ public class FileGenerator {
 						lineDataMap.put(keysList[i], "");
 					}
 				}
-				
+				lineDataMap.put(CLOUD_TYPE,AWS);// Added _cloudType as AWS
+
 				try {
 					if(sb.length() == 0 && new File(folderName+File.separator+fileName).length() < 2) {
 						sb.append(objectMapper.writeValueAsString(lineDataMap));

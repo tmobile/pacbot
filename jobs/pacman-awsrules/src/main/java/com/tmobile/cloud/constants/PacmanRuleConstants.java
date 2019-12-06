@@ -355,4 +355,10 @@ public class PacmanRuleConstants {
 	public static final String STATUS_EXEMPTED = "exempted";
 	public static final String ES_RESOURCE_WITH_VULN_INFO_SEVERITY_URL = "esResourceWithVulnInfoForSeverityUrl";
 	public static final int FIRST_DISCOVERED_DATE_FORMAT_LENGTH = 10;
+	public static final String POLICYNAME= "recommendation.policyName";
+	public static final String AZURERESOURCEID= "recommendation._resourceIdLower";
+	public static final String RECOMMENDATION = "recommendation";
+	public static final String DETAILS = "details";
+	public static final String AZURE_SUBSCRIPTION = "subscription";
+    public static final String AZURE_SUBSCRIPTION_NAME = "subscriptionName";
 }

@@ -359,6 +359,7 @@ export class RecommendationsComponent implements OnInit, OnChanges, OnDestroy {
       'order': 1
     };
     response.forEach((element) => {
+      element['category'] = element['category'].trim();
       element['displayName'] = this.refactorFieldsService.getDisplayNameForAKey(element['category'].toLocaleLowerCase()) || element['category'];
       element['icon'] = '../../../../../assets/icons/recommand_' + element.category + '.svg';
       element['color'] = summaryTabsColor[element.category];

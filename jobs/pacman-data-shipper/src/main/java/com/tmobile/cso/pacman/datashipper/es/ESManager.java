@@ -98,7 +98,7 @@ public class ESManager implements Constants {
      * @param loaddate the loaddate
      * @return the map
      */
-    public static Map<String, Object> uploadData(String index, String type, List<Map<String, String>> docs, String loaddate) {
+    public static Map<String, Object> uploadData(String index, String type, List<Map<String, Object>> docs, String loaddate) {
 
         Map<String, Object> status = new LinkedHashMap<>();
         List<String> errors = new ArrayList<>();
@@ -112,7 +112,7 @@ public class ESManager implements Constants {
             LOGGER.info("*********# of docs *** {}" , docs.size());
             StringBuilder bulkRequest = new StringBuilder();
             int i = 0;
-            for (Map<String, String> doc : docs) {
+            for (Map<String, Object> doc : docs) {
 
                 String id = Util.concatenate(doc, _keys, "_");
                 StringBuilder _doc = new StringBuilder(createESDoc(doc));
@@ -399,7 +399,7 @@ public class ESManager implements Constants {
         Iterator<String> it = types.iterator();
         while (it.hasNext()) {
             String _type = it.next();
-            String indexName = ds + "_" + _type;
+            String indexName = ds+ "_" + _type;
             if (!indexExists(indexName)) {
                 StringBuilder payLoad = new StringBuilder(_payLoad);
                 payLoad.append("\"" + _type + "\":{},\"issue_" + _type + "\": { \"_parent\": {\"type\": \"" + _type
@@ -410,7 +410,6 @@ public class ESManager implements Constants {
                 payLoad.append("}}");
                 try {
                     invokeAPI("PUT", indexName, payLoad.toString());
-                    invokeAPI("PUT", "/" + indexName + "/_alias/" + ds, null);
                 } catch (IOException e) {
                     LOGGER.error("Error in configureIndexAndTypes",e);
                     Map<String,String> errorMap = new HashMap<>();
@@ -420,9 +419,14 @@ public class ESManager implements Constants {
                     errorList.add(errorMap);
                 }
             }
+            try {
+				invokeAPI("PUT", "/" + indexName + "/_alias/" + ds, null);
+				invokeAPI("PUT", "/" + indexName + "/_alias/" + "ds-all", null);
+			} catch (IOException e) {
+				
+			}
         }
-
-    }
+     }
 
     /**
      * Gets the existing info.
@@ -624,7 +628,7 @@ public class ESManager implements Constants {
      * @param docs the docs
      * @param parentKey the parent key
      */
-    public static void uploadData(String index, String type, List<Map<String, String>> docs, String[] parentKey) {
+    public static void uploadData(String index, String type, List<Map<String, Object>> docs, String[] parentKey) {
         String actionTemplate = "{ \"index\" : { \"_index\" : \"%s\", \"_type\" : \"%s\", \"_parent\" : \"%s\" } }%n"; // added
                                                                                                                        // _parent
                                                                                                                        // node
@@ -633,7 +637,7 @@ public class ESManager implements Constants {
         if (null != docs && !docs.isEmpty()) {
             StringBuilder bulkRequest = new StringBuilder();
             int i = 0;
-            for (Map<String, String> doc : docs) {
+            for (Map<String, Object> doc : docs) {
 
                 StringBuilder _doc = new StringBuilder(new Gson().toJson(doc));
                 String parent = Util.concatenate(doc, parentKey, "_");

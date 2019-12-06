@@ -2908,5 +2908,98 @@ public class PacmanUtils {
 		}
 		return false;
 	}
+	
+	/**
+	 * Check Azure Security center rules.
+	 *
+	 * @param esUrl
+	 *            the es url
+	 * @param mustfilter
+	 *            the must filter map
+	 * @throws Exception
+	 *             the exception
+	 */
+	public static Map<String, Object> checkResourceIdBypolicyName(String esUrl, Map<String, Object> mustFilter)
+			throws Exception {
+		JsonParser jsonParser = new JsonParser();
+		Map<String, Object> mustNotFilter = new HashMap<>();
+		HashMultimap<String, Object> shouldFilter = HashMultimap.create();
+		Map<String, Object> mustTermsFilter = new HashMap<>();
+		Map<String, Object> secMap = new HashMap<>();
+
+		JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(esUrl, mustFilter, mustNotFilter,
+				shouldFilter, null, 0, mustTermsFilter, null, null);
+		if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
+			String hitsJsonString = resultJson.get(PacmanRuleConstants.HITS).toString();
+			JsonObject hitsJson = (JsonObject) jsonParser.parse(hitsJsonString);
+			JsonArray jsonArray = hitsJson.getAsJsonObject().get(PacmanRuleConstants.HITS).getAsJsonArray();
+			if (jsonArray.size() > 0) {
+				for (int i = 0; i < jsonArray.size(); i++) {
+					JsonObject firstObject = (JsonObject) jsonArray.get(i);
+					JsonObject sourceJson = (JsonObject) firstObject.get(PacmanRuleConstants.SOURCE);
+					if (null != sourceJson) {
+						JsonObject recomendationJson = (JsonObject) sourceJson.get(PacmanRuleConstants.RECOMMENDATION);
+						if ((null != recomendationJson.get(PacmanRuleConstants.RESOURCEID))
+								&& (!recomendationJson.get(PacmanRuleConstants.RESOURCEID).isJsonNull())) {
+							secMap.put(PacmanRuleConstants.RESOURCEID,
+									recomendationJson.get(PacmanRuleConstants.RESOURCEID).getAsString());
+							if (null != recomendationJson.get(PacmanRuleConstants.DETAILS)) {
+								JsonObject detailJson = (JsonObject) sourceJson.get(PacmanRuleConstants.RECOMMENDATION);
+								secMap.put(PacmanRuleConstants.DETAILS, detailJson.get(PacmanRuleConstants.DETAILS));
+							}
+						}
+
+					}
+
+				}
+			}
+		}
+		return secMap;
+	}
+	
+	/**
+	 * Function for creating the rule list of a particular virtual machine with
+	 * resource id
+	 * 
+	 * @param esUrl
+	 * @param resourceId
+	 * @param policyDefinitionName
+	 * @return
+	 * @throws Exception
+	 */
+	public static Map<String, Object> getAzurePolicyEvaluationResults(String esUrl, String resourceId,
+			String policyDefinitionName) throws Exception {
+
+		JsonParser jsonParser = new JsonParser();
+		Map<String, Object> policyEvaluationResultsMap = new HashMap<>();
+		Map<String, Object> mustFilter = new HashMap<String, Object>();
+		mustFilter.put(convertAttributetoKeyword("resourceIdLower"), resourceId);
+		mustFilter.put(convertAttributetoKeyword("policyDefinitionName"), policyDefinitionName);
+		mustFilter.put(PacmanRuleConstants.LATEST, "true");
+		JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(esUrl, mustFilter, null, null,
+				null, 0, null, null, null);
+		if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
+			String hitsJsonString = resultJson.get(PacmanRuleConstants.HITS).toString();
+			JsonObject hitsJson = (JsonObject) jsonParser.parse(hitsJsonString);
+			JsonArray jsonArray = hitsJson.getAsJsonObject().get(PacmanRuleConstants.HITS).getAsJsonArray();
+			if (jsonArray.size() > 0) {
+				for (int i = 0; i < jsonArray.size(); i++) {
+					JsonObject firstObject = (JsonObject) jsonArray.get(i);
+					JsonObject sourceJson = (JsonObject) firstObject.get(PacmanRuleConstants.SOURCE);
+					if (null != sourceJson) {
+						boolean isCompliant = sourceJson.get("isCompliant").getAsBoolean();
+						policyEvaluationResultsMap.put("isCompliant", isCompliant);
+						policyEvaluationResultsMap.put("policyName", sourceJson.get("policyName").getAsString());
+						policyEvaluationResultsMap.put("policyDescription",
+								sourceJson.get("policyDescription"));
+
+					}
+
+				}
+			}
+		}
+		return policyEvaluationResultsMap;
+	}
+
 
 }

@@ -24,7 +24,15 @@
   </div>
   <div class='policy-knowledgebase-content' *ngIf='dataComing && !showLoader'>
       <div class='pk-top-content'>
-          <div class='pk-top-header' title = "{{displayName}}">{{displayName}}</div>
+          <div class= "flex flex-between">
+                <div class='pk-top-header' title = "{{displayName}}">{{displayName}}</div>
+                <div *ngIf="autoFix" class="autoFix flex">
+                        <div><img src="../../../../../assets/icons/auto-fix-enabled.svg" class="img"></div>
+                        <div class="flex">
+                            Auto fix Enabled
+                        </div>
+                </div>
+          </div>
           <div class="pk-top-desc-header" title = "{{Description}}">Description</div>
           <div class="pk-top-desc-subheader" title = "{{ruleDescription}}">{{ruleDescription}}</div>
           <div class="pk-category-wrapper">

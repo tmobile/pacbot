@@ -24,9 +24,10 @@ def get_provider_details(provider, provider_json_file):
         return aws_provider['provider']['aws']
 
 
-def generate_temp_credentials(assume_role_arn):
+def generate_temp_credentials(assume_role_arn, region_name):
     response = boto3.client(
-        'sts'
+        'sts',
+        region_name=region_name
     ).assume_role(
         RoleArn=assume_role_arn,
         RoleSessionName=str(uuid.uuid4())
@@ -37,34 +38,32 @@ def generate_temp_credentials(assume_role_arn):
 
 def prepare_aws_client_with_given_aws_details(service_name, aws_details):
     auth_data = {}
+    auth_data['region_name'] = aws_details['region']
 
     if 'access_key' in aws_details:
         auth_data['aws_access_key_id'] = aws_details['access_key']
         auth_data['aws_secret_access_key'] = aws_details['secret_key']
     elif 'assume_role' in aws_details:
-        temp_cred = generate_temp_credentials(aws_details['assume_role']['role_arn'])
+        temp_cred = generate_temp_credentials(aws_details['assume_role']['role_arn'], auth_data['region_name'])
         auth_data['aws_access_key_id'] = temp_cred['AccessKeyId']
         auth_data['aws_secret_access_key'] = temp_cred['SecretAccessKey']
         auth_data['aws_session_token'] = temp_cred['SessionToken']
-
-    auth_data['region_name'] = aws_details['region']
 
     return boto3.client(service_name, **auth_data)
 
 
 def prepare_aws_resource_with_given_aws_details(service_name, aws_details):
     auth_data = {}
+    auth_data['region_name'] = aws_details['region']
 
     if 'access_key' in aws_details:
         auth_data['aws_access_key_id'] = aws_details['access_key']
         auth_data['aws_secret_access_key'] = aws_details['secret_key']
     elif 'assume_role' in aws_details:
-        temp_cred = generate_temp_credentials(aws_details['assume_role']['role_arn'])
+        temp_cred = generate_temp_credentials(aws_details['assume_role']['role_arn'], auth_data['region_name'])
         auth_data['aws_access_key_id'] = temp_cred['AccessKeyId']
         auth_data['aws_secret_access_key'] = temp_cred['SecretAccessKey']
         auth_data['aws_session_token'] = temp_cred['SessionToken']
-
-    auth_data['region_name'] = aws_details['region']
 
     return boto3.resource(service_name, **auth_data)
 

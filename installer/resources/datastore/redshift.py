@@ -28,7 +28,7 @@ class RedshiftCluster(redshift.RedshiftClusterResource):
     cluster_identifier = "data"
     database_name = "pacbot_data"
     master_username = "pacbot"
-    master_password = "KHQFpY4bKu6UB3XZ"
+    master_password = "***REMOVED***"
     node_type = "dc2.large"
     cluster_type = "single-node"
     number_of_nodes = 1
