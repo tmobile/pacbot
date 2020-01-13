@@ -48,9 +48,7 @@ public class TaggingRule extends BaseRule {
 
     /**
 	 * The method will get triggered from Rule Engine with following parameters
-	 * @param ruleParam
-	 *
-	 * ************* Following are the Rule Parameters********* <br><br>
+	 * @param ruleParam ************* Following are the Rule Parameters********* <br><br>
 	 *
 	 * mandatoryTags   : Comma separated list of AWS Ec2 mandatory tags <br><br>
 	 *
