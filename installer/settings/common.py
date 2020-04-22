@@ -99,6 +99,10 @@ VPC = {
 }
 REQUIRE_SUBNETS_ON_DIFFERENT_ZONE = True
 
+#System Requirements (RAM and Storage)
+MINIMUM_RAM = 3.5
+MINIMUM_STORAGE = 8
+
 PACBOT_CODE_DIR = str(CURRENT_FILE_PATH.parent.parent)
 PACBOT_LOGIN_CREDENTIALS = {
     'Admin': "admin@pacbot.org / pacman",

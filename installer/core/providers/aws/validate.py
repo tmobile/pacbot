@@ -5,6 +5,7 @@ from core.providers.aws.boto3 import iam
 from core import constants as K
 from core.mixins import MsgMixin
 import sys
+import os
 
 
 class SystemValidation(MsgMixin, metaclass=ABCMeta):
@@ -164,6 +165,39 @@ class SystemValidation(MsgMixin, metaclass=ABCMeta):
         return bool(set(self.full_access_policies).intersection(policy_names))
 
 
+    def validate_system_ram_config(self):
+        """
+        Validate the system configuration requirements
+        Minimum RAM requirements Validation
+        Returns:
+            valid or not_valid (str): Configured string for valid and not valid conditions
+        """
+        self.error_message = None
+
+        system_mem_bytes = os.sysconf('SC_PAGE_SIZE') * os.sysconf('SC_PHYS_PAGES')
+        system_mem_gib = system_mem_bytes / (1024. ** 3)
+        if not system_mem_gib > Settings.get('MINIMUM_RAM', None):
+            self.error_message = K.INVALID_SYSTEM_RAM_CONFIG + str(Settings.get('MINIMUM_RAM', None))
+            return K.NOT_VALID
+        return K.VALID
+
+    def validate_system_storage_config(self):
+        """
+        Validate the system configuration requirements
+        Minimum Storage requirements Validation
+        Returns:
+            valid or not_valid (str): Configured string for valid and not valid conditions
+        """
+        self.error_message = None
+
+        statvfs = os.statvfs(os.getcwd())
+        available_disk_space = (statvfs.f_frsize * statvfs.f_bavail ) / (2 ** 30)
+        if not available_disk_space >= Settings.get('MINIMUM_STORAGE', None):
+            self.error_message = K.INVALID_SYSTEM_STORAGE_CONFIG + str(Settings.get('MINIMUM_STORAGE', None))
+            return K.NOT_VALID
+        return K.VALID
+
+
 class SystemInstallValidation(SystemValidation):
     """Main class for validating install process"""
     def validate(self):
@@ -180,6 +214,18 @@ class SystemInstallValidation(SystemValidation):
             return False
 
         status = self.validate_policies()
+
+        if Settings.get('MINIMUM_RAM', None):
+            status = self.validate_system_ram_config()
+            self.show_step_inner_messaage(K.SYSTEM_RAM_CONFIG_CHECK_STARTED, status, self.error_message)
+            if status != K.VALID:
+                return False
+
+        if Settings.get('MINIMUM_STORAGE', None):
+            status = self.validate_system_storage_config()
+            self.show_step_inner_messaage(K.SYSTEM_STORAGE_CONFIG_CHECK_STARTED, status, self.error_message)
+            if status != K.VALID:
+                return False        
 
         return status
 
