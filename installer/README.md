@@ -130,7 +130,7 @@ IAM account.
 
 3. Create settings/local.py file by copying from settings/default.local.py
 
-4. Update settings/local.py and settings/common.py file with the required values - Mandaory Changes
+4. Update settings/local.py and/or settings/common.py file with the required values - Mandaory Changes
 ```
    VPC ID
    VPC CIDR
