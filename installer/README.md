@@ -130,11 +130,11 @@ IAM account.
 
 3. Create settings/local.py file by copying from settings/default.local.py
 
-4. Update settings/local.py file with the required values - Mandaory Changes
+4. Update settings/local.py and settings/common.py file with the required values - Mandaory Changes
 ```
    VPC ID
    VPC CIDR
-   SUBNET IDS (2 Subnets are required. The second subnet is just for Redshit HA. Both the subnets should not be in the same AZ.)
+   SUBNET IDS (2 Subnets are required. The second subnet is just for Redshift HA. Both the subnets should not be in the same AZ.)
 ```
 
 5. Run the installer. (Go grab a coffee now :), it would take a while to provision the AWS resources)
