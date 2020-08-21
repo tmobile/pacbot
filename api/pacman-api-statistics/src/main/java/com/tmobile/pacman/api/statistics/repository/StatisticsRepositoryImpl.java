@@ -156,7 +156,7 @@ public class StatisticsRepositoryImpl implements StatisticsRepository, Constants
             StringBuilder urlToQueryBuffer = new StringBuilder(esUrl).append("/").append(AWS).append("/")
                     .append(SEARCH);
             StringBuilder requestBody = new StringBuilder(
-                    "{\"query\":{\"bool\":{}},\"aggs\":{\"accounts\":{\"terms\":{\"field\":\"accountname.keyword\",\"size\":10000}}}}");
+                    "{\"query\":{\"bool\":{}},\"aggs\":{\"accounts\":{\"terms\":{\"field\":\"accountid.keyword\",\"size\":10000}}}}");
             String responseDetails = PacHttpUtils.doHttpPost(urlToQueryBuffer.toString(), requestBody.toString());
             JsonObject paramObj = parser.parse(responseDetails).getAsJsonObject();
             JsonObject aggsJson = (JsonObject) parser.parse(paramObj.get(AGGS).toString());
