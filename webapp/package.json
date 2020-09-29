@@ -28,7 +28,7 @@
     "@angular/platform-browser-dynamic": "^4.4.7",
     "@angular/platform-server": "^4.4.7",
     "@angular/router": "^4.4.7",
-    "@types/lodash": "^4.14.112",
+    "@types/lodash": "4.14.112",
     "ag-grid": "^16.0.1",
     "ag-grid-angular": "^16.0.0",
     "angular-font-awesome": "^2.0.3",
@@ -37,9 +37,9 @@
     "core-js": "^2.4.1",
     "d3": "^4.11.0",
     "font-awesome": "^4.7.0",
-    "html2canvas": "^1.0.0-alpha.12",
-    "lodash": "^4.17.13",
-    "moment": "^2.21.0",
+    "html2canvas": "1.0.0-rc.1",
+    "lodash": "4.17.13",
+    "moment": "~2.24.0",
     "ng2-datepicker": "~2.1.7",
     "ng2-select": "^1.2.0",
     "ngx-highlight": "0.0.3",
@@ -47,7 +47,7 @@
     "ngx-select-dropdown": "1.0.0",
     "offline-js": "^0.7.19",
     "rxjs": "^5.4.2",
-    "zone.js": "^0.8.14"
+    "zone.js": "^0.8.14" 
   },
   "devDependencies": {
     "@angular/cli": "1.6.8",
