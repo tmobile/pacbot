@@ -12,6 +12,12 @@ NOT_PRESENT = "Not Present"
 EXISTS = "Exists"
 NOT_EXISTS = "Not Exists"
 
+SYSTEM_RAM_CONFIG_CHECK_STARTED = "Checking System RAM Configuration"
+SYSTEM_STORAGE_CONFIG_CHECK_STARTED = "Checking System Storage Configuration"
+INVALID_SYSTEM_RAM_CONFIG = "Minimum RAM required in GB : "
+INVALID_SYSTEM_STORAGE_CONFIG = "Minimum Storage required in GB: "
+
+
 CORRECT_VPC_MSG = "Please update with correct VPC/CIDR/Subnet details in common.py OR create local.py and add VPC details"
 
 PIP_CHECK_STARTED = "Checking if required python packages are available"
