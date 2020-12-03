@@ -32,10 +32,15 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.tmobile.pacman.commons.PacmanSdkConstants;
+import com.tmobile.pacman.commons.exception.ESFailedException;
 import com.tmobile.pacman.commons.rule.Annotation;
 
 // TODO: Auto-generated Javadoc
@@ -44,6 +49,14 @@ import com.tmobile.pacman.commons.rule.Annotation;
  */
 public class ESUtils {
 
+	private static final Integer ES_PAGE_SIZE = 10000;
+	private static final String FORWARD_SLASH = "/";
+	private static final String FILTER_BOOL = "bool";
+	private static final String FILTER_SHOULD = "should";
+	private static final String FILTER_TERM = "term";
+	private static final String SEARCH = "_search";
+	private static final String SIZE = "size";
+	private static final String QUERY = "query";
 
 
 	/** The Constant logger. */
@@ -381,4 +394,82 @@ public class ESUtils {
         return gson.toJson(responseValue, Object.class);
     }
 
+    public static JsonObject getQueryDetailsFromES(final String url, String index, String subType,
+			Map<String, String> filter, List<String> fields) throws ESFailedException {
+
+		String urlToQuery = new StringBuilder(url).append(FORWARD_SLASH).append(index).append(FORWARD_SLASH).append(subType)
+				.append(FORWARD_SLASH).append(SEARCH).toString();
+
+		Map<String, Object> requestBody = new HashMap<>();
+		requestBody.put(SIZE, ES_PAGE_SIZE);
+		if (null != filter && !filter.isEmpty()) {
+			requestBody.put(QUERY, buildQuery(filter));
+		}
+		if (null != fields && !fields.isEmpty()) {
+			requestBody.put(PacmanSdkConstants.ES_SOURCE, fields);
+		}
+
+		String requestJson = null;
+		Gson gson = new GsonBuilder().create();
+		requestJson = gson.toJson(requestBody, Object.class);
+
+		return getResponse(urlToQuery, requestJson);
+	}
+    
+    /**
+   	 * Builds the query.
+   	 *
+   	 * @param filter the filter
+   	 * @return elastic search query details
+   	 */
+   	public static Map<String, Object> buildQuery(final Map<String, String> filter) {
+   		Map<String, Object> queryFilters = Maps.newHashMap();
+   		Map<String, Object> boolFilters = Maps.newHashMap();
+   		List<Map<String, Object>> should = Lists.newArrayList();
+   		for (Map.Entry<String, String> entry : filter.entrySet()) {
+   			Map<String, Object> term = Maps.newHashMap();
+   			Map<String, Object> termDetails = Maps.newHashMap();
+   			termDetails.put(entry.getKey(), entry.getValue());
+   			term.put(FILTER_TERM, termDetails);
+   			should.add(term);
+   		}
+   		boolFilters.put(FILTER_SHOULD, should);
+   		queryFilters.put(FILTER_BOOL, boolFilters);
+   		return queryFilters;
+   	}
+   	
+   	public static JsonObject getResponse(String urlToQueryBuffer,
+            String requestBody) throws ESFailedException {
+        String responseJson = null;
+        JsonParser jsonParser = new JsonParser();
+        JsonObject resultJson;
+        try {
+            responseJson = com.tmobile.pacman.commons.utils.CommonUtils
+                    .doHttpPost(urlToQueryBuffer, requestBody);
+        } catch (Exception e) {
+            throw new ESFailedException(e, -1);
+        }
+        resultJson = (JsonObject) jsonParser.parse(responseJson);
+
+        return resultJson;
+    }
+   	
+   	/**
+	 * Function for parsing out the hits from the ES response
+	 * 
+	 * @param esResultJson
+	 * @return
+	 */
+	public static JsonArray getHitsFromESResponse(JsonObject esResultJson) {
+		JsonArray hits = null;
+		if (null != esResultJson && esResultJson.has(PacmanSdkConstants.HITS)) {
+			JsonObject hitsParent = esResultJson.get(PacmanSdkConstants.HITS).getAsJsonObject();
+			if (hitsParent != null && hitsParent.has(PacmanSdkConstants.HITS)) {
+				hits = hitsParent.get(PacmanSdkConstants.HITS).getAsJsonArray();
+			}
+		}
+
+		return hits;
+	}  
+    
 }

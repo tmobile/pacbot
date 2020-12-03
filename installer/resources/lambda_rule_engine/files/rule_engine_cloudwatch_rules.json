@@ -3562,5 +3562,28 @@
     "modifiedDate": "2019-11-06",
     "severity": "high",
     "category": "security"
-  }  
+  },
+  {
+    "ruleId": "PacMan_AzureDatabasePublicAccessibility_version-1_CosmosDBPublicAccessibilityRule_cosmosdb",
+    "ruleUUID": "CosmosDBPublicAccessibilityRule_cosmosdb",
+    "policyId": "PacMan_AzureDatabasePublicAccessibility_version-1",
+    "ruleName": "CosmosDBPublicAccessibilityRule",
+    "targetType": "cosmosdb",
+    "assetGroup": "azure",
+    "alexaKeyword": "",
+    "ruleParams": "{\"params\":[{\"key\":\"ruleKey\",\"value\":\"check-for-cosmosdb-public-access\",\"encrypt\":false},{\"key\":\"esSubUri\",\"value\":\"\/azure\/cosmosdb\/_search\",\"encrypt\":false},{\"key\":\"esFields\",\"value\":\"ipRangeFilter,virtualNetworkRuleList\",\"encrypt\":false},{\"key\":\"authTokenGrantType\",\"value\":\"auth\/oauth\/token?grant_type=client_credentials\",\"isValueNew\":true,\"encrypt\":false},{\"key\":\"base64EncryptedCredentials\",\"value\":\"\",\"isValueNew\":true,\"encrypt\":false},{\"key\":\"awsNatIpUrl\",\"value\":\"asset\/v1\/list\/assets\/relations\",\"isValueNew\":true,\"encrypt\":false},{\"key\":\"roleIdentifyingString\",\"value\":\"role\/pac_ro\",\"isValueNew\":true,\"encrypt\":false},{\"key\":\"fixKey\",\"value\":\"cosmosdb-public-access-fix\",\"isValueNew\":true,\"encrypt\":false},{\"key\":\"azure.public.accessibility.allowed.cidr.categories\",\"value\":\"\",\"isValueNew\":true,\"encrypt\":false},{\"encrypt\":false,\"value\":\"critical\",\"key\":\"severity\"},{\"encrypt\":false,\"value\":\"security\",\"key\":\"ruleCategory\"},{\"encrypt\":false,\"value\":\"\",\"key\":\"ruleOwner\"}],\"environmentVariables\":[],\"ruleId\":\"PacMan_AzureDatabasePublicAccessibility_version-1_CosmosDBPublicAccessibilityRule_cosmosdb\",\"autofix\":false,\"alexaKeyword\":\"\",\"ruleRestUrl\":\"\",\"targetType\":\"cosmosdb\",\"pac_ds\":\"azure\",\"policyId\":\"PacMan_AzureDatabasePublicAccessibility_version-1\",\"assetGroup\":\"azure\",\"ruleUUID\":\"CosmosDBPublicAccessibilityRule_cosmosdb\",\"ruleType\":\"ManageRule\",\"ruleSource\":\"Custom\",\"oneClickFix\":false}",
+    "ruleFrequency": "0 0/2 * * ? *",
+    "ruleExecutable": "",
+    "ruleRestUrl": "",
+    "ruleType": "ManageRule",
+    "ruleArn": null,
+    "status": "ENABLED",
+    "userId": "",
+    "displayName": "Cosmos DB should not be publicly accessible.",
+    "createdDate": "11-26-2020",
+    "modifiedDate": "11-26-2020",
+    "severity": "critical",
+    "category": "security"
+  }
+  
 ]

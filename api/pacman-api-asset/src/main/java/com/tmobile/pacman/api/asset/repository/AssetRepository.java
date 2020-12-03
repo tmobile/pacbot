@@ -19,6 +19,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import org.elasticsearch.client.Response;
 import org.springframework.stereotype.Repository;
 
 import com.tmobile.pacman.api.asset.model.DefaultUserAssetGroup;
@@ -550,5 +551,15 @@ public interface AssetRepository {
      * @throws DataException
      */
     public List<String> getProvidersForAssetGroup(String assetGroup) throws DataException;
+    
+    /**
+	   * Invoke API.
+	   *
+	   * @param method the method
+	   * @param endpoint the endpoint
+	   * @param payLoad the pay load
+	   * @return the response
+	   */
+	public Response invokeAPI(String method, String endpoint, String payLoad);
     
 }
