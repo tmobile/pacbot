@@ -40,6 +40,7 @@ import com.tmobile.pacman.commons.exception.InvalidInputException;
 import com.tmobile.pacman.commons.rule.BaseRule;
 import com.tmobile.pacman.commons.rule.PacmanRule;
 import com.tmobile.pacman.commons.rule.RuleResult;
+import com.tmobile.pacman.executor.RuleExecutor;
 
 @PacmanRule(key = "check-for-missing-mandatory-tags", desc = "checks services for missing mandatory tags", severity = PacmanSdkConstants.SEV_HIGH,category=PacmanSdkConstants.GOVERNANCE)
 public class TaggingRule extends BaseRule {
@@ -70,6 +71,7 @@ public class TaggingRule extends BaseRule {
 	public RuleResult execute(final Map<String, String> ruleParam, Map<String, String> resourceAttributes) {
 
 		logger.debug("========TaggingRule started=========");
+		System.out.println("test");
 		Set<String> missingTags = new HashSet<>();
 		String mandatoryTags = ConfigUtils.getPropValue(PacmanSdkConstants.TAGGING_MANDATORY_TAGS);
 		String tagsSplitter = ruleParam.get(PacmanSdkConstants.SPLITTER_CHAR);
@@ -116,5 +118,9 @@ public class TaggingRule extends BaseRule {
 
 	public String getHelpText() {
 		return "This rule checks for the missing tags of services";
+	}
+	
+	public static void main(String[] args) {
+		new RuleExecutor().main(args);
 	}
 }
