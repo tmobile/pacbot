@@ -22,7 +22,6 @@ import com.tmobile.pacman.commons.rule.Annotation;
 import com.tmobile.pacman.commons.rule.BaseRule;
 import com.tmobile.pacman.commons.rule.PacmanRule;
 import com.tmobile.pacman.commons.rule.RuleResult;
-import com.tmobile.pacman.executor.RuleExecutor;
 
 /**
  * Azure rule for checking if the cosmos db is open to internet outside the permissible IP range
@@ -170,9 +169,4 @@ public class CosmosDBPublicAccessRule extends BaseRule {
 	public String getHelpText() {
 		return "This rule checks cosmos database has public access";
 	}
-	
-	public static void main(String[] args) {
-		new RuleExecutor().main(args);
-	}
-
 }
