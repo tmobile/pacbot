@@ -58,8 +58,6 @@ public class TaggingRule extends BaseRule {
 	 *
 	 * ruleKey : check-for-missing-mandatory-tags <br><br>
 	 *
-	 * threadsafe : if true , rule will be executed on multiple threads <br><br>
-	 *
 	 * severity : Enter the value of severity <br><br>
 	 *
 	 * ruleCategory : Enter the value of category <br><br>
