@@ -3048,7 +3048,23 @@ public class PacmanUtils {
 	@SuppressWarnings("unchecked")
 	public static List<String> getAllowedCidrsFromConfigProperty(Map<String, String> ruleParam) {
 		String configProp = ruleParam.get(PacmanSdkConstants.PROP_NAME_ALLOWED_CIDRS);
+		String cidrCategories = ruleParam.get(PacmanSdkConstants.ALLOWED_CIDR_CATEGORIES);
 		List<String> allowedCidrList = new ArrayList<>(Arrays.asList(configProp.split(",")));
+		
+		Gson gson = new Gson();
+		JsonObject allowedCidrJson = gson.fromJson(configProp, JsonObject.class);
+		Map<String, String> allowedCidrs = gson.fromJson(allowedCidrJson, HashMap.class);
+		List<String> categoryList = Arrays.asList(cidrCategories.split(PacmanSdkConstants.COMMA));
+		
+		categoryList.forEach(category ->{
+			if(PacmanSdkConstants.ALLOWED_IP_NAT.equals(category)) {
+				allowedCidrList.addAll(getNatIPList());
+			} else {
+				String cidrs = allowedCidrs.get(category);
+				allowedCidrList.addAll(Arrays.asList(cidrs.split(PacmanSdkConstants.COMMA)));
+			}
+		});
+		
 		allowedCidrList.addAll(getNatIPList());
 		return allowedCidrList;
 	}

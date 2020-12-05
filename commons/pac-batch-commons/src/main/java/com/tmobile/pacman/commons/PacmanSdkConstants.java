@@ -308,4 +308,6 @@ public interface PacmanSdkConstants {
 	String ES_URI = "ES_URI";
 	String ES_SOURCE = "_source";
 	String HITS = "hits";
+	String ALLOWED_CIDR_CATEGORIES = "allowedCidrCategories";
+	String ALLOWED_IP_NAT = "natIps";
 }
