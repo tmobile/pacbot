@@ -1,3 +1,1 @@
-public class TestRule{
-	
-}
+public class TestRule{}
