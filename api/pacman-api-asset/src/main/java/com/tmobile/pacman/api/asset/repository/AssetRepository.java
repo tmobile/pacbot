@@ -552,14 +552,4 @@ public interface AssetRepository {
      */
     public List<String> getProvidersForAssetGroup(String assetGroup) throws DataException;
     
-    /**
-	   * Invoke API.
-	   *
-	   * @param method the method
-	   * @param endpoint the endpoint
-	   * @param payLoad the pay load
-	   * @return the response
-	   */
-	public Response invokeAPI(String method, String endpoint, String payLoad);
-    
 }

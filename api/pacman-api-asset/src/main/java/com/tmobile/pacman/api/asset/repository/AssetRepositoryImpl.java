@@ -2189,7 +2189,7 @@ public class AssetRepositoryImpl implements AssetRepository {
         return docJson;
     }
 
-    public Response invokeAPI(String method, String endpoint, String payLoad) {
+    private Response invokeAPI(String method, String endpoint, String payLoad) {
         HttpEntity entity = null;
         try {
             if (payLoad != null) {
