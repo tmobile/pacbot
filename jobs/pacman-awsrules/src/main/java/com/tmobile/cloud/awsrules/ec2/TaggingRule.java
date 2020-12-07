@@ -68,7 +68,6 @@ public class TaggingRule extends BaseRule {
 	public RuleResult execute(final Map<String, String> ruleParam, Map<String, String> resourceAttributes) {
 
 		logger.debug("========TaggingRule started=========");
-		logger.debug("========TaggingRule test started=========");
 		Set<String> missingTags = new HashSet<>();
 		String mandatoryTags = ConfigUtils.getPropValue(PacmanSdkConstants.TAGGING_MANDATORY_TAGS);
 		String tagsSplitter = ruleParam.get(PacmanSdkConstants.SPLITTER_CHAR);
