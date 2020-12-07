@@ -19,7 +19,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import org.elasticsearch.client.Response;
 import org.springframework.stereotype.Repository;
 
 import com.tmobile.pacman.api.asset.model.DefaultUserAssetGroup;
