@@ -310,4 +310,5 @@ public interface PacmanSdkConstants {
 	String HITS = "hits";
 	String ALLOWED_CIDR_CATEGORIES = "allowedCidrCategories";
 	String ALLOWED_IP_NAT = "natIps";
+	String SERVER_NAME = "serverName";
 }
