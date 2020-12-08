@@ -361,13 +361,14 @@ public class PacmanRuleConstants {
 	public static final String DETAILS = "details";
 	public static final String AZURE_SUBSCRIPTION = "subscription";
     public static final String AZURE_SUBSCRIPTION_NAME = "subscriptionName";
-    public static final String SUBSCRIPTION = "subscription";
+    public static final String START_IP_ADDR = "startIp";
+    public static final String END_IP_ADDR = "endIp";
     public static final String FIREWALL_RULE_ES_FIELDS = "esFields";
     public static final String ES_FIREWALL_RULE = "esSubUri";
-    public static final String ALL = "ALL";
-    public static final String NETWORKACLS = "networkAcls";
+    public static final String SUBSCRIPTION = "subscription";
     public static final String ACCESS_ALLOWED_FROM_ALL_NETWORKS = "accessAllowedFromAllNetworks";
+    public static final String NETWORKACLS = "networkAcls";
+    public static final String ALL = "ALL";
     public static final String TENANT = "tenant";
     public static final String RESOURCE_GROUP_NAME = "resourceGroupName";
-
 }
