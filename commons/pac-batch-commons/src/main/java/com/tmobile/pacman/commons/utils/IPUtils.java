@@ -180,7 +180,6 @@ public class IPUtils {
 		if(endIP == null) {
 			if(isACidr(startIP) && !isValidSubnetMask(startIP)) {
 				//azure portal allows the subnet mask 0, but utils method throws error
-				// subnet mask 0 means all IPs ie 0.0.0.0 - 255.255.255.255
 				//we are directly returning the firewall rule as not in permitted range.				
 				return false;
 			} else {
