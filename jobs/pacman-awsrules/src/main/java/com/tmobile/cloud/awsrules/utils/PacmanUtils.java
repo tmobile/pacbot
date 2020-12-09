@@ -96,10 +96,18 @@ import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.tmobile.cloud.constants.PacmanRuleConstants;
 import com.tmobile.pacman.commons.PacmanSdkConstants;
+import com.tmobile.pacman.commons.exception.ESFailedException;
 import com.tmobile.pacman.commons.exception.RuleExecutionFailedExeption;
 import com.tmobile.pacman.commons.rule.Annotation;
+import com.tmobile.pacman.commons.singleton.NatIPProvider;
+import com.tmobile.pacman.commons.utils.IPUtils;
 
 public class PacmanUtils {
+	private static final String ES_TYPE_NAT_ADDRESSES = "nat_addresses";
+
+	private static final String ES_INDEX_AWS_NAT = "aws_nat";
+
+	private static final String PUBLICIP = "publicip";
     private static final Logger logger = LoggerFactory.getLogger(PacmanUtils.class);
 
     private PacmanUtils() {
@@ -3000,6 +3008,165 @@ public class PacmanUtils {
 		}
 		return policyEvaluationResultsMap;
 	}
+	
+	public static boolean isFirewallRuleInPermissibleRange(String startIP, String endIP, List<String> permittedRanges) {
+		//cosmos db and storage accounts have only IP or cidr ranges
+		//other RDBs have start IP and end IP
+		// for CIDR and single IP, we are assigning end IP
+		if(endIP == null) {
+			if(IPUtils.isACidr(startIP) && !IPUtils.isValidSubnetMask(startIP)) {
+				//azure portal allows the subnet mask 0, but utils method throws error
+				//we are directly returning the firewall rule as not in permitted range.				
+				return false;
+			} else {
+				String[] range = IPUtils.getRangeFromCidr(startIP).split(PacmanSdkConstants.HYPHEN);
+				startIP = range[0];
+				endIP = range[1];
+			}
+		}
+		List<String> permittedIps = new ArrayList<>();
+		for(String permittedRange : permittedRanges) {
+			if(!IPUtils.isSingleIP(permittedRange)) {
+				if(IPUtils.isInRange(startIP, endIP, permittedRange)) {
+					return true;
+				}
+			} else {
+				String ip = IPUtils.isACidr(permittedRange)?permittedRange.split(PacmanSdkConstants.BACK_SLASH)[0]:permittedRange;
+				permittedIps.add(ip);
+			}
+		}		
+    	return !IPUtils.hasNonPermittedIPs(startIP, endIP, permittedIps);
+	}
+
+	/**
+	 * Gets the allowed cidrs from config property.
+	 *
+	 * @param ruleParam the rule param
+	 * @return the allowed cidrs from config property
+	 */
+	@SuppressWarnings("unchecked")
+	public static List<String> getAllowedCidrsFromConfigProperty(Map<String, String> ruleParam) {
+		String configProp = ruleParam.get(PacmanSdkConstants.PROP_NAME_ALLOWED_CIDRS);
+		List<String> allowedCidrList = new ArrayList<>(Arrays.asList(configProp.split(",")));
+		
+	
+		
+		allowedCidrList.addAll(getNatIPList());
+		return allowedCidrList;
+	}
+	
+	/**
+	 * Get aws Nat IP list from ES
+	 * @return
+	 * @throws ESFailedException 
+	 * @throws Exception 
+	 */
+	public static List<String> getNatIPList() throws ESFailedException {
+		List<String> natList = new ArrayList<>();
+		List<String> fields = new ArrayList<>();
+		fields.add(PUBLICIP);
+		JsonArray results = NatIPProvider.getInstance(ES_INDEX_AWS_NAT, ES_TYPE_NAT_ADDRESSES, null, fields).getData();
+		if (results!=null && results.size() > 0) {
+			for(JsonElement result : results) {
+				JsonObject sourceJson = result.getAsJsonObject().get(PacmanRuleConstants.SOURCE).getAsJsonObject();
+				natList.add(sourceJson.getAsJsonObject().get(PUBLICIP).getAsString());
+			}
+		}
+		return natList;
+	}	
+	
+	public static JsonArray getFirewallRuleDetailsList(String esUrl, String resourceId, String region, String subscription, List<String> fieldNames) throws Exception {
+		JsonArray firewallRuleList = new JsonArray();
+		Map<String, Object> mustFilter = new HashMap<>();
+		mustFilter.put(PacmanRuleConstants.RESOURCE_ID, resourceId);
+		mustFilter.put(PacmanRuleConstants.SUBSCRIPTION, subscription);
+		if(null != region) {
+			mustFilter.put(PacmanRuleConstants.REGION, region);
+		}
+		mustFilter.put(PacmanRuleConstants.LATEST, "true");
+		JsonArray hits = getValueFromElasticSearchAsJsonArray(esUrl, mustFilter, null, null,
+				null);
+		if (hits!=null && hits.size() > 0) {
+			JsonObject firstObject = hits.get(0).getAsJsonObject();
+			JsonObject sourceJson = firstObject.get(PacmanRuleConstants.SOURCE).getAsJsonObject();
+			for (String fieldName : fieldNames) {
+				if (null != sourceJson && sourceJson.has(fieldName) && null!= sourceJson.get(fieldName)) {
+					if(sourceJson.get(fieldName).isJsonArray()) {
+						if(sourceJson.get(fieldName).getAsJsonArray().size() > 0) {
+							firewallRuleList.addAll(sourceJson.get(fieldName).getAsJsonArray());
+						}
+					} else if ((sourceJson.get(fieldName).isJsonObject() && !sourceJson.get(fieldName).isJsonNull()) || !sourceJson.get(fieldName).getAsString().isEmpty()) {
+						firewallRuleList.add(sourceJson.get(fieldName));
+					} 
+				}else {
+					if(fieldName.equalsIgnoreCase(PacmanRuleConstants.NETWORKACLS)) {
+						firewallRuleList.add(PacmanRuleConstants.ACCESS_ALLOWED_FROM_ALL_NETWORKS);
+					}
+				}
+			}
+		}
+		return firewallRuleList;
+	}
+	
+	/**
+	 * Gets the value from elastic search as json array.
+	 *
+	 * @param esUrl the es url
+	 * @param mustFilterMap the must filter map
+	 * @param shouldFilterMap the should filter map
+	 * @param mustTermsFilterMap the must terms filter map
+	 * @param matchPhrase the match phrase
+	 * @return the value from elastic search as json array
+	 * @throws Exception the exception
+	 */
+	public static JsonArray getValueFromElasticSearchAsJsonArray(String esUrl, Map<String, Object> mustFilterMap,
+			HashMultimap<String, Object> shouldFilterMap, Map<String, Object> mustTermsFilterMap, 
+			Map<String, List<String>> matchPhrase) throws Exception {
+		JsonParser jsonParser = new JsonParser();
+
+		Map<String, Object> mustFilter = new HashMap<>();
+		HashMultimap<String, Object> shouldFilter = HashMultimap.create();
+		Map<String, Object> mustNotFilter = new HashMap<>();
+		Map<String, Object> mustTermsFilter = new HashMap<>();
+
+		if (null!=mustFilterMap && !mustFilterMap.isEmpty()) {
+			for (Map.Entry<String, Object> mustFilMap : mustFilterMap.entrySet()) {
+				 if ((mustFilterMap.containsKey("regexp") && mustFilMap.getKey().equals("regexp")) || (mustFilterMap.containsKey(PacmanRuleConstants.HAS_PARENT) && mustFilMap.getKey().equals(PacmanRuleConstants.HAS_PARENT)) || (mustFilterMap.containsKey(PacmanRuleConstants.LATEST) && mustFilMap.getKey().equals(PacmanRuleConstants.LATEST))) {
+					 mustFilter.put(mustFilMap.getKey(), mustFilMap.getValue());
+				 }else{
+					 mustFilter.put(convertAttributetoKeyword(mustFilMap.getKey()), mustFilMap.getValue());
+				 }
+			}
+		}
+
+		if (null!=shouldFilterMap && !shouldFilterMap.isEmpty()) {
+			for (Map.Entry<String, Object> shouldFilMap : shouldFilterMap.entries()) {
+				if ("regexp".equals(shouldFilMap.getKey())) {
+					shouldFilter.put(shouldFilMap.getKey(), shouldFilMap.getValue());
+				 }else if ("terms".equals(shouldFilMap.getKey())) {
+					shouldFilter.put(shouldFilMap.getKey(), shouldFilMap.getValue());
+				 }else{
+					 shouldFilter.put(convertAttributetoKeyword(shouldFilMap.getKey()), shouldFilMap.getValue());
+				 }
+			}
+		}
+
+		if (null!=mustTermsFilterMap && !mustTermsFilterMap.isEmpty()) {
+			for (Map.Entry<String, Object> mustTermsFilMap : mustTermsFilterMap.entrySet()) {
+				mustTermsFilter.put(convertAttributetoKeyword(mustTermsFilMap.getKey()), mustTermsFilMap.getValue());
+			}
+		}
+
+		JsonObject resultJson = RulesElasticSearchRepositoryUtil.getQueryDetailsFromES(esUrl + "?size=10000",
+				mustFilter, mustNotFilter, shouldFilter, null, 0, mustTermsFilter, null, matchPhrase);
+		if (resultJson != null && resultJson.has(PacmanRuleConstants.HITS)) {
+			String hitsJsonString = resultJson.get(PacmanRuleConstants.HITS).toString();
+			JsonObject hitsJson = (JsonObject) jsonParser.parse(hitsJsonString);
+			return hitsJson.getAsJsonObject().get(PacmanRuleConstants.HITS).getAsJsonArray();
+		}
+		return null;
+	}
+
 
 
 }
