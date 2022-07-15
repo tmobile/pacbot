@@ -198,7 +198,7 @@
 		<dependency>
 			<groupId>com.amazonaws</groupId>
 			<artifactId>aws-java-sdk-s3</artifactId>
-			<version>1.11.264</version><!--$NO-MVN-MAN-VER$ -->
+			<version>1.12.261</version><!--$NO-MVN-MAN-VER$ -->
 		</dependency>
 
 		<dependency>
